@@ -91,10 +91,9 @@ class AdminSettings extends BaseController
   function foodcoop_plugin_settings_bank_account() {
 
     $fee = get_option( 'bank_account' );
-      printf( 
-        "<textarea id='bank_account' name='bank_account' type='textarea' value='%s' rows='8' cols='50'/></textarea><hr>",
-      esc_attr( $fee )
-	  );
+      echo
+        "<textarea id='bank_account' name='bank_account' type='textarea' rows='8' cols='50'/>".esc_attr( $fee )."</textarea><hr>"
+	  ;
 
   }
 

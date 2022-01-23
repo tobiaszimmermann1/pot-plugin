@@ -6,21 +6,22 @@
 require_once dirname(__FILE__) . '/../Base/CPTBestellrunden.php';
 use \Inc\Base;
 
-
 /*
- * This action hook registers our PHP class as a WooCommerce payment gateway
+ * This action hook registers a WooCommerce payment gateway
  */
 add_filter( 'woocommerce_payment_gateways', 'fc_add_gateway_class' );
 function fc_add_gateway_class( $gateways ) {
-    $gateways[] = 'WC_Foodcoop_Guthaben'; // your class name is here
+    $gateways[] = 'WC_Foodcoop_Guthaben'; 
     return $gateways;
 }
 
 /*
  * The class itself, please note that it is inside plugins_loaded action hook
  */
-add_action( 'plugins_loaded', 'fc_init_gateway_class' );
+add_action( 'plugins_loaded', 'fc_init_gateway_class', 0 );
 function fc_init_gateway_class() {
+
+    if ( !class_exists( 'WC_Payment_Gateway' ) ) return;
 
     class WC_Foodcoop_Guthaben extends WC_Payment_Gateway {
 
