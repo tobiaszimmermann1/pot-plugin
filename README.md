@@ -29,6 +29,5 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Contact, Requests & Issues
 
-Tobias Zimmermann
-tobias.zimmermann@neues-food-depot.ch
-www.neues-food-depot.ch
+- tobias.zimmermann@neues-food-depot.ch
+- www.neues-food-depot.ch
