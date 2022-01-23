@@ -1,61 +1,34 @@
----
-## FOODCOOP PLUGIN
----
+# FOODCOOP PLUGIN
 
----
+## Introduction
 
----
+This plugin turns Wordpress (with WooCommerce) into an application to manage your Foodcoop. Currently only offers support for ['Buying Club'-style Foodcoops](https://www.sustainweb.org/foodcoopstoolkit/buyingclubs/)
 
-## prerequisites
+## Features
 
-x woocommerce
+- Adds support for a **Product Table**
+- Adds support for **Ordering Windows**
+- Adds support for managing **Memberships**
+- Adds a **Foodcoop Wallet**, a WooCommerce payment gateway for prepaid balance
+- Adds custom **Product Import** feature
+- Adds custom **Order Export** feature
+- Adds custom **Order Mutation** feature
+- Extends WooCommerce products with **Supplier, Trading unit, unit and origin**
 
----
+## Prerequisites
 
-## extending data:
+- [WooCommerce](https://woocommerce.com/)
 
-x add bestellrunden post type
+## Installation
 
-- add public products type
+1. Install & activate [WooCommerce](https://woocommerce.com/)
+2. Download the latest release of Foodcoop plugin
+3. Unzip the contents to `wp-content/plugins/`
+4. Run `composer install` in the plugin directory
+5. Activate Foodcoop Plugin
 
-x extend wc products with custom fields
+## Contact, Requests & Issues
 
-x extend wc orders with custom field bestellrunde
-
-x reformat orders table and single orders view with bestellrunde & filtering options
-
----
-
-## ordering process
-
-x public ordering page with product list for members (shortcode)
-x workflow logic for ordering:
-x order mutations (delete and reorder)
-x auto populate cart (with previous order of same bestellrunde)
-
-x order mutations
-
-x import product list
-
-x export orders
-
----
-
-## membership
-
-x admin membership page with list of customers
-
-x extend users with membership status and user fee per calendar year
-
-x wallet function:
-x add payment gateway
-x add wallet database table
-x transactions
-x public account settings page
-
----
-
----
-
-NOTES:
-//// !!! &&&
+Tobias Zimmermann
+tobias.zimmermann@neues-food-depot.ch
+www.neues-food-depot.ch

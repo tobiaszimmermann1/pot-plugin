@@ -28,6 +28,9 @@ class OrderList extends BaseController
       if($active) {
         $has_ordered = $bestellrunde->current_user_has_ordered($active);
       }
+      else {
+        $has_ordered = false;
+      }
 
 
       /**
@@ -44,6 +47,8 @@ class OrderList extends BaseController
         'exclude'    => 15
       );
       $product_categories = get_terms($args);
+
+      ob_start();
     
       echo "
       <form action='".$this->plugin_url."order.php' method='post'>";
@@ -439,13 +444,15 @@ class OrderList extends BaseController
       }
       
       
-      
+        
         echo "<input type='hidden' name='fc_products' id='fc_products' />";  
         echo "</form>";
+
+        $content = ob_get_contents();
+        ob_end_clean();
+        return $content;
       
-      
-      
-      }
+    }
 
 
 

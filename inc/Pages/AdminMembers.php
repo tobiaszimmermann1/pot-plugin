@@ -69,7 +69,7 @@ class AdminMembers extends BaseController {
     $create_username = $create_user->user_firstname." ".$create_user->user_lastname;
     $paid_date = date("j.m.Y - G:i",strtotime($_POST['date']));
     $meta_key = 'fee_'.$_POST['fee_year'];
-    $meta_value = "Bezahlt am ".$paid_date." (".$create_username.")";
+    $meta_value = "Bezahlt am ".$paid_date;
     update_user_meta( $_POST['user_id'], $meta_key, $meta_value );
 
 
@@ -97,9 +97,8 @@ class AdminMembers extends BaseController {
     $new_balance = number_format($new_balance, 2, '.', '');
 
     $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
-    $format = array('%s','%d');
 
-    $wpdb->insert($table, $data, $format);
+    $wpdb->insert($table, $data);
 
 
 
