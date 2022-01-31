@@ -68,7 +68,7 @@ class AdminMutations extends BaseController {
               <p> Wähle die Bestellrunde aus, für die Mutationen vornehmen willst.</p>
               <p style="border-bottom: 1px solid #ccc;margin-bottom:20px;padding-bottom:20px;">
                   Bestellrunde:
-                  <select id="export_bestellrunde">
+                  <select id="mutation_bestellrunde">
                     <option id="x">Bestellrunde wählen</option>';
   
                       if( ! empty( $loop_bestellrunden ) ){
@@ -78,8 +78,7 @@ class AdminMutations extends BaseController {
                                   'limit'         => -1, 
                                   'orderby'       => 'date',
                                   'order'         => 'DESC',
-                                  'meta_key'      => 'bestellrunde_id', 
-                                  'meta_value'    => $bestellrunden->ID,
+                                  'bestellrunde_id'      => $bestellrunden->ID,
                               ));
   
                               $num_orders = count($orders);
@@ -167,11 +166,10 @@ class AdminMutations extends BaseController {
 
       // orders query
       $orders = wc_get_orders( array(
-        'limit'         => -1, 
-        'orderby'       => 'date',
-        'order'         => 'DESC',
-        'meta_key'      => 'bestellrunde_id', 
-        'meta_value'    => $bestellrunde, 
+        'limit'             => -1, 
+        'orderby'           => 'date',
+        'order'             => 'DESC',
+        'bestellrunde_id'   => $bestellrunde
       ));
 
       $current_products = array();
@@ -180,23 +178,35 @@ class AdminMutations extends BaseController {
 
           $items = $order->get_items();
 
-          foreach ( $items as $item ) {
+          foreach ( $items as $item_id => $item ) {
 
-              $product_id = $item->get_product_id();
-              $product_name = $item->get_name();
+              $product_name = esc_attr($item->get_name());
+              $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+              $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+              $product_herkunft = esc_attr(wc_get_order_item_meta( $item_id, '_herkunft', true));
+              $product_pid = esc_attr(wc_get_order_item_meta( $item_id, '_pid', true));
+              $fallback_id = $item->get_product_id();
 
-              if (!array_key_exists($product_id,$current_products)) {
+              if (!array_key_exists($product_pid,$current_products)) {
 
-                  $current_products[$product_id] = $product_name;
+                  if ($product_pid) {
+                    $current_products[$product_pid] = $product_name;
+                  }
+                  else {
+                    if ($fallback_id) {
+                        $current_products[$fallback_id] = $product_name;
+                    }
+                    else {
+                        echo "null";
+                        die();
+                    }
+                  }
 
               }
-              
           }
-
       }
 
       wp_send_json($current_products);
-
       die();
 
   }

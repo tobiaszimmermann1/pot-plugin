@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
   // AJAX CALL REPOPULATE PRODUCTS ON BESTELLRUNDEN CHANGE
-  jQuery("#export_bestellrunde").change(function () {
-    var bestellrunde = jQuery("#export_bestellrunde").children(":selected").attr("id")
+  jQuery("#mutation_bestellrunde").change(function () {
+    var bestellrunde = jQuery("#mutation_bestellrunde").children(":selected").attr("id")
     jQuery("#mutation-window").hide()
     jQuery(".spinner").addClass("is-active")
 
@@ -22,13 +22,17 @@ jQuery(document).ready(function ($) {
           jQuery("#mutation_delete_notice").hide()
           jQuery("#mutation_delete_final_submit").hide()
 
-          jQuery.each(data, function (key, value) {
-            jQuery("#mutation_delete_select").append(`<option class="mutation_delete_product" data-id="${key}">${value}</option>`)
-            jQuery("#mutation_price_select").append(`<option class="mutation_price_product" data-id="${key}">${value}</option>`)
-          })
+          if (data == "null") {
+            alert("Fehler: Keine Bestellungen / Produkte gefunden")
+          } else {
+            jQuery.each(data, function (key, value) {
+              jQuery("#mutation_delete_select").append(`<option class="mutation_delete_product" data-id="${key}">${value}</option>`)
+              jQuery("#mutation_price_select").append(`<option class="mutation_price_product" data-id="${key}">${value}</option>`)
+            })
+            jQuery("#mutation-window").show()
+          }
 
           jQuery(".spinner").removeClass("is-active")
-          jQuery("#mutation-window").show()
         },
         error: function (XMLHttpRequest, textStatus, errorThrown, data) {
           alert("Error")
@@ -44,7 +48,7 @@ jQuery(document).ready(function ($) {
 
     var product = jQuery(".mutation_delete_product:selected").data("id")
 
-    var bestellrunde = jQuery("#export_bestellrunde").children(":selected").attr("id")
+    var bestellrunde = jQuery("#mutation_bestellrunde").children(":selected").attr("id")
 
     if (product != undefined) {
       jQuery(".spinner").addClass("is-active")
@@ -135,11 +139,8 @@ jQuery(document).ready(function ($) {
   // AJAX CALL MUTATION PRICE FUNCTION - LOAD ORDERS
   jQuery("#mutation_price_submit").click(function () {
     jQuery(this).prop("disabled", true)
-    var bestellrunde = jQuery("#mutation_bestellrunde").val()
-
     var product = jQuery(".mutation_price_product:selected").data("id")
-
-    var bestellrunde = jQuery("#export_bestellrunde").children(":selected").attr("id")
+    var bestellrunde = jQuery("#mutation_bestellrunde").children(":selected").attr("id")
 
     if (product != undefined) {
       jQuery(".spinner").addClass("is-active")
@@ -196,6 +197,7 @@ jQuery(document).ready(function ($) {
     jQuery(this).prop("disabled", true)
     var product = jQuery("#mutation_price_product_id").val()
     var price = jQuery("#mutation_price_field").val()
+    var oldPrice = jQuery("#current_product_price").val()
 
     var deleteOrders = []
 
@@ -214,7 +216,8 @@ jQuery(document).ready(function ($) {
         action: "fc_mutation_final_price_function",
         orders: deleteOrders,
         product: product,
-        price: price
+        price: price,
+        old_price: oldPrice
       },
       success: function (data, textStatus, XMLHttpRequest) {
         jQuery("#mutation_price_final_submit").prop("disabled", false)

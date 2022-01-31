@@ -51,7 +51,13 @@ class ExportData extends BaseController
         foreach( $orders as $order ){
             foreach ( $order->get_items() as $item_id => $item ) {
 
-                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ) );
+                    $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+
+                    // fallback
+                    if (!$product_lieferant) {
+                        $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                    }
+
                     if ( !in_array($product_lieferant, $lieferanten) ) {
                         array_push($lieferanten,$product_lieferant);
                     }
@@ -64,11 +70,42 @@ class ExportData extends BaseController
         foreach( $orders as $order ){
             foreach ( $order->get_items() as $item_id => $item ) {
 
+                $item_array = array();
+
+                // product id
+                $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                // fallback
+                if(!$product_id) {
                     $product_id = $item->get_product_id();
-                    if ( !in_array($product_id, $produkte) ) {
-                        array_push($produkte,$product_id);
-                    }
                 }
+
+                // lieferant                        
+                $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                // fallback
+                if (!$product_lieferant) {
+                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                }
+                array_push($item_array,$product_lieferant);
+
+                // einheit
+                $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+                // fallback
+                if (!$product_einheit) {
+                    $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+                }
+                array_push($item_array,$product_einheit);
+
+                // name
+                $product_name = $item->get_name();
+                array_push($item_array,$product_name);
+                
+
+                // push info to array
+                if ( !array_key_exists($product_id, $produkte) ) {
+                    $produkte[$product_id] = $item_array;
+                }
+
+            }
         }
           
 
@@ -115,11 +152,28 @@ class ExportData extends BaseController
 
                     foreach ( $order->get_items() as $item_id => $item ) {
 
-                        $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
-                        $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+                        // lieferant                        
+                        $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                        // fallback
+                        if (!$product_lieferant) {
+                            $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                        }
+
+                        // einheit
+                        $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+                        // fallback
+                        if (!$product_einheit) {
+                            $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+                        }
+
                         $username = esc_attr($user_info->display_name);
                 
-                        $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                        // check lieferant
+                        $check_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                        // fallback
+                        if (!$check_lieferant) {
+                            $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                        }
 
                         if ( $check_lieferant == $lieferant) {
                             
@@ -149,13 +203,13 @@ class ExportData extends BaseController
 
             if (count($lieferant_users) != 0) {
 
-                foreach( $produkte as $produkt ) {
 
-                    $product = wc_get_product($produkt);
-                    $product_name = esc_attr($product->get_name());
-                    $product_id = $product->get_id();
-                    $product_lieferant = esc_attr(get_post_meta( $product_id, '_lieferant',true ));
-                    $product_einheit = esc_attr(get_post_meta( $product_id, '_einheit',true ));
+                foreach( $produkte as $produkt_id => $produkt ){
+
+                    $product_name = $produkt[2];
+                    $product_id = $produkt_id;
+                    $product_lieferant = $produkt[0];
+                    $product_einheit = $produkt[1];
 
                     if ($product_lieferant == $lieferant) {
 
@@ -188,16 +242,39 @@ class ExportData extends BaseController
 
                                 foreach ( $current_order->get_items() as $item_id => $item ) {
 
-                                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                                    // lieferant                        
+                                    $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                                    // fallback
+                                    if (!$product_lieferant) {
+                                        $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                                    }
+
                                     $item_data = $item->get_data();
+
                                     $username = esc_attr($user_info->display_name);
-                                    $tproduct_id = $item->get_product_id();
+
+                                    // id                        
+                                    $tproduct_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                                    // fallback
+                                    if(!$tproduct_id) {
+                                        $tproduct_id = $item->get_product_id();
+                                    }
+
                                     $quantity = $item->get_quantity();   
+
                                     $item_qty_refunded = $current_order->get_qty_refunded_for_item( $item_id );
-                                    $quantity = $quantity + $item_qty_refunded;                     
-                                    $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+
+                                    $quantity = $quantity + $item_qty_refunded;     
+
+                                    // check_lieferant                        
+                                    $check_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                                    // fallback
+                                    if (!$check_lieferant) {
+                                        $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                                    }   
+
             
-                                    if ( $check_lieferant == $lieferant AND $produkt == $tproduct_id ) {
+                                    if ( $check_lieferant == $lieferant AND $produkt_id == $tproduct_id ) {
 
                                         array_pop($prod_row);   
                                         array_push($prod_row, $quantity);
@@ -216,11 +293,8 @@ class ExportData extends BaseController
                             $rowFromValues = WriterEntityFactory::createRowFromArray($prod_row);
                             $writer->addRow($rowFromValues);
                         }
-
                     }
-                    
                 }
-
             }    
 
             $i++;

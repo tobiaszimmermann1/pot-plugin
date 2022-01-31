@@ -15,6 +15,8 @@ class CPTBestellrunden extends BaseController
     add_action( 'add_meta_boxes', array($this, 'bestellrunden_add_metabox') );
     add_action( 'save_post', array($this, 'bestellrunden_save_meta'), 10, 2 );
     add_filter( 'wp_insert_post_data' , array($this, 'modify_post_title') , '99', 1 );
+
+    add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', array($this,'handle_custom_query_var'), 10, 2 );
   }
 
   /**
@@ -224,6 +226,27 @@ class CPTBestellrunden extends BaseController
   
     }
     
+  }
+
+
+
+
+
+  /**
+   * Handle a custom 'customvar' query var to get orders with the 'customvar' meta.
+   * @param array $query - Args for WP_Query.
+   * @param array $query_vars - Query vars from WC_Order_Query.
+   * @return array modified $query
+   */
+  function handle_custom_query_var( $query, $query_vars ) {
+    if ( ! empty( $query_vars['bestellrunde_id'] ) ) {
+      $query['meta_query'][] = array(
+        'key' => 'bestellrunde_id',
+        'value' => esc_attr( $query_vars['bestellrunde_id'] ),
+      );
+    }
+
+    return $query;
   }
 
 

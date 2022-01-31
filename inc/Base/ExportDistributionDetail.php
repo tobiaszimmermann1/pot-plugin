@@ -24,7 +24,7 @@ class ExportDistributionDetail extends BaseController
     }
 
 
-
+ 
     
     function fc_export_distribution_lists_detail_function() {
         
@@ -53,7 +53,13 @@ class ExportDistributionDetail extends BaseController
         foreach( $orders as $order ){
             foreach ( $order->get_items() as $item_id => $item ) {
 
-                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                    $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+
+                    // fallback
+                    if (!$product_lieferant) {
+                        $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                    }
+
                     if ( !in_array($product_lieferant, $lieferanten) ) {
                         array_push($lieferanten,$product_lieferant);
                     }
@@ -66,22 +72,53 @@ class ExportDistributionDetail extends BaseController
         foreach( $orders as $order ){
             foreach ( $order->get_items() as $item_id => $item ) {
 
+                $item_array = array();
+
+                // product id
+                $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                // fallback
+                if(!$product_id) {
                     $product_id = $item->get_product_id();
-                    if ( !in_array($product_id, $produkte) ) {
-                        array_push($produkte,$product_id);
-                    }
                 }
+
+                // lieferant                        
+                $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                // fallback
+                if (!$product_lieferant) {
+                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                }
+                array_push($item_array,$product_lieferant);
+
+                // einheit
+                $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+                // fallback
+                if (!$product_einheit) {
+                    $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+                }
+                array_push($item_array,$product_einheit);
+
+                // name
+                $product_name = $item->get_name();
+                array_push($item_array,$product_name);
+                
+
+                // push info to array
+                if ( !array_key_exists($product_id, $produkte) ) {
+                    $produkte[$product_id] = $item_array;
+                }
+
+            }
         }
 
 
 
-        foreach( $produkte as $produkt ){
 
-          $product = wc_get_product($produkt);
-          $product_name = $product->get_name();
-          $product_id = $product->get_id();
-          $product_lieferant = get_post_meta( $product_id, '_lieferant',true );
-          $product_einheit = get_post_meta( $product_id, '_einheit',true );
+        foreach( $produkte as $produkt_id => $produkt ){
+
+            $product_name = $produkt[2];
+            $product_id = $produkt_id;
+            $product_lieferant = $produkt[0];
+            $product_einheit = $produkt[1];
 
 
 
@@ -148,22 +185,40 @@ class ExportDistributionDetail extends BaseController
                   $user_id = $order->get_user_id();
                   $user_info = get_userdata($user_id);
   
-                      foreach ( $order->get_items() as $item_id => $item ) {
+                    foreach ( $order->get_items() as $item_id => $item ) {
   
-                          $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ) );
-                          $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ) );
-                          $username = esc_attr($user_info->display_name);
-                  
-                          $check_lieferant = get_post_meta( $item->get_product_id(), '_lieferant',true );
-  
-                          if ( $check_lieferant == $export_lieferant) {
-                              
-                              if ( !array_search($user_id, $lieferant_users) ) {
-                                  $lieferant_users[$username] = $user_id;
-                              }
-  
-                          }
-                      }
+                        // lieferant                        
+                        $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                        // fallback
+                        if (!$product_lieferant) {
+                            $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                        }
+
+                        // einheit
+                        $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+                        // fallback
+                        if (!$product_einheit) {
+                            $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+                        }
+
+                        $username = esc_attr($user_info->display_name);
+                
+                        // check lieferant
+                        $check_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                        // fallback
+                        if (!$check_lieferant) {
+                            $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                        }
+                        
+                        if ( $check_lieferant == $export_lieferant) {
+                            
+                            if ( !array_search($user_id, $lieferant_users) ) {
+                                $lieferant_users[$username] = $user_id;
+                            }
+
+                        }
+
+                    }
   
               }
 
@@ -194,16 +249,37 @@ class ExportDistributionDetail extends BaseController
                     if ($current_user_id == $user_id) {
 
                         foreach ($current_order->get_items() as $item_id => $item) {
-                            $product_lieferant = get_post_meta($item->get_product_id(), '_lieferant', true);
+
+                            // lieferant                        
+                            $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                            // fallback
+                            if (!$product_lieferant) {
+                                $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                            }
+
                             $item_data = $item->get_data();
+
                             $username = $user_info->display_name;
-                            $tproduct_id = $item->get_product_id();
+
+                            // id                        
+                            $tproduct_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                            // fallback
+                            if(!$tproduct_id) {
+                                $tproduct_id = $item->get_product_id();
+                            }
+
                             $quantity = $item->get_quantity();
                             $item_qty_refunded = $current_order->get_qty_refunded_for_item($item_id);
                             $quantity = $quantity + $item_qty_refunded;
-                            $check_lieferant = get_post_meta($item->get_product_id(), '_lieferant', true);
 
-                            if ($check_lieferant == $export_lieferant and $produkt == $tproduct_id) {
+                            // check_lieferant                        
+                            $check_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                            // fallback
+                            if (!$check_lieferant) {
+                                $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                            }
+
+                            if ($check_lieferant == $export_lieferant and $produkt_id == $tproduct_id) {
                                 $body .= '
                                         <tr>
                                             <td style="padding:5px 20px 5px 10px;border:1px solid black;font-weight:bold;font-size:8pt;text-align:center;">'.esc_attr($username).'</td>

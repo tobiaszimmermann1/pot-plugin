@@ -98,13 +98,30 @@ class ExportReceipts extends BaseController
 
             foreach ( $order->get_items() as $item_id => $item ) {
 
-                $product_lieferant = get_post_meta( $item->get_product_id(), '_lieferant',true );
-                $product_einheit = get_post_meta( $item->get_product_id(), '_einheit',true );
+                // lieferant                        
+                $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                // fallback
+                if (!$product_lieferant) {
+                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                }
+
+                // einheit
+                $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+                // fallback
+                if (!$product_einheit) {
+                    $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+                }
+
                 $product_name = $item->get_name();
+
                 $quantity = $item->get_quantity(); 
+
                 $item_qty_refunded = $order->get_qty_refunded_for_item( $item_id );
+
                 $quantity = $quantity + $item_qty_refunded;   
+
                 $total = $item->get_total();
+
                 $total = number_format((float)$total, 2, '.', '');
 
 

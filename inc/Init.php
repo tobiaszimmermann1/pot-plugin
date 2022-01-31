@@ -23,6 +23,7 @@ final class Init
             Base\CPTBestellrunden::class,
             Base\ExtendProducts::class,
             Base\OrderMeta::class,
+            Base\OrderItemMeta::class,
             Base\Import::class,
             Base\ExportDistribution::class,
             Base\ExportDistributionDetail::class,
@@ -34,6 +35,7 @@ final class Init
             Output\OrderList::class,
             Output\OrderFilter::class,
             Output\Cart::class
+            
         ];
     }
 

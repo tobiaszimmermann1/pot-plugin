@@ -55,7 +55,7 @@ class OrderList extends BaseController
       
         if ($active) {   ?>
           <div id='bestellrunden'>
-            <p>Aktuell ist das Bestellfenster offen. <?php if (!is_user_logged_in()) { ?> Werde <a href="<?php bloginfo('url'); ?>/#process">hier</a> Mitglied, um mitbestellen zu können. <?php } ?></p>
+            <p>Aktuell ist das Bestellfenster offen. <?php if (!is_user_logged_in()) { ?> Werde Mitglied, um mitbestellen zu können. <?php } ?></p>
             <p>Bestellen bis: <?php echo date('d.m.Y', strtotime(get_post_meta($active, 'bestellrunde_ende', true))); ?> um 23:59 Uhr</p>
             <p>Verteiltag und Abholung am: <?php echo date('d.m.Y', strtotime(get_post_meta($active, 'bestellrunde_verteiltag', true))); ?></p>
               
@@ -63,7 +63,7 @@ class OrderList extends BaseController
               if ($has_ordered) { ?>
       
                       <p style="border-top: 1px solid black;padding-top: 10px;"> Du hast in dieser Bestellrunde bereits eine Bestellung getätigt und kannst diese hier anpassen. Der Differenzbetrag wird deinem Konto anschliessend abgezogen, bzw. gutgeschrieben. </p>  
-                      <p style="border-top: 1px solid black;padding-top: 10px;"> Deine aktuelle Bestellung kannst du jederzeit <a href="<?php echo home_url(); ?>/mein-account/orders/">hier</a> einsehen.</p>   
+                      <p style="border-top: 1px solid black;padding-top: 10px;"> Deine aktuelle Bestellung kannst du jederzeit in deinem Account einsehen.</p>   
               <?php 
               } ?>
       
@@ -73,7 +73,7 @@ class OrderList extends BaseController
         }
         else { ?>
           <div id='bestellrunden'>
-              <p>Aktuell ist das Bestellfenster geschlossen. <?php if (!is_user_logged_in()) { ?> Werde <a href="<?php bloginfo('url'); ?>/#process">hier</a> Mitglied, um mitbestellen zu können.<?php } ?></p>
+              <p>Aktuell ist das Bestellfenster geschlossen. <?php if (!is_user_logged_in()) { ?> Werde Mitglied, um mitbestellen zu können.<?php } ?></p>
           </div>
         <?php 
         }
@@ -126,21 +126,20 @@ class OrderList extends BaseController
       
                       // set total quantity variable
                       $total_qty = 0;
+                      $missing_qty = get_post_meta( $product->get_id(), '_gebinde', true );
+                      $qty_color = 'green';
                       $this_order_quantity = 0;
                       $this_refunded_quantity = 0;
       
                       // GET ALL ORDERS OF CURRENT BESTELLRUNDE
                       
-                      $args2 = array(
-                          'bestellrunde_id' => $active,
-                      );
-                  
+                      $args2 = array( 'bestellrunde_id' => $active );
                       $qty_orders = wc_get_orders( $args2 );
       
                       foreach ($qty_orders as $qty_order) {
       
                           // Get the Order refunds (array of refunds)
-                          $rorder = wc_get_order( $qty_order->get_id() );
+                          $rorder = $qty_order;
       
                           if ($active) {
                               $order_refunds = $rorder->get_refunds();
@@ -202,6 +201,7 @@ class OrderList extends BaseController
                           if($gebinde == $missing_qty) {
                               $missing_qty = '';
                           }
+                          
       
       
                           // set color depending on modulo
@@ -436,7 +436,7 @@ class OrderList extends BaseController
       } else { ?>
       
             <div id="foodcoop-order-bar">
-              <div id='foodcoop-order-submit-deactivated'>Nur Mitglieder können bestellen: <a href='<?php bloginfo("url"); ?>/#process'>Registrierung</a> / <a href='<?php bloginfo("url"); ?>/mein-account'>Login</a> </div>
+              <div id='foodcoop-order-submit-deactivated'>Nur Mitglieder können bestellen. </div>
             </div>
       
           <?php

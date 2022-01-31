@@ -37,6 +37,7 @@ jQuery(document).ready(function ($) {
   jQuery("#export_bestellrunde").change(function () {
     var bestellrunde_id = jQuery("#export_bestellrunde option:selected").attr("id")
     jQuery("#export-window").hide()
+    jQuery(".spinner").addClass("is-active")
 
     if (bestellrunde_id != "x") {
       jQuery.ajax({
@@ -47,9 +48,17 @@ jQuery(document).ready(function ($) {
           bestellrunde_id: bestellrunde_id
         },
         success: function (data, textStatus, XMLHttpRequest) {
-          jQuery("#export_lieferant").empty()
-          jQuery("#export_lieferant").append(data)
-          jQuery("#export-window").show()
+          console.log(data)
+
+          if (data == "null") {
+            alert("Fehler: Keine Bestellungen / Produkte gefunden")
+          } else {
+            jQuery("#export_lieferant").empty()
+            jQuery("#export_lieferant").append(data)
+            jQuery("#export-window").show()
+          }
+
+          jQuery(".spinner").removeClass("is-active")
         },
         error: function (XMLHttpRequest, textStatus, errorThrown, data) {
           console.log(errorThrown)

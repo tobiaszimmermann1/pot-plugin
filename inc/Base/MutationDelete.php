@@ -39,7 +39,7 @@ class MutationDelete extends BaseController
         'meta_key'      => 'bestellrunde_id', 
         'meta_value'    => $bestellrunde, 
       ));
-
+ 
       foreach( $orders as $order ) {
 
           $order_id = $order->ID;
@@ -50,38 +50,40 @@ class MutationDelete extends BaseController
           $first_name = $order->get_billing_first_name();
           $last_name = $order->get_billing_last_name();
 
-          foreach ( $items as $item ) {
+          foreach ( $items as $item_id => $item ) {
 
-              $product_id = $item->get_product_id();
-              $ordered_qty = $item->get_quantity();
+            $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
 
-              // Get refunded quantity
-              $order_refunds = $order->get_refunds();
+            if(!$product_id) {
+                $product_id = $item->get_product_id();
+            }
 
-              foreach( $order_refunds as $refund ){
+            $ordered_qty = $item->get_quantity();
 
-                  foreach( $refund->get_items() as $r_item_id => $r_item ){
+            // Get refunded quantity
+            $order_refunds = $order->get_refunds();
 
-                      $r_product_id = $r_item->get_product_id();
+            foreach( $order_refunds as $refund ){
 
-                      if ($r_product_id == $product) {
+                foreach( $refund->get_items() as $r_item_id => $r_item ){
 
-                          $refunded_quantity      = $r_item->get_quantity(); // Quantity: zero or negative integer
+                    $r_product_id = wc_get_order_item_meta( $r_item_id, '_pid', true);
 
-                      }
+                    if ($r_product_id == $product) {
+                        $refunded_quantity = $r_item->get_quantity(); // Quantity: zero or negative integer
+                    }
+                }
+            }
 
-                  }
-              }
+            $qty = $ordered_qty + $refunded_quantity;
+            
+            if ( $product_id == $product && $qty > 0 ) {
 
-              $qty = $ordered_qty + $refunded_quantity;
-              
-              if ( $product_id == $product && $qty > 0 ) {
+                $mutation_orders .= 
+                    "<a href='".$url."' target='_blank'>".$order_id." von ".$first_name." ".$last_name."</a> (".$qty." Stück) <br />
+                    <input type='hidden' class='mutation_delete_order_id' value='".$order_id."'>";
 
-                  $mutation_orders .= 
-                      "<a href='".$url."' target='_blank'>".$order_id." von ".$first_name." ".$last_name."</a> (".$qty." Stück) <br />
-                      <input type='hidden' class='mutation_delete_order_id' value='".$order_id."'>";
-
-              }
+            }
 
           }
 
@@ -122,21 +124,13 @@ class MutationDelete extends BaseController
       $orders = $_POST['orders'];
       $product = $_POST['product'];
 
-
       // GET CURRENT PRODUCT NAME
       $load_product = wc_get_product( $product );
-      $product_name = $load_product->get_name();
-
 
       foreach( $orders as $order_id ) {
 
           $order  = wc_get_order( $order_id );
-    
-          // IF it's something else such as a WC_Order_Refund, we don't want that.
-          if( ! is_a( $order, 'WC_Order') ) {
-            echo "Fehelr.";
-          }
-          
+
           // Get Items
           $order_items   = $order->get_items();
           
@@ -150,33 +144,36 @@ class MutationDelete extends BaseController
         
               foreach( $order_items as $item_id => $item ) {
     
-                  $product_id = $item->get_product_id();
+                  $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+
+                  if(!$product_id) {
+                      $product_id = $item->get_product_id();
+                  }
                       
                   if ($product_id == $product) {
+
+                    $product_name = $item->get_name();
           
-                      $item_meta 	= $order->get_item_meta( $item_id );
-              
-                      $product_data = wc_get_product( $item_meta["_product_id"][0] );
-    
-                      $qty = $item->get_quantity();
-                          
-                      $item_ids[] = $item_id;
-                      $tax_data = $item_meta['_line_tax_data'];
-                      $refund_tax = 0;
-              
-                      if( is_array( $tax_data[0] ) ) {
-              
-                      $refund_tax = array_map( 'wc_format_decimal', $tax_data[0] );
-              
-                      }
-              
-                      $refund_amount = wc_format_decimal( $refund_amount ) + wc_format_decimal( $item_meta['_line_total'][0] );
-    
-                      
-              
-                      $line_items[ $item_id ] = array( 'qty' => $qty, 'refund_total' => wc_format_decimal( $item_meta['_line_total'][0] ), 'refund_tax' =>  $refund_tax );
-              
-                      
+                    $item_meta 	= $order->get_item_meta( $item_id );
+            
+                    $product_data = wc_get_product( $item_meta["_product_id"][0] );
+
+                    $qty = $item->get_quantity();
+                        
+                    $item_ids[] = $item_id;
+                    $tax_data = $item_meta['_line_tax_data'];
+                    $refund_tax = 0;
+            
+                    if( is_array( $tax_data[0] ) ) {
+            
+                    $refund_tax = array_map( 'wc_format_decimal', $tax_data[0] );
+            
+                    }
+            
+                    $refund_amount = wc_format_decimal( $refund_amount ) + wc_format_decimal( $item_meta['_line_total'][0] );                   
+            
+                    $line_items[ $item_id ] = array( 'qty' => $qty, 'refund_total' => wc_format_decimal( $item_meta['_line_total'][0] ), 'refund_tax' =>  $refund_tax );
+                            
                   }
               }
               

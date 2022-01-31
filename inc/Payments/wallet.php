@@ -125,13 +125,10 @@ function fc_init_gateway_class() {
 
                 $args = array(
                     'customer' => $user_id,
-                    'meta_key' => 'bestellrunde_id',
-                    'meta_value' => $active,
-                    'meta_compare' => '='
+                    'bestellrunde_id' => $active,
                   );
                             
                 $orders = wc_get_orders( $args );
-                $numb = count($orders);
                 $has_ordered = false;
             
                 if ($orders) {
@@ -278,9 +275,9 @@ function fc_init_gateway_class() {
                     'status'=> array( 'wc-processing' ),
 
                   );
-                            
+                          
+                $had_ordered = false;  
                 $prev_orders = wc_get_orders( $args );
-                $num = count($prev_orders);
             
                 if ($prev_orders) {
                     foreach ($prev_orders as $prev_order) {
@@ -291,19 +288,13 @@ function fc_init_gateway_class() {
                         $previous_order_total = $previous_order_total_before_refunds - $refunded_total;
                         $previous_order_total = number_format($previous_order_total, 2, '.', '');
                     }
-                    if ($num > 0) {
-                        $had_ordered = true;
-                    }
-                    else  {
-                        $had_ordered = false;
-                    }
-
+                    $had_ordered = true;
                 }
             }
 
 
 
-            if ($had_ordered == true) {
+            if ($had_ordered) {
 
                 $new_balance = $current_balance - $order_total + $previous_order_total;
                 $new_balance = number_format($new_balance, 2, '.', '');
@@ -364,7 +355,7 @@ function fc_init_gateway_class() {
 
             }
 
-            else if ($had_ordered == false) {
+            else {
 
                 $new_balance = $current_balance - $order_total;
                 $new_balance = number_format($new_balance, 2, '.', '');

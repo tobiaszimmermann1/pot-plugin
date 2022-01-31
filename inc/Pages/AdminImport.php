@@ -25,22 +25,43 @@ class AdminImport extends BaseController
     function fc_get_lieferanten() {
 
       // orders query
-      $args = array(
-        'meta_key' => 'bestellrunde_id',
-        'meta_value' => $_POST['bestellrunde_id'],
-        'meta_compare' => '='
-      );            
-      $orders = wc_get_orders( $args );
+      $orders = wc_get_orders( array(
+        'limit'         => -1, 
+        'orderby'       => 'date',
+        'order'         => 'DESC',
+        'bestellrunde_id'      => $_POST['bestellrunde_id'],
+      ));
 
       // get all lieferanten in array
       $lieferanten = array();
+
       foreach( $orders as $order ){
           foreach ( $order->get_items() as $item_id => $item ) {
-                  $product_lieferant = get_post_meta( $item->get_product_id(), '_lieferant',true );
-                  if ( !in_array($product_lieferant, $lieferanten) ) {
-                      array_push($lieferanten,$product_lieferant);
-                  }
-              }
+
+
+            $product_name = esc_attr($item->get_name());
+            $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+            $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+            $product_herkunft = esc_attr(wc_get_order_item_meta( $item_id, '_herkunft', true));
+            $product_pid = esc_attr(wc_get_order_item_meta( $item_id, '_pid', true));
+            $fallback_id = $item->get_product_id();
+
+            if ( !in_array($product_lieferant, $lieferanten) ) {
+                array_push($lieferanten,$product_lieferant);
+            }
+            else {
+                if ($fallback_id) {
+                    $product_lieferant = get_post_meta( $fallback_id, '_lieferant',true );
+                    if ( !in_array($product_lieferant, $lieferanten) ) {
+                        array_push($lieferanten,$product_lieferant);
+                    }
+                }
+                else {
+                    echo "null";
+                    die();
+                }
+            }
+          }
       }
 
       $response = "";
@@ -49,7 +70,7 @@ class AdminImport extends BaseController
       }
 
       echo $response;
-      die;
+      die();
     }
 
 
@@ -144,8 +165,7 @@ class AdminImport extends BaseController
                                     'limit'         => -1, 
                                     'orderby'       => 'date',
                                     'order'         => 'DESC',
-                                    'meta_key'      => 'bestellrunde_id', 
-                                    'meta_value'    => $bestellrunden->ID,
+                                    'bestellrunde_id'      => $bestellrunden->ID,
                                 ));
     
                                 $num_orders = count($orders);

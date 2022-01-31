@@ -28,10 +28,6 @@ class MutationPrice extends BaseController
       $product = $_POST['product'];
       $bestellrunde = $_POST['bestellrunde'];
 
-      // GET CURRENT PRODUCT PRICE
-      $load_product = wc_get_product( $product );
-      $current_product_price = number_format($load_product->get_regular_price(), 2, '.', ''); 
-
       // orders query
       $orders = wc_get_orders( array(
         'limit'         => -1, 
@@ -41,52 +37,70 @@ class MutationPrice extends BaseController
         'meta_value'    => $bestellrunde, 
       ));
 
-      foreach( $orders as $order ) {
+        foreach( $orders as $order ) {
 
           $order_id = $order->ID;
 
-          $order = wc_get_order( $order_id );
           $items = $order->get_items();
           $url = $order->get_edit_order_url();
           $first_name = $order->get_billing_first_name();
           $last_name = $order->get_billing_last_name();
 
-          foreach ( $items as $item ) {
+            foreach ( $items as $item_id => $item ) {
 
-              $product_id = $item->get_product_id();
-              $ordered_qty = $item->get_quantity();
+                $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                $fallback_id = $item->get_product_id();
+                $ordered_qty = $item->get_quantity();
 
-              // Get refunded quantity
-              $order_refunds = $order->get_refunds();
+                if (!$product_id) {
+                    if ($fallback_id) {
+                        $product_id = $fallback_id;
+                    }
+                    else {
+                        echo "Fehler: keine Bestellungen gefunden.";
+                        die();
+                    }
+                }
 
-              foreach( $order_refunds as $refund ){
+                if ($ordered_qty > 0 ) {
 
-                  foreach( $refund->get_items() as $r_item_id => $r_item ){
+                    // Get refunded quantity
+                    $order_refunds = $order->get_refunds();
 
-                      $r_product_id = $r_item->get_product_id();
+                    foreach( $order_refunds as $refund ){
 
-                      if ($r_product_id == $product) {
+                        foreach( $refund->get_items() as $r_item_id => $r_item ){
 
-                          $refunded_quantity      = $r_item->get_quantity(); // Quantity: zero or negative integer
+                            $r_product_id = $r_item->get_product_id();
 
-                      }
+                            if ($r_product_id == $product_id) {
 
-                  }
-              }
+                                $refunded_quantity = $r_item->get_quantity(); // Quantity: zero or negative integer
 
-              $qty = $ordered_qty + $refunded_quantity;
-              
-              if ($product_id == $product && $qty > 0) {
+                            }
 
-                  $mutation_orders .= 
-                      "<a href='".$url."' target='_blank'>".$order_id." von ".$first_name." ".$last_name."</a> (".$qty." Stück) <br />
-                      <input type='hidden' class='mutation_price_order_id' value='".$order_id."'>";
+                        }
+                    }
 
-              }
+                    $qty = $ordered_qty + $refunded_quantity;
+            
+                    if ($product_id == $product && $qty > 0) {
 
-          }
+                        // GET CURRENT PRODUCT PRICE
+                        $price = number_format($item->get_total(), 2, '.', ''); 
+                        $current_product_price = $price / $qty;
+        
+                        $mutation_orders .= 
+                            "<a href='".$url."' target='_blank'>".$order_id." von ".$first_name." ".$last_name."</a> (".$qty." Stück) <br />
+                            <input type='hidden' class='mutation_price_order_id' value='".$order_id."'>";
+        
+                    }
 
-      }
+                }
+
+            }
+
+        }
 
       if (empty($mutation_orders)) {
 
@@ -134,16 +148,10 @@ class MutationPrice extends BaseController
 
       $order_ids = $_POST['orders'];
       $product_id = $_POST['product'];
-
+      $old_product_price = $_POST['old_price'];
       $new_price = number_format($_POST['price'], 2, '.', '');
-      
-      // GET CURRENT PRODUCT PRICE
-      $load_product = wc_get_product( $product_id );
-      $old_product_price = number_format($load_product->get_regular_price(), 2, '.', ''); 
-      $product_name = $load_product->get_name();
 
       // UPDATE PRODUCT PRICE
-
       update_post_meta( $product_id, '_regular_price', $new_price );
 
 
@@ -153,14 +161,18 @@ class MutationPrice extends BaseController
 
           foreach ($order->get_items() as $item_id => $item) {
 
-              $item_product_id = $item->get_product_id();
+              $item_product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+
+              if(!$item_product_id) {
+                  $item_product_id = $item->get_product_id();
+              }
 
               if ($product_id == $item_product_id) {
 
-                  
+                  $product_name = $item->get_name();
 
                   $new_product_price = $new_price;
-                  $product_quantity = (int) $item->get_quantity(); // product Quantity
+                  $product_quantity = (int) $item->get_quantity(); // order item Quantity
                   
                   // The new line item price
                   $new_line_item_price = $new_product_price * $product_quantity;
@@ -210,11 +222,8 @@ class MutationPrice extends BaseController
                       $created_by = get_current_user_id();
       
                       $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
-                  
       
                       $wpdb->insert($table, $data);
-
-
 
               }
 
