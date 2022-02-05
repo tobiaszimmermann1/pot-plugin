@@ -328,6 +328,8 @@ class ExportDistributionDetail extends BaseController
               $mpdf->WriteHTML($header);
               $mpdf->WriteHTML($body);
               $mpdf->WriteHTML($footer);
+              $product_name= preg_replace('/[^A-Za-z0-9\-]/', '', $product_name);
+
               $mpdf->Output($path.$export_name.'/'.esc_attr($bestellrunde_name).'-'.esc_attr($product_name).'.pdf', \Mpdf\Output\Destination::FILE);
 
             }
