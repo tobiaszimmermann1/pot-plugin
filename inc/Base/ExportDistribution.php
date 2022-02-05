@@ -72,7 +72,7 @@ class ExportDistribution extends BaseController
                 $item_array = array();
 
                 // product id
-                $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                $product_id = intval(wc_get_order_item_meta( $item_id, '_pid', true));
                 // fallback
                 if(!$product_id) {
                     $product_id = $item->get_product_id();
@@ -106,6 +106,8 @@ class ExportDistribution extends BaseController
 
             }
         }
+
+
 
         
 
@@ -262,7 +264,7 @@ class ExportDistribution extends BaseController
                                 $item_data = $item->get_data();
 
                                 // id                        
-                                $tproduct_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                                $tproduct_id = intval(wc_get_order_item_meta( $item_id, '_pid', true));
                                 // fallback
                                 if(!$tproduct_id) {
                                     $tproduct_id = $item->get_product_id();
@@ -281,8 +283,8 @@ class ExportDistribution extends BaseController
                                     $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
                                 }
         
-                                if ( $check_lieferant === $lieferant AND $produkt_id === $tproduct_id) {
-                                    $body .= esc_attr($quantity); 
+                                if ( $check_lieferant === $product_lieferant AND $produkt_id === $tproduct_id) {
+                                    $body .= $quantity; 
                                 }       
                             }
                         }

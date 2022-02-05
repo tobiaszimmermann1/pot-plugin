@@ -26,6 +26,8 @@ class Cart extends BaseController
     
       if ( is_user_logged_in() && is_cart() && WC()->cart->cart_contents_count == 0 ) {
 
+        $has_ordered = false;
+
         // Check if 'Bestellrunde' is active
         $bestellrunde = new CPTBestellrunden();
         $active = $bestellrunde->check_bestellrunde();

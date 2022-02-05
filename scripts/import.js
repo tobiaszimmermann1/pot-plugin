@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
         console.log(JSON.parse(output))
         jQuery(".spinner").removeClass("is-active")
 
-        window.location.href = JSON.parse(output)
+        //window.location.href = JSON.parse(output)
       },
       error: function (XMLHttpRequest, textStatus, errorThrown, data) {
         console.log(errorThrown)

@@ -75,7 +75,7 @@ class ExportDistributionDetail extends BaseController
                 $item_array = array();
 
                 // product id
-                $product_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                $product_id = intval(wc_get_order_item_meta( $item_id, '_pid', true));
                 // fallback
                 if(!$product_id) {
                     $product_id = $item->get_product_id();
@@ -238,7 +238,6 @@ class ExportDistributionDetail extends BaseController
                   'meta_key'      => 'bestellrunde_id', 
                   'meta_value'    => $bestellrunde, 
                 ));
-
               
                 foreach( $current_orders as $current_order ){
 
@@ -262,7 +261,7 @@ class ExportDistributionDetail extends BaseController
                             $username = $user_info->display_name;
 
                             // id                        
-                            $tproduct_id = wc_get_order_item_meta( $item_id, '_pid', true);
+                            $tproduct_id = intval(wc_get_order_item_meta( $item_id, '_pid', true));
                             // fallback
                             if(!$tproduct_id) {
                                 $tproduct_id = $item->get_product_id();
