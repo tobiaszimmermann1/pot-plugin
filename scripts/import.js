@@ -48,8 +48,6 @@ jQuery(document).ready(function ($) {
           bestellrunde_id: bestellrunde_id
         },
         success: function (data, textStatus, XMLHttpRequest) {
-          console.log(data)
-
           if (data == "null") {
             alert("Fehler: Keine Bestellungen / Produkte gefunden")
           } else {

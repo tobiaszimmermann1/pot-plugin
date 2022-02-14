@@ -121,6 +121,8 @@ class ExportData extends BaseController
         $i = 0;
         foreach ($lieferanten as $lieferant) {
 
+            $lieferant = preg_replace("/[^a-zA-Z0-9]+/", "", $lieferant);
+
             if ($i != 0) {
                 $writer->addNewSheetAndMakeItCurrent();
             }
@@ -135,13 +137,12 @@ class ExportData extends BaseController
             $values = ['Bestellrunde',$bestellrunde_name];
             $rowFromValues = WriterEntityFactory::createRowFromArray($values);
             $writer->addRow($rowFromValues);
-
-
             
             $lieferant_users = array();
             $name_cells = array();
             array_push($name_cells, 'Produkt');
             array_push($name_cells, 'Einheit');
+
 
             
             foreach( $orders as $order ){
@@ -157,7 +158,8 @@ class ExportData extends BaseController
                         // fallback
                         if (!$product_lieferant) {
                             $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
-                        }
+                        }            
+                        $product_lieferant = preg_replace("/[^a-zA-Z0-9]+/", "", $product_lieferant);
 
                         // einheit
                         $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
@@ -174,6 +176,7 @@ class ExportData extends BaseController
                         if (!$check_lieferant) {
                             $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
                         }
+                        $check_lieferant = preg_replace("/[^a-zA-Z0-9]+/", "", $check_lieferant);                        
 
                         if ( $check_lieferant == $lieferant) {
                             
@@ -189,33 +192,35 @@ class ExportData extends BaseController
                     
 
             }
-
+            
             if (count($name_cells) != 0) {
                 $rowFromValues = WriterEntityFactory::createRowFromArray($name_cells);
                 $writer->addRow($rowFromValues);
             }
 
             $num_users = count($lieferant_users);
+            
 
 
 
 
-
+            
             if (count($lieferant_users) != 0) {
 
 
                 foreach( $produkte as $produkt_id => $produkt ){
 
-                    $product_name = $produkt[2];
+                    $product_name = preg_replace("/[^a-zA-Z0-9]+/", "", $produkt[2]);
                     $product_id = $produkt_id;
                     $product_lieferant = $produkt[0];
+                    $product_lieferant = preg_replace("/[^a-zA-Z0-9]+/", "", $product_lieferant);                        
                     $product_einheit = $produkt[1];
 
                     if ($product_lieferant == $lieferant) {
 
                         $prod_row = array();
                         array_push($prod_row, $product_name);
-                        array_push($prod_row, $product_einheit);
+                        array_push($prod_row, $product_einheit);    
 
                         $f = 0;
                         while ($f < $num_users) {
@@ -248,6 +253,7 @@ class ExportData extends BaseController
                                     if (!$product_lieferant) {
                                         $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
                                     }
+                                    $product_lieferant = preg_replace("/[^a-zA-Z0-9]+/", "", $product_lieferant);   
 
                                     $item_data = $item->get_data();
 
@@ -271,7 +277,8 @@ class ExportData extends BaseController
                                     // fallback
                                     if (!$check_lieferant) {
                                         $check_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
-                                    }   
+                                    } 
+                                    $check_lieferant = preg_replace("/[^a-zA-Z0-9]+/", "", $check_lieferant);     
 
             
                                     if ( $check_lieferant == $lieferant AND $produkt_id == $tproduct_id ) {
@@ -290,16 +297,22 @@ class ExportData extends BaseController
                         }
 
                         if (count($prod_row) != 0) {
-                            $rowFromValues = WriterEntityFactory::createRowFromArray($prod_row);
-                            $writer->addRow($rowFromValues);
+
+                                $rowFromValues = WriterEntityFactory::createRowFromArray($prod_row);
+                                $writer->addRow($rowFromValues);
+                            
                         }
                     }
                 }
-            }    
+            }
+            
+                
 
             $i++;
 
         }
+        
+        
 
 
         $writer->close();
