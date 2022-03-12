@@ -76,7 +76,7 @@ class AdminMembers extends BaseController {
     // update wallet of user (deduct the fee), fee is set in options
     global $wpdb;
     $table = $wpdb->prefix.'foodcoop_wallet';
-    $options = get_option( 'fee' );
+    $amount = floatval(get_option( 'fee' ));
     $amount = -1 * $amount;
 
     $user_id = $_POST['user_id'];
@@ -108,14 +108,14 @@ class AdminMembers extends BaseController {
     $user_info = get_userdata($user_id);
     $user_email = $user_info->user_email;
 
-    $message =  'Hallo '.$update_username.' <br>
-                Neue Foodcoop Guthaben Transaktion.<br><br>
-                Benutzer: '.$update_username.' <br>
-                Datum: '.$paid_date.' <br>
-                Betrag: CHF '.$amount.'.00 <br>
-                Details: '.$details.' <br>
-                <br><br>
-                Hat diese Transaktion einen Fehler? Bitte antworte auf diese E-Mail mit deinem Anliegen.
+    $message =  'Hallo '.$update_username.'
+                Neue Foodcoop Guthaben Transaktion.
+                Benutzer: '.$update_username.' 
+                Datum: '.$paid_date.' 
+                Betrag: CHF '.$amount.'.00 
+                Details: '.$details.' 
+                
+                Melde dich bei uns sofern diese Buchung nicht korrekt ist.
                 ';
 
       //php mailer variables
@@ -180,14 +180,14 @@ function fc_wallet_update_function() {
     $paid_date = date("j.m.Y - G:i",strtotime($date));
 
 
-    $message =  'Hallo '.$update_username.'<br>
-                Neue Foodcoop Guthaben Transaktion.<br><br>
-                Benutzer: '.$update_username.' <br>
-                Datum: '.$paid_date.' <br>
-                Betrag: CHF '.$amount.'<br>
-                Details: '.$details.' <br>
-                <br><br>
-                Hat diese Transaktion einen Fehler? Bitte antworte auf diese E-Mail mit deinem Anliegen.
+    $message =  'Hallo '.$update_username.'
+                Neue Foodcoop Guthaben Transaktion.
+                Benutzer: '.$update_username.' 
+                Datum: '.$paid_date.' 
+                Betrag: CHF '.$amount.'
+                Details: '.$details.' 
+                
+                Melde dich bei uns sofern diese Buchung nicht korrekt ist.
                 ';
 
     //php mailer variables
