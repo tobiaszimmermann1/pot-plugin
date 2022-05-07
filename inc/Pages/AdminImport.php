@@ -46,8 +46,11 @@ class AdminImport extends BaseController
             $product_pid = esc_attr(wc_get_order_item_meta( $item_id, '_pid', true));
             $fallback_id = $item->get_product_id();
 
-            if ( !in_array($product_lieferant, $lieferanten) ) {
-                array_push($lieferanten,$product_lieferant);
+
+            if (isset($product_lieferant)) {
+                if ( !in_array($product_lieferant, $lieferanten) ) {
+                    array_push($lieferanten,$product_lieferant);
+                }
             }
             else {
                 if ($fallback_id) {
@@ -61,6 +64,8 @@ class AdminImport extends BaseController
                     die();
                 }
             }
+            
+
           }
       }
 

@@ -51,17 +51,22 @@ class ExportData extends BaseController
         foreach( $orders as $order ){
             foreach ( $order->get_items() as $item_id => $item ) {
 
-                    $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+                $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
 
-                    // fallback
-                    if (!$product_lieferant) {
-                        $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
-                    }
-
+                if (isset($product_lieferant)) {
                     if ( !in_array($product_lieferant, $lieferanten) ) {
                         array_push($lieferanten,$product_lieferant);
                     }
                 }
+                // fallback
+                else {
+                    $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+                    if ( !in_array($product_lieferant, $lieferanten) ) {
+                        array_push($lieferanten,$product_lieferant);
+                    }
+                }
+
+            }
         }
 
         

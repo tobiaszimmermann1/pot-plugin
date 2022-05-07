@@ -50,6 +50,7 @@ jQuery(document).ready(function ($) {
         success: function (data, textStatus, XMLHttpRequest) {
           if (data == "null") {
             alert("Fehler: Keine Bestellungen / Produkte gefunden")
+            console.log(data)
           } else {
             jQuery("#export_lieferant").empty()
             jQuery("#export_lieferant").append(data)
