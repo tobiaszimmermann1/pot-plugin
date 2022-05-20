@@ -20,6 +20,7 @@ class Enqueue extends BaseController
         wp_enqueue_style('foodcoop_styles', $this->plugin_url . 'styles/foodcoop.css');
         wp_enqueue_script('ordering_script', $this->plugin_url . 'scripts/ordering.js', array('jquery'));
         wp_enqueue_script('cart_script', $this->plugin_url . 'scripts/addtocart.js', array('jquery'));
+        wp_enqueue_script('checkout_script', $this->plugin_url . 'scripts/checkout.js', array('jquery'));
     }
 
     public function enqueue_admin()

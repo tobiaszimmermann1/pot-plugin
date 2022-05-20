@@ -188,6 +188,8 @@ function fc_init_gateway_class() {
 
                     echo '<div class="foodcoop_wallet_gateway_description">';
 
+                    echo '<input type="hidden" id="foodcoop_wallet_balance_missing" value="true" />';
+
                     echo '<p>Dein aktuelles Guthaben ist zu klein. Bitte überweise weitere <strong>CHF '.$missing_balance.'</strong> auf unser Konto oder entferne Produkte aus deinem Warenkorb.';
 
                     echo '</div>';
@@ -218,6 +220,8 @@ function fc_init_gateway_class() {
                     $missing_balance = number_format($missing_balance, 2, '.', '');
 
                     echo '<div class="foodcoop_wallet_gateway_description">';
+
+                    echo '<input type="hidden" id="foodcoop_wallet_balance_missing" value="true" />';
 
                     echo '<p>Dein aktuelles Guthaben ist zu klein. Bitte überweise weitere <strong>CHF '.$missing_balance.'</strong> auf unser Konto oder entferne Produkte aus deinem Warenkorb.';
 
@@ -349,6 +353,10 @@ function fc_init_gateway_class() {
                     $error_message = 'Dein aktuelles Guthaben ist zu klein. Bitte überweise weitere <strong>CHF '.$missing_balance.'</strong> auf unser Konto oder entferne Produkte aus deinem Warenkorb.';
     
                     wc_add_notice( __('Fehler: ', 'woothemes') . $error_message, 'error' );
+
+                    // DELETE ORDER (so there is not unapid order)
+                    wp_trash_post($order_id,true);
+
                     return;
 
                 }
@@ -405,6 +413,10 @@ function fc_init_gateway_class() {
                     $error_message = 'Dein aktuelles Guthaben ist zu klein. Bitte überweise weitere <strong>CHF '.$missing_balance.'</strong> auf unser Konto oder entferne Produkte aus deinem Warenkorb.';
     
                     wc_add_notice( __('Fehler: ', 'woothemes') . $error_message, 'error' );
+
+                    // DELETE ORDER (so there is not unapid order)
+                    wp_trash_post($order_id,true);
+
                     return;
 
                 }
