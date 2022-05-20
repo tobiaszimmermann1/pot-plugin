@@ -130,7 +130,9 @@ table.wp-list-table .column-price {
 .foodcoop_wallet_transaction_form,
 .foodcoop_wallet_memberfee_form {
   position: fixed;
+  overflow-y: scroll;
   width: 70%;
+  max-height: 80%;
   margin: 10px 20% 40px 10%;
   padding: 30px 2.5%;
   border: 1px solid #ccc;
