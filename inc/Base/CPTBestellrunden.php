@@ -168,11 +168,8 @@ class CPTBestellrunden extends BaseController
 
   public function check_bestellrunde() {
 
-    $current_date = date("Y-m-d");
-
     $args = array(
       'post_type' => 'bestellrunden',
-      'post_status' => 'publish',
       'orderby' => 'id',
       'order' => 'DESC',
       'limit' => -1
@@ -181,7 +178,7 @@ class CPTBestellrunden extends BaseController
     $loop = new \WP_Query( $args );
     while ( $loop->have_posts() ) : $loop->the_post();
 
-      $current_date = date_create()->format('Y-m-d');
+      $current_date = date('Y-m-d');
       $bestellrunde_start = date("Y-m-d",strtotime(get_post_meta(get_the_ID(), 'bestellrunde_start',true)));
       $bestellrunde_ende = date("Y-m-d",strtotime(get_post_meta(get_the_ID(), 'bestellrunde_ende',true)));
       $verteiltag = date("Y-m-d",strtotime(get_post_meta(get_the_ID(), 'bestellrunde_verteiltag',true)));

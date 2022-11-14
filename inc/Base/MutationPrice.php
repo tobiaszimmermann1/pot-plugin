@@ -73,16 +73,18 @@ class MutationPrice extends BaseController
 
                             $r_product_id = $r_item->get_product_id();
 
-                            if ($r_product_id == $product_id) {
+                            if ($r_product_id == $product) {
 
                                 $refunded_quantity = $r_item->get_quantity(); // Quantity: zero or negative integer
-
+                            
                             }
 
                         }
                     }
 
                     $qty = $ordered_qty + $refunded_quantity;
+
+
             
                     if ($product_id == $product && $qty > 0) {
 

@@ -52,7 +52,7 @@ class OrderList extends BaseController
     
       echo "
       <form action='".$this->plugin_url."order.php' method='post'>";
-      
+            
         if ($active) {   ?>
           <div id='bestellrunden'>
             <p>Aktuell ist das Bestellfenster offen. <?php if (!is_user_logged_in()) { ?> Werde Mitglied, um mitbestellen zu können. <?php } ?></p>
