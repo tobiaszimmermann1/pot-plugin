@@ -1,0 +1,205 @@
+#fc_dashboard {
+  display: block;
+  width: 100%;
+}
+
+.pluginWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.pluginHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 0;
+  color: #000;
+  font-size: 1.25em;
+  background-color: white;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.pluginBody {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  color: #000;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.pluginHome {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-items: flex-start;
+}
+
+.pluginLogo {
+  height: 20px;
+  margin-right: 10px;
+}
+
+.pluginMenu {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.firstMenuItem {
+  border: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.pluginMenu span {
+  margin-left: 20px;
+  padding-left: 20px;
+  border-left: 1px solid #1976d2;
+  color: #1976d2;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.pluginMenu span svg {
+  margin-right: 10px;
+}
+
+.pluginMenu span:hover {
+  color: #000;
+  cursor: pointer;
+}
+
+.pluginHome:hover {
+  color: #2271b1;
+  cursor: pointer;
+}
+
+.menuItemActive {
+  color: black !important;
+}
+
+.statusMessage {
+  display: block;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  font-size: 1.25em;
+  color: white;
+  border: 1px solid gray;
+}
+
+.successStatus {
+  background-color: #2e7d32;
+}
+
+.modalRow {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+  align-items: flex-start;
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.modalRow span {
+  margin-bottom: 5px;
+}
+
+.MuiTableCell-root input {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.MuiInputBase-input {
+  border: none !important;
+}
+
+.MuiDialogContent-root input[type="number"] {
+  padding: 16.5px 14px !important;
+}
+
+.MuiDialogContent-root input[type="radio"] {
+  visibility: hidden;
+}
+
+.MuiDialogContent-root input[type="text"],
+.MuiDialogContent-root input[type="email"],
+.MuiDialogContent-root input[type="number"] {
+  padding: 8.5px 14px 4px 14px !important;
+}
+
+.MuiDialogContent-root input[type="text"]:focus,
+.MuiDialogContent-root input[type="email"]:focus,
+.MuiDialogContent-root input[type="number"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.MuiInputBase-root select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  color: currentColor;
+  padding: 4px 0 5px;
+  border: 0;
+  box-sizing: content-box;
+  background: none;
+  height: 1.4375em;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+  min-width: 0;
+  width: 100%;
+  -webkit-animation-name: mui-auto-fill-cancel;
+  animation-name: mui-auto-fill-cancel;
+  -webkit-animation-duration: 10ms;
+  animation-duration: 10ms;
+  padding: 16.5px 14px;
+}
+
+.MuiInputBase-root option {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  line-height: 1.4375em !important;
+  letter-spacing: 0.00938em !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  cursor: text !important;
+  display: -webkit-inline-box !important;
+  display: -webkit-inline-flex !important;
+  display: -ms-inline-flexbox !important;
+  display: inline-flex !important;
+  -webkit-align-items: center !important;
+  -webkit-box-align: center !important;
+  -ms-flex-align: center !important;
+  align-items: center !important;
+  position: relative !important;
+  border-radius: 4px !important;
+}
+
+.fc_order_list_input {
+  padding: 2px 5px !important;
+}

@@ -1,0 +1,47 @@
+{
+  "name": "foodcoop",
+  "version": "1.0.0",
+  "description": "This plugin turns Wordpress (with WooCommerce) into an application to manage your Foodcoop. Currently only offers support for ['Buying Club'-style Foodcoops](https://www.sustainweb.org/foodcoopstoolkit/buyingclubs/)",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobiaszimmermann1/foodcoop-plugin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tobiaszimmermann1/foodcoop-plugin/issues"
+  },
+  "homepage": "https://github.com/tobiaszimmermann1/foodcoop-plugin#readme",
+  "dependencies": {
+    "@date-io/date-fns": "^2.16.0",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/lab": "^5.0.0-alpha.111",
+    "@mui/material": "^5.10.17",
+    "@mui/styled-engine-sc": "^5.10.16",
+    "@mui/x-date-pickers": "^5.0.10",
+    "@wordpress/api-fetch": "^6.19.0",
+    "@wordpress/data": "^7.6.0",
+    "@wordpress/scripts": "^24.6.0",
+    "animated-number-react": "^0.1.2",
+    "axios": "^1.2.1",
+    "date-fns": "^2.29.3",
+    "export-to-csv": "^0.2.1",
+    "material-react-table": "^1.4.0",
+    "prop-types": "^15.8.1",
+    "react-papaparse": "^4.1.0",
+    "react-xls": "^0.1.1",
+    "styled-components": "^5.3.6"
+  },
+  "devDependencies": {
+    "node-polyfill-webpack-plugin": "^2.0.1"
+  }
+}

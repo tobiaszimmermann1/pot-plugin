@@ -1,0 +1,129 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Foodcoop Plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-10 12:16+0000\n"
+"PO-Revision-Date: 2022-12-10 12:17+0000\n"
+"Last-Translator: \n"
+"Language-Team: English (United States)\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.3; wp-6.1.1\n"
+"X-Domain: fcplugin"
+
+#: inc/foodcoop-settings-class.php:31
+msgid "Anzeige"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:118
+msgid ""
+"Auf dieser Seite wird die Bestell-Liste eingefügt. Die Bestell-Liste kann "
+"auch manuell an einer beliebigen Stelle eingefügt werden. Benutze dazu den "
+"Shortcode"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:40
+msgid "Bankverbindung"
+msgstr ""
+
+#: build/index.js:40 src/App.js:17
+msgid "Bestellrunden"
+msgstr "Ordering rounds"
+
+#: inc/foodcoop-settings-class.php:47
+msgid "Bestellseite"
+msgstr ""
+
+#: build/index.js:36 src/App.js:14
+msgid "Dashboard"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:93
+msgid "Der Jahresbeitrag kann direkt dem Mitgliederguthaben belastet werden."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:98
+msgid ""
+"Die Bankverbindung für Guthabeneinzahlungen, am besten mit einer Anleitung."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:88
+msgid ""
+"Eine globale Marge, die beim Produkteimport auf alle Produktpreise "
+"aufgeschlagen wird."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:30
+msgid "Foodcoop"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:127
+msgid "Foodcoop Einstellungen"
+msgstr ""
+
+#. Name of the plugin
+msgid "Foodcoop Plugin"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:133
+msgid "Foodcoop Plugin Settings"
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://neues-food-depot.ch"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:37
+msgid "Jahresbeitrag (CHF)"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:64
+msgid "Jahresbeitrag muss eine Zahl sein."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:34
+msgid "Marge (%)"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:56
+msgid "Marge muss eine Zahl sein."
+msgstr ""
+
+#: build/index.js:44 src/App.js:19
+msgid "Mitglieder"
+msgstr ""
+
+#. Description of the plugin
+msgid "Plugin for Foodcoops"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:123
+msgid ""
+"Produktbilder erscheinen in der Bestell-Liste. Seiten für einzelne Produkte "
+"(mit Beschreibung und Details) werden aktiviert."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:50
+msgid "Produktbilder und Produktseiten aktivieren?"
+msgstr ""
+
+#: build/index.js:42 src/App.js:18
+msgid "Produkte"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:44
+msgid "Produktpreise öffentlich anzeigen?"
+msgstr ""
+
+#. Author of the plugin
+msgid "Tobias Zimmermann"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:80
+msgid "Ungültige Bestellseite."
+msgstr ""

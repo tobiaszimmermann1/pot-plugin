@@ -16,7 +16,6 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "box/spout": "^3.3",
     "mpdf/mpdf": "dev-development"
   }
 }
