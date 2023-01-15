@@ -25,6 +25,7 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 2. Download the latest release of Foodcoop plugin
 3. Unzip the contents to `wp-content/plugins/`
 4. Run `composer install` in the plugin directory
+5. Run `npm install` in the plugin directory
 5. Activate Foodcoop Plugin
 
 ## Contact, Requests & Issues
