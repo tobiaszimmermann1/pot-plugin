@@ -1,3 +1,4 @@
 .lock
+.vscode
 vendor
 node_modules
