@@ -1,14 +1,8 @@
-import React, { useState, useEffect, useRef } from "react"
-import Dashboard from "./components/Dashboard"
-import Members from "./components/Members"
-import Bestellrunden from "./components/Bestellrunden"
-import Products from "./components/Products"
+import React, { useState, useEffect } from "react"
 import axios from "axios"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import OrderList from "./components/OrderList"
-import CircularProgress from "@mui/material/CircularProgress"
-import Box from "@mui/material/Box"
 const __ = wp.i18n.__
 
 function FrontendApp() {
@@ -21,7 +15,7 @@ function FrontendApp() {
 
   useEffect(() => {
     axios
-      .post(`${appLocalizer.apiUrl}/foodcoop/v1/getProductList`, {
+      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductList`, {
         user: frontendLocalizer.currentUser.ID
       })
       .then(function (response) {

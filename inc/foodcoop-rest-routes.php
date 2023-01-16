@@ -12,7 +12,10 @@ class FoodcoopRestRoutes {
      */
     register_rest_route( 'foodcoop/v1', 'getProducts', array(
       'methods' => WP_REST_SERVER::READABLE,
-      'callback' => array($this, 'getProducts')
+      'callback' => array($this, 'getProducts'), 
+      'permission_callback' => function() {
+        return true;
+      }
     ));
 
     /**
@@ -21,7 +24,10 @@ class FoodcoopRestRoutes {
      */
     register_rest_route( 'foodcoop/v1', 'getOption', array(
       'methods' => WP_REST_SERVER::READABLE,
-      'callback' => array($this, 'getOption')
+      'callback' => array($this, 'getOption'), 
+      'permission_callback' => function() {
+        return true;
+      }
     ));
 
     /**
@@ -53,7 +59,10 @@ class FoodcoopRestRoutes {
      */
     register_rest_route( 'foodcoop/v1', 'getBestellrunden', array(
       'methods' => WP_REST_SERVER::READABLE,
-      'callback' => array($this, 'getBestellrunden')
+      'callback' => array($this, 'getBestellrunden'), 
+      'permission_callback' => function() {
+        return true;
+      }
     ));
 
     /**
@@ -182,7 +191,10 @@ class FoodcoopRestRoutes {
      */
     register_rest_route( 'foodcoop/v1', 'getBestellrundeProducts', array(
       'methods' => WP_REST_SERVER::READABLE,
-      'callback' => array($this, 'getBestellrundeProducts')
+      'callback' => array($this, 'getBestellrundeProducts'), 
+      'permission_callback' => function() {
+        return true;
+      }
     ));
 
     /**
@@ -306,7 +318,10 @@ class FoodcoopRestRoutes {
      */
     register_rest_route( 'foodcoop/v1', 'getProductList', array(
       'methods' => WP_REST_SERVER::CREATABLE,
-      'callback' => array($this, 'getProductList')
+      'callback' => array($this, 'getProductList'), 
+      'permission_callback' => function() {
+        return true;
+      }
     ));
 
     /**
@@ -314,7 +329,10 @@ class FoodcoopRestRoutes {
      */
     register_rest_route( 'foodcoop/v1', 'getBalance', array(
       'methods' => WP_REST_SERVER::CREATABLE,
-      'callback' => array($this, 'getBalance')
+      'callback' => array($this, 'getBalance'), 
+      'permission_callback' => function() {
+        return true;
+      }
     ));
 
     
@@ -1505,5 +1523,3 @@ class FoodcoopRestRoutes {
 
 
 }
-
-
