@@ -7,23 +7,22 @@ class FoocoopPluginSettings {
     add_filter('the_content', array($this, 'replace_order_page'));
   }
 
-  function replace_order_page($content) {
-    global $post;
-    if (is_main_query() AND is_page() AND (get_option('fc_order_page') == $post->ID)) {
-      return $this->fc_order_list();
-    }
-    return $content;
-  }
-
   /**
    * Foodcoop Ordering List
    * ----------------------
    * replaces the classical online shop view with an efficient product list
    * displayed on page designated in 'fc_order_page' setting or through using [foodcoop_list] shortcode
    */
-  function fc_order_list() {
-    echo '<div id="fc_order_list"></div>';
+
+  function replace_order_page($content) {
+    global $post;
+    if (is_singular() && in_the_loop() && is_main_query() AND is_page() AND (get_option('fc_order_page') == $post->ID)) {
+      return '<div id="fc_order_list"></div>';
+    } else {
+      return $content;
+    }
   }
+
 
   function settings() {
     // Settings Sections
@@ -52,9 +51,11 @@ class FoocoopPluginSettings {
   }
 
   function sanitize_margin($input) {
-    if (!is_numeric($input)) {
-      add_settings_error('fc_margin', 'fc_margin_error', esc_html__('Marge muss eine Zahl sein.', 'fcplugin') );
-      return get_option('fc_margin');
+    if ($input != 0) {
+      if (!is_numeric($input)) {
+        add_settings_error('fc_margin', 'fc_margin_error', esc_html__('Marge muss eine Zahl sein.', 'fcplugin') );
+        return get_option('fc_margin');
+      }
     }
     return $input;
   }

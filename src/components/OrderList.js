@@ -33,7 +33,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
    */
   useEffect(() => {
     axios
-      .get(`${appLocalizer.apiUrl}/wc/store/v1/cart/items`)
+      .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
       .then(function (response) {
         setCartNonce(response.headers["x-wc-store-api-nonce"])
         if (response?.data?.length > 0) {
@@ -217,7 +217,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   useEffect(() => {
     if (balance === null) {
       axios
-        .post(`${appLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
+        .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
           id: frontendLocalizer.currentUser.ID
         })
         .then(function (response) {
@@ -241,7 +241,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
       if (tableInstanceRef.current.getRowModel().rows[i].original.amount > 0) {
         try {
           const response = await axios.post(
-            `${appLocalizer.apiUrl}/wc/store/v1/cart/items`,
+            `${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`,
             {
               id: tableInstanceRef.current.getRowModel().rows[i].original.id,
               quantity: parseInt(tableInstanceRef.current.getRowModel().rows[i].original.amount)
@@ -271,7 +271,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
     setAddingToCart(true)
     if (cartNonce) {
       axios
-        .delete(`${appLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
+        .delete(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
           headers: {
             "X-WC-Store-API-Nonce": cartNonce
           }
@@ -288,7 +288,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
    */
   useEffect(() => {
     axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
       .then(function (response) {
         if (response.data) {
           console.log(response.data)
@@ -393,7 +393,8 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
                 "& tr:nth-of-type(odd)": {
                   backgroundColor: "#f9f9f9"
                 },
-                marginBottom: "100px"
+                marginBottom: "100px",
+                fontSize: "10pt"
               }
             }}
             muiTableBodyCellProps={{

@@ -1,6 +1,6 @@
 {
   "name": "foodcoop",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "This plugin turns Wordpress (with WooCommerce) into an application to manage your Foodcoop. Currently only offers support for ['Buying Club'-style Foodcoops](https://www.sustainweb.org/foodcoopstoolkit/buyingclubs/)",
   "main": "index.js",
   "scripts": {
@@ -39,7 +39,8 @@
     "prop-types": "^15.8.1",
     "react-papaparse": "^4.1.0",
     "react-xls": "^0.1.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "wp-scripts": "^0.0.1-security"
   },
   "devDependencies": {
     "node-polyfill-webpack-plugin": "^2.0.1"

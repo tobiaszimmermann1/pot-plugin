@@ -188,8 +188,8 @@ function fc_init() {
     'taxonomies'            => array(),
     'hierarchical'          => false,
     'public'                => true,
-    'show_ui'               => true,
-    'show_in_menu'          => true,
+    'show_ui'               => false,
+    'show_in_menu'          => false,
     'show_in_admin_bar'     => false,
     'show_in_nav_menus'     => false,
     'can_export'            => true,
@@ -203,15 +203,6 @@ function fc_init() {
 
 
 
-
-
-
-
-/**
- * Require Wallet class
- */
-require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-gateway.php');
-$wallet_dashboard = new WalletDashboard();
 
 
 
@@ -248,3 +239,39 @@ $foodcoop_plugin = new FoodcoopPlugin();
  */
 require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-order-meta.php');
 $foodcoop_order_meta = new OrderMeta();
+
+
+
+
+/**
+ * Require Wallet class
+ */
+require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-gateway.php');
+$wallet_dashboard = new WalletDashboard();
+
+
+
+
+
+
+  /**
+   * Foodcoop Ordering List
+   * ----------------------
+   * replaces the classical online shop view with an efficient product list
+   * displayed on page designated in 'fc_order_page' setting or through using [foodcoop_list] shortcode
+   */
+
+
+  // register 
+  add_shortcode('foodcoop_list', function() {
+    ?>
+    <main class="is-layout-flow wp-block-group" style="margin-top:var(--wp--preset--spacing--50)" id="wp--skip-link--target">
+      <div class="has-global-padding is-layout-constrained wp-block-group">
+        <h1 style="margin-bottom:var(--wp--preset--spacing--40);" class="wp-block-post-title"><?php __("Bestellen","fcplugin") ?></h1>
+      </div>
+      <div class="has-global-padding is-layout-constrained entry-content wp-block-post-content">
+        <div id="fc_order_list"></div>
+      </div>   
+    </main>
+  <?php
+  });

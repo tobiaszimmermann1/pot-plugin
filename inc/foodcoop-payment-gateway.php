@@ -1,4 +1,3 @@
-
 <?php
 /*
  * This action hook registers a WooCommerce payment gateway
@@ -589,5 +588,3 @@ class WalletDashboard
     <?php
     }
 }
-
-?>
