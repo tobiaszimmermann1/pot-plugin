@@ -375,7 +375,10 @@ class FoodcoopRestRoutes {
       'shipping_class'    => array(),
     ));
 
-    $product_categories = get_terms( 'product_cat' );
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );
     $categories = array();
     $cats = array();
     foreach( $product_categories as $category ) {
@@ -675,7 +678,10 @@ class FoodcoopRestRoutes {
       'shipping_class'    => array(),
     ));
 
-    $product_categories = get_terms( 'product_cat' );
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );    
     $categories = array();
     foreach( $product_categories as $category ) {
       $categories[$category->term_id] = $category->name;
@@ -968,7 +974,10 @@ class FoodcoopRestRoutes {
     $products = json_decode($data['products']);
 
     // get product categories
-    $product_categories = get_terms( 'product_cat' );
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );
     $categories = array();
     foreach( $product_categories as $category ) {
       $categories[$category->name] = $category->term_id;
@@ -1230,16 +1239,23 @@ class FoodcoopRestRoutes {
         $password .= $characters[$index];
     }
 
-    // insert user
-    $data = array(
-      'first_name' => $firstName,
-      'last_name' => $lastName,
-      'display_name' => $firstName." ".$lastName,
-      'user_email' => $email,
-      'user_login' => $firstName." ".$lastName,
-      'user_pass' => $password
-    );
-    $user = wp_insert_user($data);
+    $user_id = wc_create_new_customer( $email, $firstName." ".$lastName, $password );
+    update_user_meta( $user_id, "billing_first_name", $firstName );
+    update_user_meta( $user_id, "billing_last_name", $lastName );
+    update_user_meta( $user_id, "billing_address_1", $billing_address_1 );
+    update_user_meta( $user_id, "billing_email", $email );
+    update_user_meta( $user_id, "billing_postcode", $billing_postcode );
+    update_user_meta( $user_id, "billing_city", $billing_city );
+
+
+
+    $headers = 'From: '. get_option('admin_email') . "\r\n" .
+    'Reply-To: ' . get_option('admin_email') . "\r\n";
+    $subj = __('Dein Account für die Foodcoop', 'fcplugin') . " " . get_option('blogname') . " " . __('wurde erstellt.', 'fcplugin');
+    $msg = __('Einloggen unter:', 'fcplugin') . " " . get_option('siteurl')."/wp-login.php" . "\n" . __('Dein Login:', 'fcplugin') . " " . $email . "\n" . __('Dein Passwort:', 'fcplugin') . " " . $password;
+
+
+    wp_mail( $email, $subj , $msg, $headers );
 
     return array($firstName." ".$lastName, $user);
   }
@@ -1361,8 +1377,11 @@ class FoodcoopRestRoutes {
       'paginate'          => false,
     ));
 
-    $product_categories = get_terms( 'product_cat' );
-  
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );
+
     $bestellrunden = get_posts(array(
       'numberposts' => -1,
       'post_type'   => 'bestellrunden',
@@ -1424,7 +1443,10 @@ class FoodcoopRestRoutes {
     }
 
     // get all categories
-    $product_categories = get_terms( 'product_cat' );
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );    
     $categories = array();
     $cats = array();
     foreach( $product_categories as $category ) {

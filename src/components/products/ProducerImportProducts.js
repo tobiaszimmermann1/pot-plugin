@@ -51,11 +51,7 @@ function ProducerImportProducts({ setModalClose }) {
    */
   useEffect(() => {
     axios
-      .get(`https://neues-food-depot.ch/wp-json/foodcoop/v1/importProducts`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
+      .get(`https://neues-food-depot.ch/wp-json/foodcoop/v1/importProducts`)
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)

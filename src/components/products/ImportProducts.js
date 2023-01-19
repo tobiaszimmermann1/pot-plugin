@@ -86,7 +86,6 @@ function ImportProducts({ setModalClose, categories }) {
       )
       .then(function (response) {
         if (response) {
-          console.log(response.data)
           let msg = `${__("Import fertiggestellt:", "fcplugin")} ${__("Neu:", "fcplugin")} ${response.data[1]}, ${__("Aktualisiert:", "fcplugin")} ${response.data[0]}, ${__("Gelöscht:", "fcplugin")} ${response.data[2]}`
           setValidationSuccess(msg)
         }

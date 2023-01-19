@@ -32,6 +32,7 @@ const Products = () => {
         let reArrangeProductData = []
         if (response.data) {
           const res = JSON.parse(response.data)
+          console.log(res)
           res[0].map(p => {
             let productToDo = {}
             productToDo.name = p.name
