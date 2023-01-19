@@ -82,7 +82,9 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   useEffect(() => {
     let reArrangeProductData = []
     let initialTotal = 0
-    if (allProducts && activeState !== null) {
+    if (allProducts && activeState !== null && publicPrices !== null) {
+      console.log("pp?????", publicPrices)
+
       allProducts.map(p => {
         let productToDo = {}
         productToDo.amount = p.amount
@@ -92,14 +94,9 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
         productToDo.details = p._lieferant + ", " + p._herkunft
         productToDo.category = p.category_name
         productToDo.id = p.id
+        productToDo.price = "-"
         // public prices?
-        if (publicPrices === "0") {
-          if (frontendLocalizer.currentUser.ID) {
-            productToDo.price = p.price
-          } else {
-            productToDo.price = "-"
-          }
-        } else {
+        if (frontendLocalizer.currentUser.ID || publicPrices === "1") {
           productToDo.price = p.price
         }
 
@@ -175,7 +172,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
         header: __("Preis", "fcplugin"),
         size: 30,
         enableEditing: false,
-        Cell: ({ cell }) => <span style={{ fontWeight: "bold" }}>{parseFloat(cell.getValue()).toFixed(2)}</span>
+        Cell: ({ cell }) => (cell.getValue() !== "-" ? <span style={{ fontWeight: "bold" }}>{parseFloat(cell.getValue()).toFixed(2)}</span> : "-")
       },
       {
         accessorKey: "unit",
@@ -280,7 +277,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
       .then(function (response) {
         if (response.data) {
-          response.data === "1" ? setPublicPrices(response.data) : setPublicPrices("0")
+          setPublicPrices(response.data)
         }
       })
       .catch(error => console.log(error))
@@ -294,10 +291,10 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
             <Grid item xs={12}>
               <Card sx={{ minWidth: 275, borderRadius: 0, backgroundColor: "#f9f9f9", boxShadow: "none", border: "1px solid #f0f0f0" }}>
                 <CardContent>
-                  <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt" }}>
                     <CelebrationIcon /> {__("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")}
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "12pt" }}>
                     {__("Bestellrunde: ", "fcplugin")} {activeBestellrunde} <br />
                     {__("Bestellfenster: ", "fcplugin")} {format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")} bis {format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")} <br />
                     {__("Verteiltag: ", "fcplugin")} {format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")} <br />
