@@ -180,15 +180,20 @@
 
         foreach($order_items as $order_item) {
 
-          if ($order_item[1] == $lieferant AND $order_item[3] == $product[3]) {
-            $body .= '
-              <tr>
-                <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$order_item[0].'</td>
-                <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$order_item[4].'</td>
-                <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;width:0.5cm;"></td>
-                <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; font-size:7pt;width:5cm;"></td>
-              </tr>
-            ';
+          if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[2] == $product[2]) {
+
+            if ($order_item[4] > 0) {
+
+              $body .= '
+                <tr>
+                  <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$order_item[0].'</td>
+                  <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$order_item[4].'</td>
+                  <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;width:0.5cm;"></td>
+                  <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; font-size:7pt;width:5cm;"></td>
+                </tr>
+              ';
+
+            }
           } 
 
         }

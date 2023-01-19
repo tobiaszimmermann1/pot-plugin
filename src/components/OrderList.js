@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react"
 import axios from "axios"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -17,122 +17,136 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   const [products, setProducts] = useState()
   const [productsLoading, setProductsLoading] = useState(true)
   const [currentTotal, setCurrentTotal] = useState(0)
+  const [initialTotal, setInitialTotal] = useState(0)
   const [balance, setBalance] = useState(null)
-  const [originalBalance, setOriginalBalance] = useState(null)
+  const [originalBalance, setOriginalBalance] = useState(0)
   const [cart, setCart] = useState(null)
   const [addingToCart, setAddingToCart] = useState(false)
   const [cartNonce, setCartNonce] = useState(null)
   const [publicPrices, setPublicPrices] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [nmbr, setnmbr] = useState(0)
 
   const tableInstanceRef = useRef(null)
-
-  console.log(activeState)
 
   /**
    * Get cart data of user
    */
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
-      .then(function (response) {
-        setCartNonce(response.headers["x-wc-store-api-nonce"])
-        if (response?.data?.length > 0) {
-          const res = response.data
-          let cartData = []
-          res.map(item => {
-            cartData.push([item.id, item.quantity, item.name])
-          })
-          setCart(cartData)
-        }
-      })
-      .catch(error => console.log(error))
-  }, [])
+    if (!originalBalance) {
+      axios
+        .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
+        .then(function (response) {
+          setCartNonce(response.headers["x-wc-store-api-nonce"])
+          if (response?.data?.length > 0) {
+            const res = response.data
+            let cartData = []
+            res.map(item => {
+              cartData.push([item.id, item.quantity, item.name, item.prices.price / 100])
+            })
+            setCart(cartData)
+          }
+
+          if (balance === null) {
+            axios
+              .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
+                id: frontendLocalizer.currentUser.ID
+              })
+              .then(function (response) {
+                if (response.data) {
+                  const res = JSON.parse(response.data)
+                  let b = res
+                  if (b === null) {
+                    b = 0
+                  }
+                  setBalance(parseFloat(b))
+                  setOriginalBalance(parseFloat(b))
+                }
+              })
+              .catch(error => console.log(error))
+              .finally(() => {
+                setLoading(false)
+              })
+          }
+        })
+        .catch(error => console.log(error))
+    }
+    if (initialTotal > 0 && originalBalance !== null) {
+      setOriginalBalance(originalBalance + initialTotal)
+    }
+  }, [initialTotal])
 
   /**
    * Prepare product data for order table
    */
   useEffect(() => {
     let reArrangeProductData = []
-    if (activeState !== null) {
-      if (activeState) {
-        if (bestellrundenProducts && publicPrices && allProducts) {
-          allProducts.map(p => {
-            let productToDo = {}
+    let initialTotal = 0
+    if (allProducts && activeState !== null) {
+      allProducts.map(p => {
+        let productToDo = {}
+        productToDo.amount = p.amount
+        productToDo.name = p.name
+        productToDo.unit = p._einheit
+        productToDo.lot = p._gebinde
+        productToDo.details = p._lieferant + ", " + p._herkunft
+        productToDo.category = p.category_name
+        productToDo.id = p.id
+        // public prices?
+        if (publicPrices === "0") {
+          if (frontendLocalizer.currentUser.ID) {
+            productToDo.price = p.price
+          } else {
+            productToDo.price = "-"
+          }
+        } else {
+          productToDo.price = p.price
+        }
+
+        if (activeState) {
+          if (bestellrundenProducts) {
             if (bestellrundenProducts.includes(p.id.toString())) {
-              productToDo.amount = p.amount
               if (cart) {
                 cart.map(item => {
                   if (item[0] === p.id) {
                     productToDo.amount = item[1]
+                    initialTotal += item[1] * item[3]
                   }
                 })
-              }
-              productToDo.name = p.name
-              productToDo.unit = p._einheit
-              productToDo.lot = p._gebinde
-              productToDo.details = p._lieferant + ", " + p._herkunft
-              productToDo.category = p.category_name
-              productToDo.id = p.id
-
-              // public prices?
-              if (publicPrices === "0") {
-                if (frontendLocalizer.currentUser.ID) {
-                  productToDo.price = p.price
-                } else {
-                  productToDo.price = "-"
-                }
               } else {
-                productToDo.price = p.price
+                if (p.amount > 0) {
+                  initialTotal += p.amount * p.price
+                }
               }
-
               reArrangeProductData.push(productToDo)
             }
-          })
-          setProducts(reArrangeProductData)
-          setProductsLoading(false)
+          }
+        } else {
+          reArrangeProductData.push(productToDo)
         }
-      } else {
-        if (allProducts) {
-          allProducts.map(p => {
-            let productToDo = {}
-            productToDo.amount = p.amount
-            productToDo.name = p.name
-            productToDo.unit = p._einheit
-            productToDo.lot = p._gebinde
-            productToDo.details = p._lieferant + ", " + p._herkunft
-            productToDo.category = p.category_name
-            productToDo.id = p.id
-
-            // public prices?
-            if (publicPrices === "0") {
-              if (frontendLocalizer.currentUser.ID) {
-                productToDo.price = p.price
-              } else {
-                productToDo.price = "-"
-              }
-            } else {
-              productToDo.price = p.price
-            }
-
-            reArrangeProductData.push(productToDo)
-          })
-          setProducts(reArrangeProductData)
-          setProductsLoading(false)
-        }
-      }
+      })
+      setProducts(reArrangeProductData)
+      setProductsLoading(false)
+      setCurrentTotal(initialTotal)
+      setInitialTotal(initialTotal)
     }
-  }, [bestellrundenProducts, cart, publicPrices, activeState, allProducts])
+  }, [bestellrundenProducts, publicPrices, allProducts, cart, activeState])
+
+  useEffect(() => {
+    if (originalBalance) {
+      setBalance(originalBalance - initialTotal)
+    }
+  }, [initialTotal, originalBalance])
 
   /**
    * Product Table
    */
-
   const columns = useMemo(
     () => [
       {
         accessorKey: "amount",
         header: __("Menge", "fcplugin"),
-        size: 80,
+        size: 40,
         enableEditing: true,
         muiTableBodyCellEditTextFieldProps: {
           required: true,
@@ -144,38 +158,41 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
         }
       },
       {
-        accessorKey: "category",
-        id: "category_id",
-        header: __("Kategorie", "fcplugin"),
-        enableEditing: false
-      },
-      {
         accessorKey: "name",
         header: __("Produkt", "fcplugin"),
         enableEditing: false,
         Cell: ({ cell }) => <span style={{ fontWeight: "bold" }}>{cell.getValue()}</span>
       },
       {
+        accessorKey: "category",
+        id: "category_id",
+        header: __("Kategorie", "fcplugin"),
+        enableEditing: false,
+        size: 80
+      },
+      {
         accessorKey: "price",
         header: __("Preis", "fcplugin"),
-        size: 80,
-        enableEditing: false
+        size: 30,
+        enableEditing: false,
+        Cell: ({ cell }) => <span style={{ fontWeight: "bold" }}>{parseFloat(cell.getValue()).toFixed(2)}</span>
       },
       {
         accessorKey: "unit",
         header: __("Einheit", "fcplugin"),
-        size: 80,
+        size: 30,
         enableEditing: false
       },
       {
         accessorKey: "lot",
         header: __("Gebinde", "fcplugin"),
-        size: 80,
+        size: 30,
         enableEditing: false
       },
       {
         accessorKey: "details",
         header: __("Produzent & Herkunft", "fcplugin"),
+        size: 80,
         enableEditing: false
       },
       {
@@ -189,47 +206,20 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   )
 
   const handleSaveCell = (cell, value) => {
-    products[cell.row.index][cell.column.id] = value
-
-    let newCurrentTotal = 0
-    tableInstanceRef.current?.getRowModel().rows.map(row => {
-      newCurrentTotal += row.original.amount * row.original.price
-    })
-    setCurrentTotal(newCurrentTotal)
+    value ? (products[cell.row.index][cell.column.id] = value) : (products[cell.row.index][cell.column.id] = 0)
+    setnmbr(nmbr + 1)
   }
 
   useEffect(() => {
-    setBalance(originalBalance - currentTotal)
-  }, [currentTotal])
-
-  useEffect(() => {
-    setBalance(originalBalance)
-  }, [originalBalance])
-
-  useEffect(() => {
-    let newCurrentTotal = 0
-    tableInstanceRef.current?.getRowModel().rows.map(row => {
-      newCurrentTotal += row.original.amount * row.original.price
-    })
-    setCurrentTotal(newCurrentTotal)
-  }, [bestellrundenDates])
-
-  useEffect(() => {
-    if (balance === null) {
-      axios
-        .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
-          id: frontendLocalizer.currentUser.ID
-        })
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
-            console.log(res)
-            setOriginalBalance(parseFloat(res))
-          }
-        })
-        .catch(error => console.log(error))
+    if (products) {
+      let newCurrentTotal = 0
+      products.map(row => {
+        newCurrentTotal += parseFloat(row.amount) * parseFloat(row.price)
+      })
+      setCurrentTotal(newCurrentTotal)
+      setBalance(originalBalance - newCurrentTotal)
     }
-  }, [])
+  }, [nmbr])
 
   /**
    * Add to Cart function
@@ -237,14 +227,14 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   const addToCart = async () => {
     let i = 0
 
-    while (i < tableInstanceRef.current.getRowModel().rows.length) {
-      if (tableInstanceRef.current.getRowModel().rows[i].original.amount > 0) {
+    while (i < products.length) {
+      if (products[i].amount > 0) {
         try {
           const response = await axios.post(
             `${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`,
             {
-              id: tableInstanceRef.current.getRowModel().rows[i].original.id,
-              quantity: parseInt(tableInstanceRef.current.getRowModel().rows[i].original.amount)
+              id: products[i].id,
+              quantity: parseInt(products[i].amount)
             },
             {
               headers: {
@@ -252,13 +242,12 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
               }
             }
           )
-          console.log(response)
         } catch (error) {
           console.log(error)
         }
       }
 
-      if (i === tableInstanceRef.current.getRowModel().rows.length - 1) {
+      if (i === products.length - 1) {
         setAddingToCart(false)
         window.location.href = frontendLocalizer.cartUrl
       }
@@ -291,14 +280,13 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
       .then(function (response) {
         if (response.data) {
-          console.log(response.data)
           response.data === "1" ? setPublicPrices(response.data) : setPublicPrices("0")
         }
       })
       .catch(error => console.log(error))
   }, [])
 
-  return (
+  return !loading ? (
     <>
       {activeState && bestellrundenDates ? (
         <>
@@ -326,18 +314,22 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
                     {__("Aktuelle Bestellung:", "fcplugin")} CHF {currentTotal.toFixed(2)}
                   </Box>
                   <Box>
-                    {balance && (
+                    {balance >= 0 ? (
                       <>
                         {__("Restliches Guthaben:", "fcplugin")} CHF {balance.toFixed(2)}
                       </>
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        {__("Restliches Guthaben:", "fcplugin")} CHF {balance.toFixed(2)}
+                      </span>
                     )}
                   </Box>
                 </Stack>
                 <Box sx={{ paddingLeft: "60px" }}>
-                  {balance < 0 ? (
-                    <Typography variant="h5" sx={{ fontWeight: "bold", color: "red" }}>
-                      {__("zu wenig Guthaben", "fcplugin")}
-                    </Typography>
+                  {balance < -0.01 || currentTotal === 0 ? (
+                    <Button disabled={true} startIcon={<ShoppingCartIcon />} variant="contained">
+                      {__("In den Warenkorb", "fcplugin")}
+                    </Button>
                   ) : (
                     <LoadingButton loading={addingToCart} loadingPosition="start" startIcon={<ShoppingCartIcon />} variant="contained" onClick={handleAddToCart}>
                       {__("In den Warenkorb", "fcplugin")}
@@ -361,58 +353,61 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
           </Grid>
         </Box>
       )}
-
-      {products && bestellrundenDates && (
-        <Box sx={{ marginBottom: "100px" }}>
-          <MaterialReactTable
-            columns={columns}
-            data={products ?? []}
-            state={{ isLoading: productsLoading }}
-            localization={MRT_Localization_DE}
-            enablePagination={true}
-            enableEditing={true}
-            editingMode="table"
-            enableFullScreenToggle={false}
-            initialState={{ density: "compact", pagination: { pageSize: 50, pageIndex: 0 }, columnVisibility: { id: false, amount: activeState } }}
-            //enableStickyHeader
-            muiTablePaginationProps={{
-              rowsPerPageOptions: [50, 100, 500],
-              showFirstButton: true,
-              showLastButton: true
-            }}
-            muiTablePaperProps={{
-              elevation: 0,
-              sx: {
-                borderRadius: "0",
-                border: "1px solid #f0f0f0",
-                marginTop: "20px"
-              }
-            }}
-            muiTableBodyProps={{
-              sx: {
-                "& tr:nth-of-type(odd)": {
-                  backgroundColor: "#f9f9f9"
-                },
-                marginBottom: "100px",
-                fontSize: "10pt"
-              }
-            }}
-            muiTableBodyCellProps={{
-              sx: {
-                border: "0"
-              }
-            }}
-            tableInstanceRef={tableInstanceRef}
-            muiTableBodyCellEditTextFieldProps={({ cell }) => ({
-              onChange: e => {
-                handleSaveCell(cell, e.target.value)
+      <Box sx={{ marginBottom: "100px" }}>
+        <MaterialReactTable
+          columns={columns}
+          data={products ?? []}
+          state={{ isLoading: productsLoading, columnVisibility: { id: false, amount: activeState } }}
+          localization={MRT_Localization_DE}
+          enablePagination={false}
+          enableEditing={true}
+          editingMode="table"
+          enableColumnResizing
+          enableFullScreenToggle={false}
+          initialState={{ density: "compact", columnVisibility: { id: false, amount: activeState } }}
+          //enableStickyHeader
+          muiTablePaperProps={{
+            elevation: 0,
+            sx: {
+              borderRadius: "0",
+              border: "1px solid #f0f0f0",
+              marginTop: "20px"
+            }
+          }}
+          muiTableBodyProps={{
+            sx: {
+              "& tr:nth-of-type(odd)": {
+                backgroundColor: "#f9f9f9"
               },
-              variant: "outlined"
-            })}
-          />
-        </Box>
-      )}
+              marginBottom: "100px"
+            }
+          }}
+          muiTableHeadCellProps={{
+            sx: {
+              fontWeight: "bold",
+              fontSize: "10pt"
+            }
+          }}
+          muiTableBodyCellProps={{
+            sx: {
+              border: "0",
+              fontSize: "10pt"
+            }
+          }}
+          tableInstanceRef={tableInstanceRef}
+          muiTableBodyCellEditTextFieldProps={({ cell }) => ({
+            onChange: e => {
+              handleSaveCell(cell, e.target.value)
+            },
+            variant: "outlined"
+          })}
+        />
+      </Box>
     </>
+  ) : (
+    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <CircularProgress />
+    </div>
   )
 }
 

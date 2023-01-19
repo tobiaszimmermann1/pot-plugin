@@ -156,18 +156,13 @@
     ';
 
     foreach($products_by_lieferant[$lieferant] as $product) {
-      $body .= '
-        <tr>
-          <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[3].'</td>
-          <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[2].'</td>
-          ';
 
           $total_quantity_ordered_by_all_users = 0;
           foreach( $users_by_lieferant[$lieferant] as $user) {
             $ordered_quantity_by_user = 0;
 
             foreach($order_items as $order_item) {
-              if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[0] == $user) {
+              if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[0] == $user AND $order_item[2] == $product[2]) {
                 $ordered_quantity_by_user = $order_item[4];
                 $total_quantity_ordered_by_all_users = $total_quantity_ordered_by_all_users + $ordered_quantity_by_user;
               } 
@@ -175,16 +170,17 @@
           }
 
           if ($ordered_quantity_by_user > 0) {
+            $body .= '
+            <tr>
+              <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[3].'</td>
+              <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[2].'</td>
+              ';
             $body .= '<td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$total_quantity_ordered_by_all_users.'</td>';
-          } else {
-            $body .= '<td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;background-color:#cecece;"></td>';
-          }
-
-
-
-          $body .= '
-          </tr>
-          ';        
+            $body .= '
+            </tr>
+            ';   
+          } 
+     
     }
 
     $body .= '

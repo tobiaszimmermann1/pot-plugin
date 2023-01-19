@@ -188,7 +188,7 @@ function fc_init() {
     'taxonomies'            => array(),
     'hierarchical'          => false,
     'public'                => true,
-    'show_ui'               => false,
+    'show_ui'               => true,
     'show_in_menu'          => false,
     'show_in_admin_bar'     => false,
     'show_in_nav_menus'     => false,
@@ -265,13 +265,6 @@ $wallet_dashboard = new WalletDashboard();
   // register 
   add_shortcode('foodcoop_list', function() {
     ?>
-    <main class="is-layout-flow wp-block-group" style="margin-top:var(--wp--preset--spacing--50)" id="wp--skip-link--target">
-      <div class="has-global-padding is-layout-constrained wp-block-group">
-        <h1 style="margin-bottom:var(--wp--preset--spacing--40);" class="wp-block-post-title"><?php __("Bestellen","fcplugin") ?></h1>
-      </div>
-      <div class="has-global-padding is-layout-constrained entry-content wp-block-post-content">
         <div id="fc_order_list"></div>
-      </div>   
-    </main>
   <?php
   });

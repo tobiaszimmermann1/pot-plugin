@@ -32,7 +32,7 @@ function Mutations({ id, setModalClose }) {
           let reArrangeProductData = []
           if (response.data) {
             const res = JSON.parse(response.data)
-            console.log(res)
+            console.log("res", res)
 
             Object.keys(res[1]).forEach(function (key, index) {
               let productToDo = {}
@@ -44,7 +44,6 @@ function Mutations({ id, setModalClose }) {
             })
 
             setOrders(res[2])
-            setOrderItems(res[0])
             setProducts(reArrangeProductData)
           }
         })
@@ -81,6 +80,7 @@ function Mutations({ id, setModalClose }) {
       .catch(error => console.log(error))
       .finally(() => {
         setSubmitting(false)
+        setModalClose(false)
       })
   }
 
@@ -164,7 +164,6 @@ function Mutations({ id, setModalClose }) {
           </LoadingButton>
           <Button
             onClick={() => {
-              setRowSelection({})
               setModalClose(false)
               setProductsLoading(true)
               setProducts(null)

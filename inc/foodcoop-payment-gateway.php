@@ -19,7 +19,7 @@ function fc_init_gateway_class() {
     class WC_Foodcoop_Guthaben extends WC_Payment_Gateway {
 
  		/**
- 		 * Class constructor, more about it in Step 3 
+ 		 * Class constructor
  		 */
  		public function __construct() {
          	$this->id = 'foodcoop_guthaben'; // payment gateway plugin ID
@@ -501,7 +501,7 @@ class WalletDashboard
 {
     public function __construct() {
       add_action( 'init', array($this,'add_endpoint') );
-      add_filter ( 'woocommerce_account_menu_items', array($this,'fc_wallet_link'), 40 );
+      add_filter ( 'woocommerce_account_menu_items', array($this,'fc_wallet_link'), 99, 1 );
       add_action( 'woocommerce_account_foodcoop-wallet_endpoint', array($this,'my_account_endpoint_content') );
     }
 

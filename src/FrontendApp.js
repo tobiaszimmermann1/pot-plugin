@@ -20,7 +20,6 @@ function FrontendApp() {
       })
       .then(function (response) {
         if (response.data) {
-          console.log(JSON.parse(response.data))
           const res = JSON.parse(response.data)
           setProducts(res[3])
           setBestellrundenProducts(res[2])

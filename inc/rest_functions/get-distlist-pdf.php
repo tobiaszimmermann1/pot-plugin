@@ -173,7 +173,7 @@
             $ordered_quantity_by_user = 0;
 
             foreach($order_items as $order_item) {
-              if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[0] == $user) {
+              if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[0] == $user AND $order_item[2] == $product[2]) {
                 $ordered_quantity_by_user = $order_item[4];
               } 
             }
