@@ -552,7 +552,12 @@ class FoodcoopRestRoutes {
         $the_line_item['variation_id'] = $item->get_variation_id();
         $the_line_item['product'] = $item->get_product(); // see link above to get $product info
         $the_line_item['product_name'] = $item->get_name();
-        $the_line_item['quantity'] = $item->get_quantity();
+
+        $item_total_quantity = $item->get_quantity(); 
+        $item_quantity_refunded = $o->get_qty_refunded_for_item( $item_id );
+        $item_final_quantity = $item_total_quantity + $item_quantity_refunded; 
+        $the_line_item['quantity'] = $item_final_quantity;
+
         $the_line_item['subtotal'] = $item->get_subtotal();
         $the_line_item['total'] = $item->get_total();
         $the_line_item['tax'] = $item->get_subtotal_tax();

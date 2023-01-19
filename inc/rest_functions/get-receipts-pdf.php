@@ -55,7 +55,7 @@
         </tr>
         <tr>
           <td style="padding:5px 10px 5px 10px;font-weight:bold;">'.__("Total","fcplugin").'</td>
-          <td style="padding:5px 10px 5px 10px;">CHF '.$order->get_total().'</td>
+          <td style="padding:5px 10px 5px 10px;">CHF '.number_format((float)$order->get_total() - (float)$order->get_total_refunded(), 2, '.', '').'</td>
         </tr>
       </table>
     </div>
@@ -106,21 +106,25 @@
       $item_qty_refunded = $order->get_qty_refunded_for_item( $item_id );
       $quantity = $quantity + $item_qty_refunded;   
 
-      // item total
-      $total = $item->get_total();
-      $total = number_format((float)$total, 2, '.', '');
+      if ($quantity > 0) {
 
-      $body .= '
-      <tr>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_name.'</td>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_lieferant.'</td>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_herkunft.'</td>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$product_einheit.'</td>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$quantity.'</td>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$total.'</td>
-          <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;font-size:7pt;text-align:left;"></td>
-      </tr>
-      ';
+        // item total
+        $total = $item->get_total();
+        $total = number_format((float)$total, 2, '.', '');
+
+        $body .= '
+        <tr>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_name.'</td>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_lieferant.'</td>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_herkunft.'</td>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$product_einheit.'</td>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$quantity.'</td>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$total.'</td>
+            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;font-size:7pt;text-align:left;"></td>
+        </tr>
+        ';
+
+      }
     }
 
     $body .= '

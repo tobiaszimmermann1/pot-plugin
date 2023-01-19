@@ -72,7 +72,6 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
         .catch(error => console.log(error))
     }
     if (initialTotal > 0 && originalBalance !== null) {
-      console.log(initialTotal)
       setOriginalBalance(originalBalance + initialTotal)
     }
   }, [initialTotal])
