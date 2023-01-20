@@ -47,7 +47,6 @@ const Bestellrunden = () => {
             bestellrundeToDo.bestellrunde_start = format(new Date(b.bestellrunde_start), "yyyy-MM-dd")
             bestellrundeToDo.bestellrunde_ende = format(new Date(b.bestellrunde_ende), "yyyy-MM-dd")
             bestellrundeToDo.bestellrunde_verteiltag = format(new Date(b.bestellrunde_verteiltag), "yyyy-MM-dd")
-            bestellrundeToDo.date_created = format(new Date(b.date_created), "yyyy-MM-dd")
             bestellrundeToDo.id = b.id
 
             reArrangedBestellrunden.push(bestellrundeToDo)
