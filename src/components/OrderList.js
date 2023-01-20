@@ -82,9 +82,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   useEffect(() => {
     let reArrangeProductData = []
     let initialTotal = 0
-    if (allProducts && activeState !== null && publicPrices !== null) {
-      console.log("pp?????", publicPrices)
-
+    if (allProducts && activeState !== null) {
       allProducts.map(p => {
         let productToDo = {}
         productToDo.amount = p.amount
@@ -94,10 +92,13 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
         productToDo.details = p._lieferant + ", " + p._herkunft
         productToDo.category = p.category_name
         productToDo.id = p.id
-        productToDo.price = "-"
+
+        productToDo.price = p.price
         // public prices?
-        if (frontendLocalizer.currentUser.ID || publicPrices === "1") {
+        if (frontendLocalizer.currentUser.ID || publicPrices) {
           productToDo.price = p.price
+        } else {
+          productToDo.price = 0
         }
 
         if (activeState) {
@@ -277,7 +278,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
       .then(function (response) {
         if (response.data) {
-          setPublicPrices(response.data)
+          response.data.length === 3 ? setPublicPrices(true) : setPublicPrices(false)
         }
       })
       .catch(error => console.log(error))
