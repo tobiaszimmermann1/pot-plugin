@@ -325,11 +325,11 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
                 </Stack>
                 <Box sx={{ paddingLeft: "60px" }}>
                   {balance < -0.01 || currentTotal === 0 ? (
-                    <Button disabled={true} startIcon={<ShoppingCartIcon />} variant="contained">
+                    <Button disabled={true} startIcon={<ShoppingCartIcon />} variant="contained" sx={{ width: "100%" }} size="large">
                       {__("In den Warenkorb", "fcplugin")}
                     </Button>
                   ) : (
-                    <LoadingButton loading={addingToCart} loadingPosition="start" startIcon={<ShoppingCartIcon />} variant="contained" onClick={handleAddToCart}>
+                    <LoadingButton loading={addingToCart} loadingPosition="start" startIcon={<ShoppingCartIcon />} variant="contained" onClick={handleAddToCart} sx={{ width: "100%" }} size="large">
                       {__("In den Warenkorb", "fcplugin")}
                     </LoadingButton>
                   )}
