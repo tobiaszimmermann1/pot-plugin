@@ -1479,6 +1479,8 @@ class FoodcoopRestRoutes {
       'page'              => 1,
       'return'            => 'objects',
       'paginate'          => false,
+      'orderby'           => 'title',
+      'order'             => 'ASC'
     ));
 
     $products = array();
