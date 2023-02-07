@@ -203,3 +203,7 @@
 .fc_order_list_input {
   padding: 2px 5px !important;
 }
+
+.css-cyxlny-MuiPaper-root-MuiDialog-paper {
+  max-width: 70% !important;
+}

@@ -169,7 +169,7 @@
             }
           }
 
-          if ($ordered_quantity_by_user > 0) {
+          if ($total_quantity_ordered_by_all_users > 0) {
             $body .= '
             <tr>
               <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[3].'</td>
