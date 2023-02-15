@@ -70,6 +70,14 @@
       $item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
       $item_final_quantity = $item_total_quantity + $item_quantity_refunded; 
       array_push($item_array,$item_final_quantity);
+      
+      // gebinde
+      $product_gebinde = esc_attr(wc_get_order_item_meta( $item_id, '_gebinde', true));
+      // fallback
+      if (!$product_gebinde) {
+        $product_gebinde = esc_attr(get_post_meta( $item->get_product_id(), '_gebinde',true ));
+      }
+      array_push($item_array,$product_gebinde);
 
       // push info to product array if it is not already
       if ( !array_key_exists($product_id, $produkte) ) {
@@ -148,6 +156,7 @@
       <tr>
         <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Produkt</td>
         <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Einheit</td>
+        <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Gebinde</td>
     ';
 
     $body .= '
@@ -174,6 +183,7 @@
             <tr>
               <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[3].'</td>
               <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[2].'</td>
+              <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[5].'</td>
               ';
             $body .= '<td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$total_quantity_ordered_by_all_users.'</td>';
             $body .= '
