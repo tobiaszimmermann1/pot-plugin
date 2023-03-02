@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import OrderList from "./components/OrderList"
+import OrderList from "./components/frontend/OrderList"
 const __ = wp.i18n.__
 
 function FrontendApp() {
@@ -37,7 +37,7 @@ function FrontendApp() {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="fc_order_list_wrapper">
           <div id="fc_order_list_body">
-            <OrderList allProducts={products} bestellrundenProducts={bestellrundenProducts} bestellrundenDates={bestellrundenDates} activeBestellrunde={activeBestellrunde} activeState={active} />
+            <OrderList categories={cats} allProducts={products} bestellrundenProducts={bestellrundenProducts} bestellrundenDates={bestellrundenDates} activeBestellrunde={activeBestellrunde} activeState={active} />
           </div>
         </div>
       </LocalizationProvider>

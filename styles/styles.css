@@ -200,6 +200,252 @@
   border-radius: 4px !important;
 }
 
+.css-cyxlny-MuiPaper-root-MuiDialog-paper {
+  max-width: 70% !important;
+}
+
 .fc_order_list_input {
   padding: 2px 5px !important;
+}
+
+.fc_order_list_title {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e3e3e3;
+  margin-bottom: 0 !important;
+  margin-top: 10px;
+  padding: 20px 10px;
+  font-size: 1.25em !important;
+  font-weight: bold;
+  transition: all 0.1s;
+  border: 1px solid #cacaca;
+  z-index: 100;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.fc_order_list_title:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.fc_order_list_title_arrow svg {
+  font-size: 1.5em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.fc_order_list_category_wrapper {
+  overflow-y: hidden;
+}
+
+.fc_order_list_cat_wrapper {
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+  border-right: 1px solid #cacaca;
+  border-left: 1px solid #cacaca;
+  border-bottom: 1px solid #cacaca;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  z-index: 50;
+}
+
+.fc_order_list_line {
+  display: flex;
+  flex-direction: row;
+  width: 100% !important;
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: 0.8em;
+}
+
+.fc_order_list_col {
+  padding: 5px 1%;
+  border-bottom: 1px solid #e3e3e3;
+  align-self: stretch;
+}
+
+.fc_order_list_header {
+  padding: 5px 1%;
+  border-bottom: 1px solid #e3e3e3;
+  align-self: stretch;
+  font-weight: bold;
+  padding-top: 10px;
+  background-color: #f9f9f9;
+}
+
+.col_1 {
+  width: 12%;
+}
+
+.col_2 {
+  width: 40%;
+}
+
+.col_3 {
+  width: 20%;
+}
+
+.col_4 {
+  width: 10%;
+  text-align: right;
+}
+
+.col_5 {
+  width: 9%;
+  text-align: right;
+}
+
+.col_6 {
+  width: 9%;
+  text-align: right;
+}
+
+.fc_order_list_col input {
+  width: 100% !important;
+  margin: 0 5px !important;
+  max-width: 100% !important;
+  padding: 4px 6px;
+}
+
+.fc_order_list_col button {
+  padding: 0;
+}
+
+.fc_order_list_col input::-webkit-outer-spin-button,
+.fc_order_list_col input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.fc_order_list_col input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  min-width: 34px;
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+.col_nmbr {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#fc_order_bar {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: auto;
+  width: 50%;
+  min-width: 500px;
+  height: 150px;
+  background-color: #f9f9f9;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+  padding: 20px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.fc_order_bar_col {
+  width: 50%;
+  padding: 0 2.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  border-right: 1px solid #cacaca;
+}
+
+.fc_order_bar_col div {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  align-self: stretch;
+  font-weight: bold;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed #cacaca;
+}
+
+.fc_order_bar_actions {
+  width: 45%;
+  padding: 0 2.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.fc_order_bar_actions button {
+  width: 100%;
+  font-size: 1em !important;
+  background-color: #e3e3e3;
+  border-color: #5a5a5a;
+  color: #000000;
+}
+
+.fc_order_bar_actions button:hover {
+  background-color: #cacaca;
+  border-color: #cacaca;
+}
+
+#fc_shopping_list {
+  position: fixed;
+  bottom: 160px;
+  right: 10px;
+  width: auto;
+  width: 50%;
+  min-height: 100px;
+  max-height: 70vh;
+  overflow-y: scroll;
+  background-color: #f9f9f9;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  transition: all 0.2s;
+}
+
+#fc_shopping_list hr {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+}
+
+#fc_shopping_list div {
+  display: block;
+  width: 100%;
+}
+
+.transition-y-enter {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.transition-y-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.2s;
+}
+.transition-y-exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+.transition-y-exit-active {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.2s;
 }
