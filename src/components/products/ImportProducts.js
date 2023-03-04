@@ -120,8 +120,8 @@ function ImportProducts({ setModalClose, categories }) {
               /**
                * 1. Validate Number of Columns
                */
-              if (results.data[0].length !== 8) {
-                setValidationError(__("Die Datei hat nicht exakt 8 Spalten.", "fcplugin"))
+              if (results.data[0].length !== 9) {
+                setValidationError(__("Die Datei hat nicht exakt 9 Spalten.", "fcplugin"))
                 validated = false
               }
 
@@ -160,6 +160,10 @@ function ImportProducts({ setModalClose, categories }) {
                 setValidationError(__("Spalte 8 muss 'id' heissen.", "fcplugin"))
                 validated = false
               }
+              if (results.data[0][8] !== "short_description") {
+                setValidationError(__("Spalte 9 muss 'short_description' heissen.", "fcplugin"))
+                validated = false
+              }
 
               /**
                * 3. Validate that there are no empty cells
@@ -171,7 +175,7 @@ function ImportProducts({ setModalClose, categories }) {
                   let c = 1
                   row.map(cell => {
                     if (cell === "") {
-                      if (c !== 8) {
+                      if (c !== 8 && c !== 9) {
                         errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
                         validated = false
                       }

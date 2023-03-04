@@ -63,7 +63,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
         })
         .then(function (response) {
           if (response.data) {
-            console.log(JSON.parse(response.data))
             setOrders(JSON.parse(response.data))
             setLoading(false)
             setButtonLoading(false)

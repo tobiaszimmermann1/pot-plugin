@@ -35,7 +35,6 @@ const Members = () => {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           let reArrangedUserData = []
           res.map(u => {
             let userToDo = {}
@@ -97,7 +96,6 @@ const Members = () => {
 
   const handleDeleteRow = useCallback(
     row => {
-      console.log(row.getValue("id"))
       if (!confirm(row.getValue("name") + " " + __("löschen?", "fcplugin"))) {
         return
       }
@@ -117,7 +115,6 @@ const Members = () => {
         )
         .then(function (response) {
           if (response.data) {
-            console.log(response)
           }
           response.status == 200 &&
             setStatusMessage({
@@ -164,7 +161,6 @@ const Members = () => {
   }
 
   const handleAddMember = values => {
-    console.log("test", values)
     users.unshift(values)
     setUsers([...users])
   }
@@ -184,17 +180,17 @@ const Members = () => {
             header: "",
             Cell: ({ row, table }) => (
               <Box>
-                <IconButton>
-                  <AccountBalanceWalletIcon
-                    onClick={() => {
-                      setWalletID(row.original.id)
-                      setWalletName(row.original.name)
-                      setWalletModalOpen(true)
-                    }}
-                  />
+                <IconButton
+                  onClick={() => {
+                    setWalletID(row.original.id)
+                    setWalletName(row.original.name)
+                    setWalletModalOpen(true)
+                  }}
+                >
+                  <AccountBalanceWalletIcon />
                 </IconButton>
-                <IconButton>
-                  <DeleteIcon onClick={() => handleDeleteRow(row)} />
+                <IconButton onClick={() => handleDeleteRow(row)}>
+                  <DeleteIcon />
                 </IconButton>
               </Box>
             )

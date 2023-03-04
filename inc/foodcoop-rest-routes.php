@@ -90,12 +90,23 @@ class FoodcoopRestRoutes {
     ));
 
     /**
-     * GET bestellungen
+     * GET orders of Bestellrunde
      * params: bestellrunde
      */
     register_rest_route( 'foodcoop/v1', 'getBestellungen', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getBestellungen'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET all orders
+     */
+    register_rest_route( 'foodcoop/v1', 'getAllOrders', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getAllOrders'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
       }
@@ -292,6 +303,17 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET all Transactions
+     */
+    register_rest_route( 'foodcoop/v1', 'getAllTransactions', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getAllTransactions'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * Post Add Transaction
      */
     register_rest_route( 'foodcoop/v1', 'postAddTransaction', array(
@@ -332,6 +354,29 @@ class FoodcoopRestRoutes {
       'callback' => array($this, 'getBalance'), 
       'permission_callback' => function() {
         return true;
+      }
+    ));
+
+    /**
+     * GET Expenses Data
+     */
+    register_rest_route( 'foodcoop/v1', 'getExpenses', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getExpenses'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST create expense
+     * params: user id, date, type, amount, note
+     */
+    register_rest_route( 'foodcoop/v1', 'postCreateExpense', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postCreateExpense'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
       }
     ));
 
@@ -550,7 +595,7 @@ class FoodcoopRestRoutes {
         $the_line_item['item_id'] = $item_id;
         $the_line_item['product_id'] = $item->get_product_id();
         $the_line_item['variation_id'] = $item->get_variation_id();
-        $the_line_item['product'] = $item->get_product(); // see link above to get $product info
+        $the_line_item['product'] = $item->get_product(); 
         $the_line_item['product_name'] = $item->get_name();
 
         $item_total_quantity = $item->get_quantity(); 
@@ -564,10 +609,41 @@ class FoodcoopRestRoutes {
         $the_line_item['tax_class'] = $item->get_tax_class();
         $the_line_item['tax_status'] = $item->get_tax_status();
         $the_line_item['allmeta'] = $item->get_meta_data();
-        $the_line_item['somemeta'] = $item->get_meta( '_whatever', true );
         array_push($line_items, $the_line_item);
       }
       $the_order['line_items'] = $line_items;
+      
+      array_push($order_data, $the_order);
+    }
+
+    return json_encode($order_data);
+  }
+
+  /**
+   * getAllOrders
+   */
+  function getAllOrders() {
+    $args = array(
+      'numberposts' => -1,
+      'post_type'   => 'shop_order',
+      'post_status'        => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pending'),
+      'fields' => 'ids'
+
+    );
+    $orders = get_posts( $args );
+
+    $order_data = array();
+    foreach($orders as $order_id) {
+      $o = wc_get_order($order_id);
+      $the_order = array(
+        "id" => $order_id,
+        "customer_name" => $o->get_billing_first_name()." ".$o->get_billing_last_name(),
+        "customer_id" => $o->get_customer_id(),
+        "total" => $o->get_total() - $o->get_total_refunded(),
+        "date_created" => $o->get_date_created()->date("Y-m-d"),
+        "url" => $o->get_edit_order_url(),
+        "bestellrunde_id" => get_post_meta( $order_id, 'bestellrunde_id', true )
+      );
       
       array_push($order_data, $the_order);
     }
@@ -1027,6 +1103,11 @@ class FoodcoopRestRoutes {
         // update product price
         $p = wc_get_product($id);
         $p->set_price((float) $product[1]);
+
+        // update product short_description
+        $p->set_short_description( $product[8] );
+
+        // save the product
         $p->save();
 
         // update product category
@@ -1067,6 +1148,13 @@ class FoodcoopRestRoutes {
         // update product category
         wp_set_object_terms( $post_id, intval($categories[$product[6]]), 'product_cat' );
         wp_set_object_terms( $post_id, 'simple', 'product_type' );
+
+        // set short description
+        $sd = array(
+          'ID' => $post_id,
+          'short_description' => $product[8],
+         );
+        wp_update_post( $sd );
 
         $new_products++;
       }
@@ -1283,6 +1371,35 @@ class FoodcoopRestRoutes {
       $id = intval($the_transaction->created_by);
       $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
       $the_transaction->created_by = $name;
+
+      array_push($transactions_fixed, $the_transaction);
+    }
+
+    return json_encode($transactions_fixed);
+  }
+
+
+
+  /**
+   * getAllTransactions
+   */
+  function getAllTransactions($data) {
+    global $wpdb;
+    $transactions = $wpdb->get_results(
+      $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` ORDER BY `id` DESC")
+    );
+    
+    $transactions_fixed = array();
+    foreach($transactions as $transaction) {
+      $the_transaction = $transaction;
+
+      $id = intval($the_transaction->created_by);
+      $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
+      $the_transaction->created_by = $name;
+
+      $user_id = intval($the_transaction->user_id);
+      $user_name = get_user_meta($user_id, 'billing_first_name', true)." ".get_user_meta($user_id, 'billing_last_name', true);
+      $the_transaction->user_name = $user_name;
 
       array_push($transactions_fixed, $the_transaction);
     }
@@ -1516,15 +1633,18 @@ class FoodcoopRestRoutes {
       }
       $the_product['amount'] = $amount;
 
+      // add short description of product to array
+      $the_product["short_description"] = $product->get_short_description();
+
       array_push($products, $the_product);
     }
 
     usort($products, fn($a, $b) => $a['category_name'] <=> $b['category_name']);
 
+    // get store currency
+    $currency = get_woocommerce_currency_symbol();
 
-
-
-    return json_encode(array($active, $bestellrunde, $bestellrunde_products, $products, $categories, $order, $bestellrunde_dates));
+    return json_encode(array($active, $bestellrunde, $bestellrunde_products, $products, $categories, $order, $bestellrunde_dates, $currency));
   }
 
 
@@ -1547,6 +1667,59 @@ class FoodcoopRestRoutes {
 
 
     return json_encode($current_balance);
+  }
+
+
+
+  /**
+   * getExpenses
+   */
+  
+  function getExpenses() {
+    $args = array(
+      'numberposts' => -1,
+      'post_type'   => 'expenses',
+    );
+    $expenses_data = get_posts( $args );
+
+    $expenses = array();
+    foreach($expenses_data as $expense) {
+      $the_expense = array(
+        "id" => $expense->ID,
+        "author" => $expense->post_author,
+        "date_created" => $expense->post_date,
+      );
+      
+      $the_meta = get_post_meta($expense->ID);
+      foreach($the_meta as $key => $value) {          
+        $the_expense[$key] = $value[0];
+      }
+
+      array_push($expenses, $the_expense);
+    }
+
+    return json_encode($expenses);
+  }
+
+
+
+  /**
+   * postCreateExpense
+   */
+  function postCreateExpense($data) {
+    $id = wp_insert_post(array(
+      'post_title'=> 'Ausgabe ' . $data['type'] . ' - ' . $data['date'] . ' - ' . $data['amount'], 
+      'post_type'=>'expenses',
+      'post_status' => 'publish'
+    ));
+
+    add_post_meta( $id, 'date', $data['date'], true );
+    add_post_meta( $id, 'type', $data['type'], true );
+    add_post_meta( $id, 'created_by', $data['created_by'], true );
+    add_post_meta( $id, 'amount', $data['amount'], true );
+    add_post_meta( $id, 'note', $data['note'], true );
+
+    return $id;
   }
 
 
