@@ -39,7 +39,6 @@ const Bestellrunden = () => {
         let reArrangedBestellrunden = []
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
 
           res.map(b => {
             let bestellrundeToDo = {}
@@ -134,9 +133,6 @@ const Bestellrunden = () => {
           }
         )
         .then(function (response) {
-          if (response.data) {
-            console.log(response)
-          }
           response.status == 200 &&
             setStatusMessage({
               message: __("Bestellrunde wurde gespeichert.", "fcplugin"),
@@ -201,7 +197,6 @@ const Bestellrunden = () => {
   }, [statusMessage])
 
   const handleCreateNewRow = values => {
-    console.log(values)
     bestellrunden.unshift(values)
     setBestellrunden([...bestellrunden])
   }
@@ -374,9 +369,6 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
           }
         )
         .then(function (response) {
-          if (response.data) {
-            console.log(response)
-          }
           if (response.status == 200) {
             values["id"] = response.data
             values["bestellrunde_start"] = format(new Date(valueStart), "yyyy-MM-dd")

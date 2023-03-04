@@ -199,6 +199,42 @@ function fc_init() {
     'capability_type'       => 'post',
   );
   register_post_type( 'bestellrunden', $args );
+
+  // cpt: expenses
+  $labels_expenses = array(
+    'name'                  => __( 'Expenses'),
+    'singular_name'         => __( 'Expense'),
+    'menu_name'             => __( 'Ausgaben'),
+    'name_admin_bar'        => __( 'Ausgaben'),
+    'archives'              => __( 'Ausgabenarchiv'),
+    'all_items'             => __( 'Alle Ausgaben'),
+    'add_new_item'          => __( 'Neue Ausgabe hinzufügen'),
+    'add_new'               => __( 'Hinzufügen'),
+    'new_item'              => __( 'Ausgabe hinzufügen'),
+    'edit_item'             => __( 'Ausgabe bearbeiten'),
+    'update_item'           => __( 'Ausgabe speichern'),
+    'view_item'             => __( 'Ausgabe ansehen'),
+    'view_items'            => __( 'Ausgaben ansehen'),
+  );
+
+  $args_expenses = array(
+    'label'                 => __( 'Ausgaben'),
+    'labels'                => $labels_expenses,
+    'supports'              => array('author', 'custom-fields'),
+    'taxonomies'            => array(),
+    'hierarchical'          => false,
+    'public'                => true,
+    'show_ui'               => true,
+    'show_in_menu'          => false,
+    'show_in_admin_bar'     => false,
+    'show_in_nav_menus'     => false,
+    'can_export'            => true,
+    'has_archive'           => true,
+    'exclude_from_search'   => true,
+    'publicly_queryable'    => true,
+    'capability_type'       => 'post',
+  );
+  register_post_type( 'expenses', $args_expenses );
 }
 
 

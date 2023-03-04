@@ -32,7 +32,6 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
           let reArrangeProductData = []
           if (response.data) {
             const res = JSON.parse(response.data)
-            console.log(res)
             res[0].map(p => {
               let productToDo = {}
               productToDo.name = p.name
@@ -128,11 +127,7 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
           }
         }
       )
-      .then(function (response) {
-        if (response) {
-          console.log(response)
-        }
-      })
+      .then(function (response) {})
       .catch(error => console.log(error))
       .finally(() => {
         setSubmitting(false)

@@ -5,7 +5,7 @@ import { CSSTransition } from "react-transition-group"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 
-const ProductCategory = ({ products, title, setShoppingList, setTrigger }) => {
+const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState }) => {
   const [visibility, setVisibility] = useState(true)
 
   function visClick() {
@@ -18,23 +18,25 @@ const ProductCategory = ({ products, title, setShoppingList, setTrigger }) => {
         <span>
           {title} ({products.length})
         </span>
-        <span class="fc_order_list_title_arrow">{visibility ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}</span>
+        <span className="fc_order_list_title_arrow">{visibility ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}</span>
       </h2>
 
-      <div class="fc_order_list_category_wrapper">
+      <div className="fc_order_list_category_wrapper">
         <CSSTransition in={visibility} timeout={300} classNames="transition-y" unmountOnExit>
           <div className="fc_order_list_cat_wrapper">
             <div className="fc_order_list_line">
-              <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>
+              {activeState && <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>}
               <span className="fc_order_list_header col_2">{__("Produkt", "fcplugin")}</span>
+              <span className="fc_order_list_header col_25">{__("Details", "fcplugin")}</span>
               <span className="fc_order_list_header col_3">{__("Produzent", "fcplugin")}</span>
               <span className="fc_order_list_header col_4">{__("Einheit", "fcplugin")}</span>
               <span className="fc_order_list_header col_5">{__("Gebinde", "fcplugin")}</span>
               <span className="fc_order_list_header col_6">{__("Preis", "fcplugin")}</span>
+              {!activeState && <span className="fc_order_list_header col_1"></span>}
             </div>
 
             {products.map(product => (
-              <ProductLine product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} />
+              <ProductLine currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
             ))}
           </div>
         </CSSTransition>

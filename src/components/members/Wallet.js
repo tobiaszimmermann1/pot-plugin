@@ -123,7 +123,6 @@ function Wallet({ setModalClose, walletID, walletName }) {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           setWalletData(res)
           setLoading(false)
         }

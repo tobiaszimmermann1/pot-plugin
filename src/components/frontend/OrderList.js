@@ -5,7 +5,6 @@ import LoadingButton from "@mui/lab/LoadingButton"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import { format } from "date-fns"
 import CelebrationIcon from "@mui/icons-material/Celebration"
 import HourglassTopIcon from "@mui/icons-material/HourglassTop"
@@ -14,7 +13,7 @@ import { ShoppingContext, TriggerContext } from "./ShoppingContext"
 import OrderOverview from "./OrderOverview"
 const __ = wp.i18n.__
 
-const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, activeState, categories }) => {
+const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, activeState, categories }) => {
   const [products, setProducts] = useState()
   const [productsLoading, setProductsLoading] = useState(true)
   const [currentTotal, setCurrentTotal] = useState(0)
@@ -100,6 +99,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
         productToDo.details = p._lieferant + ", " + p._herkunft
         productToDo.category = p.category_name
         productToDo.id = p.id
+        productToDo.short_description = p.short_description
 
         productToDo.price = p.price
         // public prices?
@@ -173,42 +173,36 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
   return !loading ? (
     <TriggerContext.Provider value={trigger}>
       <ShoppingContext.Provider value={shoppingList}>
-        {frontendLocalizer.currentUser.ID && <OrderOverview balance={balance} cartNonce={cartNonce} />}
+        {frontendLocalizer.currentUser.ID ? <OrderOverview currency={currency} order={order} balance={balance} cartNonce={cartNonce} activeState={activeState} /> : ""}
         {activeState && bestellrundenDates ? (
           <>
-            <Box sx={{}}>
-              <Grid item xs={12}>
-                <Card sx={{ minWidth: 275, borderRadius: 0, backgroundColor: "#f9f9f9", boxShadow: "none", border: "1px solid #f0f0f0" }}>
-                  <CardContent>
-                    <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt", marginBottom: "20px" }}>
-                      <CelebrationIcon /> {__("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")}
-                    </Typography>
-                    <table>
-                      <tr>
-                        <td>
-                          <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
-                        </td>
-                        <td>{activeBestellrunde} </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
-                        </td>
-                        <td>
-                          {format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")} bis {format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}{" "}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>{__("Verteiltag: ", "fcplugin")}</strong>{" "}
-                        </td>
-                        <td>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")} </td>
-                      </tr>
-                    </table>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Box>
+            <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt", marginBottom: "20px" }}>
+              <CelebrationIcon /> {__("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")}
+            </Typography>
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
+                  </td>
+                  <td>{activeBestellrunde} </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
+                  </td>
+                  <td>
+                    {format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")} {__("bis", "fcplugin")} {format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}{" "}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>{__("Verteiltag: ", "fcplugin")}</strong>{" "}
+                  </td>
+                  <td>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")} </td>
+                </tr>
+              </tbody>
+            </table>
           </>
         ) : (
           <Box sx={{}}>
@@ -223,7 +217,7 @@ const OrderList = ({ allProducts, bestellrundenProducts, bestellrundenDates, act
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} />)}</Box>
+        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (

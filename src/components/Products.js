@@ -32,7 +32,6 @@ const Products = () => {
         let reArrangeProductData = []
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           res[0].map(p => {
             let productToDo = {}
             productToDo.name = p.name
@@ -119,9 +118,6 @@ const Products = () => {
         }
       )
       .then(function (response) {
-        if (response.data) {
-          console.log(response)
-        }
         response.status == 200 &&
           setStatusMessage({
             message: JSON.parse(response.data) + " " + __("wurde gespeichert.", "fcplugin"),
@@ -156,9 +152,6 @@ const Products = () => {
           }
         )
         .then(function (response) {
-          if (response.data) {
-            console.log(response)
-          }
           response.status == 200 &&
             setStatusMessage({
               message: JSON.parse(response.data) + " " + __("wurde gelöscht.", "fcplugin"),
@@ -218,11 +211,11 @@ const Products = () => {
             header: "",
             Cell: ({ row, table }) => (
               <Box>
-                <IconButton>
-                  <EditIcon onClick={() => table.setEditingRow(row)} />
+                <IconButton onClick={() => table.setEditingRow(row)}>
+                  <EditIcon />
                 </IconButton>
-                <IconButton>
-                  <DeleteIcon onClick={() => handleDeleteRow(row)} />
+                <IconButton onClick={() => handleDeleteRow(row)}>
+                  <DeleteIcon />
                 </IconButton>
               </Box>
             )

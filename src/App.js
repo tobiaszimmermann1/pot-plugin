@@ -10,6 +10,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard"
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket"
 import RestaurantIcon from "@mui/icons-material/Restaurant"
 import PeopleIcon from "@mui/icons-material/People"
+import Bookkeeping from "./components/Bookkeeping"
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
 const __ = wp.i18n.__
 
 function App() {
@@ -60,6 +62,9 @@ function App() {
               <span id="members" className="menuItem " onClick={() => setActiveTab("members")}>
                 <PeopleIcon /> {__("Mitglieder", "fcplugin")}
               </span>
+              <span id="bookkeeping" className="menuItem " onClick={() => setActiveTab("bookkeeping")}>
+                <AccountBalanceIcon /> {__("Buchhaltung", "fcplugin")}
+              </span>
             </div>
             <strong className="pluginHome" onClick={() => setActiveTab("dashboard")}>
               {appLocalizer.pluginUrl && (
@@ -74,6 +79,7 @@ function App() {
             {activeTab === "orderingRounds" && <Bestellrunden />}
             {activeTab === "products" && <Products />}
             {activeTab === "members" && <Members />}
+            {activeTab === "bookkeeping" && <Bookkeeping />}
           </div>
         </div>
       </LocalizationProvider>

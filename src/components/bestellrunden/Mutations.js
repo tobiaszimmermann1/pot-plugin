@@ -32,7 +32,6 @@ function Mutations({ id, setModalClose }) {
           let reArrangeProductData = []
           if (response.data) {
             const res = JSON.parse(response.data)
-            console.log("res", res)
 
             Object.keys(res[1]).forEach(function (key, index) {
               let productToDo = {}
@@ -73,7 +72,6 @@ function Mutations({ id, setModalClose }) {
       )
       .then(function (response) {
         if (response) {
-          console.log(response.data)
           setSuccess(true)
         }
       })
