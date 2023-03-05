@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react"
-import { Box, Typography, Button } from "@mui/material"
+import { Box, Typography, Button, TextField } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
@@ -8,18 +8,25 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { ExportToCsv } from "export-to-csv"
-import { format } from "date-fns"
+import { format, isValid, parse } from "date-fns"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
 import FormControl from "@mui/material/FormControl"
 import Select from "@mui/material/Select"
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker"
+import RestartAltIcon from "@mui/icons-material/RestartAlt"
 const __ = wp.i18n.__
 
 const Journal = () => {
   const [loading, setLoading] = useState(true)
   const [allTransactions, setAllTransactions] = useState(null)
   const [allExpenses, setAllExpenses] = useState(null)
+  const [allData, setAllData] = useState(null)
   const [data, setData] = useState(null)
+  const [dateStart, setDateStart] = useState(null)
+  const [dateEnd, setDateEnd] = useState(null)
+  const [totalPlus, setTotalPlus] = useState(0)
+  const [totalMinus, setTotalMinus] = useState(0)
 
   /**
    * get transactions
@@ -90,6 +97,7 @@ const Journal = () => {
         return new Date(b.date).getTime() - new Date(a.date).getTime()
       })
       setData(journalData)
+      setAllData(journalData)
       setLoading(false)
     }
   }, [allTransactions, allExpenses])
@@ -141,7 +149,51 @@ const Journal = () => {
   const csvExporter = new ExportToCsv(csvOptions)
 
   const handleExportData = () => {
-    csvExporter.generateCsv(allTransactions)
+    csvExporter.generateCsv(data)
+  }
+
+  /**
+   * Date Range Logic
+   */
+  useEffect(() => {
+    if (dateStart && dateEnd && allData && data) {
+      const isValidDateStart = isValid(parse(format(new Date(dateStart), "yyyy-MM-dd"), "yyyy-MM-dd", new Date()))
+      const isValidDateEnd = isValid(parse(format(new Date(dateEnd), "yyyy-MM-dd"), "yyyy-MM-dd", new Date()))
+      if (isValidDateEnd && isValidDateStart) {
+        let dataWithinDateRange = []
+        const timeStart = new Date(format(new Date(dateStart), "yyyy-MM-dd'T'HH:mm:ss'Z'")).getTime()
+        const timeEnd = new Date(format(new Date(dateEnd), "yyyy-MM-dd'T'HH:mm:ss'Z'")).getTime()
+        allData.map(row => {
+          const timeRow = new Date(format(new Date(row.date), "yyyy-MM-dd'T'HH:mm:ss'Z'")).getTime()
+          if (timeStart <= timeRow && timeRow <= timeEnd) {
+            dataWithinDateRange.push(row)
+          }
+        })
+        setData(dataWithinDateRange)
+      }
+    }
+  }, [dateStart, dateEnd])
+
+  useEffect(() => {
+    if (data) {
+      let newPlus = 0
+      let newMinus = 0
+      data.map(row => {
+        if (parseFloat(row.amount) > 0) {
+          newPlus += parseFloat(row.amount)
+        } else {
+          newMinus -= parseFloat(row.amount)
+        }
+      })
+      setTotalPlus(newPlus)
+      setTotalMinus(newMinus)
+    }
+  }, [data])
+
+  function resetData() {
+    setData(allData)
+    setDateStart(null)
+    setDateEnd(null)
   }
 
   return (
@@ -162,6 +214,11 @@ const Journal = () => {
         renderTopToolbarCustomActions={({ table }) => (
           <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
             <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "nowrap", flexDirection: "row", justifyContent: "flex-start" }}>
+              <DesktopDatePicker label={__("Eingrenzen von", "fcplugin")} className="fc_datepicker" inputFormat="dd.MM.yyyy" value={dateStart} onChange={e => setDateStart(e)} renderInput={params => <TextField {...params} />} />
+              <DesktopDatePicker label={__("Eingrenzen bis", "fcplugin")} className="fc_datepicker" inputFormat="dd.MM.yyyy" value={dateEnd} onChange={e => setDateEnd(e)} renderInput={params => <TextField {...params} />} />
+              <Button color="primary" onClick={resetData} startIcon={<RestartAltIcon />} variant="outlined" size="small" disabled={loading}>
+                {__("Zurücksetzen", "fcplugin")}
+              </Button>
               <Button
                 color="primary"
                 //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
@@ -173,6 +230,26 @@ const Journal = () => {
               >
                 {__("Ansicht exportieren", "fcplugin")}
               </Button>
+            </Box>
+            <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "nowrap", flexDirection: "row", justifyContent: "flex-start" }}>
+              {totalPlus ? (
+                <Typography variant="body2" sx={{ padding: "8px 15px", backgroundColor: "#e3e3e3", color: "green", borderRadius: "4px" }}>
+                  {__("Einnahmen", "fcplugin")}: <strong>{parseFloat(totalPlus).toFixed(2)}</strong>
+                </Typography>
+              ) : (
+                <Typography variant="body2" sx={{ padding: "8px 15px", backgroundColor: "#e3e3e3", color: "green", borderRadius: "4px" }}>
+                  {__("Einnahmen", "fcplugin")}: <strong>0.00</strong>
+                </Typography>
+              )}
+              {totalMinus ? (
+                <Typography variant="body2" sx={{ padding: "8px 15px", backgroundColor: "#e3e3e3", color: "red", borderRadius: "4px" }}>
+                  {__("Ausgaben", "fcplugin")}: <strong>{parseFloat(totalMinus).toFixed(2)}</strong>
+                </Typography>
+              ) : (
+                <Typography variant="body2" sx={{ padding: "8px 15px", backgroundColor: "#e3e3e3", color: "red", borderRadius: "4px" }}>
+                  {__("Ausgaben", "fcplugin")}: <strong>0.00</strong>
+                </Typography>
+              )}
             </Box>
           </Box>
         )}

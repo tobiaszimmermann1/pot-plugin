@@ -568,3 +568,14 @@
 .fc_order_list_cat_wrapper div:last-child span {
   border: none;
 }
+
+.fc_datepicker input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 6px 10px 6px 10px !important;
+}
+
+.fc_datepicker label {
+  margin-top: -5px;
+}
