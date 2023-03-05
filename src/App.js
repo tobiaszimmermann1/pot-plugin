@@ -15,7 +15,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
 const __ = wp.i18n.__
 
 function App() {
-  const [activeTab, setActiveTab] = useState("bookkeeping")
+  const [activeTab, setActiveTab] = useState("dashboard")
   const [name, setName] = useState()
 
   useEffect(() => {
