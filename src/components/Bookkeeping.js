@@ -10,7 +10,7 @@ import Journal from "./bookkeeping/Journal"
 const __ = wp.i18n.__
 
 const Bookkeeping = () => {
-  const [activeTab, setActiveTab] = useState("journal")
+  const [activeTab, setActiveTab] = useState("transactions")
   const pluginMenu = useRef()
 
   useEffect(() => {
