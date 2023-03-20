@@ -14910,13 +14910,13 @@ function FrontendApp() {
   const [active, setActive] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [order, setOrder] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [currency, setCurrency] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [publicPrices, setPublicPrices] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductList`, {
       user: frontendLocalizer.currentUser.ID
     }).then(function (response) {
       if (response.data) {
         const res = JSON.parse(response.data);
-        console.log(res);
         setProducts(res[3]);
         setBestellrundenProducts(res[2]);
         setCats(res[4]);
@@ -15045,9 +15045,7 @@ const OrderList = _ref => {
               setBalance(parseFloat(b));
               setOriginalBalance(parseFloat(b));
             }
-          }).catch(error => console.log(error)).finally(() => {
-            setLoading(false);
-          });
+          }).catch(error => console.log(error));
         }
       }).catch(error => console.log(error));
     }
@@ -15142,6 +15140,11 @@ const OrderList = _ref => {
       }
     }).catch(error => console.log(error));
   }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (currency && allProducts && categories) {
+      setLoading(false);
+    }
+  }, [activeState, bestellrundenDates, currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, activeState, categories]);
   return !loading ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ShoppingContext__WEBPACK_IMPORTED_MODULE_2__.TriggerContext.Provider, {
     value: trigger
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ShoppingContext__WEBPACK_IMPORTED_MODULE_2__.ShoppingContext.Provider, {
@@ -15182,6 +15185,7 @@ const OrderList = _ref => {
       marginBottom: "100px"
     }
   }, categories.map(cat => products[cat].length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProductCategory__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    publicPrices: publicPrices,
     currency: currency,
     setTrigger: setTrigger,
     setShoppingList: setShoppingList,
@@ -15193,9 +15197,11 @@ const OrderList = _ref => {
     style: {
       width: "100%",
       display: "flex",
-      justifyContent: "center"
+      justifyContent: "center",
+      flexDirection: "column",
+      alignItems: "center"
     }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_13__["default"], null));
+  }, __("Produkte werden geladen...", "fcplugin"), " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_13__["default"], null));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (OrderList);
 
@@ -15213,18 +15219,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/Button/Button.js");
-/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @mui/lab/LoadingButton */ "./node_modules/@mui/lab/LoadingButton/LoadingButton.js");
-/* harmony import */ var _mui_icons_material_ListAlt__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @mui/icons-material/ListAlt */ "./node_modules/@mui/icons-material/ListAlt.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/CircularProgress/CircularProgress.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/Button/Button.js");
+/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @mui/lab/LoadingButton */ "./node_modules/@mui/lab/LoadingButton/LoadingButton.js");
+/* harmony import */ var _mui_icons_material_ListAlt__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @mui/icons-material/ListAlt */ "./node_modules/@mui/icons-material/ListAlt.js");
 /* harmony import */ var _ShoppingContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ShoppingContext */ "./src/components/frontend/ShoppingContext.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _mui_icons_material_AccountBalanceWallet__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/icons-material/AccountBalanceWallet */ "./node_modules/@mui/icons-material/AccountBalanceWallet.js");
 /* harmony import */ var _mui_icons_material_FormatListNumbered__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/icons-material/FormatListNumbered */ "./node_modules/@mui/icons-material/FormatListNumbered.js");
-/* harmony import */ var _mui_icons_material_Done__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @mui/icons-material/Done */ "./node_modules/@mui/icons-material/Done.js");
+/* harmony import */ var _mui_icons_material_Done__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @mui/icons-material/Done */ "./node_modules/@mui/icons-material/Done.js");
 /* harmony import */ var _mui_icons_material_ShoppingCart__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/icons-material/ShoppingCart */ "./node_modules/@mui/icons-material/ShoppingCart.js");
 /* harmony import */ var _mui_icons_material_PointOfSale__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/icons-material/PointOfSale */ "./node_modules/@mui/icons-material/PointOfSale.js");
 /* harmony import */ var _mui_icons_material_PublishedWithChanges__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/icons-material/PublishedWithChanges */ "./node_modules/@mui/icons-material/PublishedWithChanges.js");
-/* harmony import */ var _mui_icons_material_HelpOutline__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/icons-material/HelpOutline */ "./node_modules/@mui/icons-material/HelpOutline.js");
+/* harmony import */ var _mui_icons_material_HelpOutline__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @mui/icons-material/HelpOutline */ "./node_modules/@mui/icons-material/HelpOutline.js");
 /* harmony import */ var react_transition_group__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-transition-group */ "./node_modules/react-transition-group/esm/CSSTransition.js");
 /* provided dependency */ var console = __webpack_require__(/*! ./node_modules/console-browserify/index.js */ "./node_modules/console-browserify/index.js");
 
@@ -15256,11 +15263,11 @@ const OrderOverview = _ref => {
   const [currentTotal, setCurrentTotal] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [shoppingListVisibility, setShoppingListVisibility] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [helpVisibility, setHelpVisibility] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [newBalance, setNewBalance] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(balance - currentTotal);
+  const [newBalance, setNewBalance] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [orderingState, setOrderingState] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [addingToCart, setAddingToCart] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [originalBalance, setOriginalBalance] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(balance);
-  const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [originalBalance, setOriginalBalance] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [balanceLoading, setBalanceLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   function visClick() {
     visibility ? setVisibility(false) : setVisibility(true);
   }
@@ -15386,7 +15393,15 @@ const OrderOverview = _ref => {
     id: "fc_order_bar"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_bar_col fc_order_bar_finances"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, __("Verfügbares Guthaben", "fcplugin"), ":"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, balanceLoading ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      flexDirection: "column",
+      alignItems: "center"
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], null)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, __("Verfügbares Guthaben", "fcplugin"), ":"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     dangerouslySetInnerHTML: {
       __html: currency
     }
@@ -15404,32 +15419,32 @@ const OrderOverview = _ref => {
     dangerouslySetInnerHTML: {
       __html: currency
     }
-  }), " ", newBalance.toFixed(2)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), " ", newBalance.toFixed(2))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_bar_actions"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "multi-button"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
-    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_HelpOutline__WEBPACK_IMPORTED_MODULE_10__["default"], null),
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_HelpOutline__WEBPACK_IMPORTED_MODULE_11__["default"], null),
     variant: "text",
     sx: {
       marginBottom: "10px"
     },
     size: "small",
     onClick: helpClick
-  }, __("Anleitung", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
-    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ListAlt__WEBPACK_IMPORTED_MODULE_11__["default"], null),
+  }, __("Anleitung", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ListAlt__WEBPACK_IMPORTED_MODULE_12__["default"], null),
     variant: "text",
     sx: {
       marginBottom: "10px"
     },
     size: "small",
     onClick: shoppingListClick
-  }, __("Mein Einkaufszettel", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  }, __("Mein Einkaufszettel", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_13__["default"], {
     className: "cartButton",
     loading: addingToCart,
     loadingPosition: "center",
     disabled: !orderingState,
-    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Done__WEBPACK_IMPORTED_MODULE_13__["default"], null),
+    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Done__WEBPACK_IMPORTED_MODULE_14__["default"], null),
     variant: "outlined",
     sx: {},
     size: "large",
@@ -15470,7 +15485,8 @@ const ProductCategory = _ref => {
     title,
     setShoppingList,
     setTrigger,
-    activeState
+    activeState,
+    publicPrices
   } = _ref;
   const [visibility, setVisibility] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   function visClick() {
@@ -15492,7 +15508,7 @@ const ProductCategory = _ref => {
     className: "fc_order_list_cat_wrapper"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_list_line"
-  }, activeState && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_header col_1"
   }, __("Menge", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_header col_2"
@@ -15506,9 +15522,8 @@ const ProductCategory = _ref => {
     className: "fc_order_list_header col_5"
   }, __("Gebinde", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_header col_6"
-  }, __("Preis", "fcplugin")), !activeState && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "fc_order_list_header col_1"
-  })), products.map(product => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProductLine__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, __("Preis", "fcplugin"))), products.map(product => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProductLine__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    publicPrices: publicPrices,
     currency: currency,
     product: product,
     key: product.id,
@@ -15551,7 +15566,8 @@ const ProductLine = _ref => {
     product,
     setShoppingList,
     setTrigger,
-    activeState
+    activeState,
+    publicPrices
   } = _ref;
   const [amount, setAmount] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(product.amount);
   const shoppingList = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_ShoppingContext__WEBPACK_IMPORTED_MODULE_1__.ShoppingContext);
@@ -15601,7 +15617,7 @@ const ProductLine = _ref => {
     } : {
       backgroundColor: "#f9f9f9"
     }
-  }, activeState && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, activeState ? frontendLocalizer.currentUser.ID ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_1 col_nmbr"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     onClick: removeOne
@@ -15631,7 +15647,17 @@ const ProductLine = _ref => {
       borderRadius: "2px",
       width: "100%"
     }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Add__WEBPACK_IMPORTED_MODULE_4__["default"], null)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Add__WEBPACK_IMPORTED_MODULE_4__["default"], null)))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "fc_order_list_col col_1 col_nmbr"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    disabled: true
+  })) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "fc_order_list_col col_1 col_nmbr"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    disabled: true
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_2"
   }, product.name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_25"
@@ -15643,13 +15669,16 @@ const ProductLine = _ref => {
     className: "fc_order_list_col col_5"
   }, product.lot), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_6"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, publicPrices ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     dangerouslySetInnerHTML: {
       __html: currency
     }
-  }), " ", parseFloat(product.price).toFixed(2)), !activeState && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "fc_order_list_header col_1"
-  }));
+  }), " ", parseFloat(product.price).toFixed(2)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      fontSize: "0.75em",
+      fontStyle: "italic"
+    }
+  }, __("für Mitglieder", "fcplugin"))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ProductLine);
 
