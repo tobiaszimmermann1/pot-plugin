@@ -63,9 +63,6 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
                 }
               })
               .catch(error => console.log(error))
-              .finally(() => {
-                setLoading(false)
-              })
           }
         })
         .catch(error => console.log(error))
@@ -170,6 +167,12 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
       .catch(error => console.log(error))
   }, [])
 
+  useEffect(() => {
+    if (currency && allProducts && categories) {
+      setLoading(false)
+    }
+  }, [activeState, bestellrundenDates, currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, activeState, categories])
+
   return !loading ? (
     <TriggerContext.Provider value={trigger}>
       <ShoppingContext.Provider value={shoppingList}>
@@ -217,12 +220,12 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory publicPrices={publicPrices} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-      <CircularProgress />
+    <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+      {__("Produkte werden geladen...", "fcplugin")} <CircularProgress />
     </div>
   )
 }

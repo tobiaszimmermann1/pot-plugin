@@ -14,6 +14,7 @@ function FrontendApp() {
   const [active, setActive] = useState(null)
   const [order, setOrder] = useState(null)
   const [currency, setCurrency] = useState(null)
+  const [publicPrices, setPublicPrices] = useState(false)
 
   useEffect(() => {
     axios
@@ -23,7 +24,6 @@ function FrontendApp() {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           setProducts(res[3])
           setBestellrundenProducts(res[2])
           setCats(res[4])

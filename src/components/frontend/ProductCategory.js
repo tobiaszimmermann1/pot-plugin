@@ -5,7 +5,7 @@ import { CSSTransition } from "react-transition-group"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 
-const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState }) => {
+const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices }) => {
   const [visibility, setVisibility] = useState(true)
 
   function visClick() {
@@ -25,18 +25,17 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
         <CSSTransition in={visibility} timeout={300} classNames="transition-y" unmountOnExit>
           <div className="fc_order_list_cat_wrapper">
             <div className="fc_order_list_line">
-              {activeState && <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>}
+              <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>
               <span className="fc_order_list_header col_2">{__("Produkt", "fcplugin")}</span>
               <span className="fc_order_list_header col_25">{__("Details", "fcplugin")}</span>
               <span className="fc_order_list_header col_3">{__("Produzent", "fcplugin")}</span>
               <span className="fc_order_list_header col_4">{__("Einheit", "fcplugin")}</span>
               <span className="fc_order_list_header col_5">{__("Gebinde", "fcplugin")}</span>
               <span className="fc_order_list_header col_6">{__("Preis", "fcplugin")}</span>
-              {!activeState && <span className="fc_order_list_header col_1"></span>}
             </div>
 
             {products.map(product => (
-              <ProductLine currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
+              <ProductLine publicPrices={publicPrices} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
             ))}
           </div>
         </CSSTransition>

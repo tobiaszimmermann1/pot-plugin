@@ -20,11 +20,11 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
   const [currentTotal, setCurrentTotal] = useState(0)
   const [shoppingListVisibility, setShoppingListVisibility] = useState(false)
   const [helpVisibility, setHelpVisibility] = useState(false)
-  const [newBalance, setNewBalance] = useState(balance - currentTotal)
+  const [newBalance, setNewBalance] = useState(null)
   const [orderingState, setOrderingState] = useState(false)
   const [addingToCart, setAddingToCart] = useState(false)
-  const [originalBalance, setOriginalBalance] = useState(balance)
-  const [loading, setLoading] = useState(true)
+  const [originalBalance, setOriginalBalance] = useState(null)
+  const [balanceLoading, setBalanceLoading] = useState(true)
 
   function visClick() {
     visibility ? setVisibility(false) : setVisibility(true)
@@ -177,24 +177,32 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
 
         <div id="fc_order_bar">
           <div className="fc_order_bar_col fc_order_bar_finances">
-            <div>
-              <span>{__("Verfügbares Guthaben", "fcplugin")}:</span>
-              <span>
-                <span dangerouslySetInnerHTML={{ __html: currency }} /> {originalBalance.toFixed(2)}
-              </span>
-            </div>
-            <div>
-              <span>{__("Aktueller Bestellwert", "fcplugin")}:</span>
-              <span>
-                <span dangerouslySetInnerHTML={{ __html: currency }} /> {currentTotal.toFixed(2)}
-              </span>
-            </div>
-            <div style={newBalance > 0 ? { color: "green" } : { color: "red" }}>
-              <span>{__("Nicht verwendetes Guthaben", "fcplugin")}:</span>
-              <span>
-                <span dangerouslySetInnerHTML={{ __html: currency }} /> {newBalance.toFixed(2)}
-              </span>
-            </div>
+            {balanceLoading ? (
+              <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <>
+                <div>
+                  <span>{__("Verfügbares Guthaben", "fcplugin")}:</span>
+                  <span>
+                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {originalBalance.toFixed(2)}
+                  </span>
+                </div>
+                <div>
+                  <span>{__("Aktueller Bestellwert", "fcplugin")}:</span>
+                  <span>
+                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {currentTotal.toFixed(2)}
+                  </span>
+                </div>
+                <div style={newBalance > 0 ? { color: "green" } : { color: "red" }}>
+                  <span>{__("Nicht verwendetes Guthaben", "fcplugin")}:</span>
+                  <span>
+                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {newBalance.toFixed(2)}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
           <div className="fc_order_bar_actions">
             <div className="multi-button">
