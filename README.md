@@ -1,4 +1,4 @@
-# FOODCOOP MANAGER PLUGIN
+# FOODCOOP MANAGER
 
 ## Introduction
 
