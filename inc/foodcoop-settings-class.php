@@ -120,8 +120,8 @@ class FoocoopPluginSettings {
   <?php }
 
   function fc_public_products_html() { ?>
-    <input name="fc_public_products" type="checkbox" disabled id="fc_public_products" value="1" <?php checked(get_option('fc_public_products'), '1') ?> />
-    <p class="description"><?php echo esc_html__('Produktbilder erscheinen in der Bestell-Liste. Seiten für einzelne Produkte (mit Beschreibung und Details) werden aktiviert.', 'fcplugin'); ?></p>
+    <input name="fc_public_products" type="checkbox" id="fc_public_products" value="1" <?php checked(get_option('fc_public_products'), '1') ?> />
+    <p class="description"><?php echo esc_html__('Produktbilder erscheinen in der Bestell-Liste. Overlays für einzelne Produkte (mit Beschreibung und Details) werden aktiviert.', 'fcplugin'); ?></p>
   <?php }
 
   function fc_settings() {

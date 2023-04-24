@@ -16,15 +16,11 @@ const __ = wp.i18n.__
 const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, activeState, categories }) => {
   const [products, setProducts] = useState()
   const [productsLoading, setProductsLoading] = useState(true)
-  const [currentTotal, setCurrentTotal] = useState(0)
-  const [initialTotal, setInitialTotal] = useState(0)
-  const [balance, setBalance] = useState(null)
-  const [originalBalance, setOriginalBalance] = useState(0)
   const [cart, setCart] = useState(null)
   const [cartNonce, setCartNonce] = useState(null)
   const [publicPrices, setPublicPrices] = useState(null)
+  const [additionalProductInformation, setAdditionalProductInformation] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [nmbr, setnmbr] = useState(0)
   const [shoppingList, setShoppingList] = useState({})
   const [trigger, setTrigger] = useState(0)
 
@@ -32,45 +28,22 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
    * Get cart data of user
    */
   useEffect(() => {
-    if (!originalBalance) {
-      axios
-        .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
-        .then(function (response) {
-          setCartNonce(response.headers["x-wc-store-api-nonce"])
-          if (response?.data?.length > 0) {
-            const res = response.data
-            let cartData = []
-            res.map(item => {
-              cartData.push([item.id, item.quantity, item.name, item.prices.price / 100])
-            })
-            setCart(cartData)
-          }
-
-          if (balance === null) {
-            axios
-              .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
-                id: frontendLocalizer.currentUser.ID
-              })
-              .then(function (response) {
-                if (response.data) {
-                  const res = JSON.parse(response.data)
-                  let b = res
-                  if (b === null) {
-                    b = 0
-                  }
-                  setBalance(parseFloat(b))
-                  setOriginalBalance(parseFloat(b))
-                }
-              })
-              .catch(error => console.log(error))
-          }
-        })
-        .catch(error => console.log(error))
-    }
-    if (initialTotal > 0 && originalBalance !== null) {
-      setOriginalBalance(originalBalance + initialTotal)
-    }
-  }, [initialTotal])
+    axios
+      .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
+      .then(function (response) {
+        setCartNonce(response.headers["x-wc-store-api-nonce"])
+        if (response?.data?.length > 0) {
+          const res = response.data
+          console.log(res)
+          let cartData = []
+          res.map(item => {
+            cartData.push([item.id, item.quantity, item.name, item.prices.price / 100])
+          })
+          setCart(cartData)
+        }
+      })
+      .catch(error => console.log(error))
+  }, [])
 
   /**
    * Prepare product data for order table
@@ -85,7 +58,6 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
     }
 
     // go through each procduct, rearrange its information and add to productsByCategory object
-    let initialTotal = 0
     if (allProducts && activeState !== null) {
       allProducts.map(p => {
         let productToDo = {}
@@ -97,6 +69,8 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
         productToDo.category = p.category_name
         productToDo.id = p.id
         productToDo.short_description = p.short_description
+        productToDo.image = p.image
+        productToDo.description = p.description
 
         productToDo.price = p.price
         // public prices?
@@ -113,13 +87,8 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
                 cart.map(item => {
                   if (item[0] === p.id) {
                     productToDo.amount = item[1]
-                    initialTotal += item[1] * item[3]
                   }
                 })
-              } else {
-                if (p.amount > 0) {
-                  initialTotal += p.amount * p.price
-                }
               }
               productsByCategory[p.category_name].push(productToDo)
             }
@@ -131,30 +100,11 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
 
       setProducts(productsByCategory)
       setProductsLoading(false)
-      setCurrentTotal(initialTotal)
-      setInitialTotal(initialTotal)
     }
   }, [bestellrundenProducts, publicPrices, allProducts, cart, activeState])
 
-  useEffect(() => {
-    if (originalBalance) {
-      setBalance(originalBalance - initialTotal)
-    }
-  }, [initialTotal, originalBalance])
-
-  useEffect(() => {
-    if (products) {
-      let newCurrentTotal = 0
-      products.map(row => {
-        newCurrentTotal += parseFloat(row.amount) * parseFloat(row.price)
-      })
-      setCurrentTotal(newCurrentTotal)
-      setBalance(originalBalance - newCurrentTotal)
-    }
-  }, [nmbr])
-
   /**
-   * Determine if prices are shown publicly or not
+   * Get options for product list
    */
   useEffect(() => {
     axios
@@ -162,6 +112,15 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
       .then(function (response) {
         if (response.data) {
           response.data.length === 3 ? setPublicPrices(true) : setPublicPrices(false)
+        }
+      })
+      .catch(error => console.log(error))
+
+    axios
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_products`)
+      .then(function (response) {
+        if (response.data) {
+          response.data.length === 3 ? setAdditionalProductInformation(true) : setAdditionalProductInformation(false)
         }
       })
       .catch(error => console.log(error))
@@ -176,10 +135,10 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
   return !loading ? (
     <TriggerContext.Provider value={trigger}>
       <ShoppingContext.Provider value={shoppingList}>
-        {frontendLocalizer.currentUser.ID ? <OrderOverview currency={currency} order={order} balance={balance} cartNonce={cartNonce} activeState={activeState} /> : ""}
+        {frontendLocalizer.currentUser.ID ? <OrderOverview currency={currency} order={order} cartNonce={cartNonce} activeState={activeState} cart={cart} /> : ""}
         {activeState && bestellrundenDates ? (
           <>
-            <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt", marginBottom: "20px" }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt", marginBottom: "20px", textAlign: "right" }}>
               <CelebrationIcon /> {__("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")}
             </Typography>
             <table>
@@ -212,7 +171,7 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
             <Grid item xs={12}>
               <Card sx={{ minWidth: 275, borderRadius: 0, backgroundColor: "#f9f9f9", boxShadow: "none", border: "1px solid #f0f0f0" }}>
                 <CardContent>
-                  <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "right" }}>
                     <HourglassTopIcon /> {__("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")}
                   </Typography>
                 </CardContent>
@@ -220,7 +179,7 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory publicPrices={publicPrices} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (

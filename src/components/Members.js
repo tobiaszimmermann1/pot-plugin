@@ -3,6 +3,7 @@ import axios from "axios"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { Box, IconButton, Button } from "@mui/material"
+import { Typography } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import AddIcon from "@mui/icons-material/Add"
@@ -10,6 +11,8 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import { ExportToCsv } from "export-to-csv"
 import AddMember from "./members/AddMember"
 import Wallet from "./members/Wallet"
+import CheckIcon from "@mui/icons-material/Check"
+import CloseIcon from "@mui/icons-material/Close"
 const __ = wp.i18n.__
 
 const Members = () => {
@@ -41,9 +44,12 @@ const Members = () => {
             userToDo.name = u.name
             userToDo.email = u.email
             userToDo.address = u.address
+            userToDo.postcode = u.postcode
+            userToDo.city = u.city
             userToDo.balance = u.balance
             userToDo.role = u.role
             userToDo.id = u.id
+            userToDo.active = u.active
 
             reArrangedUserData.push(userToDo)
           })
@@ -57,6 +63,7 @@ const Members = () => {
   /**
    * Users Table
    */
+  const [validationErrors, setValidationErrors] = useState({})
 
   const columns = useMemo(
     () => [
@@ -68,7 +75,8 @@ const Members = () => {
           <a href={`${appLocalizer.homeUrl}/wp-admin/user-edit.php?user_id=${cell.getValue()}`} target="blank">
             {cell.getValue()}
           </a>
-        )
+        ),
+        enableEditing: false
       },
       {
         accessorKey: "name",
@@ -83,12 +91,43 @@ const Members = () => {
         header: __("Adresse", "fcplugin")
       },
       {
+        accessorKey: "postcode",
+        header: __("PLZ", "fcplugin")
+      },
+      {
+        accessorKey: "city",
+        header: __("Ort", "fcplugin")
+      },
+      {
         accessorKey: "balance",
-        header: __("Guthaben", "fcplugin")
+        header: __("Guthaben", "fcplugin"),
+        enableEditing: false
+      },
+      {
+        accessorKey: "active",
+        header: __("Aktivmitglied", "fcplugin"),
+        size: 50,
+        Cell: ({ row, cell }) => (cell.getValue() === "1" ? <CheckIcon /> : <CloseIcon />),
+        muiTableBodyCellEditTextFieldProps: {
+          error: !!validationErrors.active,
+          helperText: validationErrors.active,
+          type: "number",
+          onChange: event => {
+            const value = event.target.value
+            //validation logic
+            if (value !== "0" && value !== "1") {
+              setValidationErrors(prev => ({ ...prev, active: "Muss entweder 0 oder 1 sein." }))
+            } else {
+              delete validationErrors.active
+              setValidationErrors({ ...validationErrors })
+            }
+          }
+        }
       },
       {
         accessorKey: "role",
-        header: __("Rolle", "fcplugin")
+        header: __("Rolle", "fcplugin"),
+        enableEditing: false
       }
     ],
     []
@@ -165,6 +204,28 @@ const Members = () => {
     setUsers([...users])
   }
 
+  // saving edits
+  const handleSaveCell = (cell, value) => {
+    users[cell.row.index][cell.column.id] = value
+
+    axios
+      .post(
+        `${appLocalizer.apiUrl}/foodcoop/v1/postMemberStatus`,
+        {
+          id: cell.row.original.id,
+          value: value
+        },
+        {
+          headers: {
+            "X-WP-Nonce": appLocalizer.nonce
+          }
+        }
+      )
+      .catch(error => console.log(error))
+
+    setUsers([...users])
+  }
+
   return (
     <>
       {statusMessage.active && <div className={`statusMessage ${statusMessage.type}`}>{statusMessage.message}</div>}
@@ -196,8 +257,13 @@ const Members = () => {
             )
           }
         }}
-        editingMode={"modal"}
-        enableEditing={false}
+        editingMode="cell"
+        enableEditing
+        muiTableBodyCellEditTextFieldProps={({ cell }) => ({
+          onBlur: event => {
+            handleSaveCell(cell, event.target.value)
+          }
+        })}
         enableFullScreenToggle={false}
         initialState={{ density: "compact" }}
         positionToolbarAlertBanner="bottom"
@@ -218,6 +284,11 @@ const Members = () => {
               {__("Neues Mitglied", "fcplugin")}
             </Button>
           </Box>
+        )}
+        renderBottomToolbarCustomActions={() => (
+          <Typography sx={{ fontStyle: "italic", p: "0 1rem" }} variant="body2">
+            Zelle doppelklicken zum editieren. "Aktivmitglied" muss 0 oder 1 sein.
+          </Typography>
         )}
       />
       {createModalOpen && <AddMember setModalClose={setCreateModalOpen} handleAddMember={handleAddMember} />}

@@ -69,7 +69,7 @@ function App() {
             <strong className="pluginHome" onClick={() => setActiveTab("dashboard")}>
               {appLocalizer.pluginUrl && (
                 <>
-                  <img src={`${appLocalizer.pluginUrl}/images/foodcoop-icon.svg`} className="pluginLogo" /> Foodcoop {name && name}
+                  <img src={`${appLocalizer.pluginUrl}/images/foodcoop-icon.svg`} className="pluginLogo" /> {name && name}
                 </>
               )}
             </strong>

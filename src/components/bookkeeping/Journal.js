@@ -78,8 +78,8 @@ const Journal = () => {
         theTransaction["type"] = __("Guthaben Transaktion", "fcplugin")
         theTransaction["id"] = transaction.id
         theTransaction["date"] = format(new Date(transaction.date), "yyyy-MM-dd'T'HH:mm:ss'Z'")
-        theTransaction["amount"] = transaction.amount
         theTransaction["details"] = __("Mitglied", "fcplugin") + ": " + transaction.user_id + " (" + transaction.user_name + ") - " + transaction.details
+        transaction.amount >= 0 ? (theTransaction["plus"] = transaction.amount) : (theTransaction["minus"] = -1 * transaction.amount)
         journalData.push(theTransaction)
       })
 
@@ -88,8 +88,9 @@ const Journal = () => {
         theExpense["type"] = __("Ausgabe", "fcplugin")
         theExpense["id"] = expense.id
         theExpense["date"] = format(new Date(expense.date), "yyyy-MM-dd'T'HH:mm:ss'Z'")
-        theExpense["amount"] = expense.amount
         theExpense["details"] = expense.type + " (" + expense.note + ") " + __("erstellt von Mitglied", "fcplugin") + ": " + expense.created_by
+        expense.amount <= 0 ? (theExpense["plus"] = -1 * expense.amount) : (theExpense["minus"] = expense.amount)
+
         journalData.push(theExpense)
       })
 
@@ -121,9 +122,16 @@ const Journal = () => {
         Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy")
       },
       {
-        accessorKey: "amount",
-        header: __("Betrag", "fcplugin"),
-        Cell: ({ cell }) => (parseFloat(cell.getValue()) < 0 ? <span style={{ color: "red" }}>{parseFloat(cell.getValue()).toFixed(2)}</span> : <span style={{ color: "green" }}>{parseFloat(cell.getValue()).toFixed(2)}</span>)
+        accessorKey: "plus",
+        header: __("Einnahmen", "fcplugin"),
+        size: 40,
+        Cell: ({ cell }) => (cell.getValue() ? <div style={{ width: "80%", textAlign: "right", color: "green" }}>{parseFloat(cell.getValue()).toFixed(2)}</div> : "")
+      },
+      {
+        accessorKey: "minus",
+        header: __("Ausgaben", "fcplugin"),
+        size: 40,
+        Cell: ({ cell }) => (cell.getValue() ? <div style={{ width: "80%", textAlign: "right", color: "red" }}>{parseFloat(cell.getValue()).toFixed(2)}</div> : "")
       },
       {
         accessorKey: "details",
@@ -179,10 +187,11 @@ const Journal = () => {
       let newPlus = 0
       let newMinus = 0
       data.map(row => {
-        if (parseFloat(row.amount) > 0) {
-          newPlus += parseFloat(row.amount)
-        } else {
-          newMinus -= parseFloat(row.amount)
+        if (parseFloat(row.plus)) {
+          newPlus += parseFloat(row.plus)
+        }
+        if (parseFloat(row.minus)) {
+          newMinus += parseFloat(row.minus)
         }
       })
       setTotalPlus(newPlus)
@@ -198,6 +207,9 @@ const Journal = () => {
 
   return (
     <>
+      <Typography sx={{ fontStyle: "italic", p: "0 1rem", color: "red" }} variant="body2">
+        Das Milchbüechli ist noch im experimentellen Stadium!!
+      </Typography>
       <MaterialReactTable
         columns={columns}
         data={data ?? []}

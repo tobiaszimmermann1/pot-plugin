@@ -149,6 +149,18 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET getCategoryListPDF
+     * params: bestellrunde
+     */
+    register_rest_route( 'foodcoop/v1', 'getCategoryListPDF', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getCategoryListPDF'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET distlistDetailPDF
      * params: bestellrunde
      */
@@ -380,6 +392,22 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * POST create expense
+     * params: user id, date, type, amount, note
+     */
+    register_rest_route( 'foodcoop/v1', 'postMemberStatus', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postMemberStatus'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+
+
+    
+
     
     
   }
@@ -439,7 +467,10 @@ class FoodcoopRestRoutes {
         "name" => $product->get_name(),
         "price" => $product->get_price(),
         "image" => $product->get_image(),
-        "category_id" => $product->get_category_ids()[0]
+        "category_id" => $product->get_category_ids()[0],
+        "short_description" => $product->get_short_description(),
+        "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
+        "description" => $product->get_description()
       );
     
       // product meta data
@@ -672,6 +703,14 @@ class FoodcoopRestRoutes {
    */
   function getOrderListPDF($data) {
     require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-orderlist-pdf.php');
+    return base64_encode($pdf);
+  }
+
+  /**
+   * getCategoryListPDF
+   */
+  function getCategoryListPDF($data) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-categorylist-pdf.php');
     return base64_encode($pdf);
   }
 
@@ -1107,6 +1146,28 @@ class FoodcoopRestRoutes {
         // update product short_description
         $p->set_short_description( $product[8] );
 
+        // update product description
+        $p->set_description( $product[10] );
+
+        // update product featured image
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        if ($product[9] != "") {
+          // delete current featured image
+          $attachmentid = get_post_thumbnail_id( $id );
+          wp_delete_attachment( $attachmentid, true );
+
+          $image = media_sideload_image( $product[9], $id, $title, 'id' );
+          set_post_thumbnail( $id, $image );
+        } else {
+          // delete current featured image
+          $attachmentid = get_post_thumbnail_id( $id );
+          wp_delete_attachment( $attachmentid, true );
+          set_post_thumbnail( $id, '' );
+        }
+
         // save the product
         $p->save();
 
@@ -1153,8 +1214,12 @@ class FoodcoopRestRoutes {
         $sd = array(
           'ID' => $post_id,
           'short_description' => $product[8],
+          'description' => $product[10],
          );
         wp_update_post( $sd );
+
+        // update product featured image
+        //media_sideload_image( $product[9], $post_id, $title );
 
         $new_products++;
       }
@@ -1272,7 +1337,10 @@ class FoodcoopRestRoutes {
       $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
       $email = $user->data->user_email;
       $role = implode($user->roles);
-      $address = get_user_meta($id, 'billing_address_1', true).", ".get_user_meta($id, 'billing_postcode', true)." ".get_user_meta($id, 'billing_city', true);
+      $address = get_user_meta($id, 'billing_address_1', true);
+      $postcode = get_user_meta($id, 'billing_postcode', true);
+      $city = get_user_meta($id, 'billing_city', true);
+      $active = get_user_meta($id, '_activeMember', true);
 
       // get balance
       global $wpdb;
@@ -1292,6 +1360,9 @@ class FoodcoopRestRoutes {
       $the_user['address'] = $address;
       $the_user['balance'] = $balance;
       $the_user['role'] = $role;
+      $the_user['postcode'] = $postcode;
+      $the_user['city'] = $city;
+      $the_user['active'] = $active;
 
       array_push($userData, $the_user);
     }
@@ -1607,8 +1678,9 @@ class FoodcoopRestRoutes {
         "id" => $product->get_id(),
         "name" => $product->get_name(),
         "price" => $product->get_price(),
-        "image" => $product->get_image(),
-        "category_id" => $product->get_category_ids()[0]
+        "category_id" => $product->get_category_ids()[0],
+        "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
+        "description" => $product->get_description()
       );
     
       // product meta data
@@ -1623,7 +1695,7 @@ class FoodcoopRestRoutes {
 
       // check if user has already ordered in this bestellrunde and if yes, set amount
       $amount = 0;
-      if ($last_order) {
+      if ($order) {
         foreach($last_order->get_items() as $item_id => $item) {
           $item_product_id = $item->get_meta( '_pid', true );
           if ($item_product_id == $product->get_id()) {
@@ -1721,6 +1793,22 @@ class FoodcoopRestRoutes {
 
     return $id;
   }
+
+
+
+  /**
+   * postMemberStatus
+   */
+  function postMemberStatus($data) {
+    $id = $data['id'];
+    $value = $data['value'];
+    update_user_meta( $id, '_activeMember', $value );
+    return $id;
+  }
+
+
+
+  
 
 
 

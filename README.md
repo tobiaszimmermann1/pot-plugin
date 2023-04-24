@@ -26,9 +26,25 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 3. Unzip the contents to `wp-content/plugins/`
 4. Run `composer install` in the plugin directory
 5. Run `npm install` in the plugin directory
-5. Activate Foodcoop Plugin
+6. Activate Foodcoop Plugin
 
 ## Contact, Requests & Issues
 
 - tobias.zimmermann@neues-food-depot.ch
 - www.neues-food-depot.ch
+
+## Changelog
+
+# 1.5.1
+
+- fixed product list and product export to include missing description column
+- added a new category list export: for products, sorted by category
+- slight readability improvements of export forms
+- Ordering List UI: bug fixes, added warnings for previous orders and products in cart
+- Improved the display of member addresses
+- Added membership status to users (purely informational at this point)
+- Changes to UI of Milchbüechli (experimental)
+- added compatibility with product pictures
+- added compatibility with long descriptions
+- added an optional quick view for the frontend with extended description and product image
+- product images may be imported remotely through product import csv

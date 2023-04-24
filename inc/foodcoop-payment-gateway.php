@@ -133,7 +133,9 @@ function fc_init_gateway_class() {
 
                 $args = array(
                     'customer' => $user_id,
-                    'bestellrunde_id' => $active,
+                    'meta_key'      => 'bestellrunde_id', 
+                    'meta_value'    => $active,
+                    'meta_compare'  => '=', 
                   );
                             
                 $orders = wc_get_orders( $args );

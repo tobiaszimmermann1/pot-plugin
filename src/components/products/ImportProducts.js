@@ -120,8 +120,8 @@ function ImportProducts({ setModalClose, categories }) {
               /**
                * 1. Validate Number of Columns
                */
-              if (results.data[0].length !== 9) {
-                setValidationError(__("Die Datei hat nicht exakt 9 Spalten.", "fcplugin"))
+              if (results.data[0].length !== 11) {
+                setValidationError(__("Die Datei hat nicht exakt 11 Spalten.", "fcplugin"))
                 validated = false
               }
 
@@ -164,6 +164,14 @@ function ImportProducts({ setModalClose, categories }) {
                 setValidationError(__("Spalte 9 muss 'short_description' heissen.", "fcplugin"))
                 validated = false
               }
+              if (results.data[0][9] !== "image") {
+                setValidationError(__("Spalte 10 muss 'image' heissen.", "fcplugin"))
+                validated = false
+              }
+              if (results.data[0][10] !== "description") {
+                setValidationError(__("Spalte 11 muss 'description' heissen.", "fcplugin"))
+                validated = false
+              }
 
               /**
                * 3. Validate that there are no empty cells
@@ -175,7 +183,7 @@ function ImportProducts({ setModalClose, categories }) {
                   let c = 1
                   row.map(cell => {
                     if (cell === "") {
-                      if (c !== 8 && c !== 9) {
+                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11) {
                         errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
                         validated = false
                       }
@@ -186,7 +194,7 @@ function ImportProducts({ setModalClose, categories }) {
                 }
               })
               if (errors !== "") {
-                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten).", "fcplugin") + errors)
+                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image' und 'description').", "fcplugin") + errors)
                 validated = false
               }
 

@@ -5,7 +5,7 @@ import { CSSTransition } from "react-transition-group"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 
-const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices }) => {
+const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation }) => {
   const [visibility, setVisibility] = useState(true)
 
   function visClick() {
@@ -26,7 +26,15 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
           <div className="fc_order_list_cat_wrapper">
             <div className="fc_order_list_line">
               <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>
-              <span className="fc_order_list_header col_2">{__("Produkt", "fcplugin")}</span>
+              {additionalProductInformation ? (
+                <>
+                  <span className="fc_order_list_header col_15"></span>
+                  <span className="fc_order_list_header col_2">{__("Produkt", "fcplugin")}</span>
+                </>
+              ) : (
+                <span className="fc_order_list_header col_2x">{__("Produkt", "fcplugin")}</span>
+              )}
+
               <span className="fc_order_list_header col_25">{__("Details", "fcplugin")}</span>
               <span className="fc_order_list_header col_3">{__("Produzent", "fcplugin")}</span>
               <span className="fc_order_list_header col_4">{__("Einheit", "fcplugin")}</span>
@@ -35,7 +43,7 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
             </div>
 
             {products.map(product => (
-              <ProductLine publicPrices={publicPrices} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
+              <ProductLine publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
             ))}
           </div>
         </CSSTransition>

@@ -11,6 +11,7 @@ import FileUploadIcon from "@mui/icons-material/FileUpload"
 import { ExportToCsv } from "export-to-csv"
 import ImportProducts from "./products/ImportProducts"
 import ProducerImportProducts from "./products/ProducerImportProducts"
+import ImageIcon from "@mui/icons-material/Image"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -42,6 +43,9 @@ const Products = () => {
             productToDo.origin = p._herkunft
             productToDo.category = p.category_name
             productToDo.id = p.id
+            productToDo.short_description = p.short_description
+            p.image ? (productToDo.image = p.image) : (productToDo.image = "")
+            productToDo.description = p.description
 
             reArrangeProductData.push(productToDo)
           })
@@ -66,8 +70,31 @@ const Products = () => {
         size: 50
       },
       {
+        accessorKey: "image",
+        header: __("", "fcplugin"),
+        Cell: ({ cell }) =>
+          cell.getValue() ? (
+            <a href={`${appLocalizer.homeUrl}/wp-admin/post.php?post=${cell.row.original.id}&action=edit`} target="blank">
+              <img src={cell.getValue()} height={30} />
+            </a>
+          ) : (
+            <a href={`${appLocalizer.homeUrl}/wp-admin/post.php?post=${cell.row.original.id}&action=edit`} target="blank">
+              <ImageIcon />
+            </a>
+          ),
+        size: 30,
+        enableColumnResizing: false
+      },
+      {
         accessorKey: "name",
         header: __("Produkt", "fcplugin")
+      },
+      {
+        accessorKey: "short_description",
+        id: "short_description",
+        header: __("Details", "fcplugin"),
+        enableEditing: false,
+        size: 80
       },
       {
         accessorKey: "price",
@@ -204,6 +231,7 @@ const Products = () => {
         data={products ?? []}
         state={{ isLoading: productsLoading }}
         localization={MRT_Localization_DE}
+        enableColumnResizing
         enableRowActions
         positionActionsColumn="first"
         displayColumnDefOptions={{

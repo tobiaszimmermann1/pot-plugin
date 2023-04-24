@@ -14,7 +14,6 @@ function FrontendApp() {
   const [active, setActive] = useState(null)
   const [order, setOrder] = useState(null)
   const [currency, setCurrency] = useState(null)
-  const [publicPrices, setPublicPrices] = useState(false)
 
   useEffect(() => {
     axios
