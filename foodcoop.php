@@ -5,7 +5,7 @@
  * @package FoodcoopPlugin 
  */
 /*
-Plugin Name: Foodcoop Plugin
+Plugin Name: Foodcoop Manager
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
 Version: 1.5.1
