@@ -36,7 +36,7 @@
   // loop through orders
   foreach( $orders as $order ) {
 
-    $customer_info = __("Mitgliedernummer","fcplugin").': '.$order->get_customer_id()."<br>".$order->get_billing_first_name()." ".$order->get_billing_last_name()."<br>".$order->get_billing_address_1()."<br>".$order->get_billing_postcode()." ".$order->get_billing_city()."<br>".$order->get_billing_email()."<br>".$order->get_billing_phone();
+    $customer_info = __("Mitgliedernummer","fcplugin").': '.$order->get_customer_id()."<br>".$order->get_billing_address_1()."<br>".$order->get_billing_postcode()." ".$order->get_billing_city()."<br>".$order->get_billing_email()."<br>".$order->get_billing_phone();
 
     // header
     $header = '
@@ -46,7 +46,11 @@
           <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;" colspan="2">'.__("Quittung zu Bestellung","fcplugin").' '.$order->get_id().'</td>
         </tr>
         <tr>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Mitglied","fcplugin").'</td>
+          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Mitglied Name","fcplugin").'</td>
+          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;font-size:16pt;">'.$order->get_billing_first_name()." ".$order->get_billing_last_name().'</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Mitglied Info","fcplugin").'</td>
           <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;">'.$customer_info.'</td>
         </tr>
         <tr>

@@ -74,6 +74,10 @@ class OrderMeta
         $value = $id;
         wc_update_order_item_meta($item_id, $key, $value);
 
+        $key = '_category';
+        $value = $p->get_category_ids()[0];
+        wc_update_order_item_meta($item_id, $key, $value);
+
     }
 
   }

@@ -204,6 +204,40 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   }
 
   /**
+   * Get Category List
+   */
+
+  function handleGetCategoryList() {
+    if (id) {
+      setButtonLoading(true)
+      axios
+        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getCategoryListPDF?bestellrunde=${id}`, {
+          headers: {
+            "X-WP-Nonce": appLocalizer.nonce
+          }
+        })
+        .then(function (response) {
+          if (response.data) {
+            const linkSource = `data:application/pdf;base64,${response.data}`
+            const downloadLink = document.createElement("a")
+            const fileName = `bestellrunde-${id}-categorylist.pdf`
+            downloadLink.href = linkSource
+            downloadLink.download = fileName
+            downloadLink.click()
+            setButtonLoading(false)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          setButtonLoading(false)
+        })
+        .finally(() => {
+          setButtonLoading(false)
+        })
+    }
+  }
+
+  /**
    * Get Data Export API call
    */
   const { ExcelDownloder, Type } = useExcelDownloder()
@@ -341,6 +375,9 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
                   </LoadingButton>
                   <LoadingButton onClick={handleGetOrderList} variant="text" loading={buttonLoading} loadingPosition="start" startIcon={<PictureAsPdfIcon />}>
                     {__("Bestellformulare", "fcplugin")}
+                  </LoadingButton>
+                  <LoadingButton onClick={handleGetCategoryList} variant="text" loading={buttonLoading} loadingPosition="start" startIcon={<PictureAsPdfIcon />}>
+                    {__("Kategorielisten", "fcplugin")}
                   </LoadingButton>
 
                   {exportData ? (

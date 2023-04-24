@@ -8,7 +8,7 @@
 Plugin Name: Foodcoop Plugin
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
-Version: 1.5.0
+Version: 1.5.1
 Author: Tobias Zimmermann
 Author URI: https://neues-food-depot.ch
 License: GPLv2 or later

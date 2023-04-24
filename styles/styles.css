@@ -283,8 +283,28 @@
   width: 12%;
 }
 
+.col_15 {
+  width: 10%;
+}
+
+.product_image_thumbnail {
+  display: inline-block;
+  width: 100%;
+}
+
 .col_2 {
-  width: 20%;
+  width: 15%;
+  font-weight: bold;
+}
+
+.col_2:hover,
+.product_image_thumbnail:hover {
+  cursor: pointer;
+}
+
+.col_2x {
+  width: 25%;
+  font-weight: bold;
 }
 
 .col_25 {
@@ -292,7 +312,7 @@
 }
 
 .col_3 {
-  width: 20%;
+  width: 15%;
 }
 
 .col_4 {
@@ -578,4 +598,25 @@
 
 .fc_datepicker label {
   margin-top: -5px;
+}
+
+.fc_order_bar_warning {
+  padding: 0 10px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.fc_order_bar_warning span {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 5px;
+  font-size: 0.8em;
+  color: #000;
 }

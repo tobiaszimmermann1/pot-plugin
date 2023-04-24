@@ -7,6 +7,7 @@ import { TriggerContext } from "./ShoppingContext"
 import axios from "axios"
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered"
+import WarningIcon from "@mui/icons-material/Warning"
 import DoneIcon from "@mui/icons-material/Done"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale"
@@ -15,8 +16,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import { CSSTransition } from "react-transition-group"
 const __ = wp.i18n.__
 
-const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => {
-  const [visibility, setVisibility] = useState(true)
+const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
   const [currentTotal, setCurrentTotal] = useState(0)
   const [shoppingListVisibility, setShoppingListVisibility] = useState(false)
   const [helpVisibility, setHelpVisibility] = useState(false)
@@ -25,11 +25,11 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
   const [addingToCart, setAddingToCart] = useState(false)
   const [originalBalance, setOriginalBalance] = useState(null)
   const [balanceLoading, setBalanceLoading] = useState(true)
+  const [walletBalance, setWalletBalance] = useState(null)
 
-  function visClick() {
-    visibility ? setVisibility(false) : setVisibility(true)
-  }
-
+  /**
+   * Shopping List
+   */
   const shoppingList = useContext(ShoppingContext)
   const trigger = useContext(TriggerContext)
 
@@ -43,27 +43,6 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
     }
   }, [trigger])
 
-  useEffect(() => {
-    newBalance > 0 ? currentTotal > 0 && setOrderingState(true) : setOrderingState(false)
-  }, [newBalance, balance])
-
-  /**
-   * Add Order Value to available balance, if order exists
-   */
-  useEffect(() => {
-    let orderBalance = 0.0
-    order ? (orderBalance = parseFloat(order?.total)) : (orderBalance = 0.0)
-    if (orderBalance > 0) {
-      setOriginalBalance(balance + orderBalance)
-    } else {
-      setOriginalBalance(balance)
-    }
-  }, [currentTotal, balance])
-
-  useEffect(() => {
-    setNewBalance(originalBalance - currentTotal)
-  }, [originalBalance, balance, currentTotal])
-
   function shoppingListClick() {
     shoppingListVisibility ? setShoppingListVisibility(false) : setShoppingListVisibility(true)
     setHelpVisibility(false)
@@ -73,6 +52,53 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
     helpVisibility ? setHelpVisibility(false) : setHelpVisibility(true)
     setShoppingListVisibility(false)
   }
+
+  /**
+   * balance calculations
+   */
+  // get current wallet balance of user
+  useEffect(() => {
+    axios
+      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
+        id: frontendLocalizer.currentUser.ID
+      })
+      .then(function (response) {
+        if (response.data) {
+          const res = JSON.parse(response.data)
+          let b = res
+          if (b === null) {
+            b = 0
+          }
+          setWalletBalance(parseFloat(b))
+        }
+      })
+      .catch(error => console.log(error))
+  }, [])
+
+  useEffect(() => {
+    if (order && walletBalance) {
+      setOriginalBalance(walletBalance + parseFloat(order.total))
+    }
+  }, [walletBalance, order])
+
+  useEffect(() => {
+    setNewBalance(originalBalance - currentTotal)
+  }, [originalBalance])
+
+  useEffect(() => {
+    if (newBalance) {
+      newBalance >= 0 ? setOrderingState(true) : setOrderingState(false)
+      setBalanceLoading(false)
+    }
+  }, [newBalance])
+
+  useEffect(() => {
+    if (originalBalance) {
+      setBalanceLoading(true)
+      let newCalculatedBalance = originalBalance - currentTotal
+      setNewBalance(newCalculatedBalance)
+    }
+  }, [trigger, currentTotal])
 
   /**
    * Add to Cart function
@@ -176,6 +202,18 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
         </CSSTransition>
 
         <div id="fc_order_bar">
+          <div className="fc_order_bar_warning">
+            {order && (
+              <span>
+                <WarningIcon sx={{ marginRight: "5px", color: "#ff9800" }} /> {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
+              </span>
+            )}
+            {cart && (
+              <span>
+                <WarningIcon sx={{ marginRight: "5px", color: "#ff9800" }} /> {__("Du hast Produkte im Warenkorb.", "fcplugin")}
+              </span>
+            )}
+          </div>
           <div className="fc_order_bar_col fc_order_bar_finances">
             {balanceLoading ? (
               <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
@@ -186,19 +224,19 @@ const OrderOverview = ({ currency, order, balance, cartNonce, activeState }) => 
                 <div>
                   <span>{__("Verfügbares Guthaben", "fcplugin")}:</span>
                   <span>
-                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {originalBalance.toFixed(2)}
+                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(originalBalance).toFixed(2)}
                   </span>
                 </div>
                 <div>
                   <span>{__("Aktueller Bestellwert", "fcplugin")}:</span>
                   <span>
-                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {currentTotal.toFixed(2)}
+                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(currentTotal).toFixed(2)}
                   </span>
                 </div>
                 <div style={newBalance > 0 ? { color: "green" } : { color: "red" }}>
-                  <span>{__("Nicht verwendetes Guthaben", "fcplugin")}:</span>
+                  <span>{__("Restguthaben", "fcplugin")}:</span>
                   <span>
-                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {newBalance.toFixed(2)}
+                    <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(newBalance).toFixed(2)}
                   </span>
                 </div>
               </>

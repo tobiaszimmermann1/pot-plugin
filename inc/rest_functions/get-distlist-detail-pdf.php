@@ -153,7 +153,7 @@
               </tr>
               <tr>
                 <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Produkt","fcplugin").'</td>
-                <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;">'.$product[3].'</td>
+                <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;font-size:16pt;">'.$product[3].'</td>
               </tr>
               <tr>
                 <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Einheit","fcplugin").'</td>

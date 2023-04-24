@@ -131,7 +131,7 @@
       </tr>
         <tr>
           <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Lieferant","fcplugin").'</td>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;">'.esc_attr($lieferant).'</td>
+          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;font-size:16pt;">'.esc_attr($lieferant).'</td>
         </tr>
         <tr>
           <td style="padding:5px 10px 5px 10px;font-weight:bold;vertical-align:top;">'.__("Bestellrunde","fcplugin").'</td>
