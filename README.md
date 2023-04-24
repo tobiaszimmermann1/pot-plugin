@@ -35,7 +35,7 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
-# 1.5.1
+### 1.5.1
 
 - fixed product list and product export to include missing description column
 - added a new category list export: for products, sorted by category
