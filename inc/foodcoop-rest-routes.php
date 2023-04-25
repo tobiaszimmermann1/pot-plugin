@@ -1188,11 +1188,13 @@ class FoodcoopRestRoutes {
           'post_status'         => 'publish',
           'post_title'          => sanitize_text_field($title),
           'meta_input'          => array(
-                  '_einheit'    => sanitize_text_field($product[2]),
-                  '_gebinde'    => sanitize_text_field($product[3]),
-                  '_lieferant'  => sanitize_text_field($product[4]),
-                  '_herkunft'   => sanitize_text_field($product[5]),
-                )
+                                      '_einheit'    => sanitize_text_field($product[2]),
+                                      '_gebinde'    => sanitize_text_field($product[3]),
+                                      '_lieferant'  => sanitize_text_field($product[4]),
+                                      '_herkunft'   => sanitize_text_field($product[5]),
+                                    ),
+          'post_excerpt' => $product[8],
+          'post_content' => $product[10],
         );
         $post_id = wp_insert_post( $data );
 
@@ -1210,16 +1212,24 @@ class FoodcoopRestRoutes {
         wp_set_object_terms( $post_id, intval($categories[$product[6]]), 'product_cat' );
         wp_set_object_terms( $post_id, 'simple', 'product_type' );
 
-        // set short description
-        $sd = array(
-          'ID' => $post_id,
-          'short_description' => $product[8],
-          'description' => $product[10],
-         );
-        wp_update_post( $sd );
-
         // update product featured image
-        //media_sideload_image( $product[9], $post_id, $title );
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        if ($product[9] != "") {
+          // delete current featured image
+          $attachmentid = get_post_thumbnail_id( $post_id );
+          wp_delete_attachment( $attachmentid, true );
+
+          $image = media_sideload_image( $product[9], $post_id, $title, 'id' );
+          set_post_thumbnail( $post_id, $image );
+        } else {
+          // delete current featured image
+          $attachmentid = get_post_thumbnail_id( $id );
+          wp_delete_attachment( $attachmentid, true );
+          set_post_thumbnail( $post_id, '' );
+        }
 
         $new_products++;
       }

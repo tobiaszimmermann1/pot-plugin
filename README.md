@@ -48,3 +48,9 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 - added compatibility with long descriptions
 - added an optional quick view for the frontend with extended description and product image
 - product images may be imported remotely through product import csv
+
+### 1.5.2
+
+- direct producer import: changed to simple list download
+- bugfixes
+- UI fixes
