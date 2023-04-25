@@ -17963,21 +17963,25 @@ const OrderOverview = _ref => {
     }).catch(error => console.log(error));
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (order && walletBalance) {
-      setOriginalBalance(walletBalance + parseFloat(order.total));
+    if (walletBalance || walletBalance === 0) {
+      if (order) {
+        setOriginalBalance(walletBalance + parseFloat(order.total));
+      } else {
+        setOriginalBalance(walletBalance);
+      }
     }
   }, [walletBalance, order]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setNewBalance(originalBalance - currentTotal);
   }, [originalBalance]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (newBalance) {
+    if (newBalance || newBalance === 0) {
       newBalance >= 0 ? setOrderingState(true) : setOrderingState(false);
       setBalanceLoading(false);
     }
   }, [newBalance]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (originalBalance) {
+    if (originalBalance || originalBalance === 0) {
       setBalanceLoading(true);
       let newCalculatedBalance = originalBalance - currentTotal;
       setNewBalance(newCalculatedBalance);
@@ -18125,7 +18129,7 @@ const OrderOverview = _ref => {
     },
     size: "small",
     onClick: shoppingListClick
-  }, __("Mein Einkaufszettel", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_14__["default"], {
+  }, __("Einkaufszettel", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_14__["default"], {
     className: "cartButton",
     loading: addingToCart,
     loadingPosition: "center",
@@ -18386,14 +18390,16 @@ const ProductLine = _ref => {
   })), additionalProductInformation ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_15",
     onClick: handleOpen
-  }, product.image && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-    src: product.image,
-    className: "product_image_thumbnail"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "product_image_thumbnail",
+    style: {
+      backgroundImage: `url(${product.image})`
+    }
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_2",
     onClick: handleOpen
   }, product.name)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "fc_order_list_col col_2L",
+    className: "fc_order_list_col col_2x",
     onClick: handleOpen
   }, product.name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_25"
@@ -18429,7 +18435,8 @@ const ProductLine = _ref => {
     component: "img",
     alt: "green iguana",
     height: "140",
-    image: product.image
+    image: product.image,
+    className: "productModalImage"
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_CardContent__WEBPACK_IMPORTED_MODULE_9__["default"], {
     style: {
       padding: 20

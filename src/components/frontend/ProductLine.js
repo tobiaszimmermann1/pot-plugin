@@ -103,14 +103,14 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
         {additionalProductInformation ? (
           <>
             <span className="fc_order_list_col col_15" onClick={handleOpen}>
-              {product.image && <img src={product.image} className="product_image_thumbnail" />}
+              <span className="product_image_thumbnail" style={{ backgroundImage: `url(${product.image})` }} />
             </span>
             <span className="fc_order_list_col col_2" onClick={handleOpen}>
               {product.name}
             </span>
           </>
         ) : (
-          <span className="fc_order_list_col col_2L" onClick={handleOpen}>
+          <span className="fc_order_list_col col_2x" onClick={handleOpen}>
             {product.name}
           </span>
         )}
@@ -132,7 +132,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
       <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={modalStyle}>
           <Card sx={{ width: 600 }}>
-            {product.image && <CardMedia component="img" alt="green iguana" height="140" image={product.image} />}
+            {product.image && <CardMedia component="img" alt="green iguana" height="140" image={product.image} className="productModalImage" />}
             <CardContent style={{ padding: 20 }}>
               <Typography gutterBottom variant="h5" component="div">
                 {product.name}

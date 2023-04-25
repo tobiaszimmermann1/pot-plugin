@@ -6,6 +6,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Circula
 import LoadingButton from "@mui/lab/LoadingButton"
 import { format } from "date-fns"
 import { usePapaParse } from "react-papaparse"
+import { ExportToCsv } from "export-to-csv"
 const __ = wp.i18n.__
 
 const baseUrl = "https://neues-food-depot.ch/import/"
@@ -55,7 +56,6 @@ function ProducerImportProducts({ setModalClose }) {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           setLieferanten(res)
         }
       })
@@ -78,8 +78,8 @@ function ProducerImportProducts({ setModalClose }) {
         /**
          * 1. Validate Number of Columns
          */
-        if (results.data[0].length !== 7) {
-          setValidationError(__("Die Datei hat nicht exakt 7 Spalten.", "fcplugin"))
+        if (results.data[0].length !== 11) {
+          setValidationError(__("Die Datei hat nicht exakt 11 Spalten.", "fcplugin"))
           validated = false
         }
 
@@ -114,6 +114,18 @@ function ProducerImportProducts({ setModalClose }) {
           setValidationError(__("Spalte 7 muss 'category' heissen.", "fcplugin"))
           validated = false
         }
+        if (results.data[0][8] !== "short_description") {
+          setValidationError(__("Spalte 9 muss 'short_description' heissen.", "fcplugin"))
+          validated = false
+        }
+        if (results.data[0][9] !== "image") {
+          setValidationError(__("Spalte 10 muss 'image' heissen.", "fcplugin"))
+          validated = false
+        }
+        if (results.data[0][10] !== "description") {
+          setValidationError(__("Spalte 11 muss 'description' heissen.", "fcplugin"))
+          validated = false
+        }
 
         /**
          * 3. Validate that there are no empty cells
@@ -125,7 +137,7 @@ function ProducerImportProducts({ setModalClose }) {
             let c = 1
             row.map(cell => {
               if (cell === "") {
-                if (c !== 8) {
+                if (c !== 8 && c !== 9 && c !== 10 && c !== 11) {
                   errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
                   validated = false
                 }
@@ -136,7 +148,7 @@ function ProducerImportProducts({ setModalClose }) {
           }
         })
         if (errors !== "") {
-          setValidationError(__("Zellen dürfen nicht leer sein.", "fcplugin") + errors)
+          setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image' und 'description').", "fcplugin") + errors)
           validated = false
         }
 
@@ -165,8 +177,9 @@ function ProducerImportProducts({ setModalClose }) {
         }
 
         if (validated === true) {
-          setValidationSuccess(__("Daten wurden geprüft und sind bereit zum Import", "fcplugin"))
+          setValidationSuccess(__("Daten wurden geprüft. Die Import-Liste ist bereit zum Download.", "fcplugin"))
           let checkedData = []
+          checkedData.push(["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description"])
           r = 1
           results.data.map(row => {
             if (r !== results.data.length && r !== 1) {
@@ -174,7 +187,6 @@ function ProducerImportProducts({ setModalClose }) {
             }
             r++
           })
-          console.log(checkedData)
           setValidatedData(checkedData)
         }
       }
@@ -193,37 +205,29 @@ function ProducerImportProducts({ setModalClose }) {
     }
   }, [bestellrunden])
 
-  function handleSubmit() {
-    setSubmitting(true)
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postImportProductsLieferant`,
-        {
-          products: JSON.stringify(validatedData)
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
-          console.log(response.data)
-          let msg = `${__("Import fertiggestellt:", "fcplugin")} ${__("Neu:", "fcplugin")} ${response.data[1]}, ${__("Aktualisiert:", "fcplugin")} ${response.data[0]}`
-          setValidationSuccess(msg)
-        }
-      })
-      .catch(error => console.log(error))
-      .finally(() => {
-        setSubmitting(false)
-      })
+  /**
+   * Export to CSV
+   */
+  const csvOptions = {
+    fieldSeparator: ";",
+    quoteStrings: '"',
+    decimalSeparator: ".",
+    showLabels: true,
+    useBom: true,
+    useKeysAsHeaders: false,
+    filename: "foodcoop-import-products-" + new Date().toLocaleDateString() + new Date().toLocaleTimeString()
+  }
+
+  const csvExporter = new ExportToCsv(csvOptions)
+
+  const handleSubmit = () => {
+    csvExporter.generateCsv(validatedData)
   }
 
   return (
     <>
       <Dialog open={true} fullWidth scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle textAlign="left">{__("Produkte importieren", "fcplugin")}</DialogTitle>
+        <DialogTitle textAlign="left">{__("Produkte von Lieferanten", "fcplugin")}</DialogTitle>
         <DialogContent
           sx={{
             paddingTop: "10px",
@@ -236,13 +240,10 @@ function ProducerImportProducts({ setModalClose }) {
                 {__("Importiere Produkte ausgewählter Lieferanten direkt.", "fcplugin")}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                {__("Produkte mit identischem Namen werden aktualisiert.", "fcplugin")}
+                {__("Du kannst eine fixfertige Import-Liste downloaden.", "fcplugin")}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                {__("Produkte, die nicht existieren (mit identischem Namen) werden neu erstellt.", "fcplugin")}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {__("Produktkategorien, die nicht vorhanden sind, werden neu erstellt.", "fcplugin")}
+                {__("Übernimm aus der Liste was du willst in deine Produkteliste.", "fcplugin")}
               </Typography>
             </Box>
 
@@ -280,7 +281,7 @@ function ProducerImportProducts({ setModalClose }) {
         <DialogActions>
           {validationSuccess && (
             <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting}>
-              {__("Importieren", "fcplugin")}
+              {__("Liste downloaden", "fcplugin")}
             </LoadingButton>
           )}
 

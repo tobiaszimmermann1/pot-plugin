@@ -76,8 +76,12 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
   }, [])
 
   useEffect(() => {
-    if (order && walletBalance) {
-      setOriginalBalance(walletBalance + parseFloat(order.total))
+    if (walletBalance || walletBalance === 0) {
+      if (order) {
+        setOriginalBalance(walletBalance + parseFloat(order.total))
+      } else {
+        setOriginalBalance(walletBalance)
+      }
     }
   }, [walletBalance, order])
 
@@ -86,14 +90,14 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
   }, [originalBalance])
 
   useEffect(() => {
-    if (newBalance) {
+    if (newBalance || newBalance === 0) {
       newBalance >= 0 ? setOrderingState(true) : setOrderingState(false)
       setBalanceLoading(false)
     }
   }, [newBalance])
 
   useEffect(() => {
-    if (originalBalance) {
+    if (originalBalance || originalBalance === 0) {
       setBalanceLoading(true)
       let newCalculatedBalance = originalBalance - currentTotal
       setNewBalance(newCalculatedBalance)
@@ -248,7 +252,7 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
                 {__("Anleitung", "fcplugin")}
               </Button>
               <Button startIcon={<ListAltIcon />} variant="text" sx={{ marginBottom: "10px" }} size="small" onClick={shoppingListClick}>
-                {__("Mein Einkaufszettel", "fcplugin")}
+                {__("Einkaufszettel", "fcplugin")}
               </Button>
             </div>
             <LoadingButton className="cartButton" loading={addingToCart} loadingPosition="center" disabled={!orderingState} startIcon={<DoneIcon />} variant="outlined" sx={{}} size="large" onClick={handleAddToCart}>
