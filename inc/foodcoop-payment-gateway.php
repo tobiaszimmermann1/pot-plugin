@@ -572,15 +572,21 @@ class WalletDashboard
 
           foreach ( $transactions as $transaction )
           {
-              $created_by = get_user_by( 'id', $transaction->created_by );
+                $created_by = get_user_by( 'id', $transaction->created_by );
 
-              echo '  <tr>    ';
-              echo '      <td>'.date("j.m.Y - G:i",strtotime($transaction->date)).'</td>    ';
-              echo '      <td>'.$transaction->amount.'</td>    ';
-              echo '      <td>'.$transaction->balance.'</td>    ';
-              echo '      <td>'.$transaction->details.'</td>    ';
-              echo '      <td>'.$created_by->display_name .'</td>    ';
-              echo '  </tr>   ';
+                $name = $transaction->created_by;
+
+                if ($created_by) {
+                    $name = $created_by->display_name;
+                }
+
+                echo '  <tr>    ';
+                echo '      <td>'.date("j.m.Y - G:i",strtotime($transaction->date)).'</td>    ';
+                echo '      <td>'.$transaction->amount.'</td>    ';
+                echo '      <td>'.$transaction->balance.'</td>    ';
+                echo '      <td>'.$transaction->details.'</td>    ';
+                echo '      <td>'.$name.'</td>    ';
+                echo '  </tr>   ';
 
           }
 
