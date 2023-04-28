@@ -127,6 +127,7 @@
         }
       }
     }
+    sort($users_for_this_category); // sort users alphabetically
     $users_by_category[$category] = $users_for_this_category;
   }
 

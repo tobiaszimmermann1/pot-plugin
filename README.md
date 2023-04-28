@@ -35,6 +35,16 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.5.3
+
+- fixed sorting of users in export lists to be in alphabetical order
+
+### 1.5.2
+
+- direct producer import: changed to simple list download
+- bugfixes
+- UI fixes
+
 ### 1.5.1
 
 - fixed product list and product export to include missing description column
@@ -48,9 +58,3 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 - added compatibility with long descriptions
 - added an optional quick view for the frontend with extended description and product image
 - product images may be imported remotely through product import csv
-
-### 1.5.2
-
-- direct producer import: changed to simple list download
-- bugfixes
-- UI fixes

@@ -104,6 +104,7 @@
         }
       }
     }
+    sort($users_for_this_lieferant); // sort users alphabetically
     $users_by_lieferant[$lieferant] = $users_for_this_lieferant;
   }
 
