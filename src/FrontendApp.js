@@ -11,6 +11,7 @@ function FrontendApp() {
   const [cats, setCats] = useState()
   const [bestellrundenDates, setBestellrundenDates] = useState()
   const [activeBestellrunde, setActiveBestellrunde] = useState()
+  const [nextBestellrunde, setNextBestellrunde] = useState()
   const [active, setActive] = useState(null)
   const [order, setOrder] = useState(null)
   const [currency, setCurrency] = useState(null)
@@ -29,6 +30,8 @@ function FrontendApp() {
           setActiveBestellrunde(res[1])
           setActive(res[0])
           setBestellrundenDates(res[6])
+          setNextBestellrunde(res[8])
+          console.log(res)
           if (res[5] !== null) {
             setOrder(res[5])
           }
@@ -43,7 +46,7 @@ function FrontendApp() {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="fc_order_list_wrapper">
           <div id="fc_order_list_body">
-            <OrderList currency={currency} order={order} categories={cats} allProducts={products} bestellrundenProducts={bestellrundenProducts} bestellrundenDates={bestellrundenDates} activeBestellrunde={activeBestellrunde} activeState={active} />
+            <OrderList currency={currency} order={order} categories={cats} allProducts={products} bestellrundenProducts={bestellrundenProducts} bestellrundenDates={bestellrundenDates} activeBestellrunde={activeBestellrunde} nextBestellrunde={nextBestellrunde} activeState={active} />
           </div>
         </div>
       </LocalizationProvider>

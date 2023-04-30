@@ -48,6 +48,9 @@ class FoocoopPluginSettings {
 
     add_settings_field( 'fc_public_products', __('Produktbilder und Produktseiten aktivieren?', 'fcplugin'), array($this, 'fc_public_products_html'), 'foodcoop-settings-page', 'fc_display' );
     register_setting( 'foodcoop_plugin', 'fc_public_products', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
+   
+    add_settings_field( 'fc_public_members', __('Zeige eine Mitgliederliste in "Mein Account"?', 'fcplugin'), array($this, 'fc_public_members_html'), 'foodcoop-settings-page', 'fc_display' );
+    register_setting( 'foodcoop_plugin', 'fc_public_members', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
   }
 
   function sanitize_margin($input) {
@@ -101,6 +104,11 @@ class FoocoopPluginSettings {
 
   function fc_public_prices_html() { ?>
     <input name="fc_public_prices" type="checkbox" id="fc_public_prices" value="1" <?php checked(get_option('fc_public_prices'), '1') ?> />
+  <?php }
+
+  function fc_public_members_html() { ?>
+    <input name="fc_public_members" type="checkbox" id="fc_public_members" value="1" <?php checked(get_option('fc_public_members'), '1') ?> />
+    <p class="description"><?php echo esc_html__('Zeigt eingeloggten Mitgliedern eine Liste aller Foodcoop Mitglieder mit Name und Email.', 'fcplugin'); ?></p>
   <?php }
 
   function fc_order_page_html() { 

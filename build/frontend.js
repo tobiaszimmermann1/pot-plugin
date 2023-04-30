@@ -4322,6 +4322,29 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ "./node_modules/@mui/icons-material/Bedtime.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@mui/icons-material/Bedtime.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/createSvgIcon */ "./node_modules/@mui/icons-material/utils/createSvgIcon.js"));
+var _jsxRuntime = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
+  d: "M12.34 2.02C6.59 1.82 2 6.42 2 12c0 5.52 4.48 10 10 10 3.71 0 6.93-2.02 8.66-5.02-7.51-.25-12.09-8.43-8.32-14.96z"
+}), 'Bedtime');
+exports["default"] = _default;
+
+/***/ }),
+
 /***/ "./node_modules/@mui/icons-material/Celebration.js":
 /*!*********************************************************!*\
   !*** ./node_modules/@mui/icons-material/Celebration.js ***!
@@ -4410,29 +4433,6 @@ var _jsxRuntime = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/r
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"
 }), 'HelpOutline');
-exports["default"] = _default;
-
-/***/ }),
-
-/***/ "./node_modules/@mui/icons-material/HourglassTop.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/@mui/icons-material/HourglassTop.js ***!
-  \**********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports["default"] = void 0;
-var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/createSvgIcon */ "./node_modules/@mui/icons-material/utils/createSvgIcon.js"));
-var _jsxRuntime = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
-  d: "m6 2 .01 6L10 12l-3.99 4.01L6 22h12v-6l-4-4 4-3.99V2H6zm10 14.5V20H8v-3.5l4-4 4 4z"
-}), 'HourglassTop');
 exports["default"] = _default;
 
 /***/ }),
@@ -17594,6 +17594,7 @@ function FrontendApp() {
   const [cats, setCats] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [bestellrundenDates, setBestellrundenDates] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [activeBestellrunde, setActiveBestellrunde] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)();
+  const [nextBestellrunde, setNextBestellrunde] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [active, setActive] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [order, setOrder] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [currency, setCurrency] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
@@ -17609,6 +17610,8 @@ function FrontendApp() {
         setActiveBestellrunde(res[1]);
         setActive(res[0]);
         setBestellrundenDates(res[6]);
+        setNextBestellrunde(res[8]);
+        console.log(res);
         if (res[5] !== null) {
           setOrder(res[5]);
         }
@@ -17630,6 +17633,7 @@ function FrontendApp() {
     bestellrundenProducts: bestellrundenProducts,
     bestellrundenDates: bestellrundenDates,
     activeBestellrunde: activeBestellrunde,
+    nextBestellrunde: nextBestellrunde,
     activeState: active
   })))));
 }
@@ -17658,7 +17662,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mui_material_CardContent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @mui/material/CardContent */ "./node_modules/@mui/material/esm/CardContent/CardContent.js");
 /* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
 /* harmony import */ var _mui_icons_material_Celebration__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/icons-material/Celebration */ "./node_modules/@mui/icons-material/Celebration.js");
-/* harmony import */ var _mui_icons_material_HourglassTop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @mui/icons-material/HourglassTop */ "./node_modules/@mui/icons-material/HourglassTop.js");
+/* harmony import */ var _mui_icons_material_Bedtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @mui/icons-material/Bedtime */ "./node_modules/@mui/icons-material/Bedtime.js");
 /* harmony import */ var _ProductCategory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ProductCategory */ "./src/components/frontend/ProductCategory.js");
 /* harmony import */ var _ShoppingContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ShoppingContext */ "./src/components/frontend/ShoppingContext.js");
 /* harmony import */ var _OrderOverview__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./OrderOverview */ "./src/components/frontend/OrderOverview.js");
@@ -17686,6 +17690,7 @@ const OrderList = _ref => {
     bestellrundenProducts,
     bestellrundenDates,
     activeBestellrunde,
+    nextBestellrunde,
     activeState,
     categories
   } = _ref;
@@ -17707,7 +17712,6 @@ const OrderList = _ref => {
       setCartNonce(response.headers["x-wc-store-api-nonce"]);
       if (response?.data?.length > 0) {
         const res = response.data;
-        console.log(res);
         let cartData = [];
         res.map(item => {
           cartData.push([item.id, item.quantity, item.name, item.prices.price / 100]);
@@ -17829,7 +17833,14 @@ const OrderList = _ref => {
       fontWeight: "bold",
       textAlign: "right"
     }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_HourglassTop__WEBPACK_IMPORTED_MODULE_12__["default"], null), " ", __("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Bedtime__WEBPACK_IMPORTED_MODULE_12__["default"], null), " ", __("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")), nextBestellrunde && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    variant: "h6",
+    sx: {
+      fontWeight: "bold",
+      textAlign: "right",
+      fontStyle: "italic"
+    }
+  }, __("Das nächste Bestellfenster", "fcplugin"), ": ", (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(nextBestellrunde[0]), "dd.MM.yyyy"), " ", __("bis", "fcplugin"), " ", (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(nextBestellrunde[1]), "dd.MM.yyyy")))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
     sx: {
       marginBottom: "100px"
     }
@@ -18434,7 +18445,6 @@ const ProductLine = _ref => {
   }, product.image && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_CardMedia__WEBPACK_IMPORTED_MODULE_8__["default"], {
     component: "img",
     alt: "green iguana",
-    height: "140",
     image: product.image,
     className: "productModalImage"
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_CardContent__WEBPACK_IMPORTED_MODULE_9__["default"], {

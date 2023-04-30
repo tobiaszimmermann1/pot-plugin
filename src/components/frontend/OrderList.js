@@ -7,13 +7,13 @@ import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import { format } from "date-fns"
 import CelebrationIcon from "@mui/icons-material/Celebration"
-import HourglassTopIcon from "@mui/icons-material/HourglassTop"
+import BedtimeIcon from "@mui/icons-material/Bedtime"
 import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
 import OrderOverview from "./OrderOverview"
 const __ = wp.i18n.__
 
-const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, activeState, categories }) => {
+const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, nextBestellrunde, activeState, categories }) => {
   const [products, setProducts] = useState()
   const [productsLoading, setProductsLoading] = useState(true)
   const [cart, setCart] = useState(null)
@@ -34,7 +34,6 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
         setCartNonce(response.headers["x-wc-store-api-nonce"])
         if (response?.data?.length > 0) {
           const res = response.data
-          console.log(res)
           let cartData = []
           res.map(item => {
             cartData.push([item.id, item.quantity, item.name, item.prices.price / 100])
@@ -172,8 +171,13 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
               <Card sx={{ minWidth: 275, borderRadius: 0, backgroundColor: "#f9f9f9", boxShadow: "none", border: "1px solid #f0f0f0" }}>
                 <CardContent>
                   <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "right" }}>
-                    <HourglassTopIcon /> {__("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")}
+                    <BedtimeIcon /> {__("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")}
                   </Typography>
+                  {nextBestellrunde && (
+                    <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: "right", fontStyle: "italic" }}>
+                      {__("Das nächste Bestellfenster", "fcplugin")}: {format(new Date(nextBestellrunde[0]), "dd.MM.yyyy")} {__("bis", "fcplugin")} {format(new Date(nextBestellrunde[1]), "dd.MM.yyyy")}
+                    </Typography>
+                  )}
                 </CardContent>
               </Card>
             </Grid>

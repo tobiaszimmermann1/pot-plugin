@@ -35,6 +35,14 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.5.4
+
+- frontend UI improvements
+- added an option to display a public members list to logged in users
+- added a "next order window" message to ordering list, when bestellrunde is inactive
+- added a notice in my account dashboard to guide admins to the foodcoop manager
+- skip the cart when continuing the order from to product list and go directly to checkout
+
 ### 1.5.3
 
 - fixed sorting of users in export lists to be in alphabetical order
