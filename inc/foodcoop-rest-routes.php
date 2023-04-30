@@ -1625,17 +1625,33 @@ class FoodcoopRestRoutes {
 
     $bestellrunde = null;
     $bestellrunde_dates = array();
+    $next_bestellrunde_dates = array();
     $now = date('Y-m-d');
     $active = false;
+    $next = 0;
     foreach ($bestellrunden as $b) {
       $id = $b->ID;
       $start = get_post_meta( $id, 'bestellrunde_start', true );
       $end = get_post_meta( $id, 'bestellrunde_ende', true );
       $dist = get_post_meta( $id, 'bestellrunde_verteiltag', true );
+      // currently active bestellrunde
       if ($start <= $now AND $end >= $now) {
         $bestellrunde = $id;
         array_push($bestellrunde_dates, $start, $end, $dist);
         $active = true;
+      }
+      // next bestellrunde
+      if ($start > $now) {
+        if (empty($next_bestellrunde_dates)) {
+          $next = $start;
+          $next_bestellrunde_dates = array();
+          array_push($next_bestellrunde_dates, $start, $end, $dist);
+        } else {
+          if ($start < $next) {
+            $next_bestellrunde_dates = array();
+            array_push($next_bestellrunde_dates, $start, $end, $dist);
+          }
+        }
       }
     }
 
@@ -1726,7 +1742,7 @@ class FoodcoopRestRoutes {
     // get store currency
     $currency = get_woocommerce_currency_symbol();
 
-    return json_encode(array($active, $bestellrunde, $bestellrunde_products, $products, $categories, $order, $bestellrunde_dates, $currency));
+    return json_encode(array($active, $bestellrunde, $bestellrunde_products, $products, $categories, $order, $bestellrunde_dates, $currency, $next_bestellrunde_dates));
   }
 
 

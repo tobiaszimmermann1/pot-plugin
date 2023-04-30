@@ -131,7 +131,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.5.3', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.5.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -140,23 +140,23 @@ function fc_admin_load_scripts() {
     'currentUser' => wp_get_current_user()
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.3' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.4' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.5.3', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.5.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
     'pluginUrl' => plugin_dir_url(__FILE__),
-    'cartUrl' => wc_get_cart_url(),
+    'cartUrl' => wc_get_checkout_url(),
     'nonce' => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user()
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.3' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.4' );
 }
 
 add_action( 'init', 'fc_init');
@@ -280,27 +280,51 @@ $foodcoop_order_meta = new OrderMeta();
 
 
 /**
- * Require Wallet class
+ * Require Members Dashboard classes
  */
-require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-gateway.php');
+require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-members-dashboard.php');
 $wallet_dashboard = new WalletDashboard();
+$members_list = new MembersListDashboard();
 
 
 
 
 
+/**
+ * Foodcoop Ordering List
+ * ----------------------
+ * replaces the classical online shop view with an efficient product list
+ * displayed on page designated in 'fc_order_page' setting or through using [foodcoop_list] shortcode
+ */
 
-  /**
-   * Foodcoop Ordering List
-   * ----------------------
-   * replaces the classical online shop view with an efficient product list
-   * displayed on page designated in 'fc_order_page' setting or through using [foodcoop_list] shortcode
-   */
+
+// register 
+add_shortcode('foodcoop_list', function() {
+  ?>
+      <div id="fc_order_list"></div>
+<?php
+});
 
 
-  // register 
-  add_shortcode('foodcoop_list', function() {
-    ?>
-        <div id="fc_order_list"></div>
-  <?php
-  });
+
+/**
+ * Show a message to logged in admins to access foodcoop settings
+ */
+
+ add_action( 'woocommerce_account_content', 'wpb_admin_notice_warn' );
+ function wpb_admin_notice_warn() {
+  if( is_user_logged_in() ) {
+    $user = wp_get_current_user();
+    if (in_array('administrator', $user->roles)) {
+      ?>
+        <div class="admin-alert">
+          <a href="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=foodcoop-plugin">
+            <?php echo __("Hallo Admin! Zum Foodcoop Manager", "fcplugin"); ?> >>
+          </a>
+        </div>
+      <?php
+    }
+  }
+}
+
+
