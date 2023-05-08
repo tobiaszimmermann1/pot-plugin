@@ -289,6 +289,15 @@ $members_list = new MembersListDashboard();
 
 
 
+/**
+ * Require Wallet class
+ */
+require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-gateway.php');
+$wallet_dashboard = new WalletDashboard();
+
+
+
+
 
 /**
  * Foodcoop Ordering List
