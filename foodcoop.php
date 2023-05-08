@@ -283,7 +283,6 @@ $foodcoop_order_meta = new OrderMeta();
  * Require Members Dashboard classes
  */
 require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-members-dashboard.php');
-$wallet_dashboard = new WalletDashboard();
 $members_list = new MembersListDashboard();
 
 
