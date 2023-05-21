@@ -17833,7 +17833,7 @@ const OrderList = _ref => {
       fontWeight: "bold",
       textAlign: "right"
     }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Bedtime__WEBPACK_IMPORTED_MODULE_12__["default"], null), " ", __("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")), nextBestellrunde && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Bedtime__WEBPACK_IMPORTED_MODULE_12__["default"], null), " ", __("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")), nextBestellrunde.length !== 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], {
     variant: "h6",
     sx: {
       fontWeight: "bold",

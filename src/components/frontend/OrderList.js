@@ -173,7 +173,7 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
                   <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "right" }}>
                     <BedtimeIcon /> {__("Aktuell ist das Bestellfenster geschlossen.", "fcplugin")}
                   </Typography>
-                  {nextBestellrunde && (
+                  {nextBestellrunde.length !== 0 && (
                     <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: "right", fontStyle: "italic" }}>
                       {__("Das nächste Bestellfenster", "fcplugin")}: {format(new Date(nextBestellrunde[0]), "dd.MM.yyyy")} {__("bis", "fcplugin")} {format(new Date(nextBestellrunde[1]), "dd.MM.yyyy")}
                     </Typography>
