@@ -7,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit"
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket"
 import AllInboxIcon from "@mui/icons-material/AllInbox"
 import SaveIcon from "@mui/icons-material/Save"
+import CloseIcon from "@mui/icons-material/Close"
 import AddIcon from "@mui/icons-material/Add"
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh"
 import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, CircularProgress, Stack, TextField, Tooltip } from "@mui/material"
@@ -17,6 +18,10 @@ const __ = wp.i18n.__
 import OrdersOfBestellrundeModal from "./bestellrunden/Orders"
 import ProductsOfBestellrundeModal from "./bestellrunden/Products"
 import Mutations from "./bestellrunden/Mutations"
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import FormControl from "@mui/material/FormControl"
+import Grid from "@mui/material/Grid"
 
 const Bestellrunden = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -279,9 +284,6 @@ const Bestellrunden = () => {
                     <Button
                       size="small"
                       disabled={false}
-                      sx={{
-                        color: "#ff9800"
-                      }}
                       startIcon={<ShoppingBasketIcon />}
                       onClick={() => {
                         setSelectedBestellrunde(row.original.id)
@@ -395,37 +397,59 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
   const [valueDist, setValueDist] = useState(format(new Date(), "dd.MM.yyyy"))
 
   return (
-    <Dialog open={open}>
-      <DialogTitle textAlign="center">{__("Bestellrunde erstellen", "fcplugin")}</DialogTitle>
-      <DialogContent>
+    <Dialog fullScreen open={open} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+      <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <DialogTitle textAlign="center">{__("Bestellrunde erstellen", "fcplugin")}</DialogTitle>
+
+          <IconButton edge="start" color="inherit" onClick={onClose} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <DialogContent
+        dividers={scroll === "paper"}
+        sx={{
+          paddingTop: "20px",
+          minHeight: "500px"
+        }}
+      >
         <form onSubmit={e => e.preventDefault()}>
-          <Stack
-            sx={{
-              width: "100%",
-              paddingTop: "10px"
-            }}
-          >
-            <div className="modalRow">
-              <span>{__("Bestellrunde Start", "fcplugin")}</span>
-              <DesktopDatePicker label="" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueStart} onChange={e => setValueStart(e)} renderInput={params => <TextField {...params} />} />
-            </div>
-            <div className="modalRow">
-              <span>{__("Bestellrunde Ende", "fcplugin")}</span>
-              <DesktopDatePicker label="" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueEnd} onChange={e => setValueEnd(e)} renderInput={params => <TextField {...params} />} />
-            </div>
-            <div className="modalRow">
-              <span>{__("Bestellrunde Verteiltag", "fcplugin")}</span>
-              <DesktopDatePicker label="" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueDist} onChange={e => setValueDist(e)} renderInput={params => <TextField {...params} />} />
-            </div>
-          </Stack>
+          <Box sx={{ padding: 2 }}>
+            <Grid container spacing={2} rowGap={2} alignItems="baseline">
+              <Grid item xs={4}>
+                {__("Bestellrunde Start", "fcplugin")}
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl fullWidth>
+                  <DesktopDatePicker disablePast label="Bestellrunde Start" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueStart} onChange={e => setValueStart(e)} renderInput={params => <TextField {...params} />} />
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                {__("Bestellrunde Ende", "fcplugin")}
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl fullWidth>
+                  <DesktopDatePicker disablePast label="Bestellrunde Ende" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueEnd} onChange={e => setValueEnd(e)} renderInput={params => <TextField {...params} />} />
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                {__("Verteiltag", "fcplugin")}
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl fullWidth>
+                  <DesktopDatePicker disablePast label="Verteiltag" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueDist} onChange={e => setValueDist(e)} renderInput={params => <TextField {...params} />} />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} size="large">
+                  {__("Erstellen", "fcplugin")}
+                </LoadingButton>
+              </Grid>
+            </Grid>
+          </Box>
         </form>
       </DialogContent>
-      <DialogActions sx={{ p: "1.25rem" }}>
-        <Button onClick={onClose}>{__("Abbrechen", "fcplugin")}</Button>
-        <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
-          {__("Erstellen", "fcplugin")}
-        </LoadingButton>
-      </DialogActions>
     </Dialog>
   )
 }

@@ -8,6 +8,11 @@ import { ExportToCsv } from "export-to-csv"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { format } from "date-fns"
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import AddIcon from "@mui/icons-material/Add"
+import CloseIcon from "@mui/icons-material/Close"
+import IconButton from "@mui/material/IconButton"
 const __ = wp.i18n.__
 
 function Wallet({ setModalClose, walletID, walletName }) {
@@ -18,6 +23,7 @@ function Wallet({ setModalClose, walletID, walletName }) {
   const [details, setDetails] = useState("")
   const [loading, setLoading] = useState(true)
   const [walletData, setWalletData] = useState()
+  const [newTransaction, setNewTransaction] = useState(false)
 
   const handleSubmit = () => {
     setSubmitting(true)
@@ -190,36 +196,49 @@ function Wallet({ setModalClose, walletID, walletName }) {
 
   return (
     <>
-      <Dialog open={true} maxWidth="lg" fullWidth scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle textAlign="left">
-          {__("Wallet von", "fcplugin")} {walletName}
-        </DialogTitle>
+      <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <DialogTitle textAlign="left">
+              {__("Wallet von", "fcplugin")} {walletName}
+            </DialogTitle>
+            <IconButton edge="start" color="inherit" onClick={() => setModalClose(false)} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
         <DialogContent
+          dividers={scroll === "paper"}
           sx={{
-            paddingTop: "10px",
+            paddingTop: "20px",
             minHeight: "500px"
           }}
         >
           <Stack spacing={3}>
-            <Box sx={{ padding: "5px 20px 5px 20px", backgroundColor: "#f9f9f9", border: "1px solid #ccc" }}>
-              <Stack spacing={1} sx={{ width: "100%", paddingTop: "10px" }}>
-                <Typography variant="body2" gutterBottom>
-                  {__("Neue Transaktion hinzufügen:", "fcplugin")}
-                </Typography>
-                <TextField size="small" id="amount" label={__("Betrag", "fcplugin")} name="amount" variant="outlined" value={amount} onChange={e => setAmount(e.target.value)} type="number" />
-                <TextField size="small" id="details" label={__("Details", "fcplugin")} name="details" variant="outlined" value={details} onChange={e => setDetails(e.target.value)} />
+            {newTransaction && (
+              <Box sx={{ padding: "5px 20px 5px 20px", backgroundColor: "#f9f9f9", border: "1px solid #ccc" }}>
+                <Stack spacing={1} sx={{ width: "100%", paddingTop: "10px" }}>
+                  <Typography variant="body2" gutterBottom>
+                    {__("Neue Transaktion:", "fcplugin")}
+                  </Typography>
+                  <TextField size="small" id="amount" label={__("Betrag", "fcplugin")} name="amount" variant="outlined" value={amount} onChange={e => setAmount(e.target.value)} type="number" />
+                  <TextField size="small" id="details" label={__("Details", "fcplugin")} name="details" variant="outlined" value={details} onChange={e => setDetails(e.target.value)} />
 
-                {error && <Alert severity="error">{error}</Alert>}
-                <DialogActions>
-                  <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="small">
-                    {__("Transaktion hinzufügen", "fcplugin")}
-                  </LoadingButton>
-                  <LoadingButton onClick={handleYearlyFeeTransaction} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="small" color="warning">
-                    {__("Jahresbeitrag", "fcplugin")} {new Date().getFullYear()} {__("belasten", "fcplugin")}
-                  </LoadingButton>
-                </DialogActions>
-              </Stack>
-            </Box>
+                  {error && <Alert severity="error">{error}</Alert>}
+                  <DialogActions>
+                    <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="small">
+                      {__("Transaktion speichern", "fcplugin")}
+                    </LoadingButton>
+                    <LoadingButton onClick={handleYearlyFeeTransaction} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="small" color="warning">
+                      {__("Jahresbeitrag", "fcplugin")} {new Date().getFullYear()} {__("belasten", "fcplugin")}
+                    </LoadingButton>
+                    <Button onClick={() => setNewTransaction(false)} variant="text" disabled={submitting} size="small">
+                      {__("Schliessen", "fcplugin")}
+                    </Button>
+                  </DialogActions>
+                </Stack>
+              </Box>
+            )}
             <MaterialReactTable
               columns={columns}
               data={walletData ?? []}
@@ -246,20 +265,22 @@ function Wallet({ setModalClose, walletID, walletName }) {
                   >
                     {__("Exportieren", "fcplugin")}
                   </Button>
+                  <Button
+                    color="primary"
+                    //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
+                    onClick={() => setNewTransaction(true)}
+                    startIcon={<AddIcon />}
+                    variant="outlined"
+                    size="small"
+                    disabled={loading}
+                  >
+                    {__("Neue Transaktion für", "fcplugin")} {walletName}
+                  </Button>
                 </Box>
               )}
             />
           </Stack>
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setModalClose(false)
-            }}
-          >
-            {__("Schliessen", "fcplugin")}
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

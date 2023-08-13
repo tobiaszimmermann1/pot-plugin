@@ -2,7 +2,6 @@
 
 class FoocoopPluginSettings {
   function __construct() {
-    add_action('admin_menu', array($this, 'fc_settings'));
     add_action('admin_init', array($this, 'settings'));
     add_filter('the_content', array($this, 'replace_order_page'));
   }
@@ -35,6 +34,9 @@ class FoocoopPluginSettings {
     
     add_settings_field( 'fc_bank', __('Bankverbindung', 'fcplugin'), array($this, 'fc_bank_html'), 'foodcoop-settings-page', 'fc_general' );
     register_setting( 'foodcoop_plugin', 'fc_bank', array('sanitize_callback' => 'sanitize_text_field', 'default' => '') );
+    
+    add_settings_field( 'fc_transfer', __('Instruktionen Banküberweisung', 'fcplugin'), array($this, 'fc_transfer_html'), 'foodcoop-settings-page', 'fc_general' );
+    register_setting( 'foodcoop_plugin', 'fc_transfer', array('sanitize_callback' => 'sanitize_text_field', 'default' => '') );
     
     add_settings_field( 'fc_margin', __('Marge (%)', 'fcplugin'), array($this, 'fc_margin_html'), 'foodcoop-settings-page', 'fc_general' );
     register_setting( 'foodcoop_plugin', 'fc_margin', array('sanitize_callback' => array($this, 'sanitize_margin'), 'default' => '0') );
@@ -93,8 +95,13 @@ class FoocoopPluginSettings {
   <?php }
 
   function fc_bank_html() { ?>
-    <textarea name="fc_bank" rows="5" cols="40" id="fc_bank"> <?php echo esc_attr(get_option('fc_bank')); ?> </textarea>
-    <p class="description"><?php echo esc_html__('Die Bankverbindung für Guthabeneinzahlungen, am besten mit einer Anleitung.', 'fcplugin'); ?></p>
+    <textarea name="fc_bank" rows="1" cols="40" id="fc_bank"> <?php echo esc_attr(get_option('fc_bank')); ?> </textarea>
+    <p class="description"><?php echo esc_html__('Die Bankverbindung für Guthabeneinzahlungen.', 'fcplugin'); ?></p>
+  <?php }
+
+  function fc_transfer_html() { ?>
+    <textarea name="fc_transfer" rows="5" cols="40" id="fc_transfer"> <?php echo esc_attr(get_option('fc_transfer')); ?> </textarea>
+    <p class="description"><?php echo esc_html__('Die Instruktionen für die Guthabeneinzahlungen.', 'fcplugin'); ?></p>
   <?php }
 
   function fc_margin_html() { ?>
@@ -132,24 +139,5 @@ class FoocoopPluginSettings {
     <p class="description"><?php echo esc_html__('Produktbilder erscheinen in der Bestell-Liste. Overlays für einzelne Produkte (mit Beschreibung und Details) werden aktiviert.', 'fcplugin'); ?></p>
   <?php }
 
-  function fc_settings() {
-    add_options_page('Foodcoop', __('Foodcoop', 'fcplugin'), 'manage_options', 'foodcoop-settings-page', array($this, 'settings_function'));
-  }
   
-  function settings_function() {
-    ?>
-      <div class="wrap">
-        <h1><?php echo esc_html__('Foodcoop Einstellungen', 'fcplugin'); ?></h1>
-
-        <form action="options.php" method="post">
-        <?php
-          settings_fields('foodcoop_plugin');
-          do_settings_sections( 'foodcoop-settings-page' );
-          submit_button();
-        ?>
-        </form>
-
-      </div>
-    <?php
-  }
 }
