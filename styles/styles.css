@@ -649,3 +649,72 @@ html {
   font-weight: bold;
   color: #000;
 }
+
+@media only screen and (max-width: 800px) {
+  .fc_order_list_line {
+    flex-wrap: wrap;
+  }
+
+  .fc_order_list_col {
+    padding: 5px 1%;
+    border-bottom: none;
+    align-self: stretch;
+  }
+
+  .fc_order_list_header {
+    display: none;
+  }
+
+  .col_1 {
+    width: 20%;
+  }
+
+  .col_15 {
+    width: 30%;
+  }
+
+  .col_2 {
+    width: 50%;
+    font-weight: bold;
+    font-size: 1.25em;
+  }
+
+  .col_2x {
+    width: 50%;
+    font-weight: bold;
+  }
+
+  .col_25 {
+    width: 20%;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_3 {
+    width: 20%;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_4 {
+    width: 20%;
+    text-align: right;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_5 {
+    width: 20%;
+    text-align: right;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_6 {
+    width: 20%;
+    text-align: right;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .productModalImage {
+    max-height: 200px !important;
+    object-fit: contain !important;
+    background: #f0f0f0 !important;
+  }
+}

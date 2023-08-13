@@ -4,7 +4,7 @@ import { TriggerContext } from "./ShoppingContext"
 import IconButton from "@mui/material/IconButton"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import Modal from "@mui/material/Modal"
+import Dialog from "@mui/material/Dialog"
 import Box from "@mui/material/Box"
 import Card from "@mui/material/Card"
 import CardActions from "@mui/material/CardActions"
@@ -12,18 +12,8 @@ import CardContent from "@mui/material/CardContent"
 import CardMedia from "@mui/material/CardMedia"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
+import useMediaQuery from "@mui/material/useMediaQuery"
 const __ = wp.i18n.__
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  border: "none",
-  p: 4,
-  outline: "none"
-}
 
 const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation }) => {
   const [amount, setAmount] = useState(product.amount)
@@ -129,10 +119,10 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
           )}
         </span>
       </div>
-      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-        <Box sx={modalStyle}>
-          <Card sx={{ width: 600 }}>
-            {product.image && <CardMedia component="img" alt="green iguana" image={product.image} className="productModalImage" />}
+      <Dialog fullScreen={useMediaQuery("(max-width:800px)")} open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box>
+          <Card>
+            {product.image && <CardMedia component="img" image={product.image} className="productModalImage" />}
             <CardContent style={{ padding: 20 }}>
               <Typography gutterBottom variant="h5" component="div">
                 {product.name}
@@ -154,7 +144,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
             </CardActions>
           </Card>
         </Box>
-      </Modal>
+      </Dialog>
     </>
   )
 }
