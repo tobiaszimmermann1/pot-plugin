@@ -35,6 +35,16 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.5.5
+
+- support for product pictures
+- added a product description popup in frontend
+- rudimentary mobile screen size support for frontend (to be improved)
+- new full screen backend view
+- new backend color scheme
+- improved popup design and scaling in backend
+- new settings page in backend
+
 ### 1.5.4
 
 - frontend UI improvements

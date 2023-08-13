@@ -31,6 +31,28 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET all options
+     */
+    register_rest_route( 'foodcoop/v1', 'getAllOptions', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getAllOptions'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST save all options
+     */
+    register_rest_route( 'foodcoop/v1', 'saveAllOptions', array(
+      'methods' => 'POST',
+      'callback' => array($this, 'saveAllOptions'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * POST product update
      * params: id, values
      */
@@ -495,6 +517,66 @@ class FoodcoopRestRoutes {
    */
   function getOption($data) {
     return json_encode(get_option($data['option']));
+  }
+
+  /**
+   * getAllOptions
+   */
+  function getAllOptions() {
+    $all_options = array();
+
+    $options = wp_load_alloptions();
+    foreach ($options as $slug => $values) {
+        $all_options[$slug] = $values;
+    }
+
+    return json_encode($all_options);
+  }
+
+  /**
+   * saveAllOptions
+   */
+  function saveAllOptions($data) {
+
+    $fee = $data['fee'];
+    if($fee) update_option('fc_fee', $fee);
+
+    $bank = $data['bank'];
+    if($bank) update_option('fc_bank', $bank);
+    
+    $transfer = $data['transfer'];
+    if($transfer) update_option('fc_transfer', $transfer);
+    
+    $address = $data['address'];
+    if($address) update_option('woocommerce_store_address', $address);
+    
+    $plz = $data['plz'];
+    if($plz) update_option('woocommerce_store_postcode', $plz);
+    
+    $city = $data['city'];
+    if($city) update_option('woocommerce_store_city', $city);
+    
+    $blogname = $data['blogname'];
+    if($blogname) update_option('blogname', $blogname);
+    
+    $orderPage = $data['orderPage'];
+    if($orderPage) update_option('fc_order_page', $orderPage);
+    
+    $publicPrices = $data['publicPrices'];
+    $publicPrices == true ? update_option('fc_public_prices', '1') : update_option('fc_public_prices', '0');
+    
+    $publicMembers = $data['publicMembers'];
+    $publicMembers == true  ? update_option('fc_public_members', '1') : update_option('fc_public_members', '0');
+    
+    $publicProducts = $data['publicProducts'];
+    $publicProducts == true  ? update_option('fc_public_products', '1') : update_option('fc_public_products', '0');
+    
+    $adminEmail = $data['adminEmail'];
+    if($adminEmail) update_option('admin_email', $adminEmail);
+    if($adminEmail) update_option('new_admin_email', $adminEmail);
+
+
+    return http_response_code(200);
   }
 
   /**

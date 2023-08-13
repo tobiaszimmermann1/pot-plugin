@@ -3,6 +3,10 @@ import axios from "axios"
 import SaveIcon from "@mui/icons-material/Save"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import IconButton from "@mui/material/IconButton"
+import CloseIcon from "@mui/icons-material/Close"
 const __ = wp.i18n.__
 
 function AddMember({ id, setModalClose, handleAddMember }) {
@@ -63,13 +67,33 @@ function AddMember({ id, setModalClose, handleAddMember }) {
 
   return (
     <>
-      <Dialog open={true} fullWidth scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle textAlign="left">
-          {__("Neues Mitglied hinzufügen", "fcplugin")} {id}
-        </DialogTitle>
+      <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <DialogTitle textAlign="left">
+              {__("Neues Mitglied hinzufügen", "fcplugin")} {id}
+            </DialogTitle>
+            <DialogActions>
+              <LoadingButton onClick={handleSubmit} variant="text" color="secondary" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
+                {__("Hinzufügen", "fcplugin")}
+              </LoadingButton>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => {
+                  setModalClose(false)
+                }}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogActions>
+          </Toolbar>
+        </AppBar>
         <DialogContent
+          dividers={scroll === "paper"}
           sx={{
-            paddingTop: "10px",
+            paddingTop: "20px",
             minHeight: "500px"
           }}
         >
@@ -84,18 +108,6 @@ function AddMember({ id, setModalClose, handleAddMember }) {
             {error && <Alert severity="error">{error}</Alert>}
           </Stack>
         </DialogContent>
-        <DialogActions>
-          <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting}>
-            {__("Hinzufügen", "fcplugin")}
-          </LoadingButton>
-          <Button
-            onClick={() => {
-              setModalClose(false)
-            }}
-          >
-            {__("Schliessen", "fcplugin")}
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

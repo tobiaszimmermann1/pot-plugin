@@ -7,6 +7,10 @@ import Radio from "@mui/material/Radio"
 import RadioGroup from "@mui/material/RadioGroup"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import FormControl from "@mui/material/FormControl"
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import IconButton from "@mui/material/IconButton"
+import CloseIcon from "@mui/icons-material/Close"
 const __ = wp.i18n.__
 
 function Mutations({ id, setModalClose }) {
@@ -103,13 +107,36 @@ function Mutations({ id, setModalClose }) {
 
   return (
     <>
-      <Dialog open={true} fullWidth scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle textAlign="left">
-          {__("Neue Mutation in Bestellrunde", "fcplugin")} {id}
-        </DialogTitle>
+      <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <DialogTitle textAlign="left">
+              {__("Neue Mutation in Bestellrunde", "fcplugin")} {id}
+            </DialogTitle>
+            <DialogActions>
+              <LoadingButton onClick={handleSubmit} variant="text" color="secondary" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
+                {__("Mutation Speichern", "fcplugin")}
+              </LoadingButton>
+
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => {
+                  setModalClose(false)
+                  setProductsLoading(true)
+                  setProducts(null)
+                }}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogActions>
+          </Toolbar>
+        </AppBar>
         <DialogContent
+          dividers={scroll === "paper"}
           sx={{
-            paddingTop: "10px",
+            paddingTop: "20px",
             minHeight: "500px"
           }}
         >

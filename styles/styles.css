@@ -1,3 +1,22 @@
+html {
+  font-family: "Roboto", "Sans";
+  font-size: 0.9rem;
+}
+
+.fc_wrap {
+  position: absolute !important;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100%;
+  background-color: #f0f0f0;
+  padding: 25px;
+  margin-top: 25px;
+  z-index: 1299;
+}
+
 #fc_dashboard {
   display: block;
   width: 100%;
@@ -21,7 +40,7 @@
   box-sizing: border-box;
   margin: 0;
   color: #000;
-  font-size: 1.25em;
+  font-size: 1em;
   background-color: white;
   box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
@@ -63,10 +82,9 @@
 .pluginMenu span {
   margin-left: 20px;
   padding-left: 20px;
-  border-left: 1px solid #1976d2;
-  color: #1976d2;
+  border-left: 1px solid #00796b;
+  color: #00796b;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: start;
@@ -109,8 +127,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-items: flex-start;
-  align-items: flex-start;
+  justify-items: center;
+  align-items: center;
   font-size: 1.2em;
   margin-bottom: 20px;
 }
@@ -122,82 +140,6 @@
 .MuiTableCell-root input {
   width: 100% !important;
   height: 100% !important;
-}
-
-.MuiInputBase-input {
-  border: none !important;
-}
-
-.MuiDialogContent-root input[type="number"] {
-  padding: 16.5px 14px !important;
-}
-
-.MuiDialogContent-root input[type="radio"] {
-  visibility: hidden;
-}
-
-.MuiDialogContent-root input[type="text"],
-.MuiDialogContent-root input[type="email"],
-.MuiDialogContent-root input[type="number"] {
-  padding: 8.5px 14px 4px 14px !important;
-}
-
-.MuiDialogContent-root input[type="text"]:focus,
-.MuiDialogContent-root input[type="email"]:focus,
-.MuiDialogContent-root input[type="number"]:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.MuiInputBase-root select {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font: inherit;
-  letter-spacing: inherit;
-  color: currentColor;
-  padding: 4px 0 5px;
-  border: 0;
-  box-sizing: content-box;
-  background: none;
-  height: 1.4375em;
-  margin: 0;
-  -webkit-tap-highlight-color: transparent;
-  display: block;
-  min-width: 0;
-  width: 100%;
-  -webkit-animation-name: mui-auto-fill-cancel;
-  animation-name: mui-auto-fill-cancel;
-  -webkit-animation-duration: 10ms;
-  animation-duration: 10ms;
-  padding: 16.5px 14px;
-}
-
-.MuiInputBase-root option {
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
-  font-weight: 400 !important;
-  font-size: 1rem !important;
-  line-height: 1.4375em !important;
-  letter-spacing: 0.00938em !important;
-  color: rgba(0, 0, 0, 0.87) !important;
-  box-sizing: border-box !important;
-  position: relative !important;
-  cursor: text !important;
-  display: -webkit-inline-box !important;
-  display: -webkit-inline-flex !important;
-  display: -ms-inline-flexbox !important;
-  display: inline-flex !important;
-  -webkit-align-items: center !important;
-  -webkit-box-align: center !important;
-  -ms-flex-align: center !important;
-  align-items: center !important;
-  position: relative !important;
-  border-radius: 4px !important;
 }
 
 .css-cyxlny-MuiPaper-root-MuiDialog-paper {
@@ -706,4 +648,73 @@
 .admin-alert a {
   font-weight: bold;
   color: #000;
+}
+
+@media only screen and (max-width: 800px) {
+  .fc_order_list_line {
+    flex-wrap: wrap;
+  }
+
+  .fc_order_list_col {
+    padding: 5px 1%;
+    border-bottom: none;
+    align-self: stretch;
+  }
+
+  .fc_order_list_header {
+    display: none;
+  }
+
+  .col_1 {
+    width: 20%;
+  }
+
+  .col_15 {
+    width: 30%;
+  }
+
+  .col_2 {
+    width: 50%;
+    font-weight: bold;
+    font-size: 1.25em;
+  }
+
+  .col_2x {
+    width: 50%;
+    font-weight: bold;
+  }
+
+  .col_25 {
+    width: 20%;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_3 {
+    width: 20%;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_4 {
+    width: 20%;
+    text-align: right;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_5 {
+    width: 20%;
+    text-align: right;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .col_6 {
+    width: 20%;
+    text-align: right;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .productModalImage {
+    max-height: 200px !important;
+    object-fit: contain !important;
+    background: #f0f0f0 !important;
+  }
 }

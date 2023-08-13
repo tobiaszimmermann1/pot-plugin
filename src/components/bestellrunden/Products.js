@@ -5,7 +5,10 @@ import { MRT_Localization_DE } from "material-react-table/locales/de"
 import SaveIcon from "@mui/icons-material/Save"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
-
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import IconButton from "@mui/material/IconButton"
+import CloseIcon from "@mui/icons-material/Close"
 const __ = wp.i18n.__
 
 function ProductsOfBestellrundeModal({ id, setModalClose }) {
@@ -136,13 +139,35 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
 
   return (
     <>
-      <Dialog open={true} fullWidth maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle textAlign="left">
-          {__("Produkte in Bestellrunde", "fcplugin")} {id}
-        </DialogTitle>
+      <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <DialogTitle textAlign="left">
+              {__("Produkte in Bestellrunde", "fcplugin")} {id}
+            </DialogTitle>
+            <DialogActions>
+              <LoadingButton onClick={handleSubmit} variant="text" color="secondary" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
+                {__("Speichern", "fcplugin")}
+              </LoadingButton>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => {
+                  setRowSelection({})
+                  setModalClose(false)
+                }}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogActions>
+          </Toolbar>
+        </AppBar>
         <DialogContent
+          dividers={scroll === "paper"}
           sx={{
-            paddingTop: "10px"
+            paddingTop: "20px",
+            minHeight: "500px"
           }}
         >
           <MaterialReactTable
@@ -171,19 +196,6 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
             initialState={{ density: "compact" }}
           />
         </DialogContent>
-        <DialogActions>
-          <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
-            {__("Speichern", "fcplugin")}
-          </LoadingButton>
-          <Button
-            onClick={() => {
-              setRowSelection({})
-              setModalClose(false)
-            }}
-          >
-            {__("Schliessen", "fcplugin")}
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

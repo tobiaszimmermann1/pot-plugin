@@ -5,11 +5,14 @@ import { MRT_Localization_DE } from "material-react-table/locales/de"
 import EditIcon from "@mui/icons-material/Edit"
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"
 import GridOnIcon from "@mui/icons-material/GridOn"
-import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, CircularProgress, Stack, TextField, Tooltip } from "@mui/material"
+import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, CircularProgress, Stack, TextField, Tooltip } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { format } from "date-fns"
 import { useExcelDownloder } from "react-xls"
-
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import IconButton from "@mui/material/IconButton"
+import CloseIcon from "@mui/icons-material/Close"
 const __ = wp.i18n.__
 
 function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
@@ -327,13 +330,34 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
 
   return (
     <>
-      <Dialog open={open} fullWidth maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle textAlign="left">
-          {__("Bestellungen in Bestellrunde", "fcplugin")} {id}
-        </DialogTitle>
+      <Dialog fullScreen open={open} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <DialogTitle textAlign="left">
+              {__("Bestellungen in Bestellrunde", "fcplugin")} {id}
+            </DialogTitle>
+            <DialogActions>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => {
+                  setOrders(null)
+                  setLoading(true)
+                  setExportData(null)
+                  setModalClose(false)
+                }}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogActions>
+          </Toolbar>
+        </AppBar>
         <DialogContent
+          dividers={scroll === "paper"}
           sx={{
-            paddingTop: "10px"
+            paddingTop: "20px",
+            minHeight: "500px"
           }}
         >
           <MaterialReactTable
@@ -396,18 +420,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
             )}
           />
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOrders(null)
-              setLoading(true)
-              setExportData(null)
-              setModalClose(false)
-            }}
-          >
-            {__("Schliessen", "fcplugin")}
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

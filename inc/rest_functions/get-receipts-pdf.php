@@ -70,6 +70,7 @@
       <table style="width: 100%; border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;" cellspacing="0">
       <tr>
         <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Produkt</td>
+        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Kategorie</td>
         <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Lieferant</td>
         <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Herkunft</td>
         <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Einheit</td>
@@ -102,6 +103,13 @@
           $product_einheit = esc_html(get_post_meta( $item->get_product_id(), '_einheit',true ));
       }
 
+      // category
+      $product_category_id = esc_html(wc_get_order_item_meta( $item_id, '_category', true));
+      $product_category = "-";
+      if ($product_category_id) {
+        $product_category = get_the_category_by_ID($product_category_id);
+      }
+
       // name
       $product_name = $item->get_name();
 
@@ -118,7 +126,8 @@
 
         $body .= '
         <tr>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_name.'</td>
+        <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_name.'</td>
+        <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_category.'</td>
             <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_lieferant.'</td>
             <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_herkunft.'</td>
             <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$product_einheit.'</td>
