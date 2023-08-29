@@ -298,6 +298,18 @@ $wallet_dashboard = new WalletDashboard();
 
 
 
+/*
+ * This action hook registers a WooCommerce payment gateway
+ */
+add_filter( 'woocommerce_payment_gateways', 'fc_add_gateway_class' );
+function fc_add_gateway_class( $gateways ) {
+    $gateways[] = 'WC_Foodcoop_Guthaben'; 
+    return $gateways;
+}
+
+
+
+
 
 /**
  * Foodcoop Ordering List
