@@ -284,8 +284,28 @@ $foodcoop_order_meta = new OrderMeta();
  * Require Members Dashboard classes
  */
 require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-members-dashboard.php');
-$wallet_dashboard = new WalletDashboard();
 $members_list = new MembersListDashboard();
+
+
+
+
+/**
+ * Require Wallet class
+ */
+require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-gateway.php');
+$wallet_dashboard = new WalletDashboard();
+
+
+
+
+/*
+ * This action hook registers a WooCommerce payment gateway
+ */
+add_filter( 'woocommerce_payment_gateways', 'fc_add_gateway_class' );
+function fc_add_gateway_class( $gateways ) {
+    $gateways[] = 'WC_Foodcoop_Guthaben'; 
+    return $gateways;
+}
 
 
 

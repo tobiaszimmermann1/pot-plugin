@@ -426,6 +426,17 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * GET all pages
+     */
+    register_rest_route( 'foodcoop/v1', 'getPages', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getPages'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
 
 
     
@@ -1912,6 +1923,43 @@ class FoodcoopRestRoutes {
     $value = $data['value'];
     update_user_meta( $id, '_activeMember', $value );
     return $id;
+  }
+
+
+
+  /**
+   * getPages
+   */
+  function getPages() {
+   $args = array(
+    'sort_order' => 'asc',
+    'sort_column' => 'post_title',
+    'hierarchical' => 1,
+    'exclude' => '',
+    'include' => '',
+    'meta_key' => '',
+    'meta_value' => '',
+    'authors' => '',
+    'child_of' => 0,
+    'parent' => -1,
+    'exclude_tree' => '',
+    'number' => '',
+    'offset' => 0,
+    'post_type' => 'page',
+    'post_status' => 'publish'
+  ); 
+  $pages = get_pages($args);
+  $pages_return = array();
+
+  foreach($pages as $p){
+    $page = array(); 
+    $page['title'] = $p->post_title;
+    $page['id'] = $p->ID;
+
+    array_push($pages_return, $page);
+  }
+
+    return json_encode($pages_return);
   }
 
 
