@@ -12,15 +12,25 @@ import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import AddIcon from "@mui/icons-material/Add"
 import CloseIcon from "@mui/icons-material/Close"
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
+import CheckIcon from "@mui/icons-material/Check"
 import IconButton from "@mui/material/IconButton"
+import InputLabel from "@mui/material/InputLabel"
+import FormControl from "@mui/material/FormControl"
+import Select from "@mui/material/Select"
+import MenuItem from "@mui/material/MenuItem"
+import InputAdornment from "@mui/material/InputAdornment"
+import { isSameYear } from "date-fns"
 const __ = wp.i18n.__
 
 function Wallet({ setModalClose, walletID, walletName }) {
+  const [hasPaidFee, setHasPaidFee] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState()
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState("")
   const [details, setDetails] = useState("")
+  const [transactionType, setTransactionType] = useState("")
   const [loading, setLoading] = useState(true)
   const [walletData, setWalletData] = useState()
   const [newTransaction, setNewTransaction] = useState(false)
@@ -28,7 +38,7 @@ function Wallet({ setModalClose, walletID, walletName }) {
   const handleSubmit = () => {
     setSubmitting(true)
 
-    if (amount === 0 || details.trim() === "") {
+    if (amount.trim() === "" || details.trim() === "" || transactionType.trim() === "") {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
@@ -40,7 +50,8 @@ function Wallet({ setModalClose, walletID, walletName }) {
             user: walletID,
             details: details,
             created_by: appLocalizer.currentUser.ID,
-            date: new Date()
+            date: new Date(),
+            type: transactionType
           },
           {
             headers: {
@@ -57,9 +68,14 @@ function Wallet({ setModalClose, walletID, walletName }) {
               amount: res[3],
               balance: res[0],
               details: res[4],
-              created_by: res[1],
-              id: res[2]
+              created_by: res[5],
+              id: res[2],
+              type: res[6]
             })
+
+            setAmount("")
+            setDetails("")
+            setTransactionType("")
           }
         })
         .catch(error => setError(error.message))
@@ -82,7 +98,8 @@ function Wallet({ setModalClose, walletID, walletName }) {
           user: walletID,
           details: __("Jahresbeitrag ", "fcplugin") + " " + new Date().getFullYear(),
           created_by: appLocalizer.currentUser.ID,
-          date: new Date()
+          date: new Date(),
+          type: "yearly_fee"
         },
         {
           headers: {
@@ -99,8 +116,9 @@ function Wallet({ setModalClose, walletID, walletName }) {
             amount: res[3],
             balance: res[0],
             details: res[4],
-            created_by: res[1],
-            id: res[2]
+            created_by: res[5],
+            id: res[2],
+            type: "yearly_fee"
           })
         }
       })
@@ -159,6 +177,26 @@ function Wallet({ setModalClose, walletID, walletName }) {
         header: __("Neues Guthaben", "fcplugin")
       },
       {
+        accessorKey: "type",
+        header: __("Transaktionsart", "fcplugin"),
+        filterVariant: "select",
+        filterFn: "equals",
+        filterSelectOptions: [
+          { value: "manual_transaction", text: "Manuelle Transaktion" },
+          { value: "mutation", text: "Mutation" },
+          { value: "deposit", text: "Einzahlung" },
+          { value: "yearly_fee", text: "Jahresbeitrag" },
+          { value: "order", text: "Bestellung" }
+        ],
+        Cell: ({ cell }) => {
+          if (cell.getValue() === "manual_transaction") return __("Manuelle Transaktion", "fcplugin")
+          if (cell.getValue() === "mutation") return __("Mutation", "fcplugin")
+          if (cell.getValue() === "deposit") return __("Einzahlung", "fcplugin")
+          if (cell.getValue() === "yearly_fee") return __("Jahresbeitrag", "fcplugin")
+          if (cell.getValue() === "order") return __("Bestellung", "fcplugin")
+        }
+      },
+      {
         accessorKey: "created_by",
         header: __("Erstellt von", "fcplugin")
       },
@@ -194,6 +232,23 @@ function Wallet({ setModalClose, walletID, walletName }) {
     csvExporter.generateCsv(walletData)
   }
 
+  useEffect(() => {
+    if (walletData) {
+      walletData.map(res => {
+        if (res.type === "yearly_fee") {
+          if (isSameYear(new Date(res.date), new Date())) {
+            setHasPaidFee(true)
+          }
+        }
+      })
+    }
+  }, [walletData])
+
+  function handleTransactionTypeChange(e) {
+    console.log(e.target.value)
+    setTransactionType(e.target.value)
+  }
+
   return (
     <>
       <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -217,23 +272,47 @@ function Wallet({ setModalClose, walletID, walletName }) {
           <Stack spacing={3}>
             {newTransaction && (
               <Box sx={{ padding: "5px 20px 5px 20px", backgroundColor: "#f9f9f9", border: "1px solid #ccc" }}>
-                <Stack spacing={1} sx={{ width: "100%", paddingTop: "10px" }}>
+                <Stack spacing={2} sx={{ width: "100%", paddingTop: "10px" }}>
                   <Typography variant="body2" gutterBottom>
                     {__("Neue Transaktion:", "fcplugin")}
                   </Typography>
-                  <TextField size="small" id="amount" label={__("Betrag", "fcplugin")} name="amount" variant="outlined" value={amount} onChange={e => setAmount(e.target.value)} type="number" />
-                  <TextField size="small" id="details" label={__("Details", "fcplugin")} name="details" variant="outlined" value={details} onChange={e => setDetails(e.target.value)} />
-
+                  <FormControl size="normal" fullWidth>
+                    <InputLabel id="transaction-type">{__("Transaktionsart", "fcplugin")}</InputLabel>
+                    <Select labelId="transaction-type" id="transaction-type-selector" value={transactionType} label="Transaktionsart" onChange={handleTransactionTypeChange}>
+                      <MenuItem key={"deposit"} value={"deposit"}>
+                        {__("Einzahlung", "fcplugin")}
+                      </MenuItem>
+                      <MenuItem key={"manual_transaction"} value={"manual_transaction"}>
+                        {__("Manuelle Transaktion", "fcplugin")}
+                      </MenuItem>
+                      <MenuItem key={"yearly_fee"} value={"yearly_fee"}>
+                        {__("Jahresbeitrag", "fcplugin")}
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    size="normal"
+                    id="amount"
+                    label={__("Betrag", "fcplugin")}
+                    name="amount"
+                    variant="outlined"
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
+                    type="number"
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">CHF</InputAdornment>
+                    }}
+                    placeholder="0"
+                    helperText={__("Vorzeichen beachten! Positive Beträge werden addiert - Negative werden subtrahiert.", "fcplugin")}
+                  />
+                  <TextField size="normal" id="details" label={__("Details", "fcplugin")} name="details" variant="outlined" value={details} onChange={e => setDetails(e.target.value)} />
                   {error && <Alert severity="error">{error}</Alert>}
                   <DialogActions>
-                    <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="small">
+                    <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="large">
                       {__("Transaktion speichern", "fcplugin")}
                     </LoadingButton>
-                    <LoadingButton onClick={handleYearlyFeeTransaction} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting} size="small" color="warning">
-                      {__("Jahresbeitrag", "fcplugin")} {new Date().getFullYear()} {__("belasten", "fcplugin")}
-                    </LoadingButton>
-                    <Button onClick={() => setNewTransaction(false)} variant="text" disabled={submitting} size="small">
-                      {__("Schliessen", "fcplugin")}
+                    <Button onClick={() => setNewTransaction(false)} variant="text" disabled={submitting} size="large">
+                      {__("Abbrechen", "fcplugin")}
                     </Button>
                   </DialogActions>
                 </Stack>
@@ -241,7 +320,7 @@ function Wallet({ setModalClose, walletID, walletName }) {
             )}
             <MaterialReactTable
               columns={columns}
-              data={walletData ?? []}
+              data={walletData || []}
               state={{ isLoading: loading }}
               localization={MRT_Localization_DE}
               muiTablePaperProps={{
@@ -276,6 +355,15 @@ function Wallet({ setModalClose, walletID, walletName }) {
                   >
                     {__("Neue Transaktion für", "fcplugin")} {walletName}
                   </Button>
+                  {hasPaidFee ? (
+                    <Button variant="text" color="success" startIcon={<CheckIcon />}>
+                      {__("Jahresbeitrag", "fcplugin")} {format(new Date(), "yyyy")} {__("bezahlt", "fcplugin")}
+                    </Button>
+                  ) : (
+                    <LoadingButton onClick={handleYearlyFeeTransaction} variant="outlined" loading={submitting} loadingPosition="start" startIcon={<CalendarTodayIcon />} disabled={submitting} size="small">
+                      {__("Jahresbeitrag", "fcplugin")} {new Date().getFullYear()} {__("für", "fcplugin")} {walletName} {__("belasten", "fcplugin")}
+                    </LoadingButton>
+                  )}
                 </Box>
               )}
             />

@@ -650,6 +650,32 @@ html {
   color: #000;
 }
 
+.fc_plugin_update_message {
+  z-index: 1500 !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: white;
+  text-align: center;
+  padding: 40px 10% 40px 10%;
+  margin: 102px auto;
+  border: 1px solid rgba(237, 108, 2, 0.5);
+  color: rgba(237, 108, 2, 1);
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  animation: hideAnimation 0s ease-in 3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes hideAnimation {
+  to {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+}
+
 @media only screen and (max-width: 800px) {
   .fc_order_list_line {
     flex-wrap: wrap;

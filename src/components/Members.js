@@ -13,6 +13,9 @@ import AddMember from "./members/AddMember"
 import Wallet from "./members/Wallet"
 import CheckIcon from "@mui/icons-material/Check"
 import CloseIcon from "@mui/icons-material/Close"
+import PersonAddIcon from "@mui/icons-material/PersonAdd"
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline"
+import { getYear, format, isSameYear } from "date-fns"
 const __ = wp.i18n.__
 
 const Members = () => {
@@ -50,9 +53,11 @@ const Members = () => {
             userToDo.role = u.role
             userToDo.id = u.id
             userToDo.active = u.active
+            userToDo.lastFee = u.last_fee
 
             reArrangedUserData.push(userToDo)
           })
+          reArrangedUserData.sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0))
           setUsers(reArrangedUserData)
           setLoading(false)
         }
@@ -101,26 +106,41 @@ const Members = () => {
       {
         accessorKey: "balance",
         header: __("Guthaben", "fcplugin"),
-        enableEditing: false
+        enableEditing: false,
+        Cell: ({ row, cell }) => (
+          <Button
+            onClick={() => {
+              setWalletID(row.original.id)
+              setWalletName(row.original.name)
+              setWalletModalOpen(true)
+            }}
+            variant="text"
+            startIcon={<AccountBalanceWalletIcon />}
+          >
+            {cell.getValue()}
+          </Button>
+        ),
+        size: 30,
+        enableColumnResizing: false
       },
       {
-        accessorKey: "active",
-        header: __("Aktivmitglied", "fcplugin"),
+        accessorKey: "lastFee",
+        header: __("Jahresbeitrag", "fcplugin") + " " + getYear(Date.now()),
         size: 50,
-        Cell: ({ row, cell }) => (cell.getValue() === "1" ? <CheckIcon /> : <CloseIcon />),
-        muiTableBodyCellEditTextFieldProps: {
-          error: !!validationErrors.active,
-          helperText: validationErrors.active,
-          type: "number",
-          onChange: event => {
-            const value = event.target.value
-            //validation logic
-            if (value !== "0" && value !== "1") {
-              setValidationErrors(prev => ({ ...prev, active: "Muss entweder 0 oder 1 sein." }))
-            } else {
-              delete validationErrors.active
-              setValidationErrors({ ...validationErrors })
-            }
+        enableEditing: false,
+        Cell: ({ row, cell }) => {
+          if (cell.getValue() && isSameYear(new Date(cell.getValue()), Date.now())) {
+            return (
+              <Button variant="text" color="success" startIcon={<CheckIcon />}>
+                {format(new Date(cell.getValue()), "dd.MM.yyyy")}
+              </Button>
+            )
+          } else {
+            return (
+              <Button variant="text" color="error" startIcon={<CloseIcon />}>
+                {__("Nein", "fcplugin")}
+              </Button>
+            )
           }
         }
       },
@@ -207,13 +227,15 @@ const Members = () => {
   // saving edits
   const handleSaveCell = (cell, value) => {
     users[cell.row.index][cell.column.id] = value
+    console.log(cell.row.original.id, value)
 
     axios
       .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postMemberStatus`,
+        `${appLocalizer.apiUrl}/foodcoop/v1/postUpdateUser`,
         {
           id: cell.row.original.id,
-          value: value
+          value: value,
+          cell: cell.column.id
         },
         {
           headers: {
@@ -221,6 +243,9 @@ const Members = () => {
           }
         }
       )
+      .then(response => {
+        if (response) console.log(response)
+      })
       .catch(error => console.log(error))
 
     setUsers([...users])
@@ -241,15 +266,6 @@ const Members = () => {
             header: "",
             Cell: ({ row, table }) => (
               <Box>
-                <IconButton
-                  onClick={() => {
-                    setWalletID(row.original.id)
-                    setWalletName(row.original.name)
-                    setWalletModalOpen(true)
-                  }}
-                >
-                  <AccountBalanceWalletIcon />
-                </IconButton>
                 <IconButton onClick={() => handleDeleteRow(row)}>
                   <DeleteIcon />
                 </IconButton>
@@ -280,15 +296,10 @@ const Members = () => {
             >
               {__("Exportieren", "fcplugin")}
             </Button>
-            <Button size="small" onClick={() => setCreateModalOpen(true)} variant="outlined" disabled={false} startIcon={<AddIcon />}>
+            <Button size="small" onClick={() => setCreateModalOpen(true)} variant="outlined" disabled={false} startIcon={<PersonAddIcon />}>
               {__("Neues Mitglied", "fcplugin")}
             </Button>
           </Box>
-        )}
-        renderBottomToolbarCustomActions={() => (
-          <Typography sx={{ fontStyle: "italic", p: "0 1rem" }} variant="body2">
-            Zelle doppelklicken zum editieren. "Aktivmitglied" muss 0 oder 1 sein.
-          </Typography>
         )}
       />
       {createModalOpen && <AddMember setModalClose={setCreateModalOpen} handleAddMember={handleAddMember} />}

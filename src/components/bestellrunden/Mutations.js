@@ -11,6 +11,14 @@ import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import IconButton from "@mui/material/IconButton"
 import CloseIcon from "@mui/icons-material/Close"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import Checkbox from "@mui/material/Checkbox"
+import Divider from "@mui/material/Divider"
+import PageviewIcon from "@mui/icons-material/Pageview"
 const __ = wp.i18n.__
 
 function Mutations({ id, setModalClose }) {
@@ -48,6 +56,8 @@ function Mutations({ id, setModalClose }) {
 
             setOrders(res[2])
             setProducts(reArrangeProductData)
+            console.log(res[2])
+            console.log(reArrangeProductData)
           }
         })
         .catch(error => console.log(error))
@@ -92,6 +102,7 @@ function Mutations({ id, setModalClose }) {
 
   useEffect(() => {
     if (selectedProduct) {
+      setChecked([0])
       setOrdersToChange(orders[selectedProduct.id])
       setPriceAdjust(selectedProduct.price)
     }
@@ -105,6 +116,21 @@ function Mutations({ id, setModalClose }) {
     }
   }, [success])
 
+  const [checked, setChecked] = useState([0])
+
+  const handleToggle = value => () => {
+    const currentIndex = checked.indexOf(value)
+    const newChecked = [...checked]
+
+    if (currentIndex === -1) {
+      newChecked.push(value)
+    } else {
+      newChecked.splice(currentIndex, 1)
+    }
+
+    setChecked(newChecked)
+    console.log(newChecked)
+  }
   return (
     <>
       <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -155,26 +181,71 @@ function Mutations({ id, setModalClose }) {
 
               <FormControl>
                 <RadioGroup aria-labelledby="mutationType" name="mutationType" value={mutationType} onChange={e => setMutationType(e.target.value)}>
-                  <FormControlLabel value="notDelivered" control={<Radio />} label={__("Produkt wurde nicht geliefert", "fcplugin")} disabled={!selectedProduct} />
+                  <FormControlLabel value="notDelivered" control={<Radio />} label={__("Produkt wurde (teilweise) nicht geliefert", "fcplugin")} disabled={!selectedProduct} />
                   <FormControlLabel value="priceAdjust" control={<Radio />} label={__("Preis anpassen", "fcplugin")} disabled={!selectedProduct} />
                 </RadioGroup>
               </FormControl>
 
-              {mutationType === "priceAdjust" && <TextField id="priceAdjust" value={priceAdjust} onChange={e => setPriceAdjust(e.target.value)} variant="outlined" type="number" sc={{ paddingTop: "5px", paddingBottom: "5px" }} />}
-
-              {ordersToChange && (
-                <div>
-                  {__("Betroffene Bestellungen", "fcplugin")}: <br />
-                  {ordersToChange.map(order => (
-                    <React.Fragment key={order[0]}>
-                      <a target="blank" href={`${appLocalizer.homeUrl}/wp-admin/post.php?post=${order[0]}&action=edit`} style={{ display: "inline-block" }}>
-                        {order[0] + " - " + order[1]}
-                      </a>
-                      <br />
-                    </React.Fragment>
-                  ))}
-                </div>
+              {mutationType === "priceAdjust" && (
+                <>
+                  <h2>{__("Neuer Preis", "fcplugin")}</h2>
+                  <TextField id="priceAdjust" value={priceAdjust} onChange={e => setPriceAdjust(e.target.value)} variant="outlined" type="number" sc={{ paddingTop: "5px", paddingBottom: "5px" }} />
+                </>
               )}
+
+              {ordersToChange &&
+                (ordersToChange.length > 0 ? (
+                  mutationType ? (
+                    <>
+                      <h2>{__("Betroffene Bestellungen", "fcplugin")}</h2>
+
+                      {mutationType === "notDelivered" && <Alert severity="info">{__("Bestellungen, in denen das Produkt rückerstattet werden soll, auswählen, dann speichern.", "fcplugin")}</Alert>}
+                      {mutationType === "priceAdjust" && <Alert severity="info">{__("Der Preis für das Produkt wird in allen Bestellungen angepasst.", "fcplugin")}</Alert>}
+
+                      <List sx={{ width: "100%", bgcolor: "#fafafa", borderRaius: 2 }}>
+                        {ordersToChange.map(order => {
+                          const labelId = `checkbox-list-label-${order[0]}`
+
+                          return (
+                            <React.Fragment key={order[0]}>
+                              <ListItem
+                                secondaryAction={
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="order"
+                                    onClick={() => {
+                                      window.open(`${appLocalizer.homeUrl}/wp-admin/post.php?post=${order[0]}&action=edit`, "_blank")
+                                    }}
+                                  >
+                                    <PageviewIcon />
+                                  </IconButton>
+                                }
+                                disablePadding
+                              >
+                                <ListItemButton role={undefined} onClick={handleToggle(order[0])} dense>
+                                  {mutationType === "notDelivered" && (
+                                    <ListItemIcon>
+                                      <Checkbox edge="start" checked={checked.indexOf(order[0]) !== -1} tabIndex={-1} disableRipple inputProps={{ "aria-labelledby": labelId }} size="small" />
+                                    </ListItemIcon>
+                                  )}
+                                  <ListItemText id={labelId} primary={`${order[0]} - ${order[1]} ${__("hat", "fcplugin")} ${order[2]}x ${__("bestellt", "fcplugin")} ${__("für", "fcplugin")} CHF ${order[3].toFixed(2)}`} />
+                                </ListItemButton>
+                              </ListItem>
+                              <Divider variant="fullWidth" />
+                            </React.Fragment>
+                          )
+                        })}
+                      </List>
+                    </>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  <>
+                    <h2>{__("Betroffene Bestellungen", "fcplugin")}</h2>
+                    <span>{__("keine Bestellungen betroffen.", "fcplugin")}</span>
+                  </>
+                ))}
               {success && <Alert severity="success">{__("Mutation wurde verarbeitet.", "fcplugin")}</Alert>}
             </Stack>
           ) : (
@@ -183,20 +254,6 @@ function Mutations({ id, setModalClose }) {
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <LoadingButton onClick={handleSubmit} variant="contained" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting}>
-            {__("Mutation speichern", "fcplugin")}
-          </LoadingButton>
-          <Button
-            onClick={() => {
-              setModalClose(false)
-              setProductsLoading(true)
-              setProducts(null)
-            }}
-          >
-            {__("Schliessen", "fcplugin")}
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

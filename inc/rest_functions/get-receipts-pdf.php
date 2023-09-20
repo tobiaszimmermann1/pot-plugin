@@ -36,30 +36,25 @@
   // loop through orders
   foreach( $orders as $order ) {
 
-    $customer_info = __("Mitgliedernummer","fcplugin").': '.$order->get_customer_id()."<br>".$order->get_billing_address_1()."<br>".$order->get_billing_postcode()." ".$order->get_billing_city()."<br>".$order->get_billing_email()."<br>".$order->get_billing_phone();
-
     // header
     $header = '
     <div style="margin-top:0cm;font-size:7pt;font-family:Arial; width: 100%;">
       <table style="width: 100%;font-size:7pt;border:1px solid black;" cellspacing="0">
         <tr>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;" colspan="2">'.__("Quittung zu Bestellung","fcplugin").' '.$order->get_id().'</td>
+          <td style="padding:3px 8px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;" colspan="2">'.__("Bestellung","fcplugin").' '.$order->get_id().'</td>
         </tr>
         <tr>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Mitglied Name","fcplugin").'</td>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;font-size:16pt;">'.$order->get_billing_first_name()." ".$order->get_billing_last_name().'</td>
+          <td style="padding:3px 8px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Mitglied","fcplugin").'</td>
+          <td style="padding:3px 8px;border-bottom:1px solid black;font-weight:bold;font-size:16pt;">'.$order->get_billing_first_name()." ".$order->get_billing_last_name().' ('.$order->get_customer_id().')<br />
+          <span style="font-weight:normal;font-size:7pt;">'.__("Tel","fcplugin").': '.$order->get_billing_phone().'</span></td>
         </tr>
         <tr>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Mitglied Info","fcplugin").'</td>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;">'.$customer_info.'</td>
+          <td style="padding:3px 8px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Bestellrunde","fcplugin").'</td>
+          <td style="padding:3px 8px;border-bottom:1px solid black;vertical-align:top;">'. $bestellrunde_info.'</td>
         </tr>
         <tr>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;font-weight:bold;vertical-align:top;">'.__("Bestellrunde","fcplugin").'</td>
-          <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black;vertical-align:top;">'. $bestellrunde_info.'</td>
-        </tr>
-        <tr>
-          <td style="padding:5px 10px 5px 10px;font-weight:bold;">'.__("Total","fcplugin").'</td>
-          <td style="padding:5px 10px 5px 10px;">CHF '.number_format((float)$order->get_total() - (float)$order->get_total_refunded(), 2, '.', '').'</td>
+          <td style="padding:3px 8px;font-weight:bold;">'.__("Total","fcplugin").'</td>
+          <td style="padding:3px 8px;">CHF '.number_format((float)$order->get_total() - (float)$order->get_total_refunded(), 2, '.', '').'</td>
         </tr>
       </table>
     </div>
@@ -69,14 +64,14 @@
     <div style="margin-top:1cm;font-size:7pt;width: 100%;">
       <table style="width: 100%; border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;" cellspacing="0">
       <tr>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Produkt</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Kategorie</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Lieferant</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Herkunft</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Einheit</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Menge</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Preis (CHF)</td>
-        <td style="padding:5px 10px 5px 10px;border-bottom:1px solid black; font-size:7pt;font-weight:bold;width:5cm;">Notiz</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Produkt</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Kategorie</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Lieferant</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;">Herkunft</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Einheit</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Menge</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; border-right:1px solid black;font-size:7pt;font-weight:bold;text-align:center;">Preis (CHF)</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black; font-size:7pt;font-weight:bold;width:5cm;">Notiz</td>
       </tr>
     ';
 
@@ -126,14 +121,14 @@
 
         $body .= '
         <tr>
-        <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_name.'</td>
-        <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_category.'</td>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_lieferant.'</td>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_herkunft.'</td>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$product_einheit.'</td>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$quantity.'</td>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$total.'</td>
-            <td style="padding:5px 10px 10px 10px;border-bottom:1px solid black;font-size:7pt;text-align:left;"></td>
+        <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_name.'</td>
+        <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_category.'</td>
+            <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_lieferant.'</td>
+            <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;">'.$product_herkunft.'</td>
+            <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$product_einheit.'</td>
+            <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$quantity.'</td>
+            <td style="padding:3px 8px;border-bottom:1px solid black;border-right:1px solid black;font-size:7pt;text-align:left;">'.$total.'</td>
+            <td style="padding:3px 8px;border-bottom:1px solid black;font-size:7pt;text-align:left;"></td>
         </tr>
         ';
 

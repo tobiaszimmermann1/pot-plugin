@@ -56,7 +56,7 @@ const Bestellrunden = () => {
             reArrangedBestellrunden.push(bestellrundeToDo)
           })
 
-          reArrangedBestellrunden.sort((a, b) => b.id - a.id)
+          reArrangedBestellrunden.sort((objA, objB) => Number(objA.bestellrunde_start) - Number(objB.bestellrunde_start))
 
           setBestellrunden(reArrangedBestellrunden)
           setLoading(false)
@@ -221,99 +221,50 @@ const Bestellrunden = () => {
             header: "",
             Cell: ({ row, table }) => (
               <Box>
-                {new Date(row.original.bestellrunde_start) > new Date() ? (
-                  <ButtonGroup
-                    variant="text"
-                    aria-label="text button group"
-                    sx={{
-                      padding: "5px 10px 5px 10px"
+                <ButtonGroup
+                  variant="text"
+                  aria-label="text button group"
+                  sx={{
+                    padding: "5px 10px 5px 10px"
+                  }}
+                >
+                  <Button size="small" onClick={() => table.setEditingRow(row)}>
+                    <EditIcon />
+                  </Button>
+                  <Button size="small" onClick={() => handleDeleteRow(row)}>
+                    <DeleteIcon />
+                  </Button>
+                  <Button
+                    size="small"
+                    startIcon={<ShoppingBasketIcon />}
+                    onClick={() => {
+                      setSelectedBestellrunde(row.original.id)
+                      setProductsModalOpen(true)
                     }}
                   >
-                    <Button size="small" onClick={() => table.setEditingRow(row)}>
-                      <EditIcon />
-                    </Button>
-                    <Button size="small" onClick={() => handleDeleteRow(row)}>
-                      <DeleteIcon />
-                    </Button>
-                    <Button
-                      size="small"
-                      startIcon={<ShoppingBasketIcon />}
-                      onClick={() => {
-                        setSelectedBestellrunde(row.original.id)
-                        setProductsModalOpen(true)
-                      }}
-                    >
-                      {__("Produkte", "fcplugin")}
-                    </Button>
-                    <Button
-                      size="small"
-                      disabled={true}
-                      startIcon={<AutoFixHighIcon />}
-                      onClick={() => {
-                        setSelectedBestellrunde(row.original.id)
-                        setMutationsModalOpen(true)
-                      }}
-                    >
-                      {__("Mutation", "fcplugin")}
-                    </Button>
-                    <Button
-                      size="small"
-                      startIcon={<AllInboxIcon />}
-                      onClick={() => {
-                        setSelectedBestellrunde(row.original.id)
-                        setOrderModalOpen(true)
-                      }}
-                    >
-                      {__("Bestellungen", "fcplugin")}
-                    </Button>
-                  </ButtonGroup>
-                ) : (
-                  <ButtonGroup
-                    variant="text"
-                    aria-label="text button group"
-                    sx={{
-                      padding: "5px 10px 5px 10px"
+                    {__("Produkte", "fcplugin")}
+                  </Button>
+                  <Button
+                    size="small"
+                    startIcon={<AutoFixHighIcon />}
+                    onClick={() => {
+                      setSelectedBestellrunde(row.original.id)
+                      setMutationsModalOpen(true)
                     }}
                   >
-                    <Button size="small" disabled={true} onClick={() => table.setEditingRow(row)}>
-                      <EditIcon />
-                    </Button>
-                    <Button size="small" onClick={() => handleDeleteRow(row)}>
-                      <DeleteIcon />
-                    </Button>
-                    <Button
-                      size="small"
-                      disabled={false}
-                      startIcon={<ShoppingBasketIcon />}
-                      onClick={() => {
-                        setSelectedBestellrunde(row.original.id)
-                        setProductsModalOpen(true)
-                      }}
-                    >
-                      {__("Produkte", "fcplugin")}
-                    </Button>
-                    <Button
-                      size="small"
-                      startIcon={<AutoFixHighIcon />}
-                      onClick={() => {
-                        setSelectedBestellrunde(row.original.id)
-                        setMutationsModalOpen(true)
-                      }}
-                    >
-                      {__("Mutation", "fcplugin")}
-                    </Button>
-                    <Button
-                      size="small"
-                      startIcon={<AllInboxIcon />}
-                      onClick={() => {
-                        setSelectedBestellrunde(row.original.id)
-                        setOrderModalOpen(true)
-                      }}
-                    >
-                      {__("Bestellungen", "fcplugin")}
-                    </Button>
-                  </ButtonGroup>
-                )}
+                    {__("Mutation", "fcplugin")}
+                  </Button>
+                  <Button
+                    size="small"
+                    startIcon={<AllInboxIcon />}
+                    onClick={() => {
+                      setSelectedBestellrunde(row.original.id)
+                      setOrderModalOpen(true)
+                    }}
+                  >
+                    {__("Bestellungen", "fcplugin")}
+                  </Button>
+                </ButtonGroup>
               </Box>
             )
           }

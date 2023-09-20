@@ -8,7 +8,7 @@
 Plugin Name: Foodcoop Manager
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
-Version: 1.5.5
+Version: 1.6.0
 Author: Tobias Zimmermann
 Author URI: https://neues-food-depot.ch
 License: GPLv2 or later
@@ -70,13 +70,53 @@ function foodcoop_wallet_install() {
         balance decimal(10,2) NOT NULL,
         details longtext,
         created_by bigint(20) NOT NULL,
-        date timestamp DEFAULT '0000-00-00 00:00:00' NOT NULL,
+        date timestamp NOT NULL,
     PRIMARY KEY  (id)
   ) $charset_collate;";
 
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $sql );
 }
+
+
+
+
+
+/**
+ * Upgrade for verson > 1.6.0
+ * upgrade table for Foodcoop wallet for transaction types
+ */
+function fc_plugin_upgrade_database() {
+  global $wpdb;
+  $results = $wpdb->get_results( "SELECT `type` FROM {$wpdb->prefix}foodcoop_wallet", OBJECT );
+  if (!$results) {
+    // add type into wallet table
+    $wpdb->query("ALTER TABLE {$wpdb->prefix}foodcoop_wallet ADD `type` VARCHAR(255) NOT NULL");
+
+    // set type to manual_transaction for all existing transactions
+    // + set created_by to name of user, if it's still set to user id's
+    $all_rows = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}foodcoop_wallet", OBJECT );
+    foreach($all_rows as $row) {
+      $name = get_user_meta($row->created_by, 'billing_first_name', true)." ".get_user_meta($row->created_by, 'billing_last_name', true);
+      if ($name == " ") {
+        $name = "Benutzer gelöscht (".$row->created_by.")";
+      }
+      
+      $wpdb->update(
+        $wpdb->prefix.'foodcoop_wallet',
+        array( 
+          'type' => 'manual_transaction',
+          'created_by' => $name
+        ),
+        array(
+          'id' => $row->id,
+        )
+      );
+    }
+    printf('<span class="fc_plugin_update_message">'.__('Datenbank wurde für Foodcoop Manager Version > 1.6.0 aktualisiert. Vielen Dank!','fcplugin').'</span>');
+  }
+}
+add_action( 'admin_init', 'fc_plugin_upgrade_database' );
 
 
 
@@ -322,8 +362,8 @@ function fc_add_gateway_class( $gateways ) {
 // register 
 add_shortcode('foodcoop_list', function() {
   ?>
-      <div id="fc_order_list"></div>
-<?php
+    <div id="fc_order_list"></div>
+  <?php
 });
 
 
@@ -347,3 +387,17 @@ add_shortcode('foodcoop_list', function() {
     }
   }
 }
+
+
+
+/**
+ * New User registration
+ */
+
+// Disable the new user notification sent to the site admin
+function fcplugin_disable_new_user_notifications() {
+  //Remove original use created emails
+  remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
+  remove_action( 'edit_user_created_user', 'wp_send_new_user_notifications', 10, 2 );
+}
+add_action( 'init', 'fcplugin_disable_new_user_notifications' );
