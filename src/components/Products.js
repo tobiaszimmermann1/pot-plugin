@@ -12,6 +12,7 @@ import { ExportToCsv } from "export-to-csv"
 import ImportProducts from "./products/ImportProducts"
 import ProducerImportProducts from "./products/ProducerImportProducts"
 import ImageIcon from "@mui/icons-material/Image"
+import QrCodeIcon from "@mui/icons-material/QrCode"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -25,6 +26,7 @@ const Products = () => {
   })
   const [importModalOpen, setImportModalOpen] = useState(false)
   const [producerImportModalOpen, setProducerImportModalOpen] = useState(false)
+  const [buttonLoading, setButtonLoading] = useState(false)
 
   useEffect(() => {
     axios
@@ -46,6 +48,7 @@ const Products = () => {
             productToDo.short_description = p.short_description
             p.image ? (productToDo.image = p.image) : (productToDo.image = "")
             productToDo.description = p.description
+            productToDo.sku = p.sku
 
             reArrangeProductData.push(productToDo)
           })
@@ -67,6 +70,12 @@ const Products = () => {
         accessorKey: "id",
         header: __("ID", "fcplugin"),
         enableEditing: false,
+        size: 50
+      },
+      {
+        accessorKey: "sku",
+        header: __("Artikelnummer", "fcplugin"),
+        enableEditing: true,
         size: 50
       },
       {
@@ -223,6 +232,32 @@ const Products = () => {
     csvExporter.generateCsv(products)
   }
 
+  function handleQRCode(row) {
+    console.log(row.original)
+    setButtonLoading(true)
+    axios
+      .get(`${appLocalizer.apiUrl}/foodcoop/v1/productQRPDF?sku=${row.original.sku}`, {
+        headers: {
+          "X-WP-Nonce": appLocalizer.nonce
+        }
+      })
+      .then(function (response) {
+        if (response.data) {
+          const linkSource = `data:application/pdf;base64,${response.data}`
+          const downloadLink = document.createElement("a")
+          const fileName = `QR-${row.original.sku}.pdf`
+          downloadLink.href = linkSource
+          downloadLink.download = fileName
+          downloadLink.click()
+          setButtonLoading(false)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        setButtonLoading(false)
+      })
+  }
+
   return (
     <>
       {statusMessage.active && <div className={`statusMessage ${statusMessage.type}`}>{statusMessage.message}</div>}
@@ -237,10 +272,14 @@ const Products = () => {
         displayColumnDefOptions={{
           "mrt-row-actions": {
             header: "",
+            size: 100,
             Cell: ({ row, table }) => (
               <Box>
                 <IconButton onClick={() => table.setEditingRow(row)}>
                   <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => handleQRCode(row)} disabled={buttonLoading}>
+                  <QrCodeIcon />
                 </IconButton>
                 <IconButton onClick={() => handleDeleteRow(row)}>
                   <DeleteIcon />
@@ -263,9 +302,11 @@ const Products = () => {
             <Button color="primary" onClick={() => setImportModalOpen(true)} startIcon={<FileUploadIcon />} variant="outlined" size="small" disabled={productsLoading}>
               {__("Importieren", "fcplugin")}
             </Button>
+            {/*
             <Button color="primary" onClick={() => setProducerImportModalOpen(true)} startIcon={<LocalShippingIcon />} variant="outlined" size="small" disabled={productsLoading}>
               {__("Lieferant importieren", "fcplugin")}
             </Button>
+            */}
           </Box>
         )}
       />

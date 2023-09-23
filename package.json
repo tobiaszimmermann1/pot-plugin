@@ -35,6 +35,7 @@
     "axios": "^1.2.1",
     "date-fns": "^2.29.3",
     "export-to-csv": "^0.2.1",
+    "html5-qrcode": "^2.3.8",
     "material-react-table": "^1.14.0",
     "prop-types": "^15.8.1",
     "react-papaparse": "^4.1.0",

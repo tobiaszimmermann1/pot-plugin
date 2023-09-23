@@ -3,7 +3,27 @@ import axios from "axios"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import OrderList from "./components/frontend/OrderList"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 const __ = wp.i18n.__
+
+const theme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#00796b"
+    },
+    secondary: {
+      main: "#CFD8DC"
+    },
+    background: {
+      default: "#fbfbfb",
+      paper: "#ffffff"
+    },
+    success: {
+      main: "#00c853"
+    }
+  }
+})
 
 function FrontendApp() {
   const [products, setProducts] = useState()
@@ -42,13 +62,15 @@ function FrontendApp() {
 
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <div className="fc_order_list_wrapper">
-          <div id="fc_order_list_body">
-            <OrderList currency={currency} order={order} categories={cats} allProducts={products} bestellrundenProducts={bestellrundenProducts} bestellrundenDates={bestellrundenDates} activeBestellrunde={activeBestellrunde} nextBestellrunde={nextBestellrunde} activeState={active} />
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <div className="fc_order_list_wrapper">
+            <div id="fc_order_list_body">
+              <OrderList currency={currency} order={order} categories={cats} allProducts={products} bestellrundenProducts={bestellrundenProducts} bestellrundenDates={bestellrundenDates} activeBestellrunde={activeBestellrunde} nextBestellrunde={nextBestellrunde} activeState={active} />
+            </div>
           </div>
-        </div>
-      </LocalizationProvider>
+        </LocalizationProvider>
+      </ThemeProvider>
     </>
   )
 }

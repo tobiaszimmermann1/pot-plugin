@@ -146,6 +146,18 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET productQRPDF
+     * params: product sku
+     */
+    register_rest_route( 'foodcoop/v1', 'productQRPDF', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'productQRPDF'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET receiptsPDF
      * params: bestellrunde
      */
@@ -527,6 +539,9 @@ class FoodcoopRestRoutes {
       // product category (only the first one!)
       $the_product['category_name'] = $cats[$product->get_category_ids()[0]];
 
+      // product sku (for self-checkout)
+      $the_product['sku'] = $product->get_sku();
+
       array_push($products, $the_product);
     }
          
@@ -632,6 +647,7 @@ class FoodcoopRestRoutes {
     $product->update_meta_data('_herkunft', $data['updatedValues']['origin']);
     $product->update_meta_data('_gebinde', $data['updatedValues']['lot']);
     $product->update_meta_data('_einheit', $data['updatedValues']['unit']);
+    $product->update_meta_data('_sku', $data['updatedValues']['sku']);
     $product->save();
     return json_encode($data['updatedValues']['name']);
 
@@ -803,6 +819,14 @@ class FoodcoopRestRoutes {
     }
 
     return json_encode($order_data);
+  }
+
+  /**
+   * productQRPDF
+   */
+  function productQRPDF($data) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-product-qr-pdf.php');
+    return base64_encode($pdf);
   }
 
   /**
