@@ -53,6 +53,17 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET banking options
+     */
+    register_rest_route( 'foodcoop/v1', 'getBankingOptions', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getBankingOptions'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
      * POST product update
      * params: id, values
      */
@@ -528,6 +539,25 @@ class FoodcoopRestRoutes {
    */
   function getOption($data) {
     return json_encode(get_option($data['option']));
+  }
+
+  /**
+   * getBankingOptions
+   */
+  function getBankingOptions($data) {
+    $fc_bank = get_option('fc_bank');
+    $woocommerce_store_address = get_option('woocommerce_store_address');
+    $woocommerce_store_city = get_option('woocommerce_store_city');
+    $woocommerce_store_postcode = get_option('woocommerce_store_postcode');
+    $blogname = get_option('blogname');
+
+    $id = $data['id'];
+    $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
+    $address = get_user_meta($id, 'billing_address_1', true);
+    $postcode = get_user_meta($id, 'billing_postcode', true);
+    $city = get_user_meta($id, 'billing_city', true);
+
+    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city));
   }
 
   /**
@@ -1722,7 +1752,6 @@ class FoodcoopRestRoutes {
     $new_balance = number_format($new_balance, 2, '.', '');
 
     $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance, 'type' => $type);
-    $format = array('%s','%d');
 
     // send email update
     $update_user = get_user_by( 'id', $user_id );
@@ -1753,7 +1782,7 @@ class FoodcoopRestRoutes {
     $user = wp_mail($user_email, $subject, $message, $headers);
     */
 
-    $wpdb->insert($table, $data, $format);
+    $wpdb->insert($table, $data);
     $transaction_id = $wpdb->insert_id;
     
 

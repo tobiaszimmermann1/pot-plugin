@@ -48,25 +48,18 @@ class WalletDashboard
         $balance_color = "red";
         if ($balance >= 0) {
             $balance_color = "green";
-        }
-
+        }    
         ?>
 
         <div class="fc_account_wallet">
             <p class="fc_account_wallet_balance">Dein aktuelles Guthaben beträgt <strong style="color:<?php echo $balance_color; ?>;" >CHF <?php echo $balance; ?></strong></p>
-            <p>Zahle Guthaben an folgende Bankverbindung ein:</p>
-
-            <?php
-                $account = esc_attr(get_option('fc_bank'));
-                if ($account) {
-                    ?>
-                    <p class="my-account-konto"><?php echo nl2br($account);
-                }
-                ?></p>
+            <p><?php echo get_option('fc_transfer'); ?></p>
+            <div id="fc_topup"></div>
         </div>
 
+
         <div class="fc_account_wallet_table">
-            <p><strong>Deine Transaktionen:</strong></p>
+            <h2><strong>Deine Transaktionen:</strong></h2>
             <table class="foodcoop_wallet_transaction_form_history">
             <tr>
                 <th><strong>Datum</strong></th>
@@ -181,7 +174,7 @@ class MembersListDashboard
 
               if ($first_name && $last_name && $email) {
                 echo '  <tr>    ';
-                echo '      <td style="text-align: right;">'.$user->ID.'</td>';
+                echo '      <td style="text-align: left;">'.$user->ID.'</td>';
                 echo '      <td style="text-align: left;">'.$first_name.' '.$last_name.'</td>';
                 echo '      <td style="text-align: left;">'.$email.'</td>';
                 echo '      <td style="text-align: center;">'.$role.'</td>';

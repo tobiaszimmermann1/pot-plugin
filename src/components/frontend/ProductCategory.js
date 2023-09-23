@@ -22,7 +22,7 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
       </h2>
 
       <div className="fc_order_list_category_wrapper">
-        <CSSTransition in={visibility} timeout={300} classNames="transition-y" unmountOnExit>
+        <div className={visibility ? `fc_transition_show` : `fc_transition_hide`}>
           <div className="fc_order_list_cat_wrapper">
             <div className="fc_order_list_line">
               <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>
@@ -46,7 +46,7 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
               <ProductLine publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
             ))}
           </div>
-        </CSSTransition>
+        </div>
       </div>
     </>
   )

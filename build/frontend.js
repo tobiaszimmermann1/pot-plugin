@@ -4368,10 +4368,10 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ "./node_modules/@mui/icons-material/Done.js":
-/*!**************************************************!*\
-  !*** ./node_modules/@mui/icons-material/Done.js ***!
-  \**************************************************/
+/***/ "./node_modules/@mui/icons-material/Close.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@mui/icons-material/Close.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -4385,8 +4385,8 @@ exports["default"] = void 0;
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/createSvgIcon */ "./node_modules/@mui/icons-material/utils/createSvgIcon.js"));
 var _jsxRuntime = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
-  d: "M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
-}), 'Done');
+  d: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+}), 'Close');
 exports["default"] = _default;
 
 /***/ }),
@@ -4548,29 +4548,6 @@ var _jsxRuntime = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/r
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
 }), 'ShoppingCart');
-exports["default"] = _default;
-
-/***/ }),
-
-/***/ "./node_modules/@mui/icons-material/Warning.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/@mui/icons-material/Warning.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports["default"] = void 0;
-var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/createSvgIcon */ "./node_modules/@mui/icons-material/utils/createSvgIcon.js"));
-var _jsxRuntime = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
-  d: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
-}), 'Warning');
 exports["default"] = _default;
 
 /***/ }),
@@ -4862,6 +4839,615 @@ function getLoadingButtonUtilityClass(slot) {
 }
 const loadingButtonClasses = (0,_mui_material_generateUtilityClasses__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiLoadingButton', ['root', 'loading', 'loadingIndicator', 'loadingIndicatorCenter', 'loadingIndicatorStart', 'loadingIndicatorEnd', 'endIconLoadingEnd', 'startIconLoadingStart']);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (loadingButtonClasses);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/Alert/Alert.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@mui/material/esm/Alert/Alert.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var _mui_base__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/base */ "./node_modules/@mui/utils/esm/composeClasses/composeClasses.js");
+/* harmony import */ var _mui_system__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/system */ "./node_modules/@mui/system/esm/colorManipulator.js");
+/* harmony import */ var _styles_styled__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../styles/styled */ "./node_modules/@mui/material/esm/styles/styled.js");
+/* harmony import */ var _styles_useThemeProps__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../styles/useThemeProps */ "./node_modules/@mui/material/esm/styles/useThemeProps.js");
+/* harmony import */ var _utils_capitalize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/capitalize */ "./node_modules/@mui/material/esm/utils/capitalize.js");
+/* harmony import */ var _Paper__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Paper */ "./node_modules/@mui/material/esm/Paper/Paper.js");
+/* harmony import */ var _alertClasses__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alertClasses */ "./node_modules/@mui/material/esm/Alert/alertClasses.js");
+/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../IconButton */ "./node_modules/@mui/material/esm/IconButton/IconButton.js");
+/* harmony import */ var _internal_svg_icons_SuccessOutlined__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../internal/svg-icons/SuccessOutlined */ "./node_modules/@mui/material/esm/internal/svg-icons/SuccessOutlined.js");
+/* harmony import */ var _internal_svg_icons_ReportProblemOutlined__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../internal/svg-icons/ReportProblemOutlined */ "./node_modules/@mui/material/esm/internal/svg-icons/ReportProblemOutlined.js");
+/* harmony import */ var _internal_svg_icons_ErrorOutline__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../internal/svg-icons/ErrorOutline */ "./node_modules/@mui/material/esm/internal/svg-icons/ErrorOutline.js");
+/* harmony import */ var _internal_svg_icons_InfoOutlined__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../internal/svg-icons/InfoOutlined */ "./node_modules/@mui/material/esm/internal/svg-icons/InfoOutlined.js");
+/* harmony import */ var _internal_svg_icons_Close__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../internal/svg-icons/Close */ "./node_modules/@mui/material/esm/internal/svg-icons/Close.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+const _excluded = ["action", "children", "className", "closeText", "color", "components", "componentsProps", "icon", "iconMapping", "onClose", "role", "severity", "slotProps", "slots", "variant"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const useUtilityClasses = ownerState => {
+  const {
+    variant,
+    color,
+    severity,
+    classes
+  } = ownerState;
+  const slots = {
+    root: ['root', `${variant}${(0,_utils_capitalize__WEBPACK_IMPORTED_MODULE_5__["default"])(color || severity)}`, `${variant}`],
+    icon: ['icon'],
+    message: ['message'],
+    action: ['action']
+  };
+  return (0,_mui_base__WEBPACK_IMPORTED_MODULE_6__["default"])(slots, _alertClasses__WEBPACK_IMPORTED_MODULE_7__.getAlertUtilityClass, classes);
+};
+const AlertRoot = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_8__["default"])(_Paper__WEBPACK_IMPORTED_MODULE_9__["default"], {
+  name: 'MuiAlert',
+  slot: 'Root',
+  overridesResolver: (props, styles) => {
+    const {
+      ownerState
+    } = props;
+    return [styles.root, styles[ownerState.variant], styles[`${ownerState.variant}${(0,_utils_capitalize__WEBPACK_IMPORTED_MODULE_5__["default"])(ownerState.color || ownerState.severity)}`]];
+  }
+})(({
+  theme,
+  ownerState
+}) => {
+  const getColor = theme.palette.mode === 'light' ? _mui_system__WEBPACK_IMPORTED_MODULE_10__.darken : _mui_system__WEBPACK_IMPORTED_MODULE_10__.lighten;
+  const getBackgroundColor = theme.palette.mode === 'light' ? _mui_system__WEBPACK_IMPORTED_MODULE_10__.lighten : _mui_system__WEBPACK_IMPORTED_MODULE_10__.darken;
+  const color = ownerState.color || ownerState.severity;
+  return (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, theme.typography.body2, {
+    backgroundColor: 'transparent',
+    display: 'flex',
+    padding: '6px 16px'
+  }, color && ownerState.variant === 'standard' && {
+    color: theme.vars ? theme.vars.palette.Alert[`${color}Color`] : getColor(theme.palette[color].light, 0.6),
+    backgroundColor: theme.vars ? theme.vars.palette.Alert[`${color}StandardBg`] : getBackgroundColor(theme.palette[color].light, 0.9),
+    [`& .${_alertClasses__WEBPACK_IMPORTED_MODULE_7__["default"].icon}`]: theme.vars ? {
+      color: theme.vars.palette.Alert[`${color}IconColor`]
+    } : {
+      color: theme.palette.mode === 'dark' ? theme.palette[color].main : theme.palette[color].light
+    }
+  }, color && ownerState.variant === 'outlined' && {
+    color: theme.vars ? theme.vars.palette.Alert[`${color}Color`] : getColor(theme.palette[color].light, 0.6),
+    border: `1px solid ${(theme.vars || theme).palette[color].light}`,
+    [`& .${_alertClasses__WEBPACK_IMPORTED_MODULE_7__["default"].icon}`]: theme.vars ? {
+      color: theme.vars.palette.Alert[`${color}IconColor`]
+    } : {
+      color: theme.palette.mode === 'dark' ? theme.palette[color].main : theme.palette[color].light
+    }
+  }, color && ownerState.variant === 'filled' && (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    fontWeight: theme.typography.fontWeightMedium
+  }, theme.vars ? {
+    color: theme.vars.palette.Alert[`${color}FilledColor`],
+    backgroundColor: theme.vars.palette.Alert[`${color}FilledBg`]
+  } : {
+    backgroundColor: theme.palette.mode === 'dark' ? theme.palette[color].dark : theme.palette[color].main,
+    color: theme.palette.getContrastText(theme.palette.mode === 'dark' ? theme.palette[color].dark : theme.palette[color].main)
+  }));
+});
+const AlertIcon = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_8__["default"])('div', {
+  name: 'MuiAlert',
+  slot: 'Icon',
+  overridesResolver: (props, styles) => styles.icon
+})({
+  marginRight: 12,
+  padding: '7px 0',
+  display: 'flex',
+  fontSize: 22,
+  opacity: 0.9
+});
+const AlertMessage = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_8__["default"])('div', {
+  name: 'MuiAlert',
+  slot: 'Message',
+  overridesResolver: (props, styles) => styles.message
+})({
+  padding: '8px 0',
+  minWidth: 0,
+  overflow: 'auto'
+});
+const AlertAction = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_8__["default"])('div', {
+  name: 'MuiAlert',
+  slot: 'Action',
+  overridesResolver: (props, styles) => styles.action
+})({
+  display: 'flex',
+  alignItems: 'flex-start',
+  padding: '4px 0 0 16px',
+  marginLeft: 'auto',
+  marginRight: -8
+});
+const defaultIconMapping = {
+  success: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_internal_svg_icons_SuccessOutlined__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    fontSize: "inherit"
+  }),
+  warning: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_internal_svg_icons_ReportProblemOutlined__WEBPACK_IMPORTED_MODULE_12__["default"], {
+    fontSize: "inherit"
+  }),
+  error: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_internal_svg_icons_ErrorOutline__WEBPACK_IMPORTED_MODULE_13__["default"], {
+    fontSize: "inherit"
+  }),
+  info: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_internal_svg_icons_InfoOutlined__WEBPACK_IMPORTED_MODULE_14__["default"], {
+    fontSize: "inherit"
+  })
+};
+const Alert = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.forwardRef(function Alert(inProps, ref) {
+  var _ref, _slots$closeButton, _ref2, _slots$closeIcon, _slotProps$closeButto, _slotProps$closeIcon;
+  const props = (0,_styles_useThemeProps__WEBPACK_IMPORTED_MODULE_15__["default"])({
+    props: inProps,
+    name: 'MuiAlert'
+  });
+  const {
+      action,
+      children,
+      className,
+      closeText = 'Close',
+      color,
+      components = {},
+      componentsProps = {},
+      icon,
+      iconMapping = defaultIconMapping,
+      onClose,
+      role = 'alert',
+      severity = 'success',
+      slotProps = {},
+      slots = {},
+      variant = 'standard'
+    } = props,
+    other = (0,_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(props, _excluded);
+  const ownerState = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, props, {
+    color,
+    severity,
+    variant
+  });
+  const classes = useUtilityClasses(ownerState);
+  const AlertCloseButton = (_ref = (_slots$closeButton = slots.closeButton) != null ? _slots$closeButton : components.CloseButton) != null ? _ref : _IconButton__WEBPACK_IMPORTED_MODULE_16__["default"];
+  const AlertCloseIcon = (_ref2 = (_slots$closeIcon = slots.closeIcon) != null ? _slots$closeIcon : components.CloseIcon) != null ? _ref2 : _internal_svg_icons_Close__WEBPACK_IMPORTED_MODULE_17__["default"];
+  const closeButtonProps = (_slotProps$closeButto = slotProps.closeButton) != null ? _slotProps$closeButto : componentsProps.closeButton;
+  const closeIconProps = (_slotProps$closeIcon = slotProps.closeIcon) != null ? _slotProps$closeIcon : componentsProps.closeIcon;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(AlertRoot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    role: role,
+    elevation: 0,
+    ownerState: ownerState,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(classes.root, className),
+    ref: ref
+  }, other, {
+    children: [icon !== false ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AlertIcon, {
+      ownerState: ownerState,
+      className: classes.icon,
+      children: icon || iconMapping[severity] || defaultIconMapping[severity]
+    }) : null, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AlertMessage, {
+      ownerState: ownerState,
+      className: classes.message,
+      children: children
+    }), action != null ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AlertAction, {
+      ownerState: ownerState,
+      className: classes.action,
+      children: action
+    }) : null, action == null && onClose ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AlertAction, {
+      ownerState: ownerState,
+      className: classes.action,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AlertCloseButton, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+        size: "small",
+        "aria-label": closeText,
+        title: closeText,
+        color: "inherit",
+        onClick: onClose
+      }, closeButtonProps, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AlertCloseIcon, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+          fontSize: "small"
+        }, closeIconProps))
+      }))
+    }) : null]
+  }));
+});
+ true ? Alert.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The action to display. It renders after the message, at the end of the alert.
+   */
+  action: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node),
+  /**
+   * The content of the component.
+   */
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node),
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object),
+  /**
+   * @ignore
+   */
+  className: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().string),
+  /**
+   * Override the default label for the *close popup* icon button.
+   *
+   * For localization purposes, you can use the provided [translations](/material-ui/guides/localization/).
+   * @default 'Close'
+   */
+  closeText: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().string),
+  /**
+   * The color of the component. Unless provided, the value is taken from the `severity` prop.
+   * It supports both default and custom theme colors, which can be added as shown in the
+   * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
+   */
+  color: prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOf(['error', 'info', 'success', 'warning']), (prop_types__WEBPACK_IMPORTED_MODULE_18___default().string)]),
+  /**
+   * The components used for each slot inside.
+   *
+   * This prop is an alias for the `slots` prop.
+   * It's recommended to use the `slots` prop instead.
+   *
+   * @default {}
+   */
+  components: prop_types__WEBPACK_IMPORTED_MODULE_18___default().shape({
+    CloseButton: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().elementType),
+    CloseIcon: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().elementType)
+  }),
+  /**
+   * The extra props for the slot components.
+   * You can override the existing props or add new ones.
+   *
+   * This prop is an alias for the `slotProps` prop.
+   * It's recommended to use the `slotProps` prop instead, as `componentsProps` will be deprecated in the future.
+   *
+   * @default {}
+   */
+  componentsProps: prop_types__WEBPACK_IMPORTED_MODULE_18___default().shape({
+    closeButton: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object),
+    closeIcon: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object)
+  }),
+  /**
+   * Override the icon displayed before the children.
+   * Unless provided, the icon is mapped to the value of the `severity` prop.
+   * Set to `false` to remove the `icon`.
+   */
+  icon: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node),
+  /**
+   * The component maps the `severity` prop to a range of different icons,
+   * for instance success to `<SuccessOutlined>`.
+   * If you wish to change this mapping, you can provide your own.
+   * Alternatively, you can use the `icon` prop to override the icon displayed.
+   */
+  iconMapping: prop_types__WEBPACK_IMPORTED_MODULE_18___default().shape({
+    error: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node),
+    info: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node),
+    success: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node),
+    warning: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().node)
+  }),
+  /**
+   * Callback fired when the component requests to be closed.
+   * When provided and no `action` prop is set, a close icon button is displayed that triggers the callback when clicked.
+   * @param {React.SyntheticEvent} event The event source of the callback.
+   */
+  onClose: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().func),
+  /**
+   * The ARIA role attribute of the element.
+   * @default 'alert'
+   */
+  role: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().string),
+  /**
+   * The severity of the alert. This defines the color and icon used.
+   * @default 'success'
+   */
+  severity: prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOf(['error', 'info', 'success', 'warning']),
+  /**
+   * The extra props for the slot components.
+   * You can override the existing props or add new ones.
+   *
+   * This prop is an alias for the `componentsProps` prop, which will be deprecated in the future.
+   *
+   * @default {}
+   */
+  slotProps: prop_types__WEBPACK_IMPORTED_MODULE_18___default().shape({
+    closeButton: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object),
+    closeIcon: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object)
+  }),
+  /**
+   * The components used for each slot inside.
+   *
+   * This prop is an alias for the `components` prop, which will be deprecated in the future.
+   *
+   * @default {}
+   */
+  slots: prop_types__WEBPACK_IMPORTED_MODULE_18___default().shape({
+    closeButton: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().elementType),
+    closeIcon: (prop_types__WEBPACK_IMPORTED_MODULE_18___default().elementType)
+  }),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_18___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOfType([(prop_types__WEBPACK_IMPORTED_MODULE_18___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object), (prop_types__WEBPACK_IMPORTED_MODULE_18___default().bool)])), (prop_types__WEBPACK_IMPORTED_MODULE_18___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_18___default().object)]),
+  /**
+   * The variant to use.
+   * @default 'standard'
+   */
+  variant: prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_18___default().oneOf(['filled', 'outlined', 'standard']), (prop_types__WEBPACK_IMPORTED_MODULE_18___default().string)])
+} : 0;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Alert);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/Alert/alertClasses.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/Alert/alertClasses.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "getAlertUtilityClass": () => (/* binding */ getAlertUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils */ "./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js");
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../generateUtilityClass */ "./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js");
+
+
+function getAlertUtilityClass(slot) {
+  return (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__["default"])('MuiAlert', slot);
+}
+const alertClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiAlert', ['root', 'action', 'icon', 'message', 'filled', 'filledSuccess', 'filledInfo', 'filledWarning', 'filledError', 'outlined', 'outlinedSuccess', 'outlinedInfo', 'outlinedWarning', 'outlinedError', 'standard', 'standardSuccess', 'standardInfo', 'standardWarning', 'standardError']);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (alertClasses);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/AppBar/AppBar.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@mui/material/esm/AppBar/AppBar.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var _mui_base__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/base */ "./node_modules/@mui/utils/esm/composeClasses/composeClasses.js");
+/* harmony import */ var _styles_styled__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../styles/styled */ "./node_modules/@mui/material/esm/styles/styled.js");
+/* harmony import */ var _styles_useThemeProps__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../styles/useThemeProps */ "./node_modules/@mui/material/esm/styles/useThemeProps.js");
+/* harmony import */ var _utils_capitalize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/capitalize */ "./node_modules/@mui/material/esm/utils/capitalize.js");
+/* harmony import */ var _Paper__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Paper */ "./node_modules/@mui/material/esm/Paper/Paper.js");
+/* harmony import */ var _appBarClasses__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./appBarClasses */ "./node_modules/@mui/material/esm/AppBar/appBarClasses.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+const _excluded = ["className", "color", "enableColorOnDark", "position"];
+
+
+
+
+
+
+
+
+
+
+const useUtilityClasses = ownerState => {
+  const {
+    color,
+    position,
+    classes
+  } = ownerState;
+  const slots = {
+    root: ['root', `color${(0,_utils_capitalize__WEBPACK_IMPORTED_MODULE_5__["default"])(color)}`, `position${(0,_utils_capitalize__WEBPACK_IMPORTED_MODULE_5__["default"])(position)}`]
+  };
+  return (0,_mui_base__WEBPACK_IMPORTED_MODULE_6__["default"])(slots, _appBarClasses__WEBPACK_IMPORTED_MODULE_7__.getAppBarUtilityClass, classes);
+};
+
+// var2 is the fallback.
+// Ex. var1: 'var(--a)', var2: 'var(--b)'; return: 'var(--a, var(--b))'
+const joinVars = (var1, var2) => `${var1 == null ? void 0 : var1.replace(')', '')}, ${var2})`;
+const AppBarRoot = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_8__["default"])(_Paper__WEBPACK_IMPORTED_MODULE_9__["default"], {
+  name: 'MuiAppBar',
+  slot: 'Root',
+  overridesResolver: (props, styles) => {
+    const {
+      ownerState
+    } = props;
+    return [styles.root, styles[`position${(0,_utils_capitalize__WEBPACK_IMPORTED_MODULE_5__["default"])(ownerState.position)}`], styles[`color${(0,_utils_capitalize__WEBPACK_IMPORTED_MODULE_5__["default"])(ownerState.color)}`]];
+  }
+})(({
+  theme,
+  ownerState
+}) => {
+  const backgroundColorDefault = theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900];
+  return (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    boxSizing: 'border-box',
+    // Prevent padding issue with the Modal and fixed positioned AppBar.
+    flexShrink: 0
+  }, ownerState.position === 'fixed' && {
+    position: 'fixed',
+    zIndex: (theme.vars || theme).zIndex.appBar,
+    top: 0,
+    left: 'auto',
+    right: 0,
+    '@media print': {
+      // Prevent the app bar to be visible on each printed page.
+      position: 'absolute'
+    }
+  }, ownerState.position === 'absolute' && {
+    position: 'absolute',
+    zIndex: (theme.vars || theme).zIndex.appBar,
+    top: 0,
+    left: 'auto',
+    right: 0
+  }, ownerState.position === 'sticky' && {
+    // ⚠️ sticky is not supported by IE11.
+    position: 'sticky',
+    zIndex: (theme.vars || theme).zIndex.appBar,
+    top: 0,
+    left: 'auto',
+    right: 0
+  }, ownerState.position === 'static' && {
+    position: 'static'
+  }, ownerState.position === 'relative' && {
+    position: 'relative'
+  }, !theme.vars && (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, ownerState.color === 'default' && {
+    backgroundColor: backgroundColorDefault,
+    color: theme.palette.getContrastText(backgroundColorDefault)
+  }, ownerState.color && ownerState.color !== 'default' && ownerState.color !== 'inherit' && ownerState.color !== 'transparent' && {
+    backgroundColor: theme.palette[ownerState.color].main,
+    color: theme.palette[ownerState.color].contrastText
+  }, ownerState.color === 'inherit' && {
+    color: 'inherit'
+  }, theme.palette.mode === 'dark' && !ownerState.enableColorOnDark && {
+    backgroundColor: null,
+    color: null
+  }, ownerState.color === 'transparent' && (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    backgroundColor: 'transparent',
+    color: 'inherit'
+  }, theme.palette.mode === 'dark' && {
+    backgroundImage: 'none'
+  })), theme.vars && (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, ownerState.color === 'default' && {
+    '--AppBar-background': ownerState.enableColorOnDark ? theme.vars.palette.AppBar.defaultBg : joinVars(theme.vars.palette.AppBar.darkBg, theme.vars.palette.AppBar.defaultBg),
+    '--AppBar-color': ownerState.enableColorOnDark ? theme.vars.palette.text.primary : joinVars(theme.vars.palette.AppBar.darkColor, theme.vars.palette.text.primary)
+  }, ownerState.color && !ownerState.color.match(/^(default|inherit|transparent)$/) && {
+    '--AppBar-background': ownerState.enableColorOnDark ? theme.vars.palette[ownerState.color].main : joinVars(theme.vars.palette.AppBar.darkBg, theme.vars.palette[ownerState.color].main),
+    '--AppBar-color': ownerState.enableColorOnDark ? theme.vars.palette[ownerState.color].contrastText : joinVars(theme.vars.palette.AppBar.darkColor, theme.vars.palette[ownerState.color].contrastText)
+  }, {
+    backgroundColor: 'var(--AppBar-background)',
+    color: ownerState.color === 'inherit' ? 'inherit' : 'var(--AppBar-color)'
+  }, ownerState.color === 'transparent' && {
+    backgroundImage: 'none',
+    backgroundColor: 'transparent',
+    color: 'inherit'
+  }));
+});
+const AppBar = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.forwardRef(function AppBar(inProps, ref) {
+  const props = (0,_styles_useThemeProps__WEBPACK_IMPORTED_MODULE_10__["default"])({
+    props: inProps,
+    name: 'MuiAppBar'
+  });
+  const {
+      className,
+      color = 'primary',
+      enableColorOnDark = false,
+      position = 'fixed'
+    } = props,
+    other = (0,_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(props, _excluded);
+  const ownerState = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, props, {
+    color,
+    position,
+    enableColorOnDark
+  });
+  const classes = useUtilityClasses(ownerState);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AppBarRoot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    square: true,
+    component: "header",
+    ownerState: ownerState,
+    elevation: 4,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(classes.root, className, position === 'fixed' && 'mui-fixed'),
+    ref: ref
+  }, other));
+});
+ true ? AppBar.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The content of the component.
+   */
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().node),
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().object),
+  /**
+   * @ignore
+   */
+  className: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().string),
+  /**
+   * The color of the component.
+   * It supports both default and custom theme colors, which can be added as shown in the
+   * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
+   * @default 'primary'
+   */
+  color: prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOf(['default', 'inherit', 'primary', 'secondary', 'transparent']), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().string)]),
+  /**
+   * If true, the `color` prop is applied in dark mode.
+   * @default false
+   */
+  enableColorOnDark: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().bool),
+  /**
+   * The positioning type. The behavior of the different options is described
+   * [in the MDN web docs](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning).
+   * Note: `sticky` is not universally supported and will fall back to `static` when unavailable.
+   * @default 'fixed'
+   */
+  position: prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOf(['absolute', 'fixed', 'relative', 'static', 'sticky']),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_11___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOfType([(prop_types__WEBPACK_IMPORTED_MODULE_11___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().object), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().bool)])), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().object)])
+} : 0;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AppBar);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/AppBar/appBarClasses.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/AppBar/appBarClasses.js ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "getAppBarUtilityClass": () => (/* binding */ getAppBarUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils */ "./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js");
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../generateUtilityClass */ "./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js");
+
+
+function getAppBarUtilityClass(slot) {
+  return (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__["default"])('MuiAppBar', slot);
+}
+const appBarClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiAppBar', ['root', 'positionFixed', 'positionAbsolute', 'positionSticky', 'positionStatic', 'positionRelative', 'colorDefault', 'colorPrimary', 'colorSecondary', 'colorInherit', 'colorTransparent']);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appBarClasses);
 
 /***/ }),
 
@@ -7516,6 +8102,425 @@ const circularProgressClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["defa
 
 /***/ }),
 
+/***/ "./node_modules/@mui/material/esm/DialogActions/DialogActions.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/DialogActions/DialogActions.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var _mui_base__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/base */ "./node_modules/@mui/utils/esm/composeClasses/composeClasses.js");
+/* harmony import */ var _styles_styled__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../styles/styled */ "./node_modules/@mui/material/esm/styles/styled.js");
+/* harmony import */ var _styles_useThemeProps__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../styles/useThemeProps */ "./node_modules/@mui/material/esm/styles/useThemeProps.js");
+/* harmony import */ var _dialogActionsClasses__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./dialogActionsClasses */ "./node_modules/@mui/material/esm/DialogActions/dialogActionsClasses.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+const _excluded = ["className", "disableSpacing"];
+
+
+
+
+
+
+
+
+const useUtilityClasses = ownerState => {
+  const {
+    classes,
+    disableSpacing
+  } = ownerState;
+  const slots = {
+    root: ['root', !disableSpacing && 'spacing']
+  };
+  return (0,_mui_base__WEBPACK_IMPORTED_MODULE_5__["default"])(slots, _dialogActionsClasses__WEBPACK_IMPORTED_MODULE_6__.getDialogActionsUtilityClass, classes);
+};
+const DialogActionsRoot = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_7__["default"])('div', {
+  name: 'MuiDialogActions',
+  slot: 'Root',
+  overridesResolver: (props, styles) => {
+    const {
+      ownerState
+    } = props;
+    return [styles.root, !ownerState.disableSpacing && styles.spacing];
+  }
+})(({
+  ownerState
+}) => (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+  display: 'flex',
+  alignItems: 'center',
+  padding: 8,
+  justifyContent: 'flex-end',
+  flex: '0 0 auto'
+}, !ownerState.disableSpacing && {
+  '& > :not(:first-of-type)': {
+    marginLeft: 8
+  }
+}));
+const DialogActions = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.forwardRef(function DialogActions(inProps, ref) {
+  const props = (0,_styles_useThemeProps__WEBPACK_IMPORTED_MODULE_8__["default"])({
+    props: inProps,
+    name: 'MuiDialogActions'
+  });
+  const {
+      className,
+      disableSpacing = false
+    } = props,
+    other = (0,_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(props, _excluded);
+  const ownerState = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, props, {
+    disableSpacing
+  });
+  const classes = useUtilityClasses(ownerState);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(DialogActionsRoot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(classes.root, className),
+    ownerState: ownerState,
+    ref: ref
+  }, other));
+});
+ true ? DialogActions.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The content of the component.
+   */
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().node),
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().object),
+  /**
+   * @ignore
+   */
+  className: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().string),
+  /**
+   * If `true`, the actions do not have additional margin.
+   * @default false
+   */
+  disableSpacing: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().bool),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: prop_types__WEBPACK_IMPORTED_MODULE_9___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_9___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_9___default().oneOfType([(prop_types__WEBPACK_IMPORTED_MODULE_9___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().object), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().bool)])), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().object)])
+} : 0;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DialogActions);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/DialogActions/dialogActionsClasses.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/DialogActions/dialogActionsClasses.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "getDialogActionsUtilityClass": () => (/* binding */ getDialogActionsUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils */ "./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js");
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../generateUtilityClass */ "./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js");
+
+
+function getDialogActionsUtilityClass(slot) {
+  return (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__["default"])('MuiDialogActions', slot);
+}
+const dialogActionsClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiDialogActions', ['root', 'spacing']);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dialogActionsClasses);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/DialogContent/DialogContent.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/DialogContent/DialogContent.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var _mui_base__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/base */ "./node_modules/@mui/utils/esm/composeClasses/composeClasses.js");
+/* harmony import */ var _styles_styled__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../styles/styled */ "./node_modules/@mui/material/esm/styles/styled.js");
+/* harmony import */ var _styles_useThemeProps__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../styles/useThemeProps */ "./node_modules/@mui/material/esm/styles/useThemeProps.js");
+/* harmony import */ var _dialogContentClasses__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./dialogContentClasses */ "./node_modules/@mui/material/esm/DialogContent/dialogContentClasses.js");
+/* harmony import */ var _DialogTitle_dialogTitleClasses__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../DialogTitle/dialogTitleClasses */ "./node_modules/@mui/material/esm/DialogTitle/dialogTitleClasses.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+const _excluded = ["className", "dividers"];
+
+
+
+
+
+
+
+
+
+const useUtilityClasses = ownerState => {
+  const {
+    classes,
+    dividers
+  } = ownerState;
+  const slots = {
+    root: ['root', dividers && 'dividers']
+  };
+  return (0,_mui_base__WEBPACK_IMPORTED_MODULE_5__["default"])(slots, _dialogContentClasses__WEBPACK_IMPORTED_MODULE_6__.getDialogContentUtilityClass, classes);
+};
+const DialogContentRoot = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_7__["default"])('div', {
+  name: 'MuiDialogContent',
+  slot: 'Root',
+  overridesResolver: (props, styles) => {
+    const {
+      ownerState
+    } = props;
+    return [styles.root, ownerState.dividers && styles.dividers];
+  }
+})(({
+  theme,
+  ownerState
+}) => (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+  flex: '1 1 auto',
+  // Add iOS momentum scrolling for iOS < 13.0
+  WebkitOverflowScrolling: 'touch',
+  overflowY: 'auto',
+  padding: '20px 24px'
+}, ownerState.dividers ? {
+  padding: '16px 24px',
+  borderTop: `1px solid ${(theme.vars || theme).palette.divider}`,
+  borderBottom: `1px solid ${(theme.vars || theme).palette.divider}`
+} : {
+  [`.${_DialogTitle_dialogTitleClasses__WEBPACK_IMPORTED_MODULE_8__["default"].root} + &`]: {
+    paddingTop: 0
+  }
+}));
+const DialogContent = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.forwardRef(function DialogContent(inProps, ref) {
+  const props = (0,_styles_useThemeProps__WEBPACK_IMPORTED_MODULE_9__["default"])({
+    props: inProps,
+    name: 'MuiDialogContent'
+  });
+  const {
+      className,
+      dividers = false
+    } = props,
+    other = (0,_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(props, _excluded);
+  const ownerState = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, props, {
+    dividers
+  });
+  const classes = useUtilityClasses(ownerState);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(DialogContentRoot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(classes.root, className),
+    ownerState: ownerState,
+    ref: ref
+  }, other));
+});
+ true ? DialogContent.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The content of the component.
+   */
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_10___default().node),
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: (prop_types__WEBPACK_IMPORTED_MODULE_10___default().object),
+  /**
+   * @ignore
+   */
+  className: (prop_types__WEBPACK_IMPORTED_MODULE_10___default().string),
+  /**
+   * Display the top and bottom dividers.
+   * @default false
+   */
+  dividers: (prop_types__WEBPACK_IMPORTED_MODULE_10___default().bool),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: prop_types__WEBPACK_IMPORTED_MODULE_10___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_10___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_10___default().oneOfType([(prop_types__WEBPACK_IMPORTED_MODULE_10___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_10___default().object), (prop_types__WEBPACK_IMPORTED_MODULE_10___default().bool)])), (prop_types__WEBPACK_IMPORTED_MODULE_10___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_10___default().object)])
+} : 0;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DialogContent);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/DialogContent/dialogContentClasses.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/DialogContent/dialogContentClasses.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "getDialogContentUtilityClass": () => (/* binding */ getDialogContentUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils */ "./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js");
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../generateUtilityClass */ "./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js");
+
+
+function getDialogContentUtilityClass(slot) {
+  return (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__["default"])('MuiDialogContent', slot);
+}
+const dialogContentClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiDialogContent', ['root', 'dividers']);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dialogContentClasses);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/DialogTitle/DialogTitle.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/DialogTitle/DialogTitle.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var _mui_base__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/base */ "./node_modules/@mui/utils/esm/composeClasses/composeClasses.js");
+/* harmony import */ var _Typography__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Typography */ "./node_modules/@mui/material/esm/Typography/Typography.js");
+/* harmony import */ var _styles_styled__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../styles/styled */ "./node_modules/@mui/material/esm/styles/styled.js");
+/* harmony import */ var _styles_useThemeProps__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../styles/useThemeProps */ "./node_modules/@mui/material/esm/styles/useThemeProps.js");
+/* harmony import */ var _dialogTitleClasses__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./dialogTitleClasses */ "./node_modules/@mui/material/esm/DialogTitle/dialogTitleClasses.js");
+/* harmony import */ var _Dialog_DialogContext__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../Dialog/DialogContext */ "./node_modules/@mui/material/esm/Dialog/DialogContext.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+const _excluded = ["className", "id"];
+
+
+
+
+
+
+
+
+
+
+const useUtilityClasses = ownerState => {
+  const {
+    classes
+  } = ownerState;
+  const slots = {
+    root: ['root']
+  };
+  return (0,_mui_base__WEBPACK_IMPORTED_MODULE_5__["default"])(slots, _dialogTitleClasses__WEBPACK_IMPORTED_MODULE_6__.getDialogTitleUtilityClass, classes);
+};
+const DialogTitleRoot = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_7__["default"])(_Typography__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  name: 'MuiDialogTitle',
+  slot: 'Root',
+  overridesResolver: (props, styles) => styles.root
+})({
+  padding: '16px 24px',
+  flex: '0 0 auto'
+});
+const DialogTitle = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.forwardRef(function DialogTitle(inProps, ref) {
+  const props = (0,_styles_useThemeProps__WEBPACK_IMPORTED_MODULE_9__["default"])({
+    props: inProps,
+    name: 'MuiDialogTitle'
+  });
+  const {
+      className,
+      id: idProp
+    } = props,
+    other = (0,_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_1__["default"])(props, _excluded);
+  const ownerState = props;
+  const classes = useUtilityClasses(ownerState);
+  const {
+    titleId: id = idProp
+  } = react__WEBPACK_IMPORTED_MODULE_2__.useContext(_Dialog_DialogContext__WEBPACK_IMPORTED_MODULE_10__["default"]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(DialogTitleRoot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    component: "h2",
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(classes.root, className),
+    ownerState: ownerState,
+    ref: ref,
+    variant: "h6",
+    id: id
+  }, other));
+});
+ true ? DialogTitle.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The content of the component.
+   */
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().node),
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().object),
+  /**
+   * @ignore
+   */
+  className: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().string),
+  /**
+   * @ignore
+   */
+  id: (prop_types__WEBPACK_IMPORTED_MODULE_11___default().string),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_11___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_11___default().oneOfType([(prop_types__WEBPACK_IMPORTED_MODULE_11___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().object), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().bool)])), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_11___default().object)])
+} : 0;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DialogTitle);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/DialogTitle/dialogTitleClasses.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/DialogTitle/dialogTitleClasses.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "getDialogTitleUtilityClass": () => (/* binding */ getDialogTitleUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils */ "./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js");
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../generateUtilityClass */ "./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js");
+
+
+function getDialogTitleUtilityClass(slot) {
+  return (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__["default"])('MuiDialogTitle', slot);
+}
+const dialogTitleClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiDialogTitle', ['root']);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dialogTitleClasses);
+
+/***/ }),
+
 /***/ "./node_modules/@mui/material/esm/Dialog/Dialog.js":
 /*!*********************************************************!*\
   !*** ./node_modules/@mui/material/esm/Dialog/Dialog.js ***!
@@ -9888,6 +10893,170 @@ const svgIconClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('M
 
 /***/ }),
 
+/***/ "./node_modules/@mui/material/esm/Toolbar/Toolbar.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@mui/material/esm/Toolbar/Toolbar.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var _mui_base__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/base */ "./node_modules/@mui/utils/esm/composeClasses/composeClasses.js");
+/* harmony import */ var _styles_useThemeProps__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../styles/useThemeProps */ "./node_modules/@mui/material/esm/styles/useThemeProps.js");
+/* harmony import */ var _styles_styled__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../styles/styled */ "./node_modules/@mui/material/esm/styles/styled.js");
+/* harmony import */ var _toolbarClasses__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./toolbarClasses */ "./node_modules/@mui/material/esm/Toolbar/toolbarClasses.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+const _excluded = ["className", "component", "disableGutters", "variant"];
+
+
+
+
+
+
+
+
+const useUtilityClasses = ownerState => {
+  const {
+    classes,
+    disableGutters,
+    variant
+  } = ownerState;
+  const slots = {
+    root: ['root', !disableGutters && 'gutters', variant]
+  };
+  return (0,_mui_base__WEBPACK_IMPORTED_MODULE_5__["default"])(slots, _toolbarClasses__WEBPACK_IMPORTED_MODULE_6__.getToolbarUtilityClass, classes);
+};
+const ToolbarRoot = (0,_styles_styled__WEBPACK_IMPORTED_MODULE_7__["default"])('div', {
+  name: 'MuiToolbar',
+  slot: 'Root',
+  overridesResolver: (props, styles) => {
+    const {
+      ownerState
+    } = props;
+    return [styles.root, !ownerState.disableGutters && styles.gutters, styles[ownerState.variant]];
+  }
+})(({
+  theme,
+  ownerState
+}) => (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center'
+}, !ownerState.disableGutters && {
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3)
+  }
+}, ownerState.variant === 'dense' && {
+  minHeight: 48
+}), ({
+  theme,
+  ownerState
+}) => ownerState.variant === 'regular' && theme.mixins.toolbar);
+const Toolbar = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.forwardRef(function Toolbar(inProps, ref) {
+  const props = (0,_styles_useThemeProps__WEBPACK_IMPORTED_MODULE_8__["default"])({
+    props: inProps,
+    name: 'MuiToolbar'
+  });
+  const {
+      className,
+      component = 'div',
+      disableGutters = false,
+      variant = 'regular'
+    } = props,
+    other = (0,_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(props, _excluded);
+  const ownerState = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({}, props, {
+    component,
+    disableGutters,
+    variant
+  });
+  const classes = useUtilityClasses(ownerState);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(ToolbarRoot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    as: component,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(classes.root, className),
+    ref: ref,
+    ownerState: ownerState
+  }, other));
+});
+ true ? Toolbar.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The Toolbar children, usually a mixture of `IconButton`, `Button` and `Typography`.
+   * The Toolbar is a flex container, allowing flex item properites to be used to lay out the children.
+   */
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().node),
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().object),
+  /**
+   * @ignore
+   */
+  className: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().string),
+  /**
+   * The component used for the root node.
+   * Either a string to use a HTML element or a component.
+   */
+  component: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().elementType),
+  /**
+   * If `true`, disables gutter padding.
+   * @default false
+   */
+  disableGutters: (prop_types__WEBPACK_IMPORTED_MODULE_9___default().bool),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: prop_types__WEBPACK_IMPORTED_MODULE_9___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_9___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_9___default().oneOfType([(prop_types__WEBPACK_IMPORTED_MODULE_9___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().object), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().bool)])), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().func), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().object)]),
+  /**
+   * The variant to use.
+   * @default 'regular'
+   */
+  variant: prop_types__WEBPACK_IMPORTED_MODULE_9___default().oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_9___default().oneOf(['dense', 'regular']), (prop_types__WEBPACK_IMPORTED_MODULE_9___default().string)])
+} : 0;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Toolbar);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/Toolbar/toolbarClasses.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/Toolbar/toolbarClasses.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "getToolbarUtilityClass": () => (/* binding */ getToolbarUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils */ "./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js");
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../generateUtilityClass */ "./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js");
+
+
+function getToolbarUtilityClass(slot) {
+  return (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__["default"])('MuiToolbar', slot);
+}
+const toolbarClasses = (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__["default"])('MuiToolbar', ['root', 'gutters', 'regular', 'dense']);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (toolbarClasses);
+
+/***/ }),
+
 /***/ "./node_modules/@mui/material/esm/Typography/Typography.js":
 /*!*****************************************************************!*\
   !*** ./node_modules/@mui/material/esm/Typography/Typography.js ***!
@@ -10366,6 +11535,143 @@ const red = {
   A700: '#d50000'
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (red);
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/internal/svg-icons/Close.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/internal/svg-icons/Close.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/createSvgIcon */ "./node_modules/@mui/material/esm/utils/createSvgIcon.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+/**
+ * @ignore - internal component.
+ *
+ * Alias to `Clear`.
+ */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__["default"])( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+  d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+}), 'Close'));
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/internal/svg-icons/ErrorOutline.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/internal/svg-icons/ErrorOutline.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/createSvgIcon */ "./node_modules/@mui/material/esm/utils/createSvgIcon.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+/**
+ * @ignore - internal component.
+ */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__["default"])( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+  d: "M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+}), 'ErrorOutline'));
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/internal/svg-icons/InfoOutlined.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/internal/svg-icons/InfoOutlined.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/createSvgIcon */ "./node_modules/@mui/material/esm/utils/createSvgIcon.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+/**
+ * @ignore - internal component.
+ */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__["default"])( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+  d: "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20, 12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10, 10 0 0,0 12,2M11,17H13V11H11V17Z"
+}), 'InfoOutlined'));
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/internal/svg-icons/ReportProblemOutlined.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/internal/svg-icons/ReportProblemOutlined.js ***!
+  \************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/createSvgIcon */ "./node_modules/@mui/material/esm/utils/createSvgIcon.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+/**
+ * @ignore - internal component.
+ */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__["default"])( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+  d: "M12 5.99L19.53 19H4.47L12 5.99M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z"
+}), 'ReportProblemOutlined'));
+
+/***/ }),
+
+/***/ "./node_modules/@mui/material/esm/internal/svg-icons/SuccessOutlined.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@mui/material/esm/internal/svg-icons/SuccessOutlined.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/createSvgIcon */ "./node_modules/@mui/material/esm/utils/createSvgIcon.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+/**
+ * @ignore - internal component.
+ */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_2__["default"])( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+  d: "M20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.76,4 13.5,4.11 14.2, 4.31L15.77,2.74C14.61,2.26 13.34,2 12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0, 0 22,12M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z"
+}), 'SuccessOutlined'));
 
 /***/ }),
 
@@ -18213,6 +19519,113 @@ module.exports = typeof self == 'object' ? self.FormData : window.FormData;
 
 /***/ }),
 
+/***/ "./src/AddToCart.js":
+/*!**************************!*\
+  !*** ./src/AddToCart.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _mui_x_date_pickers_LocalizationProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/x-date-pickers/LocalizationProvider */ "./node_modules/@mui/x-date-pickers/LocalizationProvider/LocalizationProvider.js");
+/* harmony import */ var _mui_x_date_pickers_AdapterDateFns__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/x-date-pickers/AdapterDateFns */ "./node_modules/@mui/x-date-pickers/AdapterDateFns/index.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/Dialog/Dialog.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/DialogTitle/DialogTitle.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/DialogContent/DialogContent.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/DialogActions/DialogActions.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/Button/Button.js");
+/* harmony import */ var _mui_material_AppBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/material/AppBar */ "./node_modules/@mui/material/esm/AppBar/AppBar.js");
+/* harmony import */ var _mui_material_Toolbar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/material/Toolbar */ "./node_modules/@mui/material/esm/Toolbar/Toolbar.js");
+/* harmony import */ var _mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/icons-material/Close */ "./node_modules/@mui/icons-material/Close.js");
+/* harmony import */ var _mui_material_IconButton__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material/IconButton */ "./node_modules/@mui/material/esm/IconButton/IconButton.js");
+/* harmony import */ var _mui_icons_material_ShoppingCart__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @mui/icons-material/ShoppingCart */ "./node_modules/@mui/icons-material/ShoppingCart.js");
+/* harmony import */ var _mui_icons_material_PointOfSale__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @mui/icons-material/PointOfSale */ "./node_modules/@mui/icons-material/PointOfSale.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const __ = wp.i18n.__;
+function AddToCart() {
+  const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_x_date_pickers_LocalizationProvider__WEBPACK_IMPORTED_MODULE_1__.LocalizationProvider, {
+    dateAdapter: _mui_x_date_pickers_AdapterDateFns__WEBPACK_IMPORTED_MODULE_2__.AdapterDateFns
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    fullScreen: true,
+    open: true,
+    maxWidth: "lg",
+    scroll: "paper",
+    "aria-labelledby": "scroll-dialog-title",
+    "aria-describedby": "scroll-dialog-description"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_AppBar__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    sx: {
+      position: "relative"
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Toolbar__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    sx: {
+      justifyContent: "space-between"
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    textAlign: "left"
+  }, __("Self Checkout", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_IconButton__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    edge: "start",
+    color: "inherit",
+    "aria-label": "close"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_8__["default"], null)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    dividers: scroll === "paper"
+  }, "testdfg"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    autoFocus: true,
+    variant: "contained",
+    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ShoppingCart__WEBPACK_IMPORTED_MODULE_12__["default"], null)
+  }, "In den Warenkorb"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    autoFocus: true,
+    variant: "contained",
+    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_PointOfSale__WEBPACK_IMPORTED_MODULE_13__["default"], null)
+  }, "Zur Kasse"))));
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AddToCart);
+
+/*
+{loading ? (
+        <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <p>
+              {__("Generiere hier einen QR Einzahlungsschein, um Geld auf unser Vereinskonto zu überweisen", "fcplugin")} (IBAN: {account}, {blogname}, {storeAddress}, {storePostcode}, {storeCity}).
+            </p>
+          </Grid>
+          <Grid item xs={12}>
+            <input type="number" min="0" placeholder="Betrag in CHF" className="fc_topup_input" onChange={event => setAmount(event.target.value)} />
+            <button type="submit" onClick={handleQR}>
+              {__("Einzahlungsschein generieren", "fcplugin")}
+            </button>
+          </Grid>
+          <Grid item xs={12}>
+            <div id="qrSVG"></div>
+          </Grid>
+        </Grid>
+      )}
+      */
+
+/***/ }),
+
 /***/ "./src/FrontendApp.js":
 /*!****************************!*\
   !*** ./src/FrontendApp.js ***!
@@ -18260,7 +19673,6 @@ function FrontendApp() {
         setActive(res[0]);
         setBestellrundenDates(res[6]);
         setNextBestellrunde(res[8]);
-        console.log(res);
         if (res[5] !== null) {
           setOrder(res[5]);
         }
@@ -18287,6 +19699,129 @@ function FrontendApp() {
   })))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FrontendApp);
+
+/***/ }),
+
+/***/ "./src/QRBill.js":
+/*!***********************!*\
+  !*** ./src/QRBill.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _mui_x_date_pickers_LocalizationProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/x-date-pickers/LocalizationProvider */ "./node_modules/@mui/x-date-pickers/LocalizationProvider/LocalizationProvider.js");
+/* harmony import */ var _mui_x_date_pickers_AdapterDateFns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/x-date-pickers/AdapterDateFns */ "./node_modules/@mui/x-date-pickers/AdapterDateFns/index.js");
+/* harmony import */ var _mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/material/Grid */ "./node_modules/@mui/material/esm/Grid/Grid.js");
+/* harmony import */ var swissqrbill_svg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! swissqrbill/svg */ "./node_modules/swissqrbill/lib/browser/esm/browser/svg.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/CircularProgress/CircularProgress.js");
+/* provided dependency */ var console = __webpack_require__(/*! ./node_modules/console-browserify/index.js */ "./node_modules/console-browserify/index.js");
+
+
+
+
+
+
+
+
+const __ = wp.i18n.__;
+function QRBill() {
+  const [amount, setAmount] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [account, setAccount] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [storeAddress, setStoreAddress] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [storeCity, setStoreCity] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [storePostcode, setStorePostcode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [blogname, setBlogname] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [name, setName] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [address, setAddress] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [postcode, setPostcode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [city, setCity] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // get banking options
+    axios__WEBPACK_IMPORTED_MODULE_2__["default"].get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBankingOptions?id=${frontendLocalizer.currentUser.ID}`).then(function (response) {
+      const res = JSON.parse(response.data);
+      setAccount(res[0].replace(" ", ""));
+      setStoreAddress(res[1]);
+      setStoreCity(res[2]);
+      setStorePostcode(res[3]);
+      setBlogname(res[4]);
+      setName(res[5]);
+      setAddress(res[6]);
+      setPostcode(res[7]);
+      setCity(res[8]);
+      setLoading(false);
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }, []);
+  function handleQR() {
+    if (amount > 0 && !loading) {
+      document.getElementById("qrSVG").innerHTML = "";
+      const data = {
+        currency: "CHF",
+        amount: parseFloat(amount),
+        creditor: {
+          name: blogname,
+          address: storeAddress,
+          zip: storePostcode,
+          city: storeCity,
+          account: account,
+          country: "CH"
+        },
+        debtor: {
+          name: name,
+          address: address,
+          zip: postcode,
+          city: city,
+          country: "CH"
+        }
+      };
+      const qr = new swissqrbill_svg__WEBPACK_IMPORTED_MODULE_1__.SVG(data);
+      document.getElementById("qrSVG").appendChild(qr.element);
+    }
+  }
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_x_date_pickers_LocalizationProvider__WEBPACK_IMPORTED_MODULE_3__.LocalizationProvider, {
+    dateAdapter: _mui_x_date_pickers_AdapterDateFns__WEBPACK_IMPORTED_MODULE_4__.AdapterDateFns
+  }, loading ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      flexDirection: "column",
+      alignItems: "center"
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], null)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    container: true,
+    spacing: 2
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    item: true,
+    xs: 12
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, __("Generiere hier einen QR Einzahlungsschein, um Geld auf unser Vereinskonto zu überweisen", "fcplugin"), " (IBAN: ", account, ", ", blogname, ", ", storeAddress, ", ", storePostcode, ", ", storeCity, ").")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    item: true,
+    xs: 12
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    min: "0",
+    placeholder: "Betrag in CHF",
+    className: "fc_topup_input",
+    onChange: event => setAmount(event.target.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit",
+    onClick: handleQR
+  }, __("Einzahlungsschein generieren", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    item: true,
+    xs: 12
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    id: "qrSVG"
+  }))));
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (QRBill);
 
 /***/ }),
 
@@ -18431,12 +19966,12 @@ const OrderList = _ref => {
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`).then(function (response) {
       if (response.data) {
-        response.data.length === 3 ? setPublicPrices(true) : setPublicPrices(false);
+        response.data === '"0"' ? setPublicPrices(false) : setPublicPrices(true);
       }
     }).catch(error => console.log(error));
     axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_products`).then(function (response) {
       if (response.data) {
-        response.data.length === 3 ? setAdditionalProductInformation(true) : setAdditionalProductInformation(false);
+        response.data === '"0"' ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true);
       }
     }).catch(error => console.log(error));
   }, []);
@@ -18463,7 +19998,11 @@ const OrderList = _ref => {
       marginBottom: "20px",
       textAlign: "right"
     }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Celebration__WEBPACK_IMPORTED_MODULE_6__["default"], null), " ", __("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, __("Bestellrunde: ", "fcplugin")), " "), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, activeBestellrunde, " ")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, __("Bestellfenster: ", "fcplugin")), " "), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(bestellrundenDates[0]), "dd.MM.yyyy"), " ", __("bis", "fcplugin"), " ", (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(bestellrundenDates[1]), "dd.MM.yyyy"), " ")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, __("Verteiltag: ", "fcplugin")), " "), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(bestellrundenDates[2]), "dd.MM.yyyy"), " "))))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Celebration__WEBPACK_IMPORTED_MODULE_6__["default"], null), " ", __("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "fc_order_list_header_steps"
+  }, __("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "fc_order_list_header_info"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, __("Bestellfenster: ", "fcplugin")), " "), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(bestellrundenDates[0]), "dd.MM.yyyy"), " ", __("bis", "fcplugin"), " ", (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(bestellrundenDates[1]), "dd.MM.yyyy"), " ")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, __("Abholen: ", "fcplugin")), " "), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(bestellrundenDates[2]), "dd.MM.yyyy"), " ")))))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
     sx: {}
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Grid__WEBPACK_IMPORTED_MODULE_9__["default"], {
     item: true,
@@ -18529,6 +20068,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/Alert/Alert.js");
 /* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/CircularProgress/CircularProgress.js");
 /* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/Button/Button.js");
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @mui/lab/LoadingButton */ "./node_modules/@mui/lab/LoadingButton/LoadingButton.js");
@@ -18537,8 +20077,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _mui_icons_material_AccountBalanceWallet__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/icons-material/AccountBalanceWallet */ "./node_modules/@mui/icons-material/AccountBalanceWallet.js");
 /* harmony import */ var _mui_icons_material_FormatListNumbered__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/icons-material/FormatListNumbered */ "./node_modules/@mui/icons-material/FormatListNumbered.js");
-/* harmony import */ var _mui_icons_material_Warning__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/icons-material/Warning */ "./node_modules/@mui/icons-material/Warning.js");
-/* harmony import */ var _mui_icons_material_Done__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @mui/icons-material/Done */ "./node_modules/@mui/icons-material/Done.js");
 /* harmony import */ var _mui_icons_material_ShoppingCart__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/icons-material/ShoppingCart */ "./node_modules/@mui/icons-material/ShoppingCart.js");
 /* harmony import */ var _mui_icons_material_PointOfSale__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/icons-material/PointOfSale */ "./node_modules/@mui/icons-material/PointOfSale.js");
 /* harmony import */ var _mui_icons_material_PublishedWithChanges__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/icons-material/PublishedWithChanges */ "./node_modules/@mui/icons-material/PublishedWithChanges.js");
@@ -18731,17 +20269,19 @@ const OrderOverview = _ref => {
     id: "fc_order_bar"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_bar_warning"
-  }, order && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Warning__WEBPACK_IMPORTED_MODULE_9__["default"], {
+  }, order && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
     sx: {
-      marginRight: "5px",
-      color: "#ff9800"
-    }
-  }), " ", __("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")), cart && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Warning__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      marginBottom: 1
+    },
+    severity: "warning"
+  }, __("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")), cart && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
     sx: {
-      marginRight: "5px",
-      color: "#ff9800"
-    }
-  }), " ", __("Du hast Produkte im Warenkorb.", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      marginBottom: 1
+    },
+    severity: "warning"
+  }, __("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")), newBalance < 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    severity: "error"
+  }, __("Du kannst den Warenkorb speichern. Zum Bestellen musst du allerdings mehr Guthaben aufladen.", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_bar_col fc_order_bar_finances"
   }, balanceLoading ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
@@ -18777,7 +20317,8 @@ const OrderOverview = _ref => {
     startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_HelpOutline__WEBPACK_IMPORTED_MODULE_12__["default"], null),
     variant: "text",
     sx: {
-      marginBottom: "10px"
+      marginBottom: "10px",
+      marginRight: "5px"
     },
     size: "small",
     onClick: helpClick
@@ -18785,16 +20326,17 @@ const OrderOverview = _ref => {
     startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ListAlt__WEBPACK_IMPORTED_MODULE_13__["default"], null),
     variant: "text",
     sx: {
-      marginBottom: "10px"
+      marginBottom: "10px",
+      marginLeft: "5px"
     },
     size: "small",
     onClick: shoppingListClick
   }, __("Einkaufszettel", "fcplugin"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_14__["default"], {
     className: "cartButton",
+    color: "info",
     loading: addingToCart,
     loadingPosition: "center",
-    disabled: !orderingState,
-    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_Done__WEBPACK_IMPORTED_MODULE_15__["default"], null),
+    startIcon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ShoppingCart__WEBPACK_IMPORTED_MODULE_6__["default"], null),
     variant: "outlined",
     sx: {},
     size: "large",
@@ -18818,7 +20360,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _ProductLine__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ProductLine */ "./src/components/frontend/ProductLine.js");
-/* harmony import */ var react_transition_group__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-transition-group */ "./node_modules/react-transition-group/esm/CSSTransition.js");
 /* harmony import */ var _mui_icons_material_ArrowDropDown__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/icons-material/ArrowDropDown */ "./node_modules/@mui/icons-material/ArrowDropDown.js");
 /* harmony import */ var _mui_icons_material_ArrowDropUp__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/icons-material/ArrowDropUp */ "./node_modules/@mui/icons-material/ArrowDropUp.js");
 
@@ -18850,11 +20391,8 @@ const ProductCategory = _ref => {
     className: "fc_order_list_title_arrow"
   }, visibility ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ArrowDropUp__WEBPACK_IMPORTED_MODULE_2__["default"], null) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_icons_material_ArrowDropDown__WEBPACK_IMPORTED_MODULE_3__["default"], null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_list_category_wrapper"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_transition_group__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    in: visibility,
-    timeout: 300,
-    classNames: "transition-y",
-    unmountOnExit: true
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: visibility ? `fc_transition_show` : `fc_transition_hide`
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "fc_order_list_cat_wrapper"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -19051,8 +20589,7 @@ const ProductLine = _ref => {
     className: "fc_order_list_col col_2",
     onClick: handleOpen
   }, product.name)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "fc_order_list_col col_2x",
-    onClick: handleOpen
+    className: "fc_order_list_col col_2x"
   }, product.name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "fc_order_list_col col_25"
   }, product.short_description), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
@@ -30700,6 +32237,77 @@ function toDate(argument) {
 
 /***/ }),
 
+/***/ "./node_modules/define-data-property/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/define-data-property/index.js ***!
+  \****************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var hasPropertyDescriptors = __webpack_require__(/*! has-property-descriptors */ "./node_modules/has-property-descriptors/index.js")();
+
+var GetIntrinsic = __webpack_require__(/*! get-intrinsic */ "./node_modules/get-intrinsic/index.js");
+
+var $defineProperty = hasPropertyDescriptors && GetIntrinsic('%Object.defineProperty%', true);
+
+var $SyntaxError = GetIntrinsic('%SyntaxError%');
+var $TypeError = GetIntrinsic('%TypeError%');
+
+var gopd = __webpack_require__(/*! gopd */ "./node_modules/gopd/index.js");
+
+/** @type {(obj: Record<PropertyKey, unknown>, property: PropertyKey, value: unknown, nonEnumerable?: boolean | null, nonWritable?: boolean | null, nonConfigurable?: boolean | null, loose?: boolean) => void} */
+module.exports = function defineDataProperty(
+	obj,
+	property,
+	value
+) {
+	if (!obj || (typeof obj !== 'object' && typeof obj !== 'function')) {
+		throw new $TypeError('`obj` must be an object or a function`');
+	}
+	if (typeof property !== 'string' && typeof property !== 'symbol') {
+		throw new $TypeError('`property` must be a string or a symbol`');
+	}
+	if (arguments.length > 3 && typeof arguments[3] !== 'boolean' && arguments[3] !== null) {
+		throw new $TypeError('`nonEnumerable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 4 && typeof arguments[4] !== 'boolean' && arguments[4] !== null) {
+		throw new $TypeError('`nonWritable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 5 && typeof arguments[5] !== 'boolean' && arguments[5] !== null) {
+		throw new $TypeError('`nonConfigurable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
+		throw new $TypeError('`loose`, if provided, must be a boolean');
+	}
+
+	var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
+	var nonWritable = arguments.length > 4 ? arguments[4] : null;
+	var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
+	var loose = arguments.length > 6 ? arguments[6] : false;
+
+	/* @type {false | TypedPropertyDescriptor<unknown>} */
+	var desc = !!gopd && gopd(obj, property);
+
+	if ($defineProperty) {
+		$defineProperty(obj, property, {
+			configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
+			enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
+			value: value,
+			writable: nonWritable === null && desc ? desc.writable : !nonWritable
+		});
+	} else if (loose || (!nonEnumerable && !nonWritable && !nonConfigurable)) {
+		// must fall back to [[Set]], and was not explicitly asked to make non-enumerable, non-writable, or non-configurable
+		obj[property] = value; // eslint-disable-line no-param-reassign
+	} else {
+		throw new $SyntaxError('This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.');
+	}
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/define-properties/index.js":
 /*!*************************************************!*\
   !*** ./node_modules/define-properties/index.js ***!
@@ -30714,29 +32322,29 @@ var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbo
 
 var toStr = Object.prototype.toString;
 var concat = Array.prototype.concat;
-var origDefineProperty = Object.defineProperty;
+var defineDataProperty = __webpack_require__(/*! define-data-property */ "./node_modules/define-data-property/index.js");
 
 var isFunction = function (fn) {
 	return typeof fn === 'function' && toStr.call(fn) === '[object Function]';
 };
 
-var hasPropertyDescriptors = __webpack_require__(/*! has-property-descriptors */ "./node_modules/has-property-descriptors/index.js")();
-
-var supportsDescriptors = origDefineProperty && hasPropertyDescriptors;
+var supportsDescriptors = __webpack_require__(/*! has-property-descriptors */ "./node_modules/has-property-descriptors/index.js")();
 
 var defineProperty = function (object, name, value, predicate) {
-	if (name in object && (!isFunction(predicate) || !predicate())) {
-		return;
+	if (name in object) {
+		if (predicate === true) {
+			if (object[name] === value) {
+				return;
+			}
+		} else if (!isFunction(predicate) || !predicate()) {
+			return;
+		}
 	}
+
 	if (supportsDescriptors) {
-		origDefineProperty(object, name, {
-			configurable: true,
-			enumerable: false,
-			value: value,
-			writable: true
-		});
+		defineDataProperty(object, name, value, true);
 	} else {
-		object[name] = value; // eslint-disable-line no-param-reassign
+		defineDataProperty(object, name, value);
 	}
 };
 
@@ -31103,18 +32711,23 @@ var ThrowTypeError = $gOPD
 	: throwTypeError;
 
 var hasSymbols = __webpack_require__(/*! has-symbols */ "./node_modules/has-symbols/index.js")();
+var hasProto = __webpack_require__(/*! has-proto */ "./node_modules/has-proto/index.js")();
 
-var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
+var getProto = Object.getPrototypeOf || (
+	hasProto
+		? function (x) { return x.__proto__; } // eslint-disable-line no-proto
+		: null
+);
 
 var needsEval = {};
 
-var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
+var TypedArray = typeof Uint8Array === 'undefined' || !getProto ? undefined : getProto(Uint8Array);
 
 var INTRINSICS = {
 	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
 	'%Array%': Array,
 	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
-	'%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
+	'%ArrayIteratorPrototype%': hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined,
 	'%AsyncFromSyncIteratorPrototype%': undefined,
 	'%AsyncFunction%': needsEval,
 	'%AsyncGenerator%': needsEval,
@@ -31122,6 +32735,8 @@ var INTRINSICS = {
 	'%AsyncIteratorPrototype%': needsEval,
 	'%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
 	'%BigInt%': typeof BigInt === 'undefined' ? undefined : BigInt,
+	'%BigInt64Array%': typeof BigInt64Array === 'undefined' ? undefined : BigInt64Array,
+	'%BigUint64Array%': typeof BigUint64Array === 'undefined' ? undefined : BigUint64Array,
 	'%Boolean%': Boolean,
 	'%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
 	'%Date%': Date,
@@ -31142,10 +32757,10 @@ var INTRINSICS = {
 	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
 	'%isFinite%': isFinite,
 	'%isNaN%': isNaN,
-	'%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%IteratorPrototype%': hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined,
 	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
 	'%Map%': typeof Map === 'undefined' ? undefined : Map,
-	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Map()[Symbol.iterator]()),
 	'%Math%': Math,
 	'%Number%': Number,
 	'%Object%': Object,
@@ -31158,10 +32773,10 @@ var INTRINSICS = {
 	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
 	'%RegExp%': RegExp,
 	'%Set%': typeof Set === 'undefined' ? undefined : Set,
-	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Set()[Symbol.iterator]()),
 	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
 	'%String%': String,
-	'%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
+	'%StringIteratorPrototype%': hasSymbols && getProto ? getProto(''[Symbol.iterator]()) : undefined,
 	'%Symbol%': hasSymbols ? Symbol : undefined,
 	'%SyntaxError%': $SyntaxError,
 	'%ThrowTypeError%': ThrowTypeError,
@@ -31176,6 +32791,16 @@ var INTRINSICS = {
 	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
 	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet
 };
+
+if (getProto) {
+	try {
+		null.error; // eslint-disable-line no-unused-expressions
+	} catch (e) {
+		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
+		var errorProto = getProto(getProto(e));
+		INTRINSICS['%Error.prototype%'] = errorProto;
+	}
+}
 
 var doEval = function doEval(name) {
 	var value;
@@ -31192,7 +32817,7 @@ var doEval = function doEval(name) {
 		}
 	} else if (name === '%AsyncIteratorPrototype%') {
 		var gen = doEval('%AsyncGenerator%');
-		if (gen) {
+		if (gen && getProto) {
 			value = getProto(gen.prototype);
 		}
 	}
@@ -31463,6 +33088,28 @@ hasPropertyDescriptors.hasArrayLengthDefineBug = function hasArrayLengthDefineBu
 };
 
 module.exports = hasPropertyDescriptors;
+
+
+/***/ }),
+
+/***/ "./node_modules/has-proto/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/has-proto/index.js ***!
+  \*****************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+var test = {
+	foo: {}
+};
+
+var $Object = Object;
+
+module.exports = function hasProto() {
+	return { __proto__: test }.foo === test.foo && !({ __proto__: null } instanceof $Object);
+};
 
 
 /***/ }),
@@ -74932,6 +76579,4825 @@ function combine (array, callback) {
 }
 
 
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGInstance": () => (/* binding */ SVGInstance)
+/* harmony export */ });
+/* harmony import */ var _utils_createElement_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/createElement.js */ "./node_modules/svg-engine/lib/browser/esm/browser/utils/createElement.js");
+/* harmony import */ var _shared_utils_functions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../shared/utils/functions.js */ "./node_modules/svg-engine/lib/browser/esm/shared/utils/functions.js");
+
+
+class SVGInstance {
+    constructor(tagName, _parent) {
+        this.childInstances = [];
+        this.element = (0,_utils_createElement_js__WEBPACK_IMPORTED_MODULE_0__.createElement)(tagName);
+        this._parent = _parent;
+    }
+    get parent() {
+        return this._parent;
+    }
+    get root() {
+        let parent = this._parent;
+        while ((parent === null || parent === void 0 ? void 0 : parent.parent) !== undefined) {
+            parent = parent.parent;
+        }
+        return parent;
+    }
+    appendInstance(instance) {
+        this.childInstances.push(instance);
+        this.element.appendChild(instance.element);
+        return this;
+    }
+    id(id) {
+        if (typeof id === "string") {
+            this.element.id = id;
+            return this;
+        }
+        return this.element.id;
+    }
+    get innerHTML() {
+        return this.element.innerHTML;
+    }
+    get outerHTML() {
+        return this.element.outerHTML;
+    }
+    empty() {
+        this.childInstances = [];
+        this.element.innerHTML = "";
+        return this;
+    }
+    addClass(classNameOrClassNames) {
+        if (typeof classNameOrClassNames === "string") {
+            this.element.classList.add(classNameOrClassNames);
+        }
+        else if (Array.isArray(classNameOrClassNames)) {
+            this.element.classList.add(...classNameOrClassNames);
+        }
+        return this;
+    }
+    removeClass(classNameOrClassNames) {
+        if (typeof classNameOrClassNames === "string") {
+            this.element.classList.remove(classNameOrClassNames);
+        }
+        else if (Array.isArray(classNameOrClassNames)) {
+            this.element.classList.remove(...classNameOrClassNames);
+        }
+        return this;
+    }
+    hasClass(className) {
+        return this.element.classList.contains(className);
+    }
+    attr(attributeNameOrAttributeObjectOrUndefined, valueOrUndefined) {
+        //-- Convert numeric strings to numbers
+        var _a;
+        const attributes = Object.entries((0,_shared_utils_functions_js__WEBPACK_IMPORTED_MODULE_1__.convertNamedNodeMapToObject)(this.element.attributes)).reduce((previous, [key, value]) => (Object.assign(Object.assign({}, previous), { [key]: isNaN(+value.value) ? value.value : +value.value })), {});
+        if (typeof attributeNameOrAttributeObjectOrUndefined === "undefined") {
+            return attributes;
+        }
+        else if (typeof attributeNameOrAttributeObjectOrUndefined === "object") {
+            if (Array.isArray(attributeNameOrAttributeObjectOrUndefined)) {
+                return Object.fromEntries(Object.entries(attributes).filter(([key, value]) => attributeNameOrAttributeObjectOrUndefined.includes(key)));
+            }
+            else {
+                Object.keys(attributeNameOrAttributeObjectOrUndefined).forEach(key => { this.element.setAttribute(key, attributeNameOrAttributeObjectOrUndefined[key] + ""); });
+                return this;
+            }
+        }
+        else if (typeof attributeNameOrAttributeObjectOrUndefined === "string") {
+            if (typeof valueOrUndefined === "undefined") {
+                return (_a = attributes[attributeNameOrAttributeObjectOrUndefined]) !== null && _a !== void 0 ? _a : null;
+            }
+            else {
+                this.element.setAttribute(attributeNameOrAttributeObjectOrUndefined, valueOrUndefined + "");
+                return this;
+            }
+        }
+        return null;
+    }
+    removeAttr(attributeName) {
+        this.element.removeAttribute(attributeName);
+        return this;
+    }
+}
+//# sourceMappingURL=SVGInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/browser/utils/createElement.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/browser/utils/createElement.js ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createElement": () => (/* binding */ createElement)
+/* harmony export */ });
+function createElement(tag) {
+    return document.createElementNS("http://www.w3.org/2000/svg", tag);
+}
+//# sourceMappingURL=createElement.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/index.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVG": () => (/* reexport safe */ _shared_exports_svg_js__WEBPACK_IMPORTED_MODULE_8__.SVG),
+/* harmony export */   "SVGCircleInstance": () => (/* reexport safe */ _shared_instances_SVGCircleInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGCircleInstance),
+/* harmony export */   "SVGGroupInstance": () => (/* reexport safe */ _shared_instances_SVGGroupInstance_js__WEBPACK_IMPORTED_MODULE_2__.SVGGroupInstance),
+/* harmony export */   "SVGLineInstance": () => (/* reexport safe */ _shared_instances_SVGLineInstance_js__WEBPACK_IMPORTED_MODULE_3__.SVGLineInstance),
+/* harmony export */   "SVGPathInstance": () => (/* reexport safe */ _shared_instances_SVGPathInstance_js__WEBPACK_IMPORTED_MODULE_4__.SVGPathInstance),
+/* harmony export */   "SVGRectInstance": () => (/* reexport safe */ _shared_instances_SVGRectInstance_js__WEBPACK_IMPORTED_MODULE_5__.SVGRectInstance),
+/* harmony export */   "SVGSVGInstance": () => (/* reexport safe */ _shared_instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGSVGInstance),
+/* harmony export */   "SVGTSpanInstance": () => (/* reexport safe */ _shared_instances_SVGTSpanInstance_js__WEBPACK_IMPORTED_MODULE_7__.SVGTSpanInstance),
+/* harmony export */   "SVGTextInstance": () => (/* reexport safe */ _shared_instances_SVGTextInstance_js__WEBPACK_IMPORTED_MODULE_6__.SVGTextInstance),
+/* harmony export */   "calc": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.calc),
+/* harmony export */   "cm2in": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.cm2in),
+/* harmony export */   "cm2mm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.cm2mm),
+/* harmony export */   "cm2pc": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.cm2pc),
+/* harmony export */   "cm2pt": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.cm2pt),
+/* harmony export */   "cm2px": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.cm2px),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "in2cm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.in2cm),
+/* harmony export */   "in2mm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.in2mm),
+/* harmony export */   "in2pc": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.in2pc),
+/* harmony export */   "in2pt": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.in2pt),
+/* harmony export */   "in2px": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.in2px),
+/* harmony export */   "mm2cm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.mm2cm),
+/* harmony export */   "mm2in": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.mm2in),
+/* harmony export */   "mm2pc": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.mm2pc),
+/* harmony export */   "mm2pt": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.mm2pt),
+/* harmony export */   "mm2px": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.mm2px),
+/* harmony export */   "pc2cm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pc2cm),
+/* harmony export */   "pc2in": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pc2in),
+/* harmony export */   "pc2mm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pc2mm),
+/* harmony export */   "pc2pt": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pc2pt),
+/* harmony export */   "pc2px": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pc2px),
+/* harmony export */   "pt2cm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pt2cm),
+/* harmony export */   "pt2in": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pt2in),
+/* harmony export */   "pt2mm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pt2mm),
+/* harmony export */   "pt2pc": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pt2pc),
+/* harmony export */   "pt2px": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.pt2px),
+/* harmony export */   "px2cm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.px2cm),
+/* harmony export */   "px2in": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.px2in),
+/* harmony export */   "px2mm": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.px2mm),
+/* harmony export */   "px2pc": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.px2pc),
+/* harmony export */   "px2pt": () => (/* reexport safe */ _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__.px2pt)
+/* harmony export */ });
+/* harmony import */ var _shared_instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shared/instances/SVGSVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGSVGInstance.js");
+/* harmony import */ var _shared_instances_SVGCircleInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shared/instances/SVGCircleInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGCircleInstance.js");
+/* harmony import */ var _shared_instances_SVGGroupInstance_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shared/instances/SVGGroupInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGGroupInstance.js");
+/* harmony import */ var _shared_instances_SVGLineInstance_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shared/instances/SVGLineInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLineInstance.js");
+/* harmony import */ var _shared_instances_SVGPathInstance_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./shared/instances/SVGPathInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGPathInstance.js");
+/* harmony import */ var _shared_instances_SVGRectInstance_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./shared/instances/SVGRectInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGRectInstance.js");
+/* harmony import */ var _shared_instances_SVGTextInstance_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./shared/instances/SVGTextInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTextInstance.js");
+/* harmony import */ var _shared_instances_SVGTSpanInstance_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./shared/instances/SVGTSpanInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTSpanInstance.js");
+/* harmony import */ var _shared_exports_svg_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./shared/exports/svg.js */ "./node_modules/svg-engine/lib/browser/esm/shared/exports/svg.js");
+/* harmony import */ var _shared_exports_calc_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./shared/exports/calc.js */ "./node_modules/svg-engine/lib/browser/esm/shared/exports/calc.js");
+
+
+
+
+
+
+
+
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_exports_svg_js__WEBPACK_IMPORTED_MODULE_8__.SVG);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/exports/calc.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/exports/calc.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "calc": () => (/* binding */ calc),
+/* harmony export */   "cm2in": () => (/* binding */ cm2in),
+/* harmony export */   "cm2mm": () => (/* binding */ cm2mm),
+/* harmony export */   "cm2pc": () => (/* binding */ cm2pc),
+/* harmony export */   "cm2pt": () => (/* binding */ cm2pt),
+/* harmony export */   "cm2px": () => (/* binding */ cm2px),
+/* harmony export */   "in2cm": () => (/* binding */ in2cm),
+/* harmony export */   "in2mm": () => (/* binding */ in2mm),
+/* harmony export */   "in2pc": () => (/* binding */ in2pc),
+/* harmony export */   "in2pt": () => (/* binding */ in2pt),
+/* harmony export */   "in2px": () => (/* binding */ in2px),
+/* harmony export */   "mm2cm": () => (/* binding */ mm2cm),
+/* harmony export */   "mm2in": () => (/* binding */ mm2in),
+/* harmony export */   "mm2pc": () => (/* binding */ mm2pc),
+/* harmony export */   "mm2pt": () => (/* binding */ mm2pt),
+/* harmony export */   "mm2px": () => (/* binding */ mm2px),
+/* harmony export */   "pc2cm": () => (/* binding */ pc2cm),
+/* harmony export */   "pc2in": () => (/* binding */ pc2in),
+/* harmony export */   "pc2mm": () => (/* binding */ pc2mm),
+/* harmony export */   "pc2pt": () => (/* binding */ pc2pt),
+/* harmony export */   "pc2px": () => (/* binding */ pc2px),
+/* harmony export */   "pt2cm": () => (/* binding */ pt2cm),
+/* harmony export */   "pt2in": () => (/* binding */ pt2in),
+/* harmony export */   "pt2mm": () => (/* binding */ pt2mm),
+/* harmony export */   "pt2pc": () => (/* binding */ pt2pc),
+/* harmony export */   "pt2px": () => (/* binding */ pt2px),
+/* harmony export */   "px2cm": () => (/* binding */ px2cm),
+/* harmony export */   "px2in": () => (/* binding */ px2in),
+/* harmony export */   "px2mm": () => (/* binding */ px2mm),
+/* harmony export */   "px2pc": () => (/* binding */ px2pc),
+/* harmony export */   "px2pt": () => (/* binding */ px2pt)
+/* harmony export */ });
+function calc(expression, unit = "px") {
+    const expressionWithoutUnits = convertAbsoluteUnitsInStringToPixels(expression);
+    const sanitizedExpression = expressionWithoutUnits.replace(/[^-()\d/*+.]/g, "");
+    const result = +eval(sanitizedExpression);
+    switch (unit) {
+        case "cm":
+            return px2cm(result);
+        case "mm":
+            return px2mm(result);
+        case "in":
+            return px2in(result);
+        case "pt":
+            return px2pt(result);
+        case "pc":
+            return px2pc(result);
+        case "px":
+            return result;
+    }
+}
+function convertAbsoluteUnitsInStringToPixels(value) {
+    const replaceAt = (content, search, index, replace) => {
+        return content.substr(0, index) + replace + content.substr(index + search.length);
+    };
+    const regex = /(-?\d*\.?\d+)(mm|cm|in|pt|pc|px)+/g;
+    let match;
+    while ((match = regex.exec(value)) !== null) {
+        switch (match[2]) {
+            case "cm":
+                value = replaceAt(value, match[0], match.index, cm2px(+match[1]) + "");
+                break;
+            case "mm":
+                value = replaceAt(value, match[0], match.index, mm2px(+match[1]) + "");
+                break;
+            case "in":
+                value = replaceAt(value, match[0], match.index, in2px(+match[1]) + "");
+                break;
+            case "pt":
+                value = replaceAt(value, match[0], match.index, pt2px(+match[1]) + "");
+                break;
+            case "pc":
+                value = replaceAt(value, match[0], match.index, pc2px(+match[1]) + "");
+                break;
+            case "px":
+                value = replaceAt(value, match[0], match.index, +match[1] + "");
+                break;
+        }
+    }
+    return value;
+}
+function cm2px(centimeters) {
+    return centimeters * 9600 / 254;
+}
+function px2cm(pixels) {
+    return pixels * 254 / 9600;
+}
+function mm2px(millimeters) {
+    return millimeters * 960 / 254;
+}
+function px2mm(pixels) {
+    return pixels * 254 / 960;
+}
+function in2px(inches) {
+    return inches * 960;
+}
+function px2in(pixels) {
+    return pixels / 960;
+}
+function pt2px(points) {
+    return points * 4 / 3;
+}
+function px2pt(pixels) {
+    return pixels / 4 * 3;
+}
+function pc2px(picas) {
+    return picas * 16;
+}
+function px2pc(pixels) {
+    return pixels / 16;
+}
+//-- cm
+function mm2cm(millimeters) {
+    return px2cm(mm2px(millimeters));
+}
+function in2cm(inches) {
+    return px2cm(in2px(inches));
+}
+function pt2cm(points) {
+    return px2cm(pt2px(points));
+}
+function pc2cm(picas) {
+    return px2cm(pc2px(picas));
+}
+//-- mm
+function cm2mm(centimeters) {
+    return px2mm(cm2px(centimeters));
+}
+function in2mm(inches) {
+    return px2mm(in2px(inches));
+}
+function pt2mm(points) {
+    return px2mm(pt2px(points));
+}
+function pc2mm(picas) {
+    return px2mm(pc2px(picas));
+}
+//-- in
+function cm2in(centimeters) {
+    return px2in(cm2px(centimeters));
+}
+function mm2in(millimeters) {
+    return px2in(mm2px(millimeters));
+}
+function pt2in(points) {
+    return px2in(pt2px(points));
+}
+function pc2in(picas) {
+    return px2in(pc2px(picas));
+}
+//-- pt
+function cm2pt(centimeters) {
+    return px2pt(cm2px(centimeters));
+}
+function mm2pt(millimeters) {
+    return px2pt(mm2px(millimeters));
+}
+function in2pt(inches) {
+    return px2pt(in2px(inches));
+}
+function pc2pt(picas) {
+    return px2pt(pc2px(picas));
+}
+//-- pc
+function cm2pc(centimeters) {
+    return px2pc(cm2px(centimeters));
+}
+function mm2pc(millimeters) {
+    return px2pc(mm2px(millimeters));
+}
+function in2pc(inches) {
+    return px2pc(in2px(inches));
+}
+function pt2pc(picas) {
+    return px2pc(pt2px(picas));
+}
+//# sourceMappingURL=calc.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/exports/svg.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/exports/svg.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVG": () => (/* binding */ SVG)
+/* harmony export */ });
+/* harmony import */ var _instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../instances/SVGSVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGSVGInstance.js");
+
+class SVG extends _instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGSVGInstance {
+    constructor() {
+        super();
+        this.attr("xmlns", "http://www.w3.org/2000/svg");
+    }
+}
+//# sourceMappingURL=svg.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGCircleInstance.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGCircleInstance.js ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGCircleInstance": () => (/* binding */ SVGCircleInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+/* harmony import */ var _mixins_attributes_cxcyPositioning_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/attributes/cxcyPositioning.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/cxcyPositioning.js");
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+// Attributes
+
+//-- Class
+class SVGCircleInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("circle", _parent);
+    }
+    radius(radius) {
+        if (typeof radius === "string" || typeof radius === "number") {
+            this.attr("r", radius);
+            return this;
+        }
+        return this.attr("r");
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGCircleInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__.Visibility,
+    _mixins_attributes_cxcyPositioning_js__WEBPACK_IMPORTED_MODULE_9__.CXCYPositioning
+]);
+//# sourceMappingURL=SVGCircleInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGDefsInstance.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGDefsInstance.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGDefsInstance": () => (/* binding */ SVGDefsInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_permitted_content_shapeInstances_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/permitted-content/shapeInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/shapeInstances.js");
+/* harmony import */ var _mixins_permitted_content_structuralInstances_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/permitted-content/structuralInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/structuralInstances.js");
+/* harmony import */ var _mixins_permitted_content_gradientInstances_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/permitted-content/gradientInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/gradientInstances.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+
+//-- Mixins
+
+// Permitted content
+
+
+
+// Presentation attributes
+
+
+
+
+
+
+
+//-- Class
+class SVGDefsInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("defs", _parent);
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGDefsInstance, [
+    _mixins_permitted_content_shapeInstances_js__WEBPACK_IMPORTED_MODULE_2__.ShapeInstances,
+    _mixins_permitted_content_structuralInstances_js__WEBPACK_IMPORTED_MODULE_3__.StructuralInstances,
+    _mixins_permitted_content_gradientInstances_js__WEBPACK_IMPORTED_MODULE_4__.GradientInstances,
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_5__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_6__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_7__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_8__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_9__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_10__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_11__.Visibility
+]);
+//# sourceMappingURL=SVGDefsInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGGroupInstance.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGGroupInstance.js ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGGroupInstance": () => (/* binding */ SVGGroupInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_permitted_content_shapeInstances_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/permitted-content/shapeInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/shapeInstances.js");
+/* harmony import */ var _SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SVGSVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGSVGInstance.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+
+//-- Mixins
+
+// Permitted content
+
+
+// Presentation attributes
+
+
+
+
+
+
+
+//-- Class
+class SVGGroupInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("g", _parent);
+    }
+    addGroup() {
+        const group = new SVGGroupInstance(this);
+        this.appendInstance(group);
+        return group;
+    }
+    addSVG(width, height) {
+        if (typeof width !== "undefined" && typeof height !== "undefined") {
+            const svg = new _SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_3__.SVGSVGInstance(width, height);
+            this.appendInstance(svg);
+            return svg;
+        }
+        else {
+            const svg = new _SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_3__.SVGSVGInstance();
+            this.appendInstance(svg);
+            return svg;
+        }
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGGroupInstance, [
+    _mixins_permitted_content_shapeInstances_js__WEBPACK_IMPORTED_MODULE_2__.ShapeInstances,
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_4__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_5__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_6__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_7__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_8__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_9__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_10__.Visibility
+]);
+//# sourceMappingURL=SVGGroupInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLineInstance.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLineInstance.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGLineInstance": () => (/* binding */ SVGLineInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+//-- Class
+class SVGLineInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("line", _parent);
+    }
+    x1(x1) {
+        if (typeof x1 === "string" || typeof x1 === "number") {
+            this.attr("x1", x1);
+            return this;
+        }
+        return this.attr("x1");
+    }
+    y1(y1) {
+        if (typeof y1 === "string" || typeof y1 === "number") {
+            this.attr("y1", y1);
+            return this;
+        }
+        return this.attr("y1");
+    }
+    x2(x2) {
+        if (typeof x2 === "string" || typeof x2 === "number") {
+            this.attr("x2", x2);
+            return this;
+        }
+        return this.attr("x2");
+    }
+    y2(y2) {
+        if (typeof y2 === "string" || typeof y2 === "number") {
+            this.attr("y2", y2);
+            return this;
+        }
+        return this.attr("y2");
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGLineInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__.Visibility
+]);
+//# sourceMappingURL=SVGLineInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLinearGradientInstance.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLinearGradientInstance.js ***!
+  \***********************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGLinearGradientInstance": () => (/* binding */ SVGLinearGradientInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_permitted_content_gradientStopInstances_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/permitted-content/gradientStopInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/gradientStopInstances.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+
+//-- Mixins
+
+// Permitted content
+
+// Presentation attributes
+
+
+
+
+
+
+
+//-- Class
+class SVGLinearGradientInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("linearGradient", _parent);
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGLinearGradientInstance, [
+    _mixins_permitted_content_gradientStopInstances_js__WEBPACK_IMPORTED_MODULE_2__.GradientStopInstances,
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_3__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_4__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_5__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_6__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_7__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_8__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_9__.Visibility
+]);
+//# sourceMappingURL=SVGLinearGradientInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGPathInstance.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGPathInstance.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGPathInstance": () => (/* binding */ SVGPathInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+//-- Class
+class SVGPathInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("path", _parent);
+    }
+    lineTo(x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " L " : " l ");
+        d += ` ${x}, ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    moveTo(x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " M " : " m ");
+        d += ` ${x}, ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    cubicBezierCurveTo(p1x, p1y, p2x, p2y, x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " C " : " c ");
+        d += ` ${p1x} ${p1y}, ${p2x} ${p2y}, ${x} ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    smoothBezierCurveTo(x2, y2, x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " S " : " s ");
+        d += ` ${x2}, ${y2} ${x}, ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    quadraticBezierCurveTo(p1x, p1y, x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " Q " : " q ");
+        d += ` ${p1x} ${p1y}, ${x} ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    smoothQuadraticBezierCurveTo(x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " T " : " t ");
+        d += ` ${x}, ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    ellipticalArcCurveTo(rx, ry, xRot, largeArc, sweep, x, y, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " A " : " a ");
+        d += ` ${rx}, ${ry} ${xRot} ${largeArc ? 1 : 0} ${sweep ? 1 : 0} ${x} ${y} `;
+        this.attr("d", d);
+        return this;
+    }
+    curveTo(x, y, x1, y1, relative = false) {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += (relative === false ? " S " : " s ");
+        d += ` ${x}, ${y} ${x1}, ${y1} `;
+        this.attr("d", d);
+        return this;
+    }
+    close() {
+        var _a;
+        let d = (_a = this.attr("d")) !== null && _a !== void 0 ? _a : "";
+        d += " Z";
+        this.attr("d", d);
+        return this;
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGPathInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__.Visibility
+]);
+//# sourceMappingURL=SVGPathInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGRectInstance.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGRectInstance.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGRectInstance": () => (/* binding */ SVGRectInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+/* harmony import */ var _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/attributes/xyPositioning.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/xyPositioning.js");
+/* harmony import */ var _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../mixins/attributes/widthHeight.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/widthHeight.js");
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+// Attributes
+
+
+//-- Class
+class SVGRectInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("rect", _parent);
+    }
+    borderRadius(radius) {
+        if (typeof radius === "string" || typeof radius === "number") {
+            this.attr("rx", radius);
+            this.attr("ry", radius);
+            return this;
+        }
+        return this.attr("rx");
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGRectInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__.Visibility,
+    _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_9__.XYPositioning,
+    _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_10__.WidthHeight
+]);
+//# sourceMappingURL=SVGRectInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGSVGInstance.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGSVGInstance.js ***!
+  \************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGSVGInstance": () => (/* binding */ SVGSVGInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_permitted_content_shapeInstances_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/permitted-content/shapeInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/shapeInstances.js");
+/* harmony import */ var _mixins_permitted_content_structuralInstances_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/permitted-content/structuralInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/structuralInstances.js");
+/* harmony import */ var _mixins_permitted_content_descriptiveInstances_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/permitted-content/descriptiveInstances.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/descriptiveInstances.js");
+/* harmony import */ var _SVGGroupInstance_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SVGGroupInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGGroupInstance.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+/* harmony import */ var _mixins_attributes_preserveAspectRatio_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../mixins/attributes/preserveAspectRatio.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/preserveAspectRatio.js");
+/* harmony import */ var _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../mixins/attributes/xyPositioning.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/xyPositioning.js");
+/* harmony import */ var _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../mixins/attributes/widthHeight.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/widthHeight.js");
+
+//-- Mixins
+
+// Permitted content
+
+
+
+
+// Presentation attributes
+
+
+
+
+
+
+
+// Attributes
+
+
+
+//-- Class
+class SVGSVGInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(widthOrParent, height, _parent) {
+        // const parent = widthOrParent instanceof SVGInstance ? widthOrParent : _parent;
+        super("svg");
+        if (typeof widthOrParent === "string" || typeof widthOrParent === "number") {
+            this.width(widthOrParent);
+        }
+        if (typeof height === "string" || typeof height === "number") {
+            this.height(height);
+        }
+    }
+    addGroup() {
+        const group = new _SVGGroupInstance_js__WEBPACK_IMPORTED_MODULE_5__.SVGGroupInstance(this);
+        this.appendInstance(group);
+        return group;
+    }
+    addSVG(width, height) {
+        if (typeof width !== "undefined" && typeof height !== "undefined") {
+            const svg = new SVGSVGInstance(width, height);
+            this.appendInstance(svg);
+            return svg;
+        }
+        else {
+            const svg = new SVGSVGInstance();
+            this.appendInstance(svg);
+            return svg;
+        }
+    }
+    viewBox(x, y, width, height) {
+        if (typeof x === "undefined") {
+            const viewBox = this.attr("viewBox");
+            if (typeof viewBox === "string") {
+                const [x, y, width, height] = viewBox.split(" ");
+                return {
+                    x: isNaN(+x) ? x : +x,
+                    y: isNaN(+y) ? y : +y,
+                    width: isNaN(+width) ? width : +width,
+                    height: isNaN(+height) ? height : +height
+                };
+            }
+            return null;
+        }
+        else if ((typeof x === "string" || typeof x === "number") &&
+            (typeof y === "string" || typeof y === "number") &&
+            (typeof width === "string" || typeof width === "number") &&
+            (typeof height === "string" || typeof height === "number")) {
+            this.attr("viewBox", `${x} ${y} ${width} ${height}`);
+            return this;
+        }
+        return null;
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGSVGInstance, [
+    _mixins_permitted_content_shapeInstances_js__WEBPACK_IMPORTED_MODULE_2__.ShapeInstances,
+    _mixins_permitted_content_structuralInstances_js__WEBPACK_IMPORTED_MODULE_3__.StructuralInstances,
+    _mixins_permitted_content_descriptiveInstances_js__WEBPACK_IMPORTED_MODULE_4__.DescriptiveInstances,
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_6__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_7__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_8__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_9__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_10__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_11__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_12__.Visibility,
+    _mixins_attributes_preserveAspectRatio_js__WEBPACK_IMPORTED_MODULE_13__.PreserveAspectRatio,
+    _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_14__.XYPositioning,
+    _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_15__.WidthHeight
+]);
+//# sourceMappingURL=SVGSVGInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGStopInstance.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGStopInstance.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGStopInstance": () => (/* binding */ SVGStopInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+//-- Class
+class SVGStopInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("stop", _parent);
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGStopInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__.Visibility
+]);
+//# sourceMappingURL=SVGStopInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTSpanInstance.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTSpanInstance.js ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGTSpanInstance": () => (/* binding */ SVGTSpanInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+/* harmony import */ var _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/attributes/xyPositioning.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/xyPositioning.js");
+/* harmony import */ var _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../mixins/attributes/widthHeight.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/widthHeight.js");
+/* harmony import */ var _mixins_attributes_text_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../mixins/attributes/text.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/text.js");
+/* harmony import */ var _mixins_style_attributes_font_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../mixins/style-attributes/font.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/style-attributes/font.js");
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+// Attributes
+
+
+
+// Style attributes
+
+//-- Class
+class SVGTSpanInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("tspan", _parent);
+    }
+    addTSpan(xOrTextOrUndefined, yOrUndefined, textOrUndefined) {
+        const text = new SVGTSpanInstance(this);
+        if (typeof xOrTextOrUndefined === "string" && typeof yOrUndefined === "undefined") {
+            text.text(xOrTextOrUndefined);
+        }
+        else if ((typeof xOrTextOrUndefined === "string" || typeof xOrTextOrUndefined === "number") && (typeof yOrUndefined === "string" || typeof yOrUndefined === "number")) {
+            text.attr("x", xOrTextOrUndefined);
+            text.attr("y", yOrUndefined);
+            if (typeof textOrUndefined === "string") {
+                text.text(textOrUndefined);
+            }
+        }
+        this.appendInstance(text);
+        return text;
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_1__.applyMixins)(SVGTSpanInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_2__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_3__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_4__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_5__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_6__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_7__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_8__.Visibility,
+    _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_9__.XYPositioning,
+    _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_10__.WidthHeight,
+    _mixins_attributes_text_js__WEBPACK_IMPORTED_MODULE_11__.TextAttributes,
+    _mixins_style_attributes_font_js__WEBPACK_IMPORTED_MODULE_12__.Font
+]);
+//# sourceMappingURL=SVGTSpanInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTextInstance.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTextInstance.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVGTextInstance": () => (/* binding */ SVGTextInstance)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _SVGTSpanInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SVGTSpanInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTSpanInstance.js");
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/index.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js");
+/* harmony import */ var _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/presentation-attributes/color.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js");
+/* harmony import */ var _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/presentation-attributes/display.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js");
+/* harmony import */ var _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/presentation-attributes/fill.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js");
+/* harmony import */ var _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/presentation-attributes/opacity.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js");
+/* harmony import */ var _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/presentation-attributes/stroke.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js");
+/* harmony import */ var _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/presentation-attributes/vectorEffect.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js");
+/* harmony import */ var _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/presentation-attributes/visibility.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js");
+/* harmony import */ var _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../mixins/attributes/xyPositioning.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/xyPositioning.js");
+/* harmony import */ var _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../mixins/attributes/widthHeight.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/widthHeight.js");
+/* harmony import */ var _mixins_attributes_text_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../mixins/attributes/text.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/text.js");
+/* harmony import */ var _mixins_style_attributes_font_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../mixins/style-attributes/font.js */ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/style-attributes/font.js");
+
+
+//-- Mixins
+
+// Presentation attributes
+
+
+
+
+
+
+
+// Attributes
+
+
+
+// Style attributes
+
+//-- Class
+class SVGTextInstance extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    constructor(_parent) {
+        super("text", _parent);
+    }
+    addTSpan(xOrTextOrUndefined, yOrUndefined, textOrUndefined) {
+        const text = new _SVGTSpanInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGTSpanInstance(this);
+        if (typeof xOrTextOrUndefined === "string" && typeof yOrUndefined === "undefined") {
+            text.text(xOrTextOrUndefined);
+        }
+        else if ((typeof xOrTextOrUndefined === "string" || typeof xOrTextOrUndefined === "number") && (typeof yOrUndefined === "string" || typeof yOrUndefined === "number")) {
+            text.attr("x", xOrTextOrUndefined);
+            text.attr("y", yOrUndefined);
+            if (typeof textOrUndefined === "string") {
+                text.text(textOrUndefined);
+            }
+        }
+        this.appendInstance(text);
+        return text;
+    }
+}
+(0,_mixins_index_js__WEBPACK_IMPORTED_MODULE_2__.applyMixins)(SVGTextInstance, [
+    _mixins_presentation_attributes_color_js__WEBPACK_IMPORTED_MODULE_3__.Color,
+    _mixins_presentation_attributes_display_js__WEBPACK_IMPORTED_MODULE_4__.Display,
+    _mixins_presentation_attributes_fill_js__WEBPACK_IMPORTED_MODULE_5__.Fill,
+    _mixins_presentation_attributes_opacity_js__WEBPACK_IMPORTED_MODULE_6__.Opacity,
+    _mixins_presentation_attributes_stroke_js__WEBPACK_IMPORTED_MODULE_7__.Stroke,
+    _mixins_presentation_attributes_vectorEffect_js__WEBPACK_IMPORTED_MODULE_8__.VectorEffect,
+    _mixins_presentation_attributes_visibility_js__WEBPACK_IMPORTED_MODULE_9__.Visibility,
+    _mixins_attributes_xyPositioning_js__WEBPACK_IMPORTED_MODULE_10__.XYPositioning,
+    _mixins_attributes_widthHeight_js__WEBPACK_IMPORTED_MODULE_11__.WidthHeight,
+    _mixins_attributes_text_js__WEBPACK_IMPORTED_MODULE_12__.TextAttributes,
+    _mixins_style_attributes_font_js__WEBPACK_IMPORTED_MODULE_13__.Font
+]);
+//# sourceMappingURL=SVGTextInstance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/cxcyPositioning.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/cxcyPositioning.js ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CXCYPositioning": () => (/* binding */ CXCYPositioning)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class CXCYPositioning extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    cx(cx) {
+        if (typeof cx === "string" || typeof cx === "number") {
+            this.attr("cx", cx);
+            return this;
+        }
+        return this.attr("cx");
+    }
+    cy(cy) {
+        if (typeof cy === "string" || typeof cy === "number") {
+            this.attr("cy", cy);
+            return this;
+        }
+        return this.attr("cy");
+    }
+}
+//# sourceMappingURL=cxcyPositioning.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/preserveAspectRatio.js":
+/*!*************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/preserveAspectRatio.js ***!
+  \*************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "PreserveAspectRatio": () => (/* binding */ PreserveAspectRatio)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class PreserveAspectRatio extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    preserveAspectRatio(align, meetOrSlice) {
+        if (typeof align === "undefined" && typeof meetOrSlice === "undefined") {
+            const preserveAspectRatio = this.attr("preserveAspectRatio");
+            if (typeof preserveAspectRatio === "string") {
+                const [align, meetOrSlice] = preserveAspectRatio.split(" ");
+                return { align, meetOrSlice };
+            }
+        }
+        else if (typeof align === "string" && typeof meetOrSlice === "string") {
+            this.attr("preserveAspectRatio", `${align} ${meetOrSlice}`);
+            return this;
+        }
+        else if (typeof align === "string" && typeof meetOrSlice === "undefined") {
+            this.attr("preserveAspectRatio", align);
+            return this;
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=preserveAspectRatio.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/text.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/text.js ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TextAttributes": () => (/* binding */ TextAttributes)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class TextAttributes extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    text(text) {
+        if (typeof text === "string") {
+            this.element.innerHTML = text;
+            return this;
+        }
+        return this.element.innerHTML;
+    }
+    textAlign(position) {
+        var _a;
+        if (position === "left") {
+            return this.textAnchor("start");
+        }
+        else if (position === "center") {
+            return this.textAnchor("middle");
+        }
+        else if (position === "right") {
+            return this.textAnchor("end");
+        }
+        else {
+            return (_a = this.textAnchor()) !== null && _a !== void 0 ? _a : "left";
+        }
+    }
+    textAnchor(textAnchor) {
+        if (typeof textAnchor === "undefined") {
+            const textAnchor = this.attr("text-anchor");
+            return typeof textAnchor === "string" ? textAnchor : null;
+        }
+        else if (typeof textAnchor === "string") {
+            this.attr("text-anchor", textAnchor);
+            return this;
+        }
+        return null;
+    }
+    dx(dx) {
+        if (typeof dx === "string" || typeof dx === "number") {
+            this.attr("dx", dx);
+            return this;
+        }
+        return this.attr("dx");
+    }
+    dy(dy) {
+        if (typeof dy === "string" || typeof dy === "number") {
+            this.attr("dy", dy);
+            return this;
+        }
+        return this.attr("dy");
+    }
+}
+//# sourceMappingURL=text.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/widthHeight.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/widthHeight.js ***!
+  \*****************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "WidthHeight": () => (/* binding */ WidthHeight)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class WidthHeight extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    width(width) {
+        if (typeof width === "string" || typeof width === "number") {
+            this.attr("width", width + "");
+            return this;
+        }
+        return this.attr("width");
+    }
+    height(height) {
+        if (typeof height === "string" || typeof height === "number") {
+            this.attr("height", height + "");
+            return this;
+        }
+        return this.attr("height");
+    }
+}
+//# sourceMappingURL=widthHeight.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/xyPositioning.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/attributes/xyPositioning.js ***!
+  \*******************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "XYPositioning": () => (/* binding */ XYPositioning)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class XYPositioning extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    moveTo(x, y) {
+        this.attr("x", x);
+        this.attr("y", y);
+        return this;
+    }
+    moveBy(dx, dy) {
+        var _a, _b;
+        const x = (_a = this.attr("x")) !== null && _a !== void 0 ? _a : 0 + dx;
+        const y = (_b = this.attr("y")) !== null && _b !== void 0 ? _b : 0 + dy;
+        return this.moveTo(x, y);
+    }
+    x(x) {
+        if (typeof x === "string" || typeof x === "number") {
+            this.attr("x", x);
+            return this;
+        }
+        return this.attr("x");
+    }
+    y(y) {
+        if (typeof y === "string" || typeof y === "number") {
+            this.attr("y", y);
+            return this;
+        }
+        return this.attr("y");
+    }
+}
+//# sourceMappingURL=xyPositioning.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/index.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "applyMixins": () => (/* binding */ applyMixins)
+/* harmony export */ });
+function applyMixins(derivedCtor, constructors) {
+    constructors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            Object.defineProperty(derivedCtor.prototype, name, Object.getOwnPropertyDescriptor(baseCtor.prototype, name) ||
+                Object.create(null));
+        });
+    });
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/descriptiveInstances.js":
+/*!*********************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/descriptiveInstances.js ***!
+  \*********************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DescriptiveInstances": () => (/* binding */ DescriptiveInstances)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _instances_SVGDefsInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../instances/SVGDefsInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGDefsInstance.js");
+
+
+class DescriptiveInstances extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    addDefs() {
+        const defs = new _instances_SVGDefsInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGDefsInstance(this);
+        this.appendInstance(defs);
+        return defs;
+    }
+}
+//# sourceMappingURL=descriptiveInstances.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/gradientInstances.js":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/gradientInstances.js ***!
+  \******************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GradientInstances": () => (/* binding */ GradientInstances)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _instances_SVGLinearGradientInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../instances/SVGLinearGradientInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLinearGradientInstance.js");
+
+
+class GradientInstances extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    addLinearGradient() {
+        const linearGradient = new _instances_SVGLinearGradientInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGLinearGradientInstance(this);
+        this.appendInstance(linearGradient);
+        return linearGradient;
+    }
+}
+//# sourceMappingURL=gradientInstances.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/gradientStopInstances.js":
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/gradientStopInstances.js ***!
+  \**********************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GradientStopInstances": () => (/* binding */ GradientStopInstances)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _instances_SVGStopInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../instances/SVGStopInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGStopInstance.js");
+
+
+class GradientStopInstances extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    addStop(position, color) {
+        const stop = new _instances_SVGStopInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGStopInstance(this);
+        stop.attr("offset", position);
+        stop.attr("stop-color", color);
+        this.appendInstance(stop);
+        return stop;
+    }
+}
+//# sourceMappingURL=gradientStopInstances.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/shapeInstances.js":
+/*!***************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/shapeInstances.js ***!
+  \***************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ShapeInstances": () => (/* binding */ ShapeInstances)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _instances_SVGRectInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../instances/SVGRectInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGRectInstance.js");
+/* harmony import */ var _instances_SVGCircleInstance_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../instances/SVGCircleInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGCircleInstance.js");
+/* harmony import */ var _instances_SVGLineInstance_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../instances/SVGLineInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGLineInstance.js");
+/* harmony import */ var _instances_SVGPathInstance_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../instances/SVGPathInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGPathInstance.js");
+/* harmony import */ var _instances_SVGTextInstance_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../instances/SVGTextInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGTextInstance.js");
+
+
+
+
+
+
+class ShapeInstances extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    addRect(xOrUndefined, yOrUndefined, widthOrUndefined, heightOrUndefined) {
+        const rect = new _instances_SVGRectInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGRectInstance(this);
+        if (xOrUndefined !== undefined) {
+            rect.attr("x", xOrUndefined + "");
+        }
+        if (yOrUndefined !== undefined) {
+            rect.attr("y", yOrUndefined + "");
+        }
+        if (widthOrUndefined !== undefined) {
+            rect.attr("width", widthOrUndefined + "");
+        }
+        if (heightOrUndefined !== undefined) {
+            rect.attr("height", heightOrUndefined + "");
+        }
+        this.appendInstance(rect);
+        return rect;
+    }
+    addCircle(cxOrUndefined, cyOrUndefined, radiusOrUndefined) {
+        const circle = new _instances_SVGCircleInstance_js__WEBPACK_IMPORTED_MODULE_2__.SVGCircleInstance(this);
+        if (cxOrUndefined !== undefined) {
+            circle.attr("cx", cxOrUndefined + "");
+        }
+        if (cyOrUndefined !== undefined) {
+            circle.attr("cy", cyOrUndefined + "");
+        }
+        if (radiusOrUndefined !== undefined) {
+            circle.attr("r", radiusOrUndefined + "");
+        }
+        this.appendInstance(circle);
+        return circle;
+    }
+    addLine(x1OrUndefined, y1OrUndefined, x2OrUndefined, y2OrUndefined) {
+        const line = new _instances_SVGLineInstance_js__WEBPACK_IMPORTED_MODULE_3__.SVGLineInstance(this);
+        if (x1OrUndefined !== undefined) {
+            line.attr("x1", x1OrUndefined + "");
+        }
+        if (y1OrUndefined !== undefined) {
+            line.attr("y1", y1OrUndefined + "");
+        }
+        if (x2OrUndefined !== undefined) {
+            line.attr("x2", x2OrUndefined + "");
+        }
+        if (y2OrUndefined !== undefined) {
+            line.attr("y2", y2OrUndefined + "");
+        }
+        this.appendInstance(line);
+        return line;
+    }
+    addPath(dOrUndefined) {
+        const path = new _instances_SVGPathInstance_js__WEBPACK_IMPORTED_MODULE_4__.SVGPathInstance(this);
+        if (dOrUndefined !== undefined) {
+            path.attr("d", dOrUndefined + "");
+        }
+        this.appendInstance(path);
+        return path;
+    }
+    addText(xOrTextOrUndefined, yOrUndefined, textOrUndefined) {
+        const text = new _instances_SVGTextInstance_js__WEBPACK_IMPORTED_MODULE_5__.SVGTextInstance(this);
+        if (typeof xOrTextOrUndefined === "string" && typeof yOrUndefined === "undefined") {
+            text.text(xOrTextOrUndefined);
+        }
+        else if ((typeof xOrTextOrUndefined === "string" || typeof xOrTextOrUndefined === "number") && (typeof yOrUndefined === "string" || typeof yOrUndefined === "number")) {
+            text.attr("x", xOrTextOrUndefined);
+            text.attr("y", yOrUndefined);
+            if (typeof textOrUndefined === "string") {
+                text.text(textOrUndefined);
+            }
+        }
+        this.appendInstance(text);
+        return text;
+    }
+}
+//# sourceMappingURL=shapeInstances.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/structuralInstances.js":
+/*!********************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/permitted-content/structuralInstances.js ***!
+  \********************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "StructuralInstances": () => (/* binding */ StructuralInstances)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+/* harmony import */ var _instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../instances/SVGSVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGSVGInstance.js");
+/* harmony import */ var _instances_SVGGroupInstance_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../instances/SVGGroupInstance.js */ "./node_modules/svg-engine/lib/browser/esm/shared/instances/SVGGroupInstance.js");
+
+
+
+class StructuralInstances extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    addGroup() {
+        const group = new _instances_SVGGroupInstance_js__WEBPACK_IMPORTED_MODULE_2__.SVGGroupInstance(this);
+        this.appendInstance(group);
+        return group;
+    }
+    addSVG(width, height) {
+        if (typeof width !== "undefined" && typeof height !== "undefined") {
+            const svg = new _instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGSVGInstance(width, height);
+            this.appendInstance(svg);
+            return svg;
+        }
+        else {
+            const svg = new _instances_SVGSVGInstance_js__WEBPACK_IMPORTED_MODULE_1__.SVGSVGInstance();
+            this.appendInstance(svg);
+            return svg;
+        }
+    }
+}
+//# sourceMappingURL=structuralInstances.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/color.js ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Color": () => (/* binding */ Color)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Color extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    color(color) {
+        if (typeof color === "undefined") {
+            const color = this.attr("color");
+            return typeof color === "string" ? color : null;
+        }
+        else if (typeof color === "string") {
+            this.attr("color", color);
+            return this;
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=color.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js":
+/*!**************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/display.js ***!
+  \**************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Display": () => (/* binding */ Display)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Display extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    display(display) {
+        if (typeof display === "undefined") {
+            const display = this.attr("display");
+            return typeof display === "string" ? display : null;
+        }
+        else if (typeof display === "string") {
+            this.attr("display", display);
+            return this;
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=display.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/fill.js ***!
+  \***********************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Fill": () => (/* binding */ Fill)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Fill extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    fill(fill) {
+        if (typeof fill === "undefined") {
+            const fill = this.attr("fill");
+            return typeof fill === "string" ? fill : null;
+        }
+        else if (typeof fill === "string") {
+            this.attr("fill", fill);
+            return this;
+        }
+        return null;
+    }
+    fillOpacity(fillOpacity) {
+        if (typeof fillOpacity === "undefined") {
+            const fillOpacity = this.attr("fill-opacity");
+            return typeof fillOpacity === "number" ? fillOpacity : null;
+        }
+        else if (typeof fillOpacity === "number") {
+            this.attr("fill-opacity", fillOpacity);
+            return this;
+        }
+        return null;
+    }
+    fillRule(fillRule) {
+        if (typeof fillRule === "undefined") {
+            const fillRule = this.attr("fill-rule");
+            return typeof fillRule === "string" ? fillRule : null;
+        }
+        else if (typeof fillRule === "string") {
+            this.attr("fill-rule", fillRule);
+            return this;
+        }
+        return null;
+    }
+    fillLinearGradient(gradient, rotation) {
+        var _a, _b, _c;
+        const defs = (_b = (_a = this.root) === null || _a === void 0 ? void 0 : _a.childInstances.find(instance => instance.element.tagName === "defs")) !== null && _b !== void 0 ? _b : (_c = this.root) === null || _c === void 0 ? void 0 : _c.addDefs();
+        const linearGradient = defs === null || defs === void 0 ? void 0 : defs.addLinearGradient();
+        const id = defs.element.childNodes.length;
+        linearGradient.attr("id", "gradient-" + id);
+        if (typeof rotation === "number") {
+            linearGradient.attr("gradientTransform", "rotate(" + rotation + ")");
+        }
+        for (const stop of gradient) {
+            linearGradient.addStop(stop.position, stop.color);
+        }
+        this.attr("fill", "url(#gradient-" + id + ")");
+        return this;
+    }
+}
+//# sourceMappingURL=fill.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js":
+/*!**************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/opacity.js ***!
+  \**************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Opacity": () => (/* binding */ Opacity)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Opacity extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    opacity(opacity) {
+        if (typeof opacity === "undefined") {
+            const opacity = this.attr("opacity");
+            return typeof opacity === "number" ? opacity : null;
+        }
+        else if (typeof opacity === "number") {
+            this.attr("opacity", opacity);
+            return this;
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=opacity.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js":
+/*!*************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/stroke.js ***!
+  \*************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Stroke": () => (/* binding */ Stroke)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Stroke extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    stroke(width = 1, style = "solid", color = "currentColor") {
+        this.strokeWidth(width);
+        this.strokeColor(color);
+        if (style === "dashed") {
+            this.strokeDasharray(3);
+        }
+        return this;
+    }
+    strokeColor(color) {
+        if (typeof color === "undefined") {
+            const color = this.attr("stroke");
+            return typeof color === "string" ? color : null;
+        }
+        else if (typeof color === "string") {
+            this.attr("stroke", color);
+            return this;
+        }
+        return null;
+    }
+    strokeLinearGradient(gradient, rotation) {
+        var _a, _b, _c;
+        const defs = (_b = (_a = this.root) === null || _a === void 0 ? void 0 : _a.childInstances.find(instance => instance.element.tagName === "defs")) !== null && _b !== void 0 ? _b : (_c = this.root) === null || _c === void 0 ? void 0 : _c.addDefs();
+        const linearGradient = defs === null || defs === void 0 ? void 0 : defs.addLinearGradient();
+        const id = defs.element.childNodes.length;
+        linearGradient.attr("id", "gradient-" + id);
+        if (typeof rotation === "number") {
+            linearGradient.attr("gradientTransform", "rotate(" + rotation + ")");
+        }
+        for (const stop of gradient) {
+            linearGradient.addStop(stop.position, stop.color);
+        }
+        this.attr("stroke", "url(#gradient-" + id + ")");
+        return this;
+    }
+    dash(dash = 3, color = "currentColor") {
+        this.strokeDasharray(dash);
+        this.strokeColor(color);
+        return this;
+    }
+    strokeDasharray(dashGapArrayOrUndefined, gap) {
+        if (typeof dashGapArrayOrUndefined === "undefined") {
+            const dashGapString = this.attr("stroke-dasharray");
+            if (typeof dashGapString === "number") {
+                return dashGapString;
+            }
+            else if (typeof dashGapString === "string") {
+                const dashGapArray = dashGapString.split(" ");
+                if (dashGapArray.length === 1) {
+                    return isNaN(+dashGapArray[0]) ? dashGapArray[0] : +dashGapArray[0];
+                }
+                else {
+                    return dashGapArray.map(value => isNaN(+value) ? value : +value);
+                }
+            }
+        }
+        else if (typeof dashGapArrayOrUndefined === "string" || typeof dashGapArrayOrUndefined === "number") {
+            this.attr("stroke-dasharray", dashGapArrayOrUndefined);
+            return this;
+        }
+        else if (Array.isArray(dashGapArrayOrUndefined)) {
+            this.attr("stroke-dasharray", dashGapArrayOrUndefined.join(" "));
+            return this;
+        }
+        return null;
+    }
+    strokeDashoffset(offset) {
+        if (typeof offset === "string" || typeof offset === "number") {
+            this.attr("stroke-dashoffset", offset);
+            return this;
+        }
+        return this.attr("stroke-dashoffset");
+    }
+    strokeLinecap(cap) {
+        if (typeof cap === "undefined") {
+            const cap = this.attr("stroke-linecap");
+            return typeof cap === "string" ? cap : null;
+        }
+        else if (typeof cap === "string") {
+            this.attr("stroke-linecap", cap);
+            return this;
+        }
+        return null;
+    }
+    strokeLinejoin(join) {
+        if (typeof join === "undefined") {
+            const join = this.attr("stroke-linejoin");
+            return typeof join === "string" ? join : null;
+        }
+        else if (typeof join === "string") {
+            this.attr("stroke-linejoin", join);
+            return this;
+        }
+        return null;
+    }
+    strokeMiterlimit(limit) {
+        if (typeof limit === "undefined") {
+            const limit = this.attr("stroke-miterlimit");
+            return typeof limit === "number" ? limit : null;
+        }
+        else if (typeof limit === "number") {
+            this.attr("stroke-miterlimit", limit);
+            return this;
+        }
+        return null;
+    }
+    strokeOpacity(opacity) {
+        if (typeof opacity === "string" || typeof opacity === "number") {
+            this.attr("stroke-opacity", opacity);
+            return this;
+        }
+        return this.attr("stroke-opacity");
+    }
+    strokeWidth(width) {
+        if (typeof width === "string" || typeof width === "number") {
+            this.attr("stroke-width", width);
+            return this;
+        }
+        return this.attr("stroke-width");
+    }
+}
+//# sourceMappingURL=stroke.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/vectorEffect.js ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "VectorEffect": () => (/* binding */ VectorEffect)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class VectorEffect extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    vectorEffect(vectorEffect) {
+        if (typeof vectorEffect === "undefined") {
+            const vectorEffect = this.attr("vector-effect");
+            return typeof vectorEffect === "string" ? vectorEffect : null;
+        }
+        else if (typeof vectorEffect === "string") {
+            this.attr("vector-effect", vectorEffect);
+            return this;
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=vectorEffect.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/presentation-attributes/visibility.js ***!
+  \*****************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Visibility": () => (/* binding */ Visibility)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Visibility extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    visibility(visibility) {
+        if (typeof visibility === "undefined") {
+            const visibility = this.attr("visibility");
+            return typeof visibility === "string" ? visibility : null;
+        }
+        else if (typeof visibility === "string") {
+            this.attr("visibility", visibility);
+            return this;
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=visibility.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/mixins/style-attributes/font.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/mixins/style-attributes/font.js ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Font": () => (/* binding */ Font)
+/* harmony export */ });
+/* harmony import */ var _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../browser/instance/SVGInstance.js */ "./node_modules/svg-engine/lib/browser/esm/browser/instance/SVGInstance.js");
+
+class Font extends _browser_instance_SVGInstance_js__WEBPACK_IMPORTED_MODULE_0__.SVGInstance {
+    fontFamily(fontFamily) {
+        if (typeof fontFamily === "undefined") {
+            const fontFamily = this.attr("font-family");
+            return typeof fontFamily === "string" ? fontFamily : null;
+        }
+        else if (typeof fontFamily === "string") {
+            this.attr("font-family", fontFamily);
+            return this;
+        }
+        return null;
+    }
+    fontSize(fontSize) {
+        if (typeof fontSize === "string" || typeof fontSize === "number") {
+            this.attr("font-size", fontSize);
+            return this;
+        }
+        return this.attr("font-size");
+    }
+    fontStyle(fontStyle) {
+        if (typeof fontStyle === "undefined") {
+            const fontStyle = this.attr("font-style");
+            return typeof fontStyle === "string" ? fontStyle : null;
+        }
+        else if (typeof fontStyle === "string") {
+            this.attr("font-style", fontStyle);
+            return this;
+        }
+        return null;
+    }
+    fontWeight(fontWeight) {
+        if (typeof fontWeight === "string" || typeof fontWeight === "number") {
+            this.attr("font-weight", fontWeight);
+            return this;
+        }
+        return this.attr("font-weight");
+    }
+}
+//# sourceMappingURL=font.js.map
+
+/***/ }),
+
+/***/ "./node_modules/svg-engine/lib/browser/esm/shared/utils/functions.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/svg-engine/lib/browser/esm/shared/utils/functions.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "convertNamedNodeMapToObject": () => (/* binding */ convertNamedNodeMapToObject)
+/* harmony export */ });
+function convertNamedNodeMapToObject(atts) {
+    const obj = {};
+    for (const key of Object.keys(atts)) {
+        obj[atts[key].name] = atts[key];
+    }
+    return obj;
+}
+//# sourceMappingURL=functions.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/browser/svg.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/browser/svg.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVG": () => (/* binding */ SVG)
+/* harmony export */ });
+/* harmony import */ var _svg_svg_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../svg/svg.js */ "./node_modules/swissqrbill/lib/browser/esm/svg/svg.js");
+
+class SVG extends _svg_svg_js__WEBPACK_IMPORTED_MODULE_0__.SVG_ {
+    constructor(data, options) {
+        super(data, options);
+    }
+    /**
+     * Outputs the SVG as a string.
+     *
+     * @returns The outerHTML of the SVG as a `string`.
+     */
+    toString() {
+        return this.outerHTML;
+    }
+    /**
+     * Returns the SVG element.
+     * > **Note:** This function is only available in the browser.
+     *
+     * @readonly
+     */
+    get element() {
+        return this.instance.element;
+    }
+}
+//# sourceMappingURL=svg.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/shared/qr-code-generator.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/shared/qr-code-generator.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "qrcodegen": () => (/* binding */ qrcodegen)
+/* harmony export */ });
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-inner-declarations */
+/*
+ * QR Code generator library (TypeScript)
+ *
+ * Copyright (c) Project Nayuki. (MIT License)
+ * https://www.nayuki.io/page/qr-code-generator-library
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The Software is provided "as is", without warranty of any kind, express or
+ *   implied, including but not limited to the warranties of merchantability,
+ *   fitness for a particular purpose and noninfringement. In no event shall the
+ *   authors or copyright holders be liable for any claim, damages or other
+ *   liability, whether in an action of contract, tort or otherwise, arising from,
+ *   out of or in connection with the Software or the use or other dealings in the
+ *   Software.
+ */
+
+var qrcodegen;
+(function (qrcodegen) {
+    /*---- QR Code symbol class ----*/
+    /*
+     * A QR Code symbol, which is a type of two-dimension barcode.
+     * Invented by Denso Wave and described in the ISO/IEC 18004 standard.
+     * Instances of this class represent an immutable square grid of dark and light cells.
+     * The class provides static factory functions to create a QR Code from text or binary data.
+     * The class covers the QR Code Model 2 specification, supporting all versions (sizes)
+     * from 1 to 40, all 4 error correction levels, and 4 character encoding modes.
+     *
+     * Ways to create a QR Code object:
+     * - High level: Take the payload data and call QrCode.encodeText() or QrCode.encodeBinary().
+     * - Mid level: Custom-make the list of segments and call QrCode.encodeSegments().
+     * - Low level: Custom-make the array of data codeword bytes (including
+     *   segment headers and final padding, excluding error correction codewords),
+     *   supply the appropriate version number, and call the QrCode() constructor.
+     * (Note that all ways require supplying the desired error correction level.)
+     */
+    class QrCode {
+        /*-- Static factory functions (high level) --*/
+        // Returns a QR Code representing the given Unicode text string at the given error correction level.
+        // As a conservative upper bound, this function is guaranteed to succeed for strings that have 738 or fewer
+        // Unicode code points (not UTF-16 code units) if the low error correction level is used. The smallest possible
+        // QR Code version is automatically chosen for the output. The ECC level of the result may be higher than the
+        // ecl argument if it can be done without increasing the version.
+        static encodeText(text, ecl) {
+            const segs = qrcodegen.QrSegment.makeSegments(text);
+            return QrCode.encodeSegments(segs, ecl);
+        }
+        // Returns a QR Code representing the given binary data at the given error correction level.
+        // This function always encodes using the binary segment mode, not any text mode. The maximum number of
+        // bytes allowed is 2953. The smallest possible QR Code version is automatically chosen for the output.
+        // The ECC level of the result may be higher than the ecl argument if it can be done without increasing the version.
+        static encodeBinary(data, ecl) {
+            const seg = qrcodegen.QrSegment.makeBytes(data);
+            return QrCode.encodeSegments([seg], ecl);
+        }
+        /*-- Static factory functions (mid level) --*/
+        // Returns a QR Code representing the given segments with the given encoding parameters.
+        // The smallest possible QR Code version within the given range is automatically
+        // chosen for the output. Iff boostEcl is true, then the ECC level of the result
+        // may be higher than the ecl argument if it can be done without increasing the
+        // version. The mask number is either between 0 to 7 (inclusive) to force that
+        // mask, or -1 to automatically choose an appropriate mask (which may be slow).
+        // This function allows the user to create a custom sequence of segments that switches
+        // between modes (such as alphanumeric and byte) to encode text in less space.
+        // This is a mid-level API; the high-level API is encodeText() and encodeBinary().
+        static encodeSegments(segs, ecl, minVersion = 1, maxVersion = 40, mask = -1, boostEcl = true) {
+            if (!(QrCode.MIN_VERSION <= minVersion && minVersion <= maxVersion && maxVersion <= QrCode.MAX_VERSION)
+                || mask < -1 || mask > 7)
+                throw "Invalid value";
+            // Find the minimal version number to use
+            let version;
+            let dataUsedBits;
+            for (version = minVersion;; version++) {
+                const dataCapacityBits = QrCode.getNumDataCodewords(version, ecl) * 8; // Number of data bits available
+                const usedBits = QrSegment.getTotalBits(segs, version);
+                if (usedBits <= dataCapacityBits) {
+                    dataUsedBits = usedBits;
+                    break; // This version number is found to be suitable
+                }
+                if (version >= maxVersion) // All versions in the range could not fit the given data
+                    throw "Data too long";
+            }
+            // Increase the error correction level while the data still fits in the current version number
+            for (const newEcl of [QrCode.Ecc.MEDIUM, QrCode.Ecc.QUARTILE, QrCode.Ecc.HIGH]) { // From low to high
+                if (boostEcl && dataUsedBits <= QrCode.getNumDataCodewords(version, newEcl) * 8)
+                    ecl = newEcl;
+            }
+            // Concatenate all segments to create the data bit string
+            const bb = [];
+            for (const seg of segs) {
+                appendBits(seg.mode.modeBits, 4, bb);
+                appendBits(seg.numChars, seg.mode.numCharCountBits(version), bb);
+                for (const b of seg.getData())
+                    bb.push(b);
+            }
+            assert(bb.length == dataUsedBits);
+            // Add terminator and pad up to a byte if applicable
+            const dataCapacityBits = QrCode.getNumDataCodewords(version, ecl) * 8;
+            assert(bb.length <= dataCapacityBits);
+            appendBits(0, Math.min(4, dataCapacityBits - bb.length), bb);
+            appendBits(0, (8 - bb.length % 8) % 8, bb);
+            assert(bb.length % 8 == 0);
+            // Pad with alternating bytes until data capacity is reached
+            for (let padByte = 0xEC; bb.length < dataCapacityBits; padByte ^= 0xEC ^ 0x11)
+                appendBits(padByte, 8, bb);
+            // Pack bits into bytes in big endian
+            const dataCodewords = [];
+            while (dataCodewords.length * 8 < bb.length)
+                dataCodewords.push(0);
+            bb.forEach((b, i) => dataCodewords[i >>> 3] |= b << (7 - (i & 7)));
+            // Create the QR Code object
+            return new QrCode(version, ecl, dataCodewords, mask);
+        }
+        /*-- Constructor (low level) and fields --*/
+        // Creates a new QR Code with the given version number,
+        // error correction level, data codeword bytes, and mask number.
+        // This is a low-level API that most users should not use directly.
+        // A mid-level API is the encodeSegments() function.
+        constructor(
+        // The version number of this QR Code, which is between 1 and 40 (inclusive).
+        // This determines the size of this barcode.
+        version, 
+        // The error correction level used in this QR Code.
+        errorCorrectionLevel, dataCodewords, msk) {
+            this.version = version;
+            this.errorCorrectionLevel = errorCorrectionLevel;
+            // The modules of this QR Code (false = light, true = dark).
+            // Immutable after constructor finishes. Accessed through getModule().
+            this.modules = [];
+            // Indicates function modules that are not subjected to masking. Discarded when constructor finishes.
+            this.isFunction = [];
+            // Check scalar arguments
+            if (version < QrCode.MIN_VERSION || version > QrCode.MAX_VERSION)
+                throw "Version value out of range";
+            if (msk < -1 || msk > 7)
+                throw "Mask value out of range";
+            this.size = version * 4 + 17;
+            // Initialize both grids to be size*size arrays of Boolean false
+            const row = [];
+            for (let i = 0; i < this.size; i++)
+                row.push(false);
+            for (let i = 0; i < this.size; i++) {
+                this.modules.push(row.slice()); // Initially all light
+                this.isFunction.push(row.slice());
+            }
+            // Compute ECC, draw modules
+            this.drawFunctionPatterns();
+            const allCodewords = this.addEccAndInterleave(dataCodewords);
+            this.drawCodewords(allCodewords);
+            // Do masking
+            if (msk == -1) { // Automatically choose best mask
+                let minPenalty = 1000000000;
+                for (let i = 0; i < 8; i++) {
+                    this.applyMask(i);
+                    this.drawFormatBits(i);
+                    const penalty = this.getPenaltyScore();
+                    if (penalty < minPenalty) {
+                        msk = i;
+                        minPenalty = penalty;
+                    }
+                    this.applyMask(i); // Undoes the mask due to XOR
+                }
+            }
+            assert(0 <= msk && msk <= 7);
+            this.mask = msk;
+            this.applyMask(msk); // Apply the final choice of mask
+            this.drawFormatBits(msk); // Overwrite old format bits
+            this.isFunction = [];
+        }
+        /*-- Accessor methods --*/
+        // Returns the color of the module (pixel) at the given coordinates, which is false
+        // for light or true for dark. The top left corner has the coordinates (x=0, y=0).
+        // If the given coordinates are out of bounds, then false (light) is returned.
+        getModule(x, y) {
+            return 0 <= x && x < this.size && 0 <= y && y < this.size && this.modules[y][x];
+        }
+        /*-- Private helper methods for constructor: Drawing function modules --*/
+        // Reads this object's version field, and draws and marks all function modules.
+        drawFunctionPatterns() {
+            // Draw horizontal and vertical timing patterns
+            for (let i = 0; i < this.size; i++) {
+                this.setFunctionModule(6, i, i % 2 == 0);
+                this.setFunctionModule(i, 6, i % 2 == 0);
+            }
+            // Draw 3 finder patterns (all corners except bottom right; overwrites some timing modules)
+            this.drawFinderPattern(3, 3);
+            this.drawFinderPattern(this.size - 4, 3);
+            this.drawFinderPattern(3, this.size - 4);
+            // Draw numerous alignment patterns
+            const alignPatPos = this.getAlignmentPatternPositions();
+            const numAlign = alignPatPos.length;
+            for (let i = 0; i < numAlign; i++) {
+                for (let j = 0; j < numAlign; j++) {
+                    // Don't draw on the three finder corners
+                    if (!(i == 0 && j == 0 || i == 0 && j == numAlign - 1 || i == numAlign - 1 && j == 0))
+                        this.drawAlignmentPattern(alignPatPos[i], alignPatPos[j]);
+                }
+            }
+            // Draw configuration data
+            this.drawFormatBits(0); // Dummy mask value; overwritten later in the constructor
+            this.drawVersion();
+        }
+        // Draws two copies of the format bits (with its own error correction code)
+        // based on the given mask and this object's error correction level field.
+        drawFormatBits(mask) {
+            // Calculate error correction code and pack bits
+            const data = this.errorCorrectionLevel.formatBits << 3 | mask; // errCorrLvl is uint2, mask is uint3
+            let rem = data;
+            for (let i = 0; i < 10; i++)
+                rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+            const bits = (data << 10 | rem) ^ 0x5412; // uint15
+            assert(bits >>> 15 == 0);
+            // Draw first copy
+            for (let i = 0; i <= 5; i++)
+                this.setFunctionModule(8, i, getBit(bits, i));
+            this.setFunctionModule(8, 7, getBit(bits, 6));
+            this.setFunctionModule(8, 8, getBit(bits, 7));
+            this.setFunctionModule(7, 8, getBit(bits, 8));
+            for (let i = 9; i < 15; i++)
+                this.setFunctionModule(14 - i, 8, getBit(bits, i));
+            // Draw second copy
+            for (let i = 0; i < 8; i++)
+                this.setFunctionModule(this.size - 1 - i, 8, getBit(bits, i));
+            for (let i = 8; i < 15; i++)
+                this.setFunctionModule(8, this.size - 15 + i, getBit(bits, i));
+            this.setFunctionModule(8, this.size - 8, true); // Always dark
+        }
+        // Draws two copies of the version bits (with its own error correction code),
+        // based on this object's version field, iff 7 <= version <= 40.
+        drawVersion() {
+            if (this.version < 7)
+                return;
+            // Calculate error correction code and pack bits
+            let rem = this.version; // version is uint6, in the range [7, 40]
+            for (let i = 0; i < 12; i++)
+                rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+            const bits = this.version << 12 | rem; // uint18
+            assert(bits >>> 18 == 0);
+            // Draw two copies
+            for (let i = 0; i < 18; i++) {
+                const color = getBit(bits, i);
+                const a = this.size - 11 + i % 3;
+                const b = Math.floor(i / 3);
+                this.setFunctionModule(a, b, color);
+                this.setFunctionModule(b, a, color);
+            }
+        }
+        // Draws a 9*9 finder pattern including the border separator,
+        // with the center module at (x, y). Modules can be out of bounds.
+        drawFinderPattern(x, y) {
+            for (let dy = -4; dy <= 4; dy++) {
+                for (let dx = -4; dx <= 4; dx++) {
+                    const dist = Math.max(Math.abs(dx), Math.abs(dy)); // Chebyshev/infinity norm
+                    const xx = x + dx;
+                    const yy = y + dy;
+                    if (0 <= xx && xx < this.size && 0 <= yy && yy < this.size)
+                        this.setFunctionModule(xx, yy, dist != 2 && dist != 4);
+                }
+            }
+        }
+        // Draws a 5*5 alignment pattern, with the center module
+        // at (x, y). All modules must be in bounds.
+        drawAlignmentPattern(x, y) {
+            for (let dy = -2; dy <= 2; dy++) {
+                for (let dx = -2; dx <= 2; dx++)
+                    this.setFunctionModule(x + dx, y + dy, Math.max(Math.abs(dx), Math.abs(dy)) != 1);
+            }
+        }
+        // Sets the color of a module and marks it as a function module.
+        // Only used by the constructor. Coordinates must be in bounds.
+        setFunctionModule(x, y, isDark) {
+            this.modules[y][x] = isDark;
+            this.isFunction[y][x] = true;
+        }
+        /*-- Private helper methods for constructor: Codewords and masking --*/
+        // Returns a new byte string representing the given data with the appropriate error correction
+        // codewords appended to it, based on this object's version and error correction level.
+        addEccAndInterleave(data) {
+            const ver = this.version;
+            const ecl = this.errorCorrectionLevel;
+            if (data.length != QrCode.getNumDataCodewords(ver, ecl))
+                throw "Invalid argument";
+            // Calculate parameter numbers
+            const numBlocks = QrCode.NUM_ERROR_CORRECTION_BLOCKS[ecl.ordinal][ver];
+            const blockEccLen = QrCode.ECC_CODEWORDS_PER_BLOCK[ecl.ordinal][ver];
+            const rawCodewords = Math.floor(QrCode.getNumRawDataModules(ver) / 8);
+            const numShortBlocks = numBlocks - rawCodewords % numBlocks;
+            const shortBlockLen = Math.floor(rawCodewords / numBlocks);
+            // Split data into blocks and append ECC to each block
+            const blocks = [];
+            const rsDiv = QrCode.reedSolomonComputeDivisor(blockEccLen);
+            for (let i = 0, k = 0; i < numBlocks; i++) {
+                const dat = data.slice(k, k + shortBlockLen - blockEccLen + (i < numShortBlocks ? 0 : 1));
+                k += dat.length;
+                const ecc = QrCode.reedSolomonComputeRemainder(dat, rsDiv);
+                if (i < numShortBlocks)
+                    dat.push(0);
+                blocks.push(dat.concat(ecc));
+            }
+            // Interleave (not concatenate) the bytes from every block into a single sequence
+            const result = [];
+            for (let i = 0; i < blocks[0].length; i++) {
+                blocks.forEach((block, j) => {
+                    // Skip the padding byte in short blocks
+                    if (i != shortBlockLen - blockEccLen || j >= numShortBlocks)
+                        result.push(block[i]);
+                });
+            }
+            assert(result.length == rawCodewords);
+            return result;
+        }
+        // Draws the given sequence of 8-bit codewords (data and error correction) onto the entire
+        // data area of this QR Code. Function modules need to be marked off before this is called.
+        drawCodewords(data) {
+            if (data.length != Math.floor(QrCode.getNumRawDataModules(this.version) / 8))
+                throw "Invalid argument";
+            let i = 0; // Bit index into the data
+            // Do the funny zigzag scan
+            for (let right = this.size - 1; right >= 1; right -= 2) { // Index of right column in each column pair
+                if (right == 6)
+                    right = 5;
+                for (let vert = 0; vert < this.size; vert++) { // Vertical counter
+                    for (let j = 0; j < 2; j++) {
+                        const x = right - j; // Actual x coordinate
+                        const upward = ((right + 1) & 2) == 0;
+                        const y = upward ? this.size - 1 - vert : vert; // Actual y coordinate
+                        if (!this.isFunction[y][x] && i < data.length * 8) {
+                            this.modules[y][x] = getBit(data[i >>> 3], 7 - (i & 7));
+                            i++;
+                        }
+                        // If this QR Code has any remainder bits (0 to 7), they were assigned as
+                        // 0/false/light by the constructor and are left unchanged by this method
+                    }
+                }
+            }
+            assert(i == data.length * 8);
+        }
+        // XORs the codeword modules in this QR Code with the given mask pattern.
+        // The function modules must be marked and the codeword bits must be drawn
+        // before masking. Due to the arithmetic of XOR, calling applyMask() with
+        // the same mask value a second time will undo the mask. A final well-formed
+        // QR Code needs exactly one (not zero, two, etc.) mask applied.
+        applyMask(mask) {
+            if (mask < 0 || mask > 7)
+                throw "Mask value out of range";
+            for (let y = 0; y < this.size; y++) {
+                for (let x = 0; x < this.size; x++) {
+                    let invert;
+                    switch (mask) {
+                        case 0:
+                            invert = (x + y) % 2 == 0;
+                            break;
+                        case 1:
+                            invert = y % 2 == 0;
+                            break;
+                        case 2:
+                            invert = x % 3 == 0;
+                            break;
+                        case 3:
+                            invert = (x + y) % 3 == 0;
+                            break;
+                        case 4:
+                            invert = (Math.floor(x / 3) + Math.floor(y / 2)) % 2 == 0;
+                            break;
+                        case 5:
+                            invert = x * y % 2 + x * y % 3 == 0;
+                            break;
+                        case 6:
+                            invert = (x * y % 2 + x * y % 3) % 2 == 0;
+                            break;
+                        case 7:
+                            invert = ((x + y) % 2 + x * y % 3) % 2 == 0;
+                            break;
+                        default: throw "Unreachable";
+                    }
+                    if (!this.isFunction[y][x] && invert)
+                        this.modules[y][x] = !this.modules[y][x];
+                }
+            }
+        }
+        // Calculates and returns the penalty score based on state of this QR Code's current modules.
+        // This is used by the automatic mask choice algorithm to find the mask pattern that yields the lowest score.
+        getPenaltyScore() {
+            let result = 0;
+            // Adjacent modules in row having same color, and finder-like patterns
+            for (let y = 0; y < this.size; y++) {
+                let runColor = false;
+                let runX = 0;
+                const runHistory = [0, 0, 0, 0, 0, 0, 0];
+                for (let x = 0; x < this.size; x++) {
+                    if (this.modules[y][x] == runColor) {
+                        runX++;
+                        if (runX == 5)
+                            result += QrCode.PENALTY_N1;
+                        else if (runX > 5)
+                            result++;
+                    }
+                    else {
+                        this.finderPenaltyAddHistory(runX, runHistory);
+                        if (!runColor)
+                            result += this.finderPenaltyCountPatterns(runHistory) * QrCode.PENALTY_N3;
+                        runColor = this.modules[y][x];
+                        runX = 1;
+                    }
+                }
+                result += this.finderPenaltyTerminateAndCount(runColor, runX, runHistory) * QrCode.PENALTY_N3;
+            }
+            // Adjacent modules in column having same color, and finder-like patterns
+            for (let x = 0; x < this.size; x++) {
+                let runColor = false;
+                let runY = 0;
+                const runHistory = [0, 0, 0, 0, 0, 0, 0];
+                for (let y = 0; y < this.size; y++) {
+                    if (this.modules[y][x] == runColor) {
+                        runY++;
+                        if (runY == 5)
+                            result += QrCode.PENALTY_N1;
+                        else if (runY > 5)
+                            result++;
+                    }
+                    else {
+                        this.finderPenaltyAddHistory(runY, runHistory);
+                        if (!runColor)
+                            result += this.finderPenaltyCountPatterns(runHistory) * QrCode.PENALTY_N3;
+                        runColor = this.modules[y][x];
+                        runY = 1;
+                    }
+                }
+                result += this.finderPenaltyTerminateAndCount(runColor, runY, runHistory) * QrCode.PENALTY_N3;
+            }
+            // 2*2 blocks of modules having same color
+            for (let y = 0; y < this.size - 1; y++) {
+                for (let x = 0; x < this.size - 1; x++) {
+                    const color = this.modules[y][x];
+                    if (color == this.modules[y][x + 1] &&
+                        color == this.modules[y + 1][x] &&
+                        color == this.modules[y + 1][x + 1])
+                        result += QrCode.PENALTY_N2;
+                }
+            }
+            // Balance of dark and light modules
+            let dark = 0;
+            for (const row of this.modules)
+                dark = row.reduce((sum, color) => sum + (color ? 1 : 0), dark);
+            const total = this.size * this.size; // Note that size is odd, so dark/total != 1/2
+            // Compute the smallest integer k >= 0 such that (45-5k)% <= dark/total <= (55+5k)%
+            const k = Math.ceil(Math.abs(dark * 20 - total * 10) / total) - 1;
+            assert(0 <= k && k <= 9);
+            result += k * QrCode.PENALTY_N4;
+            assert(0 <= result && result <= 2568888); // Non-tight upper bound based on default values of PENALTY_N1, ..., N4
+            return result;
+        }
+        /*-- Private helper functions --*/
+        // Returns an ascending list of positions of alignment patterns for this version number.
+        // Each position is in the range [0,177), and are used on both the x and y axes.
+        // This could be implemented as lookup table of 40 variable-length lists of integers.
+        getAlignmentPatternPositions() {
+            if (this.version == 1)
+                return [];
+            else {
+                const numAlign = Math.floor(this.version / 7) + 2;
+                const step = (this.version == 32) ? 26 :
+                    Math.ceil((this.version * 4 + 4) / (numAlign * 2 - 2)) * 2;
+                const result = [6];
+                for (let pos = this.size - 7; result.length < numAlign; pos -= step)
+                    result.splice(1, 0, pos);
+                return result;
+            }
+        }
+        // Returns the number of data bits that can be stored in a QR Code of the given version number, after
+        // all function modules are excluded. This includes remainder bits, so it might not be a multiple of 8.
+        // The result is in the range [208, 29648]. This could be implemented as a 40-entry lookup table.
+        static getNumRawDataModules(ver) {
+            if (ver < QrCode.MIN_VERSION || ver > QrCode.MAX_VERSION)
+                throw "Version number out of range";
+            let result = (16 * ver + 128) * ver + 64;
+            if (ver >= 2) {
+                const numAlign = Math.floor(ver / 7) + 2;
+                result -= (25 * numAlign - 10) * numAlign - 55;
+                if (ver >= 7)
+                    result -= 36;
+            }
+            assert(208 <= result && result <= 29648);
+            return result;
+        }
+        // Returns the number of 8-bit data (i.e. not error correction) codewords contained in any
+        // QR Code of the given version number and error correction level, with remainder bits discarded.
+        // This stateless pure function could be implemented as a (40*4)-cell lookup table.
+        static getNumDataCodewords(ver, ecl) {
+            return Math.floor(QrCode.getNumRawDataModules(ver) / 8) -
+                QrCode.ECC_CODEWORDS_PER_BLOCK[ecl.ordinal][ver] *
+                    QrCode.NUM_ERROR_CORRECTION_BLOCKS[ecl.ordinal][ver];
+        }
+        // Returns a Reed-Solomon ECC generator polynomial for the given degree. This could be
+        // implemented as a lookup table over all possible parameter values, instead of as an algorithm.
+        static reedSolomonComputeDivisor(degree) {
+            if (degree < 1 || degree > 255)
+                throw "Degree out of range";
+            // Polynomial coefficients are stored from highest to lowest power, excluding the leading term which is always 1.
+            // For example the polynomial x^3 + 255x^2 + 8x + 93 is stored as the uint8 array [255, 8, 93].
+            const result = [];
+            for (let i = 0; i < degree - 1; i++)
+                result.push(0);
+            result.push(1); // Start off with the monomial x^0
+            // Compute the product polynomial (x - r^0) * (x - r^1) * (x - r^2) * ... * (x - r^{degree-1}),
+            // and drop the highest monomial term which is always 1x^degree.
+            // Note that r = 0x02, which is a generator element of this field GF(2^8/0x11D).
+            let root = 1;
+            for (let i = 0; i < degree; i++) {
+                // Multiply the current product by (x - r^i)
+                for (let j = 0; j < result.length; j++) {
+                    result[j] = QrCode.reedSolomonMultiply(result[j], root);
+                    if (j + 1 < result.length)
+                        result[j] ^= result[j + 1];
+                }
+                root = QrCode.reedSolomonMultiply(root, 0x02);
+            }
+            return result;
+        }
+        // Returns the Reed-Solomon error correction codeword for the given data and divisor polynomials.
+        static reedSolomonComputeRemainder(data, divisor) {
+            const result = divisor.map(_ => 0);
+            for (const b of data) { // Polynomial division
+                const factor = b ^ result.shift();
+                result.push(0);
+                divisor.forEach((coef, i) => result[i] ^= QrCode.reedSolomonMultiply(coef, factor));
+            }
+            return result;
+        }
+        // Returns the product of the two given field elements modulo GF(2^8/0x11D). The arguments and result
+        // are unsigned 8-bit integers. This could be implemented as a lookup table of 256*256 entries of uint8.
+        static reedSolomonMultiply(x, y) {
+            if (x >>> 8 != 0 || y >>> 8 != 0)
+                throw "Byte out of range";
+            // Russian peasant multiplication
+            let z = 0;
+            for (let i = 7; i >= 0; i--) {
+                z = (z << 1) ^ ((z >>> 7) * 0x11D);
+                z ^= ((y >>> i) & 1) * x;
+            }
+            assert(z >>> 8 == 0);
+            return z;
+        }
+        // Can only be called immediately after a light run is added, and
+        // returns either 0, 1, or 2. A helper function for getPenaltyScore().
+        finderPenaltyCountPatterns(runHistory) {
+            const n = runHistory[1];
+            assert(n <= this.size * 3);
+            const core = n > 0 && runHistory[2] == n && runHistory[3] == n * 3 && runHistory[4] == n && runHistory[5] == n;
+            return (core && runHistory[0] >= n * 4 && runHistory[6] >= n ? 1 : 0)
+                + (core && runHistory[6] >= n * 4 && runHistory[0] >= n ? 1 : 0);
+        }
+        // Must be called at the end of a line (row or column) of modules. A helper function for getPenaltyScore().
+        finderPenaltyTerminateAndCount(currentRunColor, currentRunLength, runHistory) {
+            if (currentRunColor) { // Terminate dark run
+                this.finderPenaltyAddHistory(currentRunLength, runHistory);
+                currentRunLength = 0;
+            }
+            currentRunLength += this.size; // Add light border to final run
+            this.finderPenaltyAddHistory(currentRunLength, runHistory);
+            return this.finderPenaltyCountPatterns(runHistory);
+        }
+        // Pushes the given value to the front and drops the last value. A helper function for getPenaltyScore().
+        finderPenaltyAddHistory(currentRunLength, runHistory) {
+            if (runHistory[0] == 0)
+                currentRunLength += this.size; // Add light border to initial run
+            runHistory.pop();
+            runHistory.unshift(currentRunLength);
+        }
+    }
+    /*-- Constants and tables --*/
+    // The minimum version number supported in the QR Code Model 2 standard.
+    QrCode.MIN_VERSION = 1;
+    // The maximum version number supported in the QR Code Model 2 standard.
+    QrCode.MAX_VERSION = 40;
+    // For use in getPenaltyScore(), when evaluating which mask is best.
+    QrCode.PENALTY_N1 = 3;
+    QrCode.PENALTY_N2 = 3;
+    QrCode.PENALTY_N3 = 40;
+    QrCode.PENALTY_N4 = 10;
+    QrCode.ECC_CODEWORDS_PER_BLOCK = [
+        // Version: (note that index 0 is for padding, and is set to an illegal value)
+        //0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40    Error correction level
+        [-1, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
+        [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28],
+        [-1, 13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26, 24, 20, 30, 24, 28, 28, 26, 30, 28, 30, 30, 30, 30, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
+        [-1, 17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28, 22, 24, 24, 30, 28, 28, 26, 28, 30, 24, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30] // High
+    ];
+    QrCode.NUM_ERROR_CORRECTION_BLOCKS = [
+        // Version: (note that index 0 is for padding, and is set to an illegal value)
+        //0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40    Error correction level
+        [-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25],
+        [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49],
+        [-1, 1, 1, 2, 2, 4, 4, 6, 6, 8, 8, 8, 10, 12, 16, 12, 17, 16, 18, 21, 20, 23, 23, 25, 27, 29, 34, 34, 35, 38, 40, 43, 45, 48, 51, 53, 56, 59, 62, 65, 68],
+        [-1, 1, 1, 2, 4, 4, 4, 5, 6, 8, 8, 11, 11, 16, 16, 18, 16, 19, 21, 25, 25, 25, 34, 30, 32, 35, 37, 40, 42, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 77, 81] // High
+    ];
+    qrcodegen.QrCode = QrCode;
+    // Appends the given number of low-order bits of the given value
+    // to the given buffer. Requires 0 <= len <= 31 and 0 <= val < 2^len.
+    function appendBits(val, len, bb) {
+        if (len < 0 || len > 31 || val >>> len != 0)
+            throw "Value out of range";
+        for (let i = len - 1; i >= 0; i--) // Append bit by bit
+            bb.push((val >>> i) & 1);
+    }
+    // Returns true iff the i'th bit of x is set to 1.
+    function getBit(x, i) {
+        return ((x >>> i) & 1) != 0;
+    }
+    // Throws an exception if the given condition is false.
+    function assert(cond) {
+        if (!cond)
+            throw "Assertion error";
+    }
+    /*---- Data segment class ----*/
+    /*
+     * A segment of character/binary/control data in a QR Code symbol.
+     * Instances of this class are immutable.
+     * The mid-level way to create a segment is to take the payload data
+     * and call a static factory function such as QrSegment.makeNumeric().
+     * The low-level way to create a segment is to custom-make the bit buffer
+     * and call the QrSegment() constructor with appropriate values.
+     * This segment class imposes no length restrictions, but QR Codes have restrictions.
+     * Even in the most favorable conditions, a QR Code can only hold 7089 characters of data.
+     * Any segment longer than this is meaningless for the purpose of generating QR Codes.
+     */
+    class QrSegment {
+        /*-- Static factory functions (mid level) --*/
+        // Returns a segment representing the given binary data encoded in
+        // byte mode. All input byte arrays are acceptable. Any text string
+        // can be converted to UTF-8 bytes and encoded as a byte mode segment.
+        static makeBytes(data) {
+            const bb = [];
+            for (const b of data)
+                appendBits(b, 8, bb);
+            return new QrSegment(QrSegment.Mode.BYTE, data.length, bb);
+        }
+        // Returns a segment representing the given string of decimal digits encoded in numeric mode.
+        static makeNumeric(digits) {
+            if (!QrSegment.isNumeric(digits))
+                throw "String contains non-numeric characters";
+            const bb = [];
+            for (let i = 0; i < digits.length;) { // Consume up to 3 digits per iteration
+                const n = Math.min(digits.length - i, 3);
+                appendBits(parseInt(digits.substr(i, n), 10), n * 3 + 1, bb);
+                i += n;
+            }
+            return new QrSegment(QrSegment.Mode.NUMERIC, digits.length, bb);
+        }
+        // Returns a segment representing the given text string encoded in alphanumeric mode.
+        // The characters allowed are: 0 to 9, A to Z (uppercase only), space,
+        // dollar, percent, asterisk, plus, hyphen, period, slash, colon.
+        static makeAlphanumeric(text) {
+            if (!QrSegment.isAlphanumeric(text))
+                throw "String contains unencodable characters in alphanumeric mode";
+            const bb = [];
+            let i;
+            for (i = 0; i + 2 <= text.length; i += 2) { // Process groups of 2
+                let temp = QrSegment.ALPHANUMERIC_CHARSET.indexOf(text.charAt(i)) * 45;
+                temp += QrSegment.ALPHANUMERIC_CHARSET.indexOf(text.charAt(i + 1));
+                appendBits(temp, 11, bb);
+            }
+            if (i < text.length) // 1 character remaining
+                appendBits(QrSegment.ALPHANUMERIC_CHARSET.indexOf(text.charAt(i)), 6, bb);
+            return new QrSegment(QrSegment.Mode.ALPHANUMERIC, text.length, bb);
+        }
+        // Returns a new mutable list of zero or more segments to represent the given Unicode text string.
+        // The result may use various segment modes and switch modes to optimize the length of the bit stream.
+        static makeSegments(text) {
+            // Select the most efficient segment encoding automatically
+            if (text == "")
+                return [];
+            else if (QrSegment.isNumeric(text))
+                return [QrSegment.makeNumeric(text)];
+            else if (QrSegment.isAlphanumeric(text))
+                return [QrSegment.makeAlphanumeric(text)];
+            else
+                return [QrSegment.makeBytes(QrSegment.toUtf8ByteArray(text))];
+        }
+        // Returns a segment representing an Extended Channel Interpretation
+        // (ECI) designator with the given assignment value.
+        static makeEci(assignVal) {
+            const bb = [];
+            if (assignVal < 0)
+                throw "ECI assignment value out of range";
+            else if (assignVal < (1 << 7))
+                appendBits(assignVal, 8, bb);
+            else if (assignVal < (1 << 14)) {
+                appendBits(0b10, 2, bb);
+                appendBits(assignVal, 14, bb);
+            }
+            else if (assignVal < 1000000) {
+                appendBits(0b110, 3, bb);
+                appendBits(assignVal, 21, bb);
+            }
+            else
+                throw "ECI assignment value out of range";
+            return new QrSegment(QrSegment.Mode.ECI, 0, bb);
+        }
+        // Tests whether the given string can be encoded as a segment in numeric mode.
+        // A string is encodable iff each character is in the range 0 to 9.
+        static isNumeric(text) {
+            return QrSegment.NUMERIC_REGEX.test(text);
+        }
+        // Tests whether the given string can be encoded as a segment in alphanumeric mode.
+        // A string is encodable iff each character is in the following set: 0 to 9, A to Z
+        // (uppercase only), space, dollar, percent, asterisk, plus, hyphen, period, slash, colon.
+        static isAlphanumeric(text) {
+            return QrSegment.ALPHANUMERIC_REGEX.test(text);
+        }
+        /*-- Constructor (low level) and fields --*/
+        // Creates a new QR Code segment with the given attributes and data.
+        // The character count (numChars) must agree with the mode and the bit buffer length,
+        // but the constraint isn't checked. The given bit buffer is cloned and stored.
+        constructor(
+        // The mode indicator of this segment.
+        mode, 
+        // The length of this segment's unencoded data. Measured in characters for
+        // numeric/alphanumeric/kanji mode, bytes for byte mode, and 0 for ECI mode.
+        // Always zero or positive. Not the same as the data's bit length.
+        numChars, 
+        // The data bits of this segment. Accessed through getData().
+        bitData) {
+            this.mode = mode;
+            this.numChars = numChars;
+            this.bitData = bitData;
+            if (numChars < 0)
+                throw "Invalid argument";
+            this.bitData = bitData.slice(); // Make defensive copy
+        }
+        /*-- Methods --*/
+        // Returns a new copy of the data bits of this segment.
+        getData() {
+            return this.bitData.slice(); // Make defensive copy
+        }
+        // (Package-private) Calculates and returns the number of bits needed to encode the given segments at
+        // the given version. The result is infinity if a segment has too many characters to fit its length field.
+        static getTotalBits(segs, version) {
+            let result = 0;
+            for (const seg of segs) {
+                const ccbits = seg.mode.numCharCountBits(version);
+                if (seg.numChars >= (1 << ccbits))
+                    return Infinity; // The segment's length doesn't fit the field's bit width
+                result += 4 + ccbits + seg.bitData.length;
+            }
+            return result;
+        }
+        // Returns a new array of bytes representing the given string encoded in UTF-8.
+        static toUtf8ByteArray(str) {
+            str = encodeURI(str);
+            const result = [];
+            for (let i = 0; i < str.length; i++) {
+                if (str.charAt(i) != "%")
+                    result.push(str.charCodeAt(i));
+                else {
+                    result.push(parseInt(str.substr(i + 1, 2), 16));
+                    i += 2;
+                }
+            }
+            return result;
+        }
+    }
+    /*-- Constants --*/
+    // Describes precisely all strings that are encodable in numeric mode.
+    QrSegment.NUMERIC_REGEX = /^[0-9]*$/;
+    // Describes precisely all strings that are encodable in alphanumeric mode.
+    QrSegment.ALPHANUMERIC_REGEX = /^[A-Z0-9 $%*+.\/:-]*$/;
+    // The set of all legal characters in alphanumeric mode,
+    // where each character value maps to the index in the string.
+    QrSegment.ALPHANUMERIC_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
+    qrcodegen.QrSegment = QrSegment;
+})(qrcodegen || (qrcodegen = {}));
+/*---- Public helper enumeration ----*/
+(function (qrcodegen) {
+    var QrCode;
+    (function (QrCode) {
+        /*
+         * The error correction level in a QR Code symbol. Immutable.
+         */
+        class Ecc {
+            /*-- Constructor and fields --*/
+            constructor(
+            // In the range 0 to 3 (unsigned 2-bit integer).
+            ordinal, 
+            // (Package-private) In the range 0 to 3 (unsigned 2-bit integer).
+            formatBits) {
+                this.ordinal = ordinal;
+                this.formatBits = formatBits;
+            }
+        }
+        /*-- Constants --*/
+        Ecc.LOW = new Ecc(0, 1); // The QR Code can tolerate about  7% erroneous codewords
+        Ecc.MEDIUM = new Ecc(1, 0); // The QR Code can tolerate about 15% erroneous codewords
+        Ecc.QUARTILE = new Ecc(2, 3); // The QR Code can tolerate about 25% erroneous codewords
+        Ecc.HIGH = new Ecc(3, 2); // The QR Code can tolerate about 30% erroneous codewords
+        QrCode.Ecc = Ecc;
+    })(QrCode = qrcodegen.QrCode || (qrcodegen.QrCode = {}));
+})(qrcodegen || (qrcodegen = {}));
+/*---- Public helper enumeration ----*/
+(function (qrcodegen) {
+    var QrSegment;
+    (function (QrSegment) {
+        /*
+         * Describes how a segment's data bits are interpreted. Immutable.
+         */
+        class Mode {
+            /*-- Constructor and fields --*/
+            constructor(
+            // The mode indicator bits, which is a uint4 value (range 0 to 15).
+            modeBits, 
+            // Number of character count bits for three different version ranges.
+            numBitsCharCount) {
+                this.modeBits = modeBits;
+                this.numBitsCharCount = numBitsCharCount;
+            }
+            /*-- Method --*/
+            // (Package-private) Returns the bit width of the character count field for a segment in
+            // this mode in a QR Code at the given version number. The result is in the range [0, 16].
+            numCharCountBits(ver) {
+                return this.numBitsCharCount[Math.floor((ver + 7) / 17)];
+            }
+        }
+        /*-- Constants --*/
+        Mode.NUMERIC = new Mode(0x1, [10, 12, 14]);
+        Mode.ALPHANUMERIC = new Mode(0x2, [9, 11, 13]);
+        Mode.BYTE = new Mode(0x4, [8, 16, 16]);
+        Mode.KANJI = new Mode(0x8, [8, 10, 12]);
+        Mode.ECI = new Mode(0x7, [0, 0, 0]);
+        QrSegment.Mode = Mode;
+    })(QrSegment = qrcodegen.QrSegment || (qrcodegen.QrSegment = {}));
+})(qrcodegen || (qrcodegen = {}));
+//# sourceMappingURL=qr-code-generator.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/shared/qr-code.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/shared/qr-code.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ generateQRCode)
+/* harmony export */ });
+/* harmony import */ var _shared_utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/utils.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/utils.js");
+/* harmony import */ var _qr_code_generator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./qr-code-generator.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/qr-code-generator.js");
+
+
+/**
+ * Limits the maximum and minimum number possible according to the PDF specifications.
+ * Borrowed from: https://github.com/foliojs/pdfkit/blob/120c3f9519e49d719a88d22d70139cc9f54d17d8/lib/object.js#L123-L130
+ */
+function limitNumber(n) {
+    if (n > -1e21 && n < 1e21) {
+        return Math.round(n * 1e6) / 1e6;
+    }
+    throw new Error(`unsupported number: ${n}`);
+}
+function generateQRCode(data, type, xOrigin, yOrigin, size) {
+    var _a;
+    let qrString = "";
+    //-- Swiss Payments Code
+    qrString += "SPC";
+    //-- Version
+    qrString += "\n0200";
+    //-- Coding Type UTF-8
+    qrString += "\n1";
+    //-- IBAN
+    qrString += (_a = "\n" + data.creditor.account) !== null && _a !== void 0 ? _a : "\n";
+    //-- Creditor
+    if (data.creditor.buildingNumber !== undefined) {
+        // Address Type
+        qrString += "\nS";
+        // Name
+        qrString += "\n" + data.creditor.name;
+        // Address
+        qrString += "\n" + data.creditor.address;
+        // House number
+        qrString += "\n" + data.creditor.buildingNumber;
+        // Zip
+        qrString += "\n" + data.creditor.zip;
+        // City
+        qrString += "\n" + data.creditor.city;
+    }
+    else {
+        // Address Type
+        qrString += "\nK";
+        // Name
+        qrString += "\n" + data.creditor.name;
+        // Address
+        qrString += "\n" + data.creditor.address;
+        // Zip + city
+        if ((data.creditor.zip + " " + data.creditor.city).length > 70) {
+            throw new Error("Creditor zip plus city must be a maximum of 70 characters.");
+        }
+        qrString += "\n" + data.creditor.zip + " " + data.creditor.city;
+        // Empty zip field
+        qrString += "\n";
+        // Empty city field
+        qrString += "\n";
+    }
+    qrString += "\n" + data.creditor.country;
+    //-- 7 x empty
+    qrString += "\n"; // 1
+    qrString += "\n"; // 2
+    qrString += "\n"; // 3
+    qrString += "\n"; // 4
+    qrString += "\n"; // 5
+    qrString += "\n"; // 6
+    qrString += "\n"; // 7
+    //-- Amount
+    if (data.amount !== undefined) {
+        qrString += "\n" + data.amount.toFixed(2);
+    }
+    else {
+        qrString += "\n";
+    }
+    //-- Currency
+    qrString += "\n" + data.currency;
+    //-- Debtor
+    if (data.debtor !== undefined) {
+        if (data.debtor.buildingNumber !== undefined) {
+            // Address type
+            qrString += "\nS";
+            // Name
+            qrString += "\n" + data.debtor.name;
+            // Address
+            qrString += "\n" + data.debtor.address;
+            // House number
+            qrString += "\n" + data.debtor.buildingNumber;
+            // Zip
+            qrString += "\n" + data.debtor.zip;
+            // City
+            qrString += "\n" + data.debtor.city;
+        }
+        else {
+            // Address type
+            qrString += "\nK";
+            // Name
+            qrString += "\n" + data.debtor.name;
+            // Address
+            qrString += "\n" + data.debtor.address;
+            // Zip + city
+            if ((data.debtor.zip + " " + data.debtor.city).length > 70) {
+                throw new Error("Debtor zip plus city must be a maximum of 70 characters.");
+            }
+            qrString += "\n" + data.debtor.zip + " " + data.debtor.city;
+            // Empty field zip
+            qrString += "\n";
+            // Empty field city
+            qrString += "\n";
+        }
+        // Country
+        qrString += "\n" + data.debtor.country;
+    }
+    else {
+        // Empty field type
+        qrString += "\n";
+        // Empty field name
+        qrString += "\n";
+        // Empty field address
+        qrString += "\n";
+        // Empty field house number
+        qrString += "\n";
+        // Empty field zip
+        qrString += "\n";
+        // Empty field city
+        qrString += "\n";
+        // Empty field country
+        qrString += "\n";
+    }
+    //-- Reference type
+    qrString += "\n" + (0,_shared_utils_js__WEBPACK_IMPORTED_MODULE_0__.getReferenceType)(data.reference);
+    //-- Reference
+    if (data.reference !== undefined) {
+        qrString += "\n" + data.reference;
+    }
+    else {
+        qrString += "\n";
+    }
+    //-- Unstructured message
+    if (data.message !== undefined) {
+        qrString += "\n" + data.message;
+    }
+    else {
+        qrString += "\n";
+    }
+    //-- End Payment Data
+    qrString += "\n" + "EPD";
+    //-- Additional information
+    if (data.additionalInformation !== undefined) {
+        qrString += "\n" + data.additionalInformation;
+    }
+    else {
+        qrString += "\n";
+    }
+    //-- AV1
+    if (data.av1 !== undefined) {
+        qrString += "\n" + data.av1;
+    }
+    if (data.av2 !== undefined) {
+        qrString += "\n" + data.av2;
+    }
+    //-- Create QR Code
+    const eci = _qr_code_generator_js__WEBPACK_IMPORTED_MODULE_1__.qrcodegen.QrSegment.makeEci(26);
+    const segments = _qr_code_generator_js__WEBPACK_IMPORTED_MODULE_1__.qrcodegen.QrSegment.makeSegments(qrString);
+    const qrCode = _qr_code_generator_js__WEBPACK_IMPORTED_MODULE_1__.qrcodegen.QrCode.encodeSegments([eci, ...segments], _qr_code_generator_js__WEBPACK_IMPORTED_MODULE_1__.qrcodegen.QrCode.Ecc.MEDIUM, 10, 25);
+    const blockSize = size / qrCode.size;
+    const parts = [];
+    for (let x = 0; x < qrCode.size; x++) {
+        const xPos = x * blockSize;
+        for (let y = 0; y < qrCode.size; y++) {
+            const yPos = y * blockSize;
+            if (qrCode.getModule(x, y)) {
+                switch (type) {
+                    case "pdf":
+                        parts.push(`${limitNumber(xOrigin + xPos)} ${limitNumber(yOrigin + yPos)} ${limitNumber(blockSize)} ${limitNumber(blockSize)} re`);
+                        break;
+                    case "svg":
+                        parts.push(`M ${xPos}, ${yPos} V ${yPos + blockSize} H ${xPos + blockSize} V ${yPos} H ${xPos} Z `);
+                        break;
+                }
+            }
+        }
+    }
+    return parts.join(" ");
+}
+//# sourceMappingURL=qr-code.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/shared/shared.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/shared/shared.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "cleanData": () => (/* binding */ cleanData),
+/* harmony export */   "removeLinebreaks": () => (/* binding */ removeLinebreaks),
+/* harmony export */   "validateData": () => (/* binding */ validateData)
+/* harmony export */ });
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/utils.js");
+
+function cleanData(data) {
+    const _cleanObject = (object) => {
+        const keys = Object.keys(object);
+        for (let k = 0; k < keys.length; k++) {
+            if (typeof object[keys[k]] === "string") {
+                object[keys[k]] = removeLinebreaks(object[keys[k]]);
+                if (keys[k] === "account") {
+                    object[keys[k]] = object[keys[k]].replace(/ /g, "");
+                }
+                if (keys[k] === "reference") {
+                    object[keys[k]] = object[keys[k]].replace(/ /g, "");
+                }
+                if (keys[k] === "country") {
+                    object[keys[k]] = object[keys[k]].toUpperCase();
+                }
+            }
+            else {
+                if (typeof object[keys[k]] === "object") {
+                    _cleanObject(object[keys[k]]);
+                }
+            }
+        }
+    };
+    _cleanObject(data);
+    return data;
+}
+function removeLinebreaks(text) {
+    return text.replace(/\n/g, "").replace(/\r/g, "");
+}
+function validateData(data) {
+    //-- Creditor
+    if (data.creditor === undefined) {
+        throw new Error("Creditor cannot be undefined.");
+    }
+    //-- Creditor account
+    if (data.creditor.account === undefined) {
+        throw new Error("You must provide an IBAN or QR-IBAN number.");
+    }
+    if (data.creditor.account.length !== 21) {
+        throw new Error(`The provided IBAN number '${data.creditor.account}' is either too long or too short.`);
+    }
+    if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.isIBANValid)(data.creditor.account) === false) {
+        throw new Error(`The provided IBAN number '${data.creditor.account}' is not valid.`);
+    }
+    if (data.creditor.account.substr(0, 2) !== "CH" && data.creditor.account.substr(0, 2) !== "LI") {
+        throw new Error("Only CH and LI IBAN numbers are allowed.");
+    }
+    //-- Validate reference
+    if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.isQRIBAN)(data.creditor.account)) {
+        if (data.reference === undefined) {
+            throw new Error("If there is no reference, a conventional IBAN must be used.");
+        }
+        if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.isQRReference)(data.reference)) {
+            if (!(0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.isQRReferenceValid)(data.reference)) {
+                throw new Error("QR-Reference checksum is not valid.");
+            }
+        }
+        else {
+            throw new Error("QR-IBAN requires the use of a QR-Reference (and vice versa).");
+        }
+    }
+    else {
+        if (data.reference !== undefined) {
+            if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.isQRReference)(data.reference)) {
+                throw new Error("QR-Reference requires the use of a QR-IBAN (and vice versa).");
+            }
+        }
+    }
+    //-- Creditor name
+    if (data.creditor.name === undefined) {
+        throw new Error("Creditor name cannot be undefined.");
+    }
+    if (typeof data.creditor.name !== "string") {
+        throw new Error("Creditor name must be a string.");
+    }
+    if (data.creditor.name.length > 70) {
+        throw new Error("Creditor name must be a maximum of 70 characters.");
+    }
+    //-- Creditor Address
+    if (data.creditor.address === undefined) {
+        throw new Error("Creditor address cannot be undefined.");
+    }
+    if (typeof data.creditor.address !== "string") {
+        throw new Error("Creditor address must be a string.");
+    }
+    if (data.creditor.address.length > 70) {
+        throw new Error("Creditor address must be a maximum of 70 characters.");
+    }
+    //-- Creditor buildingNumber
+    if (data.creditor.buildingNumber !== undefined) {
+        if (typeof data.creditor.buildingNumber !== "string" && typeof data.creditor.buildingNumber !== "number") {
+            throw new Error("Debtor buildingNumber must be either a string or a number.");
+        }
+        if (data.creditor.buildingNumber.toString().length > 16) {
+            throw new Error("Creditor buildingNumber can be a maximum of 16 characters.");
+        }
+    }
+    //-- Creditor Zip
+    if (data.creditor.zip === undefined) {
+        throw new Error("Creditor zip cannot be undefined.");
+    }
+    if (typeof data.creditor.zip !== "string" && typeof data.creditor.zip !== "number") {
+        throw new Error("Creditor zip must be either a string or a number.");
+    }
+    if (data.creditor.zip.toString().length > 16) {
+        throw new Error("Creditor zip must be a maximum of 16 characters.");
+    }
+    //-- Creditor city
+    if (data.creditor.city === undefined) {
+        throw new Error("Creditor city cannot be undefined.");
+    }
+    if (typeof data.creditor.city !== "string") {
+        throw new Error("Creditor city must be a string.");
+    }
+    if (data.creditor.city.length > 35) {
+        throw new Error("Creditor city must be a maximum of 35 characters.");
+    }
+    //-- Creditor country
+    if (data.creditor.country === undefined) {
+        throw new Error("Creditor country cannot be undefined.");
+    }
+    if (typeof data.creditor.country !== "string") {
+        throw new Error("Creditor country must be a string.");
+    }
+    if (data.creditor.country.length !== 2) {
+        throw new Error("Creditor country must be 2 characters.");
+    }
+    //-- Amount
+    if (data.amount !== undefined) {
+        if (typeof data.amount !== "number") {
+            throw new Error("Amount must be a number.");
+        }
+        if (data.amount.toFixed(2).toString().length > 12) {
+            throw new Error("Amount must be a maximum of 12 digits.");
+        }
+    }
+    //-- Currency
+    if (data.currency === undefined) {
+        throw new Error("Currency cannot be undefined.");
+    }
+    if (typeof data.currency !== "string") {
+        throw new Error("Currency must be a string.");
+    }
+    if (data.currency.length !== 3) {
+        throw new Error("Currency must be a length of 3 characters.");
+    }
+    if (data.currency !== "CHF" && data.currency !== "EUR") {
+        throw new Error("Currency must be either 'CHF' or 'EUR'");
+    }
+    //-- Debtor
+    if (data.debtor !== undefined) {
+        //-- Debtor name
+        if (data.debtor.name === undefined) {
+            throw new Error("Debtor name cannot be undefined if the debtor object is available.");
+        }
+        if (typeof data.debtor.name !== "string") {
+            throw new Error("Debtor name must be a string.");
+        }
+        if (data.debtor.name.length > 70) {
+            throw new Error("Debtor name must be a maximum of 70 characters.");
+        }
+        //-- Debtor address
+        if (data.debtor.address === undefined) {
+            throw new Error("Debtor address cannot be undefined if the debtor object is available.");
+        }
+        if (typeof data.debtor.address !== "string") {
+            throw new Error("Debtor address must be a string.");
+        }
+        if (data.debtor.address.length > 70) {
+            throw new Error("Debtor address must be a maximum of 70 characters.");
+        }
+        //-- Debtor buildingNumber
+        if (data.debtor.buildingNumber !== undefined) {
+            if (typeof data.debtor.buildingNumber !== "string" && typeof data.debtor.buildingNumber !== "number") {
+                throw new Error("Debtor house number must be either a string or a number.");
+            }
+            if (data.debtor.buildingNumber.toString().length > 16) {
+                throw new Error("Debtor house number can be a maximum of 16 characters.");
+            }
+        }
+        //-- Debtor zip
+        if (data.debtor.zip === undefined) {
+            throw new Error("Debtor zip cannot be undefined if the debtor object is available.");
+        }
+        if (typeof data.debtor.zip !== "string" && typeof data.debtor.zip !== "number") {
+            throw new Error("Debtor zip must be either a string or a number.");
+        }
+        if (data.debtor.zip.toString().length > 16) {
+            throw new Error("Debtor zip must be a maximum of 16 characters.");
+        }
+        //-- Debtor city
+        if (data.debtor.city === undefined) {
+            throw new Error("Debtor city cannot be undefined if the debtor object is available.");
+        }
+        if (typeof data.debtor.city !== "string") {
+            throw new Error("Debtor city must be a string.");
+        }
+        if (data.debtor.city.length > 35) {
+            throw new Error("Debtor city must be a maximum of 35 characters.");
+        }
+        //-- Debtor country
+        if (data.debtor.country === undefined) {
+            throw new Error("Debtor country cannot be undefined if the debtor object is available.");
+        }
+        if (typeof data.debtor.country !== "string") {
+            throw new Error("Debtor country must be a string.");
+        }
+        if ((data.debtor.country).length !== 2) {
+            throw new Error("Debtor country must be 2 characters.");
+        }
+    }
+    //-- Reference
+    if (data.reference !== undefined) {
+        if (typeof data.reference !== "string") {
+            throw new Error("Reference name must be a string.");
+        }
+        if (data.reference.length > 27) {
+            throw new Error("Reference name must be a maximum of 27 characters.");
+        }
+    }
+    //-- Message
+    if (data.message !== undefined) {
+        if (data.message.length > 140) {
+            throw new Error("Message must be a maximum of 140 characters.");
+        }
+        if (typeof data.message !== "string") {
+            throw new Error("Message must be a string.");
+        }
+    }
+    //-- Additional information
+    if (data.additionalInformation !== undefined) {
+        if (data.additionalInformation.length > 140) {
+            throw new Error("AdditionalInformation must be a maximum of 140 characters.");
+        }
+        if (typeof data.additionalInformation !== "string") {
+            throw new Error("AdditionalInformation must be a string.");
+        }
+    }
+    //-- Message + Additional information
+    if (data.message !== undefined && data.additionalInformation !== undefined) {
+        if (data.additionalInformation.length + data.message.length > 140) {
+            throw new Error("Message and additionalInformation combined must be a maximum of 140 characters.");
+        }
+    }
+    //-- AV1
+    if (data.av1 !== undefined) {
+        if (typeof data.av1 !== "string") {
+            throw new Error("AV1 must be a string.");
+        }
+        if (data.av1.length > 100) {
+            throw new Error("AV1 must be a maximum of 100 characters.");
+        }
+        if (data.av1.split(/(\/.+)/).length <= 2) {
+            throw new Error("AV1 must contain a separator (e.g. /)");
+        }
+    }
+    //-- AV2
+    if (data.av2 !== undefined) {
+        if (typeof data.av2 !== "string") {
+            throw new Error("AV2 must be a string.");
+        }
+        if (data.av2.length > 100) {
+            throw new Error("AV2 must be a maximum of 100 characters.");
+        }
+        if (data.av2.split(/(\/.+)/).length <= 2) {
+            throw new Error("AV2 must contain a separator (e.g. /)");
+        }
+    }
+}
+//# sourceMappingURL=shared.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/shared/translations.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/shared/translations.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const translations = {
+    DE: {
+        paymentPart: "Zahlteil",
+        account: "Konto / Zahlbar an",
+        reference: "Referenz",
+        additionalInformation: "Zusätzliche Informationen",
+        currency: "Währung",
+        amount: "Betrag",
+        receipt: "Empfangsschein",
+        acceptancePoint: "Annahmestelle",
+        separate: "Vor der Einzahlung abzutrennen",
+        payableBy: "Zahlbar durch",
+        payableByName: "Zahlbar durch (Name/Adresse)",
+        inFavourOf: "Zugunsten"
+    },
+    EN: {
+        paymentPart: "Payment part",
+        account: "Account / Payable to",
+        reference: "Reference",
+        additionalInformation: "Additional information",
+        currency: "Currency",
+        amount: "Amount",
+        receipt: "Receipt",
+        acceptancePoint: "Acceptance point",
+        separate: "Separate before paying in",
+        payableBy: "Payable by",
+        payableByName: "Payable by (name/address)",
+        inFavourOf: "In favour of"
+    },
+    IT: {
+        paymentPart: "Sezione pagamento",
+        account: "Conto / Pagabile a",
+        reference: "Riferimento",
+        additionalInformation: "Informazioni supplementari",
+        currency: "Valuta",
+        amount: "Importo",
+        receipt: "Ricevuta",
+        acceptancePoint: "Punto di accettazione",
+        separate: "Da staccare prima del versamento",
+        payableBy: "Pagabile da",
+        payableByName: "Pagabile da (nome/indirizzo)",
+        inFavourOf: "A favore di"
+    },
+    FR: {
+        paymentPart: "Section paiement",
+        account: "Compte / Payable à",
+        reference: "Référence",
+        additionalInformation: "Informations supplémentaires",
+        currency: "Monnaie",
+        amount: "Montant",
+        receipt: "Récépissé",
+        acceptancePoint: "Point de dépôt",
+        separate: "A détacher avant le versement",
+        payableBy: "Payable par",
+        payableByName: "Payable par (nom/adresse)",
+        inFavourOf: "En faveur de"
+    }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (translations);
+//# sourceMappingURL=translations.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/shared/utils.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/shared/utils.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "calculateQRReferenceChecksum": () => (/* binding */ calculateQRReferenceChecksum),
+/* harmony export */   "formatAmount": () => (/* binding */ formatAmount),
+/* harmony export */   "formatIBAN": () => (/* binding */ formatIBAN),
+/* harmony export */   "formatQRReference": () => (/* binding */ formatQRReference),
+/* harmony export */   "formatReference": () => (/* binding */ formatReference),
+/* harmony export */   "formatSCORReference": () => (/* binding */ formatSCORReference),
+/* harmony export */   "getReferenceType": () => (/* binding */ getReferenceType),
+/* harmony export */   "isIBANValid": () => (/* binding */ isIBANValid),
+/* harmony export */   "isQRIBAN": () => (/* binding */ isQRIBAN),
+/* harmony export */   "isQRReference": () => (/* binding */ isQRReference),
+/* harmony export */   "isQRReferenceValid": () => (/* binding */ isQRReferenceValid),
+/* harmony export */   "mm2pt": () => (/* binding */ mm2pt),
+/* harmony export */   "mm2px": () => (/* binding */ mm2px),
+/* harmony export */   "pt2mm": () => (/* binding */ pt2mm),
+/* harmony export */   "px2mm": () => (/* binding */ px2mm)
+/* harmony export */ });
+/**
+ * Checks whether the given iban is a QR-IBAN or not.
+ *
+ * @param iban - The IBAN to be checked.
+ * @returns `true` if the given IBAN is a QR-IBAN and `false` otherwise.
+ */
+function isQRIBAN(iban) {
+    iban = iban.replace(/ /g, "");
+    const QRIID = iban.substr(4, 5);
+    return (+QRIID >= 30000 && +QRIID <= 31999);
+}
+/**
+ * Validates the given IBAN.
+ *
+ * @param iban - The IBAN to be checked.
+ * @returns `true` if the checksum of the given IBAN is valid and `false` otherwise.
+ */
+function isIBANValid(iban) {
+    iban = iban.replace(/ /g, "");
+    iban = iban.toUpperCase();
+    //-- Move country code + checksum to end
+    iban = iban.substr(4) + iban.substr(0, 4);
+    //-- Convert letters to numbers, beginning with A = 10...Z = 35
+    const A = "A".charCodeAt(0);
+    const ibanArr = iban.split("");
+    for (let i = 0; i < ibanArr.length; i++) {
+        const charCode = ibanArr[i].charCodeAt(0);
+        if (charCode >= A) {
+            ibanArr[i] = charCode - A + 10 + "";
+        }
+    }
+    //-- Calculate mod9710
+    return mod9710(ibanArr.join("")) === 1;
+}
+/**
+ * Formats the given IBAN according the specifications to be easily readable.
+ *
+ * @param iban - The IBAN to be formatted.
+ * @returns The formatted IBAN.
+ */
+function formatIBAN(iban) {
+    var _a;
+    iban = iban.replace(/ /g, "");
+    const ibanArray = iban.replace(/ /g, "").match(/.{1,4}/g);
+    return (_a = ibanArray === null || ibanArray === void 0 ? void 0 : ibanArray.join(" ")) !== null && _a !== void 0 ? _a : iban;
+}
+/**
+ * Checks whether the given reference is a QR-Reference or not.
+ *
+ * @param reference - The Reference to be checked.
+ * @returns `true` if the given reference is a QR-Reference and `false` otherwise.
+ */
+function isQRReference(reference) {
+    reference = reference.replace(/ /g, "");
+    if (reference.length === 27) {
+        if (!isNaN(+reference)) {
+            return true;
+        }
+    }
+    if (reference.replace(/ /g, "").length <= 25) {
+        return false;
+    }
+    throw new Error("Reference is not valid.");
+}
+/**
+ * Validates the given reference.
+ *
+ * @param reference - The reference to be checked.
+ * @returns `true` if the given reference is valid and `false` otherwise.
+ */
+function isQRReferenceValid(reference) {
+    reference = reference.replace(/ /g, "");
+    if (Number.isNaN(reference)) {
+        return false;
+    }
+    if (reference.length !== 27) {
+        return false;
+    }
+    const ref = reference.substr(0, 26);
+    const checksum = reference.substr(26, 1);
+    const calculatedChecksum = calculateQRReferenceChecksum(ref);
+    return calculatedChecksum === checksum;
+}
+/**
+ * Calculates the checksum according the specifications.
+ *
+ * @param reference - The 26 digits long reference (without the checksum) whose checksum should be calculated.
+ * @returns The calculated checksum.
+ */
+function calculateQRReferenceChecksum(reference) {
+    return mod10(reference);
+}
+/**
+ * Formats the given QR-Reference according the specifications to be easily readable.
+ *
+ * @param reference - The QR-Reference to be formatted.
+ * @returns The formatted QR-Reference.
+ */
+function formatQRReference(reference) {
+    reference = reference.replace(/ /g, "");
+    let referenceArray = [];
+    const match = reference.substring(2).match(/.{1,5}/g);
+    if (match !== null) {
+        referenceArray = [reference.substring(0, 2)].concat(match);
+    }
+    return referenceArray.join(" ");
+}
+/**
+ * Detects the type of the given reference and formats it according the specifications to be easily readable.
+ *
+ * @param reference - The reference to be formatted.
+ * @returns The formatted reference.
+ */
+function formatReference(reference) {
+    const referenceType = getReferenceType(reference);
+    if (referenceType === "QRR") {
+        return formatQRReference(reference);
+    }
+    else if (referenceType === "SCOR") {
+        return formatSCORReference(reference);
+    }
+    return reference;
+}
+/**
+ * Formats the given SCOR-Reference according the specifications to be easily readable.
+ *
+ * @param reference - The SCOR-Reference to be formatted.
+ * @returns The formatted SCOR-Reference.
+ */
+function formatSCORReference(reference) {
+    reference = reference.replace(/ /g, "");
+    let referenceArray = [];
+    const match = reference.match(/.{1,4}/g);
+    if (match !== null) {
+        referenceArray = match;
+    }
+    return referenceArray.join(" ");
+}
+/**
+ * Formats the given amount according the specifications to be easily readable.
+ *
+ * @param amount - containing the amount to be formatted.
+ * @returns The formatted amount.
+ */
+function formatAmount(amount) {
+    const amountString = amount.toFixed(2);
+    const amountArray = amountString.split(".");
+    let formattedAmountWithoutDecimals = "";
+    for (let x = amountArray[0].length - 1, i = 1; x >= 0; x--, i++) {
+        formattedAmountWithoutDecimals = amountArray[0][x] + formattedAmountWithoutDecimals;
+        if (i === 3) {
+            formattedAmountWithoutDecimals = " " + formattedAmountWithoutDecimals;
+            i = 0;
+        }
+    }
+    return formattedAmountWithoutDecimals.trim() + "." + amountArray[1];
+}
+/**
+ * Converts millimeters to points.
+ *
+ * @param millimeters - The millimeters you want to convert to points.
+ * @returns The converted millimeters in points.
+ */
+function mm2pt(millimeters) {
+    return millimeters * 2.83465;
+}
+/**
+ * Converts points to millimeters.
+ *
+ * @param points - The points you want to convert to millimeters.
+ * @returns The converted points in millimeters.
+ */
+function pt2mm(points) {
+    return points / 2.83465;
+}
+/**
+ * Converts millimeters to pixels.
+ *
+ * @param millimeters - The millimeters you want to convert to pixels.
+ * @returns The converted millimeters in pixels.
+ */
+function mm2px(millimeters) {
+    return millimeters * 960 / 254;
+}
+/**
+ * Converts pixels to millimeters.
+ *
+ * @param pixels - containg the pixels you want to convert to millimeters.
+ * @returns The converted pixels in millimeters.
+ */
+function px2mm(pixels) {
+    return pixels * 254 / 960;
+}
+function getReferenceType(reference) {
+    if (typeof reference === "undefined") {
+        return "NON";
+    }
+    else if (isQRReference(reference)) {
+        return "QRR";
+    }
+    else {
+        return "SCOR";
+    }
+}
+function mod9710(iban) {
+    let remainder = iban;
+    let block;
+    while (remainder.length > 2) {
+        block = remainder.slice(0, 9);
+        remainder = parseInt(block, 10) % 97 + remainder.slice(block.length);
+    }
+    return parseInt(remainder, 10) % 97;
+}
+function mod10(code) {
+    code = code.replace(/ /g, "");
+    const table = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
+    let carry = 0;
+    for (let i = 0; i < code.length; i++) {
+        carry = table[(carry + parseInt(code.substr(i, 1), 10)) % 10];
+    }
+    return ((10 - carry) % 10).toString();
+}
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/svg/characterWidth.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/svg/characterWidth.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "arial10pt": () => (/* binding */ arial10pt),
+/* harmony export */   "arial8pt": () => (/* binding */ arial8pt),
+/* harmony export */   "calculateTextWidth": () => (/* binding */ calculateTextWidth)
+/* harmony export */ });
+const arial8pt = {
+    "32": 3.05615234375,
+    "33": 3.05615234375,
+    "34": 3.90478515625,
+    "35": 6.11767578125,
+    "36": 6.11767578125,
+    "37": 9.78076171875,
+    "38": 7.3369140625,
+    "39": 2.10009765625,
+    "40": 3.6630859375,
+    "41": 3.6630859375,
+    "42": 4.28076171875,
+    "43": 6.423828125,
+    "44": 3.05615234375,
+    "45": 3.6630859375,
+    "46": 3.05615234375,
+    "47": 3.05615234375,
+    "48": 6.11767578125,
+    "49": 6.11767578125,
+    "50": 6.11767578125,
+    "51": 6.11767578125,
+    "52": 6.11767578125,
+    "53": 6.11767578125,
+    "54": 6.11767578125,
+    "55": 6.11767578125,
+    "56": 6.11767578125,
+    "57": 6.11767578125,
+    "58": 3.05615234375,
+    "59": 3.05615234375,
+    "60": 6.423828125,
+    "61": 6.423828125,
+    "62": 6.423828125,
+    "63": 6.11767578125,
+    "64": 11.16650390625,
+    "65": 7.3369140625,
+    "66": 7.3369140625,
+    "67": 7.94384765625,
+    "68": 7.94384765625,
+    "69": 7.3369140625,
+    "70": 6.71923828125,
+    "71": 8.55615234375,
+    "72": 7.94384765625,
+    "73": 3.05615234375,
+    "74": 5.5,
+    "75": 7.3369140625,
+    "76": 6.11767578125,
+    "77": 9.1630859375,
+    "78": 7.94384765625,
+    "79": 8.55615234375,
+    "80": 7.3369140625,
+    "81": 8.55615234375,
+    "82": 7.94384765625,
+    "83": 7.3369140625,
+    "84": 6.71923828125,
+    "85": 7.94384765625,
+    "86": 7.3369140625,
+    "87": 10.38232421875,
+    "88": 7.3369140625,
+    "89": 7.3369140625,
+    "90": 6.71923828125,
+    "91": 3.05615234375,
+    "92": 3.05615234375,
+    "93": 3.05615234375,
+    "94": 5.16162109375,
+    "95": 6.11767578125,
+    "96": 3.6630859375,
+    "97": 6.11767578125,
+    "98": 6.11767578125,
+    "99": 5.5,
+    "100": 6.11767578125,
+    "101": 6.11767578125,
+    "102": 3.05615234375,
+    "103": 6.11767578125,
+    "104": 6.11767578125,
+    "105": 2.44384765625,
+    "106": 2.44384765625,
+    "107": 5.5,
+    "108": 2.44384765625,
+    "109": 9.1630859375,
+    "110": 6.11767578125,
+    "111": 6.11767578125,
+    "112": 6.11767578125,
+    "113": 6.11767578125,
+    "114": 3.6630859375,
+    "115": 5.5,
+    "116": 3.05615234375,
+    "117": 6.11767578125,
+    "118": 5.5,
+    "119": 7.94384765625,
+    "120": 5.5,
+    "121": 5.5,
+    "122": 5.5,
+    "123": 3.673828125,
+    "124": 2.857421875,
+    "125": 3.673828125,
+    "126": 6.423828125,
+    "160": 3.05615234375,
+    "161": 3.6630859375,
+    "162": 6.11767578125,
+    "163": 6.11767578125,
+    "164": 6.11767578125,
+    "165": 6.11767578125,
+    "166": 2.857421875,
+    "167": 6.11767578125,
+    "168": 3.6630859375,
+    "169": 8.10498046875,
+    "170": 4.0712890625,
+    "171": 6.11767578125,
+    "172": 6.423828125,
+    "173": 0,
+    "174": 8.10498046875,
+    "175": 6.07470703125,
+    "176": 4.39892578125,
+    "177": 6.037109375,
+    "178": 3.6630859375,
+    "179": 3.6630859375,
+    "180": 3.6630859375,
+    "181": 6.337890625,
+    "182": 5.908203125,
+    "183": 3.6630859375,
+    "184": 3.6630859375,
+    "185": 3.6630859375,
+    "186": 4.017578125,
+    "187": 6.11767578125,
+    "188": 9.173828125,
+    "189": 9.173828125,
+    "190": 9.173828125,
+    "191": 6.71923828125,
+    "192": 7.3369140625,
+    "193": 7.3369140625,
+    "194": 7.3369140625,
+    "195": 7.3369140625,
+    "196": 7.3369140625,
+    "197": 7.3369140625,
+    "198": 11,
+    "199": 7.94384765625,
+    "200": 7.3369140625,
+    "201": 7.3369140625,
+    "202": 7.3369140625,
+    "203": 7.3369140625,
+    "204": 3.05615234375,
+    "205": 3.05615234375,
+    "206": 3.05615234375,
+    "207": 3.05615234375,
+    "208": 7.94384765625,
+    "209": 7.94384765625,
+    "210": 8.55615234375,
+    "211": 8.55615234375,
+    "212": 8.55615234375,
+    "213": 8.55615234375,
+    "214": 8.55615234375,
+    "215": 6.423828125,
+    "216": 8.55615234375,
+    "217": 7.94384765625,
+    "218": 7.94384765625,
+    "219": 7.94384765625,
+    "220": 7.94384765625,
+    "221": 7.3369140625,
+    "222": 7.3369140625,
+    "223": 6.71923828125,
+    "224": 6.11767578125,
+    "225": 6.11767578125,
+    "226": 6.11767578125,
+    "227": 6.11767578125,
+    "228": 6.11767578125,
+    "229": 6.11767578125,
+    "230": 9.78076171875,
+    "231": 5.5,
+    "232": 6.11767578125,
+    "233": 6.11767578125,
+    "234": 6.11767578125,
+    "235": 6.11767578125,
+    "236": 3.05615234375,
+    "237": 3.05615234375,
+    "238": 3.05615234375,
+    "239": 3.05615234375,
+    "240": 6.11767578125,
+    "241": 6.11767578125,
+    "242": 6.11767578125,
+    "243": 6.11767578125,
+    "244": 6.11767578125,
+    "245": 6.11767578125,
+    "246": 6.11767578125,
+    "247": 6.037109375,
+    "248": 6.71923828125,
+    "249": 6.11767578125,
+    "250": 6.11767578125,
+    "251": 6.11767578125,
+    "252": 6.11767578125,
+    "253": 5.5,
+    "254": 6.11767578125
+};
+const arial10pt = {
+    "32": 3.61181640625,
+    "33": 3.61181640625,
+    "34": 4.61474609375,
+    "35": 7.22998046875,
+    "36": 7.22998046875,
+    "37": 11.55908203125,
+    "38": 8.6708984375,
+    "39": 2.48193359375,
+    "40": 4.3291015625,
+    "41": 4.3291015625,
+    "42": 5.05908203125,
+    "43": 7.591796875,
+    "44": 3.61181640625,
+    "45": 4.3291015625,
+    "46": 3.61181640625,
+    "47": 3.61181640625,
+    "48": 7.22998046875,
+    "49": 7.22998046875,
+    "50": 7.22998046875,
+    "51": 7.22998046875,
+    "52": 7.22998046875,
+    "53": 7.22998046875,
+    "54": 7.22998046875,
+    "55": 7.22998046875,
+    "56": 7.22998046875,
+    "57": 7.22998046875,
+    "58": 3.61181640625,
+    "59": 3.61181640625,
+    "60": 7.591796875,
+    "61": 7.591796875,
+    "62": 7.591796875,
+    "63": 7.22998046875,
+    "64": 13.19677734375,
+    "65": 8.6708984375,
+    "66": 8.6708984375,
+    "67": 9.38818359375,
+    "68": 9.38818359375,
+    "69": 8.6708984375,
+    "70": 7.94091796875,
+    "71": 10.11181640625,
+    "72": 9.38818359375,
+    "73": 3.61181640625,
+    "74": 6.5,
+    "75": 8.6708984375,
+    "76": 7.22998046875,
+    "77": 10.8291015625,
+    "78": 9.38818359375,
+    "79": 10.11181640625,
+    "80": 8.6708984375,
+    "81": 10.11181640625,
+    "82": 9.38818359375,
+    "83": 8.6708984375,
+    "84": 7.94091796875,
+    "85": 9.38818359375,
+    "86": 8.6708984375,
+    "87": 12.27001953125,
+    "88": 8.6708984375,
+    "89": 8.6708984375,
+    "90": 7.94091796875,
+    "91": 3.61181640625,
+    "92": 3.61181640625,
+    "93": 3.61181640625,
+    "94": 6.10009765625,
+    "95": 7.22998046875,
+    "96": 4.3291015625,
+    "97": 7.22998046875,
+    "98": 7.22998046875,
+    "99": 6.5,
+    "100": 7.22998046875,
+    "101": 7.22998046875,
+    "102": 3.61181640625,
+    "103": 7.22998046875,
+    "104": 7.22998046875,
+    "105": 2.88818359375,
+    "106": 2.88818359375,
+    "107": 6.5,
+    "108": 2.88818359375,
+    "109": 10.8291015625,
+    "110": 7.22998046875,
+    "111": 7.22998046875,
+    "112": 7.22998046875,
+    "113": 7.22998046875,
+    "114": 4.3291015625,
+    "115": 6.5,
+    "116": 3.61181640625,
+    "117": 7.22998046875,
+    "118": 6.5,
+    "119": 9.38818359375,
+    "120": 6.5,
+    "121": 6.5,
+    "122": 6.5,
+    "123": 4.341796875,
+    "124": 3.376953125,
+    "125": 4.341796875,
+    "126": 7.591796875,
+    "160": 3.61181640625,
+    "161": 4.3291015625,
+    "162": 7.22998046875,
+    "163": 7.22998046875,
+    "164": 7.22998046875,
+    "165": 7.22998046875,
+    "166": 3.376953125,
+    "167": 7.22998046875,
+    "168": 4.3291015625,
+    "169": 9.57861328125,
+    "170": 4.8115234375,
+    "171": 7.22998046875,
+    "172": 7.591796875,
+    "173": 0,
+    "174": 9.57861328125,
+    "175": 7.17919921875,
+    "176": 5.19873046875,
+    "177": 7.134765625,
+    "178": 4.3291015625,
+    "179": 4.3291015625,
+    "180": 4.3291015625,
+    "181": 7.490234375,
+    "182": 6.982421875,
+    "183": 4.3291015625,
+    "184": 4.3291015625,
+    "185": 4.3291015625,
+    "186": 4.748046875,
+    "187": 7.22998046875,
+    "188": 10.841796875,
+    "189": 10.841796875,
+    "190": 10.841796875,
+    "191": 7.94091796875,
+    "192": 8.6708984375,
+    "193": 8.6708984375,
+    "194": 8.6708984375,
+    "195": 8.6708984375,
+    "196": 8.6708984375,
+    "197": 8.6708984375,
+    "198": 13,
+    "199": 9.38818359375,
+    "200": 8.6708984375,
+    "201": 8.6708984375,
+    "202": 8.6708984375,
+    "203": 8.6708984375,
+    "204": 3.61181640625,
+    "205": 3.61181640625,
+    "206": 3.61181640625,
+    "207": 3.61181640625,
+    "208": 9.38818359375,
+    "209": 9.38818359375,
+    "210": 10.11181640625,
+    "211": 10.11181640625,
+    "212": 10.11181640625,
+    "213": 10.11181640625,
+    "214": 10.11181640625,
+    "215": 7.591796875,
+    "216": 10.11181640625,
+    "217": 9.38818359375,
+    "218": 9.38818359375,
+    "219": 9.38818359375,
+    "220": 9.38818359375,
+    "221": 8.6708984375,
+    "222": 8.6708984375,
+    "223": 7.94091796875,
+    "224": 7.22998046875,
+    "225": 7.22998046875,
+    "226": 7.22998046875,
+    "227": 7.22998046875,
+    "228": 7.22998046875,
+    "229": 7.22998046875,
+    "230": 11.55908203125,
+    "231": 6.5,
+    "232": 7.22998046875,
+    "233": 7.22998046875,
+    "234": 7.22998046875,
+    "235": 7.22998046875,
+    "236": 3.61181640625,
+    "237": 3.61181640625,
+    "238": 3.61181640625,
+    "239": 3.61181640625,
+    "240": 7.22998046875,
+    "241": 7.22998046875,
+    "242": 7.22998046875,
+    "243": 7.22998046875,
+    "244": 7.22998046875,
+    "245": 7.22998046875,
+    "246": 7.22998046875,
+    "247": 7.134765625,
+    "248": 7.94091796875,
+    "249": 7.22998046875,
+    "250": 7.22998046875,
+    "251": 7.22998046875,
+    "252": 7.22998046875,
+    "253": 6.5,
+    "254": 7.22998046875
+};
+function calculateTextWidth(text, size) {
+    let width = 0;
+    if (size === "8pt") {
+        for (let c = 0; c < text.length; c++) {
+            width += arial8pt[text.charCodeAt(c)];
+        }
+    }
+    else if (size === "10pt") {
+        for (let c = 0; c < text.length; c++) {
+            width += arial10pt[text.charCodeAt(c)];
+        }
+    }
+    return width;
+}
+//# sourceMappingURL=characterWidth.js.map
+
+/***/ }),
+
+/***/ "./node_modules/swissqrbill/lib/browser/esm/svg/svg.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/swissqrbill/lib/browser/esm/svg/svg.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SVG_": () => (/* binding */ SVG_)
+/* harmony export */ });
+/* harmony import */ var _shared_shared_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shared/shared.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/shared.js");
+/* harmony import */ var _characterWidth_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./characterWidth.js */ "./node_modules/swissqrbill/lib/browser/esm/svg/characterWidth.js");
+/* harmony import */ var svg_engine__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! svg-engine */ "./node_modules/svg-engine/lib/browser/esm/index.js");
+/* harmony import */ var _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/utils.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/utils.js");
+/* harmony import */ var _shared_translations_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/translations.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/translations.js");
+/* harmony import */ var _shared_qr_code_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../shared/qr-code.js */ "./node_modules/swissqrbill/lib/browser/esm/shared/qr-code.js");
+
+
+
+
+
+
+class SVG_ {
+    constructor(data, options) {
+        this._language = "DE";
+        this._data = data;
+        //-- Clean data (remove line breaks and unnecessary whitespaces)
+        this._data = (0,_shared_shared_js__WEBPACK_IMPORTED_MODULE_0__.cleanData)(this._data);
+        //-- Validate data
+        (0,_shared_shared_js__WEBPACK_IMPORTED_MODULE_0__.validateData)(this._data);
+        //-- Apply options
+        if (options !== undefined) {
+            if (options.language !== undefined) {
+                this._language = options.language;
+            }
+        }
+        //-- Create SVG
+        this.instance = new svg_engine__WEBPACK_IMPORTED_MODULE_2__.SVG();
+        this.instance.width("210mm");
+        this.instance.height("105mm");
+        this._render();
+    }
+    get outerHTML() {
+        return this.instance.outerHTML;
+    }
+    _render() {
+        const formattedCreditorAddress = this._formatAddress(this._data.creditor);
+        let receiptLineCount = 0;
+        let paymentPartLineCount = 0;
+        //-- Background image
+        this.instance.addRect(0, 0, "100%", "100%")
+            .fill("#fff");
+        //-- Vertical line
+        this.instance.addLine("62mm", "0mm", "62mm", "105mm")
+            .stroke(1, "dashed", "black");
+        //-- Scissors
+        const scissorsCenter = "M8.55299 18.3969C9.54465 17.5748 9.51074 16.0915 9.08357 14.9829L6.47473 8.02261C7.58167 5.9986 7.26467 3.99833 7.80373 3.99833C8.22582 3.99833 8.13259 4.38482 9.23105 4.32719C10.2854 4.27125 11.0652 3.1711 10.9957 2.13197C11.0025 1.09115 10.2041 0.0130391 9.1056 0.00456339C7.99867 -0.0734135 6.96972 0.858918 6.89683 1.95907C6.70527 3.24907 7.48674 5.53413 5.56613 6.60547C4.09305 5.80705 4.08797 4.38991 4.16255 3.10838C4.22358 2.04552 3.91845 0.76738 2.87424 0.260531C1.87241 -0.229367 0.446794 0.25036 0.139972 1.37594C-0.277034 2.51168 0.250156 4.07122 1.55541 4.34244C2.56233 4.55095 3.03528 3.83729 3.40143 4.1119C3.67774 4.31871 3.5167 5.62906 4.566 7.96667L1.908 15.5033C1.64356 16.456 1.65204 17.6206 2.58776 18.463L5.5424 10.6484L8.55299 18.3969ZM10.1634 2.87953C9.55143 3.97629 7.88849 3.88645 7.56641 2.74731C7.20704 1.71666 8.20887 0.397838 9.32767 0.726697C10.2447 0.919943 10.5821 2.12858 10.1634 2.87953ZM3.36753 2.927C2.94544 4.07122 1.00789 3.87797 0.746835 2.71341C0.479001 1.94042 0.8638 0.836881 1.77409 0.758904C2.88102 0.608036 3.87946 1.90821 3.36753 2.927Z";
+        const scissorsSVG = this.instance.addSVG("11px", "19px").x((0,svg_engine__WEBPACK_IMPORTED_MODULE_2__.calc)("62mm - 5.25px")).y("30pt");
+        scissorsSVG.addPath(scissorsCenter).fill("black");
+        //-- Receipt
+        const receiptContainer = this.instance.addSVG()
+            .x("5mm")
+            .y("5mm");
+        const receiptTextContainer = receiptContainer.addText();
+        receiptTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].receipt)
+            .x(0)
+            .y(0)
+            .dy("11pt")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("11pt");
+        //-- Creditor
+        receiptTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].account)
+            .x(0)
+            .y("7mm")
+            .dy("9pt")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("6pt");
+        receiptTextContainer.addTSpan(_shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.formatIBAN(this._data.creditor.account))
+            .x(0)
+            .dy("9pt")
+            .fontFamily("Arial")
+            .fontWeight("normal")
+            .fontSize("8pt");
+        receiptLineCount++;
+        let receiptCreditorAddressLines = [];
+        for (const line of formattedCreditorAddress) {
+            const messageLines = this._fitTextToWidth(line, _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.mm2px(52), 2, "8pt");
+            receiptCreditorAddressLines = [...receiptCreditorAddressLines, ...messageLines];
+        }
+        for (const line of receiptCreditorAddressLines) {
+            receiptLineCount++;
+            receiptTextContainer.addTSpan(line)
+                .x(0)
+                .dy("9pt")
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("8pt");
+        }
+        //-- Reference
+        if (this._data.reference !== undefined) {
+            receiptTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].reference)
+                .x(0)
+                .dy("18pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("6pt");
+            receiptTextContainer.addTSpan(_shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.formatReference(this._data.reference))
+                .x(0)
+                .dy("9pt")
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("8pt");
+            receiptLineCount++;
+        }
+        //-- Debtor
+        if (this._data.debtor !== undefined) {
+            const formattedDebtorAddress = this._formatAddress(this._data.debtor);
+            receiptTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].payableBy)
+                .x(0)
+                .dy("18pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("6pt");
+            let receiptDebtorAddressLines = [];
+            for (const line of formattedDebtorAddress) {
+                const messageLines = this._fitTextToWidth(line, _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.mm2px(52), 2, "8pt");
+                receiptDebtorAddressLines = [...receiptDebtorAddressLines, ...messageLines];
+            }
+            for (const line of receiptDebtorAddressLines) {
+                receiptTextContainer.addTSpan(line)
+                    .x(0)
+                    .dy("9pt")
+                    .fontFamily("Arial")
+                    .fontWeight("normal")
+                    .fontSize("8pt");
+            }
+        }
+        else {
+            //-- Add rectangle
+            receiptTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].payableByName)
+                .x(0)
+                .dy("18pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("6pt");
+            const referenceHeight = this._data.reference !== undefined ? "18pt" : "0";
+            this._addRectangle(5, (0,svg_engine__WEBPACK_IMPORTED_MODULE_2__.calc)(`12mm + 9pt + (${receiptLineCount} * 9pt) + ${referenceHeight} + 18pt + 1mm`, "mm"), 52, 20);
+        }
+        //-- Amount
+        const amountContainer = receiptContainer.addText()
+            .y("63mm");
+        amountContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].currency)
+            .x(0)
+            .dy("6pt")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("6pt");
+        const amountXPosition = this._data.amount === undefined ? 13 : 22;
+        amountContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].amount)
+            .x(amountXPosition + "mm")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("6pt");
+        amountContainer.addTSpan(this._data.currency)
+            .x(0)
+            .dy("11pt")
+            .fontFamily("Arial")
+            .fontWeight("normal")
+            .fontSize("8pt");
+        if (this._data.amount !== undefined) {
+            amountContainer.addTSpan(_shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.formatAmount(this._data.amount))
+                .x(amountXPosition + "mm")
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("8pt");
+        }
+        else {
+            this._addRectangle(27, 68, 30, 10);
+        }
+        //-- Acceptance point
+        amountContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].acceptancePoint)
+            .x("52mm")
+            .y("82mm")
+            .textAlign("right")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("6pt");
+        //-- Payment part middle column
+        const paymentPartContainer = this.instance.addSVG()
+            .x("67mm")
+            .y("5mm");
+        paymentPartContainer.addText(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].paymentPart)
+            .x(0)
+            .y(0)
+            .dy("11pt")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("11pt");
+        //-- QR Code
+        this._renderQRCode();
+        //-- Amount
+        const paymentPartMiddleTextContainer = paymentPartContainer.addText()
+            .y("63mm");
+        paymentPartMiddleTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].currency)
+            .x(0)
+            .dy("8pt")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("8pt");
+        paymentPartMiddleTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].amount)
+            .x("22mm")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("8pt");
+        paymentPartMiddleTextContainer.addTSpan(this._data.currency)
+            .x(0)
+            .dy("13pt")
+            .fontFamily("Arial")
+            .fontWeight("normal")
+            .fontSize("10pt");
+        if (this._data.amount !== undefined) {
+            paymentPartMiddleTextContainer.addTSpan(_shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.formatAmount(this._data.amount))
+                .x("22mm")
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("10pt");
+        }
+        else {
+            this._addRectangle(78, (0,svg_engine__WEBPACK_IMPORTED_MODULE_2__.calc)("68mm + 8pt + 5pt", "mm"), 40, 15);
+        }
+        //-- AV1 and AV2
+        const alternativeSchemeContainer = paymentPartContainer.addText()
+            .x(0)
+            .y("90mm");
+        if (this._data.av1 !== undefined) {
+            const [scheme, data] = this._data.av1.split(/(\/.+)/);
+            alternativeSchemeContainer.addTSpan(scheme)
+                .x(0)
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("7pt");
+            alternativeSchemeContainer.addTSpan(this._data.av1.length > 90 ? data.substr(0, 87) + "..." : data)
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("7pt");
+        }
+        if (this._data.av2 !== undefined) {
+            const [scheme, data] = this._data.av2.split(/(\/.+)/);
+            alternativeSchemeContainer.addTSpan(scheme)
+                .x(0)
+                .dy("8pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("7pt");
+            alternativeSchemeContainer.addTSpan(this._data.av2.length > 90 ? data.substr(0, 87) + "..." : data)
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("7pt");
+        }
+        //-- Payment part right column
+        const paymentPartDebtorContainer = this.instance.addSVG()
+            .x("118mm")
+            .y("5mm");
+        const paymentPartRightTextContainer = paymentPartDebtorContainer.addText();
+        //-- Creditor
+        paymentPartRightTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].account)
+            .x(0)
+            .y(0)
+            .dy("11pt")
+            .fontFamily("Arial")
+            .fontWeight("bold")
+            .fontSize("8pt");
+        paymentPartRightTextContainer.addTSpan(_shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.formatIBAN(this._data.creditor.account))
+            .x(0)
+            .dy("11pt")
+            .fontFamily("Arial")
+            .fontWeight("normal")
+            .fontSize("10pt");
+        paymentPartLineCount++;
+        let paymentPartCreditorAddressLines = [];
+        for (const line of formattedCreditorAddress) {
+            const messageLines = this._fitTextToWidth(line, _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.mm2px(52), 2, "8pt");
+            paymentPartCreditorAddressLines = [...paymentPartCreditorAddressLines, ...messageLines];
+        }
+        for (const line of paymentPartCreditorAddressLines) {
+            paymentPartRightTextContainer.addTSpan(line)
+                .x(0)
+                .dy("11pt")
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("10pt");
+            paymentPartLineCount++;
+        }
+        //-- Reference
+        if (this._data.reference !== undefined) {
+            paymentPartRightTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].reference)
+                .x(0)
+                .dy("22pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("8pt");
+            paymentPartRightTextContainer.addTSpan(_shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.formatReference(this._data.reference))
+                .x(0)
+                .dy("11pt")
+                .fontFamily("Arial")
+                .fontWeight("normal")
+                .fontSize("10pt");
+            paymentPartLineCount++;
+        }
+        //-- Message / Additional information
+        if (this._data.message !== undefined || this._data.additionalInformation !== undefined) {
+            paymentPartRightTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].additionalInformation)
+                .x(0)
+                .dy("22pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("8pt");
+            const referenceType = _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.getReferenceType(this._data.reference);
+            const maxLines = referenceType === "QRR" || referenceType === "SCOR" ? 3 : 4;
+            const lengthInPixel = _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.mm2px(87);
+            const linesOfMessage = this._getLineCountOfText(this._data.message, lengthInPixel, "10pt");
+            const linesOfAdditionalInformation = this._getLineCountOfText(this._data.additionalInformation, lengthInPixel, "10pt");
+            if (this._data.additionalInformation !== undefined) {
+                if (referenceType === "QRR" || referenceType === "SCOR") {
+                    // QRR and SCOR have 1 line for the message and 2 lines for the additional information
+                    if (this._data.message !== undefined) {
+                        paymentPartRightTextContainer.addTSpan(this._ellipsis(this._data.message, lengthInPixel, "10pt"))
+                            .x(0)
+                            .dy("11pt")
+                            .fontFamily("Arial")
+                            .fontWeight("normal")
+                            .fontSize("10pt");
+                        paymentPartLineCount++;
+                    }
+                }
+                else {
+                    // Non QRR and SCOR have 4 lines total available and the message should be shortened if necessary
+                    if (this._data.message !== undefined) {
+                        const maxLinesOfMessage = maxLines - linesOfAdditionalInformation;
+                        const messageLines = this._fitTextToWidth(this._data.message, lengthInPixel, maxLinesOfMessage, "10pt");
+                        for (let i = 0; i < maxLinesOfMessage; i++) {
+                            paymentPartRightTextContainer.addTSpan(messageLines[i])
+                                .x(0)
+                                .dy("11pt")
+                                .fontFamily("Arial")
+                                .fontWeight("normal")
+                                .fontSize("10pt");
+                            paymentPartLineCount++;
+                        }
+                    }
+                }
+                const additionalInformationLines = this._fitTextToWidth(this._data.additionalInformation, lengthInPixel, linesOfAdditionalInformation, "10pt");
+                for (let i = 0; i < linesOfAdditionalInformation; i++) {
+                    paymentPartRightTextContainer.addTSpan(additionalInformationLines[i])
+                        .x(0)
+                        .dy("11pt")
+                        .fontFamily("Arial")
+                        .fontWeight("normal")
+                        .fontSize("10pt");
+                    paymentPartLineCount++;
+                }
+            }
+            else if (this._data.message !== undefined) {
+                const messageLines = this._fitTextToWidth(this._data.message, lengthInPixel, maxLines, "10pt");
+                for (let i = 0; i < maxLines; i++) {
+                    paymentPartRightTextContainer.addTSpan(messageLines[i])
+                        .x(0)
+                        .dy("11pt")
+                        .fontFamily("Arial")
+                        .fontWeight("normal")
+                        .fontSize("10pt");
+                    paymentPartLineCount++;
+                }
+            }
+        }
+        //-- Debtor
+        if (this._data.debtor !== undefined) {
+            const formattedDebtorAddress = this._formatAddress(this._data.debtor);
+            paymentPartRightTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].payableBy)
+                .x(0)
+                .dy("22pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("8pt");
+            let paymentPartDebtorAddressLines = [];
+            for (const line of formattedDebtorAddress) {
+                const messageLines = this._fitTextToWidth(line, _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.mm2px(52), 2, "8pt");
+                paymentPartDebtorAddressLines = [...paymentPartDebtorAddressLines, ...messageLines];
+            }
+            for (const line of paymentPartDebtorAddressLines) {
+                paymentPartRightTextContainer.addTSpan(line)
+                    .x(0)
+                    .dy("11pt")
+                    .fontFamily("Arial")
+                    .fontWeight("normal")
+                    .fontSize("10pt");
+            }
+        }
+        else {
+            paymentPartRightTextContainer.addTSpan(_shared_translations_js__WEBPACK_IMPORTED_MODULE_4__["default"][this._language].payableByName)
+                .x(0)
+                .dy("22pt")
+                .fontFamily("Arial")
+                .fontWeight("bold")
+                .fontSize("8pt");
+            const referenceHeight = this._data.reference !== undefined ? "22pt" : "0";
+            const additionalInformationHeight = this._data.additionalInformation !== undefined || this._data.message !== undefined ? "22pt" : "0";
+            this._addRectangle(118, (0,svg_engine__WEBPACK_IMPORTED_MODULE_2__.calc)(`5mm + 11pt + (${paymentPartLineCount} * 11pt) + ${referenceHeight} + ${additionalInformationHeight} + 22pt + 1mm`, "mm"), 65, 25);
+        }
+    }
+    _renderQRCode() {
+        const qrcode = (0,_shared_qr_code_js__WEBPACK_IMPORTED_MODULE_5__["default"])(this._data, "svg", 0, 0, _shared_utils_js__WEBPACK_IMPORTED_MODULE_3__.mm2px(46));
+        const qrcodeSVG = this.instance.addSVG("46mm", "46mm")
+            .y("17mm")
+            .x("67mm");
+        //-- Add QR Code
+        qrcodeSVG.addPath(qrcode)
+            .fill("black");
+        //-- Add background
+        qrcodeSVG.addRect("19mm", "19mm", "8mm", "8mm")
+            .fill("white");
+        qrcodeSVG.addRect("19.5mm", "19.5mm", "7mm", "7mm")
+            .fill("black");
+        //-- Add swiss cross
+        qrcodeSVG.addRect("22.415mm", "21.055mm", "1.17mm", "3.89mm")
+            .fill("white");
+        qrcodeSVG.addRect("21.055mm", "22.415mm", "3.89mm", "1.17mm")
+            .fill("white");
+    }
+    _formatAddress(data) {
+        const countryPrefix = data.country !== "CH" ? data.country + " - " : "";
+        if (data.buildingNumber !== undefined) {
+            return [data.name, data.address + " " + data.buildingNumber, `${countryPrefix}${data.zip} ${data.city}`];
+        }
+        else {
+            return [data.name, data.address, `${countryPrefix}${data.zip} ${data.city}`];
+        }
+    }
+    _getLineCountOfText(text, lengthInPixel, size) {
+        if (text === undefined) {
+            return 0;
+        }
+        else {
+            let lines = 0;
+            let remainder = (0,_characterWidth_js__WEBPACK_IMPORTED_MODULE_1__.calculateTextWidth)(text, size);
+            while (remainder > 1) {
+                lines++;
+                remainder -= lengthInPixel;
+            }
+            return lines;
+        }
+    }
+    _fitTextToWidth(text, lengthInPixel, maxLines, size) {
+        var _a;
+        const remainder = text.split(/([ |-])/g);
+        let lines = [];
+        let currentLine = "";
+        const checkCurrentLine = (currentLine) => {
+            const lines = [];
+            let leftover = "";
+            if ((0,_characterWidth_js__WEBPACK_IMPORTED_MODULE_1__.calculateTextWidth)(currentLine, size) > lengthInPixel) {
+                const currentWordRemainder = currentLine.split("");
+                let currentWord = "";
+                while (currentWordRemainder.length > 0) {
+                    if ((0,_characterWidth_js__WEBPACK_IMPORTED_MODULE_1__.calculateTextWidth)(currentWord, size) <= lengthInPixel) {
+                        currentWord += currentWordRemainder.shift();
+                    }
+                    else {
+                        lines.push(currentWord);
+                        currentWord = "";
+                    }
+                }
+                if (currentWord !== "") {
+                    leftover = currentWord;
+                }
+            }
+            else {
+                lines.push(currentLine);
+            }
+            return { lines, leftover };
+        };
+        while (remainder.length > 0) {
+            const nextWord = remainder.shift();
+            const separator = (_a = remainder.shift()) !== null && _a !== void 0 ? _a : "";
+            if ((0,_characterWidth_js__WEBPACK_IMPORTED_MODULE_1__.calculateTextWidth)(currentLine + nextWord + separator, size) <= lengthInPixel) {
+                currentLine += nextWord + separator;
+            }
+            else {
+                if (currentLine !== "") {
+                    const { lines: newLines, leftover } = checkCurrentLine(currentLine);
+                    lines.push(...newLines);
+                    currentLine = leftover + nextWord + separator;
+                }
+                else {
+                    currentLine = nextWord + separator;
+                }
+            }
+        }
+        if (currentLine !== "" && currentLine !== " ") {
+            const { lines: newLines, leftover } = checkCurrentLine(currentLine);
+            lines.push(...newLines);
+            if (leftover !== "") {
+                lines.push(leftover);
+            }
+        }
+        if (lines.length > maxLines) {
+            lines = lines.slice(0, maxLines);
+            lines[lines.length - 1] = this._ellipsis(lines[lines.length - 1], lengthInPixel, size);
+        }
+        return lines;
+    }
+    _ellipsis(text, lengthInPixel, size) {
+        let result = "";
+        if ((0,_characterWidth_js__WEBPACK_IMPORTED_MODULE_1__.calculateTextWidth)(text, size) > lengthInPixel) {
+            for (let c = 0; c < text.length; c++) {
+                if ((0,_characterWidth_js__WEBPACK_IMPORTED_MODULE_1__.calculateTextWidth)(result + text[c] + "...", size) <= lengthInPixel) {
+                    result += text[c];
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        else {
+            return text;
+        }
+        if (result.substr(-1) === " ") {
+            result = result.slice(0, -1);
+        }
+        return result + "...";
+    }
+    _addRectangle(x, y, width, height) {
+        const container = this.instance.addSVG(width + "mm", height + "mm");
+        container.x(x + "mm").y(y + "mm");
+        const length = 3;
+        container.addLine("0mm", "0mm", length + "mm", "0mm").stroke(".75pt", "solid", "black");
+        container.addLine(width - length + "mm", "0mm", width + "mm", "0mm").stroke(".75pt", "solid", "black");
+        container.addLine(width + "mm", "0mm", width + "mm", length + "mm").stroke(".75pt", "solid", "black");
+        container.addLine(width + "mm", height - length + "mm", width + "mm", height + "mm").stroke(".75pt", "solid", "black");
+        container.addLine(width - length + "mm", height + "mm", width + "mm", height + "mm").stroke(".75pt", "solid", "black");
+        container.addLine("0mm", height + "mm", length + "mm", height + "mm").stroke(".75pt", "solid", "black");
+        container.addLine("0mm", height - length + "mm", "0mm", height + "mm").stroke(".75pt", "solid", "black");
+        container.addLine("0mm", "0mm", "0mm", length + "mm").stroke(".75pt", "solid", "black");
+        return container;
+    }
+}
+//# sourceMappingURL=svg.js.map
+
 /***/ })
 
 /******/ 	});
@@ -75055,14 +81521,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var _FrontendApp__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FrontendApp */ "./src/FrontendApp.js");
+/* harmony import */ var _QRBill__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./QRBill */ "./src/QRBill.js");
+/* harmony import */ var _AddToCart__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AddToCart */ "./src/AddToCart.js");
+
+
 
 
 
 
 document.addEventListener("DOMContentLoaded", function () {
+  var element = document.getElementById("fc_topup");
+  if (typeof element !== "undefined" && element !== null) {
+    react_dom__WEBPACK_IMPORTED_MODULE_1__.render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_QRBill__WEBPACK_IMPORTED_MODULE_3__["default"], null), document.getElementById("fc_topup"));
+  }
+});
+document.addEventListener("DOMContentLoaded", function () {
   var element = document.getElementById("fc_order_list");
   if (typeof element !== "undefined" && element !== null) {
     react_dom__WEBPACK_IMPORTED_MODULE_1__.render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FrontendApp__WEBPACK_IMPORTED_MODULE_2__["default"], null), document.getElementById("fc_order_list"));
+  }
+});
+document.addEventListener("DOMContentLoaded", function () {
+  var element = document.getElementById("fc_add_to_cart");
+  if (typeof element !== "undefined" && element !== null) {
+    react_dom__WEBPACK_IMPORTED_MODULE_1__.render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AddToCart__WEBPACK_IMPORTED_MODULE_4__["default"], null), document.getElementById("fc_add_to_cart"));
   }
 });
 })();

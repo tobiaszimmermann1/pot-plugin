@@ -150,10 +150,47 @@ html {
   width: 100%;
   display: flex;
   flex-direction: column;
+  z-index: 99999;
 }
 
 .fc_order_list_input {
   padding: 2px 5px !important;
+}
+
+.fc_order_list_header_steps {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #e4f1f0;
+  color: #000;
+  margin-bottom: 0 !important;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1em !important;
+  font-weight: bold;
+  border: none;
+  z-index: 100;
+  border-radius: 5px;
+}
+
+.fc_order_list_header_info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  margin-bottom: 25px !important;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 1em !important;
+  font-weight: normal;
+  transition: all 0.1s;
+  border: none;
+  z-index: 100;
+  border-radius: 5px;
 }
 
 .fc_order_list_title {
@@ -329,7 +366,7 @@ html {
   flex-direction: row;
   justify-content: flex-end;
   align-items: flex-start;
-  z-index: 999;
+  z-index: 999999;
 }
 
 #fc_order_bar .multi-button {
@@ -380,9 +417,9 @@ html {
   background-color: #e3e3e3;
   border-color: #5a5a5a;
   color: #000000;
-  margin-left: 10px;
   padding: 10px 15px;
   min-width: 200px;
+  width: 40%;
 }
 
 .fc_order_bar_actions button:hover {
@@ -392,15 +429,16 @@ html {
 
 .fc_order_bar_actions .cartButton {
   font-size: 1em !important;
-  background-color: #e3e3e3;
-  border-color: #cccccc;
-  color: #000000;
+  background-color: #00796b;
+  border-color: #e3e3e3;
+  color: #fff;
   padding: 10px 25px;
+  width: 100%;
 }
 
 .fc_order_bar_actions .cartButton:hover {
-  background-color: #cacaca;
-  border-color: #888888;
+  background-color: #00796b;
+  border-color: #e3e3e3;
 }
 
 #fc_shopping_list {
@@ -421,6 +459,7 @@ html {
   justify-content: flex-start;
   align-items: flex-start;
   transition: all 0.2s;
+  z-index: 99999;
 }
 
 #fc_shopping_list hr {
@@ -477,6 +516,20 @@ html {
   margin-top: 10px !important;
 }
 
+.fc_transition_show {
+  transform: translateY(0);
+  max-height: 5000px;
+  opacity: 1;
+  transition: all 0.2s;
+}
+
+.fc_transition_hide {
+  transform: translateY(-100%);
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
 .transition-y-enter {
   transform: translateY(-100%);
   opacity: 0;
@@ -518,23 +571,13 @@ html {
 #fc_order_list table {
   margin: 0;
   background-color: #f9f9f9;
-  border-radius: 5px;
   border: none;
   padding: 10px;
-  margin-bottom: 20px;
 }
 
 #fc_order_list table td {
   border: none;
-  border-bottom: 1px solid #e3e3e3;
-}
-
-#fc_order_list table td:first-child {
-  width: 200px;
-}
-
-#fc_order_list table tr:last-child td {
-  border: none;
+  padding-right: 10px;
 }
 
 .fc_order_list_cat_wrapper div:last-child span {
@@ -580,10 +623,10 @@ html {
 }
 
 .fc_account_wallet {
-  background: #f0f0f0;
+  background: #f9f9f9;
   padding: 20px 30px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 5px;
+  margin-bottom: 35px;
 }
 
 .fc_account_wallet_balance {
@@ -674,6 +717,10 @@ html {
     width: 0;
     height: 0;
   }
+}
+
+.fc_topup_input {
+  margin-right: 20px;
 }
 
 @media only screen and (max-width: 800px) {

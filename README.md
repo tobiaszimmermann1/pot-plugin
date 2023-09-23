@@ -44,6 +44,13 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 - new user registration: disabled standard email and added custom welcome email
 - enabled inline editing for members table
 - Mutations: added an option to refund a product to only a selected part of the orders instead of all or nothing
+- Mutations: improved the layout of the mutations window
+- Frontend: fixed a bug in CSS Transitions that messed up the selected products
+- Frontend: Added a progress indicator in the ordering list and checkout
+- Frontend: Added more concise warnings to indicate products in cart and not enough credit
+- Frontend: Allow to save products if credit is too low
+- Frontend: Added option to generate a QR bill with the desired amount
+- Added notifications for wallet transactions. Maximum one email per user and per hour will be sent with all transactions that happened in the preivous hour.
 
 ### 1.5.5
 

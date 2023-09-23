@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
-import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material"
+import { Box, Stack, Typography, Button, CircularProgress, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import { ShoppingContext } from "./ShoppingContext"
@@ -208,15 +208,16 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
         <div id="fc_order_bar">
           <div className="fc_order_bar_warning">
             {order && (
-              <span>
-                <WarningIcon sx={{ marginRight: "5px", color: "#ff9800" }} /> {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
-              </span>
+              <Alert sx={{ marginBottom: 1 }} severity="warning">
+                {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
+              </Alert>
             )}
             {cart && (
-              <span>
-                <WarningIcon sx={{ marginRight: "5px", color: "#ff9800" }} /> {__("Du hast Produkte im Warenkorb.", "fcplugin")}
-              </span>
+              <Alert sx={{ marginBottom: 1 }} severity="warning">
+                {__("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")}
+              </Alert>
             )}
+            {newBalance < 0 && <Alert severity="error">{__("Du kannst den Warenkorb speichern. Zum Bestellen musst du allerdings mehr Guthaben aufladen.", "fcplugin")}</Alert>}
           </div>
           <div className="fc_order_bar_col fc_order_bar_finances">
             {balanceLoading ? (
@@ -248,14 +249,14 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
           </div>
           <div className="fc_order_bar_actions">
             <div className="multi-button">
-              <Button startIcon={<HelpOutlineIcon />} variant="text" sx={{ marginBottom: "10px" }} size="small" onClick={helpClick}>
+              <Button startIcon={<HelpOutlineIcon />} variant="text" sx={{ marginBottom: "10px", marginRight: "5px" }} size="small" onClick={helpClick}>
                 {__("Anleitung", "fcplugin")}
               </Button>
-              <Button startIcon={<ListAltIcon />} variant="text" sx={{ marginBottom: "10px" }} size="small" onClick={shoppingListClick}>
+              <Button startIcon={<ListAltIcon />} variant="text" sx={{ marginBottom: "10px", marginLeft: "5px" }} size="small" onClick={shoppingListClick}>
                 {__("Einkaufszettel", "fcplugin")}
               </Button>
             </div>
-            <LoadingButton className="cartButton" loading={addingToCart} loadingPosition="center" disabled={!orderingState} startIcon={<DoneIcon />} variant="outlined" sx={{}} size="large" onClick={handleAddToCart}>
+            <LoadingButton className="cartButton" color="info" loading={addingToCart} loadingPosition="center" startIcon={<ShoppingCartIcon />} variant="outlined" sx={{}} size="large" onClick={handleAddToCart}>
               {__("In den Warenkorb", "fcplugin")}
             </LoadingButton>
           </div>

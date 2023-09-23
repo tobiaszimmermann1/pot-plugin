@@ -69,12 +69,23 @@ function Mutations({ id, setModalClose }) {
 
   const handleSubmit = () => {
     setSubmitting(true)
+    let ordersToMutate = []
+    if (mutationType === "notDelivered") {
+      ordersToChange.map(order => {
+        if (checked.includes(order[0])) {
+          ordersToMutate.push(order)
+        }
+      })
+    } else {
+      ordersToMutate = ordersToChange
+    }
+
     axios
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postSaveMutation`,
         {
           product: selectedProduct.id,
-          orders: ordersToChange,
+          orders: ordersToMutate,
           mutation_type: mutationType,
           price: priceAdjust
         },
@@ -102,7 +113,7 @@ function Mutations({ id, setModalClose }) {
 
   useEffect(() => {
     if (selectedProduct) {
-      setChecked([0])
+      setChecked([])
       setOrdersToChange(orders[selectedProduct.id])
       setPriceAdjust(selectedProduct.price)
     }
@@ -116,7 +127,7 @@ function Mutations({ id, setModalClose }) {
     }
   }, [success])
 
-  const [checked, setChecked] = useState([0])
+  const [checked, setChecked] = useState([])
 
   const handleToggle = value => () => {
     const currentIndex = checked.indexOf(value)

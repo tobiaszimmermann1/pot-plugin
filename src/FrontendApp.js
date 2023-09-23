@@ -31,7 +31,6 @@ function FrontendApp() {
           setActive(res[0])
           setBestellrundenDates(res[6])
           setNextBestellrunde(res[8])
-          console.log(res)
           if (res[5] !== null) {
             setOrder(res[5])
           }
