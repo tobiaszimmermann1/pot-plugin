@@ -51,6 +51,10 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 - Frontend: Allow to save products if credit is too low
 - Frontend: Added option to generate a QR bill with the desired amount
 - Added notifications for wallet transactions. Maximum one email per user and per hour will be sent with all transactions that happened in the preivous hour.
+- Added SKU to product import / export and to the product table
+- Added functions to generate QR Code labels (per product or all at once) in product table for use in self checkout web app
+- Bugfix: settings for public prices and images and description in frontend did not work correctly
+- Bugfix: product import no longer messes up existing product pictures
 
 ### 1.5.5
 

@@ -68,25 +68,27 @@ function AddToCart() {
         <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
           <AppBar sx={{ position: "relative" }} color="primary">
             <Toolbar sx={{ justifyContent: "space-between" }}>
-              <DialogTitle textAlign="left">
+              <DialogTitle textAlign="left" sx={{ fontSize: "1rem" }}>
                 {blogname} - {__("Self Checkout", "fcplugin")}
               </DialogTitle>
+              {/*
               <IconButton edge="start" color="inherit" aria-label="close" onClick={() => (window.location.href = frontendLocalizer.homeUrl)}>
                 <CloseIcon />
               </IconButton>
+              */}
             </Toolbar>
           </AppBar>
-          <DialogContent dividers={scroll === "paper"}>
+          <DialogContent dividers={scroll === "paper"} sx={{ padding: 1 }}>
             <div id="productToAdd"></div>
             {scanning ? <Html5QrcodePlugin fps={10} qrbox={250} disableFlip={false} qrCodeSuccessCallback={onNewScanResult} /> : <SelfCheckoutCart />}
           </DialogContent>
-          <DialogActions>
+          <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
             {scanning ? (
-              <Button autoFocus variant="contained" startIcon={<ShoppingCartIcon />} size="large" onClick={() => setScanning(false)}>
+              <Button variant="contained" startIcon={<ShoppingCartIcon />} size="large" onClick={() => setScanning(false)}>
                 Warenkorb
               </Button>
             ) : (
-              <Button autoFocus variant="contained" startIcon={<QrCodeScannerIcon />} size="large" onClick={() => setScanning(true)}>
+              <Button variant="contained" startIcon={<QrCodeScannerIcon />} size="large" onClick={() => setScanning(true)}>
                 Scan
               </Button>
             )}

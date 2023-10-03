@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react"
 import axios from "axios"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
-import { Box, IconButton, Snackbar, Button } from "@mui/material"
+import { Box, IconButton, Snackbar, Button, CircularProgress } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import LocalShippingIcon from "@mui/icons-material/LocalShipping"
@@ -88,7 +88,7 @@ const Products = () => {
             </a>
           ) : (
             <a href={`${appLocalizer.homeUrl}/wp-admin/post.php?post=${cell.row.original.id}&action=edit`} target="blank">
-              <ImageIcon />
+              <ImageIcon style={{ color: "#cccccc" }} />
             </a>
           ),
         size: 30,
@@ -233,7 +233,6 @@ const Products = () => {
   }
 
   function handleQRCode(row) {
-    console.log(row.original)
     setButtonLoading(true)
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/productQRPDF?sku=${row.original.sku}`, {
@@ -246,6 +245,31 @@ const Products = () => {
           const linkSource = `data:application/pdf;base64,${response.data}`
           const downloadLink = document.createElement("a")
           const fileName = `QR-${row.original.sku}.pdf`
+          downloadLink.href = linkSource
+          downloadLink.download = fileName
+          downloadLink.click()
+          setButtonLoading(false)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        setButtonLoading(false)
+      })
+  }
+
+  function handleQRCodeAll() {
+    setButtonLoading(true)
+    axios
+      .get(`${appLocalizer.apiUrl}/foodcoop/v1/allProductsQRPDF`, {
+        headers: {
+          "X-WP-Nonce": appLocalizer.nonce
+        }
+      })
+      .then(function (response) {
+        if (response.data) {
+          const linkSource = `data:application/pdf;base64,${response.data}`
+          const downloadLink = document.createElement("a")
+          const fileName = `QR-labels.pdf`
           downloadLink.href = linkSource
           downloadLink.download = fileName
           downloadLink.click()
@@ -301,6 +325,9 @@ const Products = () => {
             </Button>
             <Button color="primary" onClick={() => setImportModalOpen(true)} startIcon={<FileUploadIcon />} variant="outlined" size="small" disabled={productsLoading}>
               {__("Importieren", "fcplugin")}
+            </Button>
+            <Button color="primary" onClick={() => handleQRCodeAll()} startIcon={buttonLoading ? <CircularProgress size={14} /> : <QrCodeIcon />} variant="outlined" size="small" disabled={buttonLoading}>
+              {__("QR Etiketten generieren", "fcplugin")}
             </Button>
             {/*
             <Button color="primary" onClick={() => setProducerImportModalOpen(true)} startIcon={<LocalShippingIcon />} variant="outlined" size="small" disabled={productsLoading}>

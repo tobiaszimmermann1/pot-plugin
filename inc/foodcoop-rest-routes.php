@@ -158,6 +158,17 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET allProductsQRPDF
+     */
+    register_rest_route( 'foodcoop/v1', 'allProductsQRPDF', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'allProductsQRPDF'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET receiptsPDF
      * params: bestellrunde
      */
@@ -830,6 +841,14 @@ class FoodcoopRestRoutes {
   }
 
   /**
+   * allProductsQRPDF
+   */
+  function allProductsQRPDF() {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-all-products-qr-pdf.php');
+    return base64_encode($pdf);
+  }
+
+  /**
    * getReceiptsPDF
    */
   function getReceiptsPDF($data) {
@@ -1241,6 +1260,11 @@ class FoodcoopRestRoutes {
    * postImportProducts
    */
   function postImportProducts($data) {
+    // update product featured image
+    require_once(ABSPATH . 'wp-admin/includes/media.php');
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+
     $products = json_decode($data['products']);
 
     // get product categories
@@ -1266,8 +1290,10 @@ class FoodcoopRestRoutes {
       // get product id and check if product exists already
       $id = $product[7];
       $check_if_product_exists = is_a(wc_get_product($id), 'WC_Product');
-      
+
+      //
       // if the product exists, update product
+      //
       if ($check_if_product_exists) {
         // add to updated product ids array
         array_push($updated_product_ids, $id);
@@ -1299,18 +1325,22 @@ class FoodcoopRestRoutes {
         // update product description
         $p->set_description( $product[10] );
 
-        // update product featured image
-        require_once(ABSPATH . 'wp-admin/includes/media.php');
-        require_once(ABSPATH . 'wp-admin/includes/file.php');
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        // update product sku
+        $p->set_sku(sanitize_text_field($product[11]));
 
         if ($product[9] != "") {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $id );
-          wp_delete_attachment( $attachmentid, true );
+          // check if current image is the same as imported one
+          $current_attachment = wp_get_attachment_url( get_post_thumbnail_id( $id ), 'thumbnail');
+          if ($current_attachment) {
+            if ($current_attachment != $product[9]) {
+              // delete current featured image
+              $attachmentid = get_post_thumbnail_id( $id );
+              wp_delete_attachment( $attachmentid, true );
 
-          $image = media_sideload_image( $product[9], $id, $title, 'id' );
-          set_post_thumbnail( $id, $image );
+              $image = media_sideload_image( $product[9], $id, $title, 'id' );
+              set_post_thumbnail( $id, $image );
+            }
+          }
         } else {
           // delete current featured image
           $attachmentid = get_post_thumbnail_id( $id );
@@ -1326,7 +1356,9 @@ class FoodcoopRestRoutes {
 
         $changed_products++;
       } 
+      //
       // if product does not exists, create new product
+      //
       else {
         // sanitize special chars
         $title = str_replace("&","+",$product[0]);
@@ -1334,7 +1366,7 @@ class FoodcoopRestRoutes {
         $title = str_replace(">","",$title);
 
         $data = array(
-          'post_type'            => 'product',
+          'post_type'           => 'product',
           'post_status'         => 'publish',
           'post_title'          => sanitize_text_field($title),
           'meta_input'          => array(
@@ -1357,6 +1389,7 @@ class FoodcoopRestRoutes {
         update_post_meta($post_id, '_stock_status', 'instock');
         update_post_meta($post_id, '_downloadable', 'no');
         update_post_meta($post_id, '_downloadable', 'no');
+        update_post_meta($post_id, '_sku', sanitize_text_field($product[11]));
 
         // update product category
         wp_set_object_terms( $post_id, intval($categories[$product[6]]), 'product_cat' );
