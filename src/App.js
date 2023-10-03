@@ -38,7 +38,7 @@ const theme = createTheme({
 })
 
 function App() {
-  const [activeTab, setActiveTab] = useState("dashboard")
+  const [activeTab, setActiveTab] = useState("products")
   const [name, setName] = useState()
 
   useEffect(() => {

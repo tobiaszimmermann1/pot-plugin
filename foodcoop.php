@@ -8,7 +8,7 @@
 Plugin Name: Foodcoop Manager
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
-Version: 1.5.5
+Version: 1.6.0
 Author: Tobias Zimmermann
 Author URI: https://neues-food-depot.ch
 License: GPLv2 or later
@@ -70,7 +70,7 @@ function foodcoop_wallet_install() {
         balance decimal(10,2) NOT NULL,
         details longtext,
         created_by bigint(20) NOT NULL,
-        date timestamp DEFAULT '0000-00-00 00:00:00' NOT NULL,
+        date timestamp NOT NULL,
     PRIMARY KEY  (id)
   ) $charset_collate;";
 
@@ -83,10 +83,56 @@ function foodcoop_wallet_install() {
 
 
 /**
+ * Upgrade for verson > 1.6.0
+ * upgrade table for Foodcoop wallet for transaction types
+ */
+function fc_plugin_upgrade_database() {
+  global $wpdb;
+  $results = $wpdb->get_results( "SELECT `type` FROM {$wpdb->prefix}foodcoop_wallet", OBJECT );
+  $results2 = $wpdb->get_results( "SELECT `reported` FROM {$wpdb->prefix}foodcoop_wallet", OBJECT );
+  if (!$results or !$results2) {
+    // add type and reported columns into wallet table
+    $wpdb->query("ALTER TABLE {$wpdb->prefix}foodcoop_wallet ADD `type` VARCHAR(255) NOT NULL");
+    $wpdb->query("ALTER TABLE {$wpdb->prefix}foodcoop_wallet ADD `reported` DATETIME");
+
+    // set type to manual_transaction for all existing transactions
+    // set reported to current time for all existing transactions
+    // + set created_by to name of user, if it's still set to user id's
+    $all_rows = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}foodcoop_wallet", OBJECT );
+    foreach($all_rows as $row) {
+      $name = get_user_meta($row->created_by, 'billing_first_name', true)." ".get_user_meta($row->created_by, 'billing_last_name', true);
+      if ($name == " ") {
+        $name = "Benutzer gelöscht (".$row->created_by.")";
+      }
+      
+      $wpdb->update(
+        $wpdb->prefix.'foodcoop_wallet',
+        array( 
+          'type' => 'manual_transaction',
+          'reported' => date('Y-m-d H:i:s'),
+          'created_by' => $name
+        ),
+        array(
+          'id' => $row->id,
+        )
+      );
+    }
+    printf('<span class="fc_plugin_update_message">'.__('Datenbank wurde für Foodcoop Manager Version > 1.6.0 aktualisiert. Vielen Dank!','fcplugin').'</span>');
+  }
+}
+add_action( 'admin_init', 'fc_plugin_upgrade_database' );
+
+
+
+
+
+/**
  * Run on deactivation of plugin
  */
 function deactivate_foodcoop_plugin() {
   flush_rewrite_rules();
+  $timestamp = wp_next_scheduled( 'fcplugin_transaction_notification_hook' );
+  wp_unschedule_event( $timestamp, 'fcplugin_transaction_notification_hook' );
 }
 register_deactivation_hook( __FILE__, 'deactivate_foodcoop_plugin' );
 
@@ -322,8 +368,8 @@ function fc_add_gateway_class( $gateways ) {
 // register 
 add_shortcode('foodcoop_list', function() {
   ?>
-      <div id="fc_order_list"></div>
-<?php
+    <div id="fc_order_list"></div>
+  <?php
 });
 
 
@@ -347,3 +393,129 @@ add_shortcode('foodcoop_list', function() {
     }
   }
 }
+
+
+
+/**
+ * New User registration
+ */
+
+// Disable the new user notification sent to the site admin
+function fcplugin_disable_new_user_notifications() {
+  //Remove original use created emails
+  remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
+  remove_action( 'edit_user_created_user', 'wp_send_new_user_notifications', 10, 2 );
+}
+add_action( 'init', 'fcplugin_disable_new_user_notifications' );
+
+
+
+
+/**
+ * Steps indicator 2/2 at checkout
+ */
+
+ add_action( 'woocommerce_before_checkout_form', 'skyverge_add_checkout_content', 12 );
+ function skyverge_add_checkout_content() {
+  echo '<h2 class="fc_order_list_header_steps">';
+  echo __("Schritt 2 / 2: Rechnungsadresse aktualisieren und Bestellung abschliessen.", "fcplugin");
+  echo '</h2>';
+ }
+
+
+ /**
+  * Transaction Notifications
+  * Wordpress Cron
+  * Run each hour, gather transactons per user, send email to user
+  * Max. 1 email per hour
+  */
+
+  add_action( 'fcplugin_transaction_notification_hook', 'fcplugin_transaction_notification_function' );
+
+  if ( !wp_next_scheduled( 'fcplugin_transaction_notification_hook' )) {
+    wp_schedule_event( time(), 'hourly', 'fcplugin_transaction_notification_hook' );
+  }
+
+  function fcplugin_transaction_notification_function() {
+    // get all transactions that have not been reported yet
+    global $wpdb;
+    $transactions = $wpdb->get_results(
+      $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE reported IS NULL ORDER BY `id` DESC")
+    );
+
+    // get all users with transactions
+    $users_with_transactions = array();
+    foreach($transactions as $transaction) {
+      if (!in_array($transaction->user_id, $users_with_transactions)) {
+        array_push($users_with_transactions,$transaction->user_id);
+      }
+    }
+
+    // loop through users with transactions, find their transactions, create email and send
+    foreach($users_with_transactions as $user_with_transactions) {
+      $user = get_userdata( intval($user_with_transactions) );
+      $email = $user->user_email;
+      $user_name = get_user_meta($user_with_transactions, 'billing_first_name', true)." ".get_user_meta($user_with_transactions, 'billing_last_name', true);
+
+      $transactions_to_send = '<h2>Hallo '.$user_name.'</h2>';
+      $transactions_to_send .= '<p>Es gibt neue Transaktionen in deinem Foodcoop Guthaben.</p>';      
+      $transactions_to_send .= '<table style="border:1px solid #e3e3e3;margin-top: 10px;">';      
+      $transactions_to_send .= '<tr><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px; font-weight:bold;">Transaktionsnummer</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px; font-weight:bold;">Betrag</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px; font-weight:bold;">Transaktionsart</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px; font-weight:bold;">erfasst von</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px; font-weight:bold;">Datum</td></tr>';
+      
+      $transaction_count = 0;
+      foreach($transactions as $transaction) {
+        if ($transaction->user_id == $user_with_transactions) {
+          $type = '';
+          switch ($transaction->type) {
+            case 'yearly_fee':
+              $type = __("Jahresbeitrag","fcplugin");
+              break;
+            case 'deposit':
+              $type = __("Einzahlung","fcplugin");
+              break;
+            case 'manual_transaction':
+              $type = __("Manuelle Transaktion","fcplugin");
+              break;
+            case 'mutation':
+              $type = __("Mutation","fcplugin");
+              break;
+            case 'order':
+              $type = __("Bestellung","fcplugin");
+              break;
+          }
+  
+          $transactions_to_send .= '<tr>';
+          $transactions_to_send .= '<td style="border-bottom:1px solid #e3e3e3; padding:5px 10px;">Transaktion '.$transaction->id.'</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px;"> CHF '.$transaction->amount.'</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px;">'.$type.'</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px;">'.$transaction->created_by.'</td><td style="border-bottom:1px solid #e3e3e3; padding:5px 10px;"> '.$transaction->date.'</td>';
+          $transactions_to_send .= '</tr>';
+
+          // update transaction's reported state
+          $wpdb->update( $wpdb->prefix."foodcoop_wallet", array('reported' => date('Y-m-d H:i:s')), array('id' => $transaction->id));               
+
+          $transaction_count++;
+        }
+      }
+      $transactions_to_send .= '</table>';
+      $transactions_to_send .= '<p>Alle Transaktionen findest du in deinem <a href="'.get_permalink( get_option('woocommerce_myaccount_page_id') ).'">Konto</a>.</p>';   
+  
+      $headers[] = 'From: '. get_option('admin_email');
+      $headers[] = 'Reply-To: ' . get_option('admin_email');
+      $headers[] = 'Content-Type: text/html; charset=UTF-8';
+      $subj_user = __('Dein Foodcoop Guthaben', 'fcplugin') . " - " . get_option('blogname');
+  
+      if ($transaction_count > 0) {
+        wp_mail( $email, $subj_user, $transactions_to_send, $headers);
+      }
+    }
+  }
+
+
+
+/**
+ * Self-Checkout Module: Add to Cart  shortcode [foodcoop_addtocart]
+ */
+
+ add_shortcode('foodcoop_addtocart', function() {
+  ?>
+    <div id="fc_add_to_cart"></div>
+  <?php
+});

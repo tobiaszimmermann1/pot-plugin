@@ -120,7 +120,7 @@ function ImportProducts({ setModalClose, categories }) {
               /**
                * 1. Validate Number of Columns
                */
-              if (results.data[0].length !== 11) {
+              if (results.data[0].length !== 12) {
                 setValidationError(__("Die Datei hat nicht exakt 11 Spalten.", "fcplugin"))
                 validated = false
               }
@@ -172,6 +172,10 @@ function ImportProducts({ setModalClose, categories }) {
                 setValidationError(__("Spalte 11 muss 'description' heissen.", "fcplugin"))
                 validated = false
               }
+              if (results.data[0][11] !== "sku") {
+                setValidationError(__("Spalte 12 muss 'sku' heissen.", "fcplugin"))
+                validated = false
+              }
 
               /**
                * 3. Validate that there are no empty cells
@@ -183,7 +187,7 @@ function ImportProducts({ setModalClose, categories }) {
                   let c = 1
                   row.map(cell => {
                     if (cell === "") {
-                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11) {
+                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11 && c !== 12) {
                         errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
                         validated = false
                       }
@@ -194,7 +198,7 @@ function ImportProducts({ setModalClose, categories }) {
                 }
               })
               if (errors !== "") {
-                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image' und 'description').", "fcplugin") + errors)
+                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image', 'description' und 'sku').", "fcplugin") + errors)
                 validated = false
               }
 

@@ -37,8 +37,8 @@ const Settings = () => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOptions`, {
         headers: {
-          "X-WP-Nonce": appLocalizer.nonce,
-        },
+          "X-WP-Nonce": appLocalizer.nonce
+        }
       })
       .then(function (response) {
         setOptions(JSON.parse(response.data))
@@ -51,15 +51,15 @@ const Settings = () => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getPages`, {
         headers: {
-          "X-WP-Nonce": appLocalizer.nonce,
+          "X-WP-Nonce": appLocalizer.nonce
         },
         params: {
-          per_page: 100,
-        },
+          per_page: 100
+        }
       })
       .then(function (response) {
         let pages = []
-        JSON.parse(response.data).map((page) => {
+        JSON.parse(response.data).map(page => {
           pages.push({ id: page.id, title: page.title })
         })
         setPages(pages)
@@ -104,15 +104,15 @@ const Settings = () => {
           publicPrices: publicPrices,
           publicMembers: publicMembers,
           publicProducts: publicProducts,
-          adminEmail: adminEmail,
+          adminEmail: adminEmail
         },
         {
           headers: {
-            "X-WP-Nonce": appLocalizer.nonce,
-          },
+            "X-WP-Nonce": appLocalizer.nonce
+          }
         }
       )
-      .catch((error) => console.log(error.message))
+      .catch(error => console.log(error.message))
       .finally(() => {
         setSubmitting(false)
       })
@@ -136,7 +136,7 @@ const Settings = () => {
                   id="blogname"
                   label="Name"
                   value={blogname ? blogname : options.blogname}
-                  onChange={(event) => {
+                  onChange={event => {
                     setBlogname(event.target.value)
                   }}
                 />
@@ -152,7 +152,7 @@ const Settings = () => {
                   id="admin_email"
                   label="Email"
                   value={adminEmail ? adminEmail : options.admin_email}
-                  onChange={(event) => {
+                  onChange={event => {
                     setAdminEmail(event.target.value)
                   }}
                 />
@@ -169,7 +169,7 @@ const Settings = () => {
                   label="CHF"
                   type="number"
                   value={fee ? fee : options.fc_fee}
-                  onChange={(event) => {
+                  onChange={event => {
                     setFee(event.target.value)
                   }}
                 />
@@ -185,7 +185,7 @@ const Settings = () => {
                   id="fc_bank"
                   label="IBAN"
                   value={bank ? bank : options.fc_bank}
-                  onChange={(event) => {
+                  onChange={event => {
                     setBank(event.target.value)
                   }}
                 />
@@ -204,7 +204,7 @@ const Settings = () => {
                   multiline
                   rows={4}
                   value={transfer ? transfer : options.fc_transfer}
-                  onChange={(event) => {
+                  onChange={event => {
                     setTransfer(event.target.value)
                   }}
                 />
@@ -222,7 +222,7 @@ const Settings = () => {
                       id="woocommerce_store_address"
                       label="Strasse & Nr"
                       value={address ? address : options.woocommerce_store_address}
-                      onChange={(event) => {
+                      onChange={event => {
                         setAddress(event.target.value)
                       }}
                     />
@@ -235,7 +235,7 @@ const Settings = () => {
                       id="woocommerce_store_postcode"
                       label="Postleitzahl"
                       value={plz ? plz : options.woocommerce_store_postcode}
-                      onChange={(event) => {
+                      onChange={event => {
                         setPlz(event.target.value)
                       }}
                     />
@@ -248,7 +248,7 @@ const Settings = () => {
                       id="woocommerce_store_city"
                       label="Ort"
                       value={city ? city : options.woocommerce_store_city}
-                      onChange={(event) => {
+                      onChange={event => {
                         setCity(event.target.value)
                       }}
                     />
@@ -278,8 +278,8 @@ const Settings = () => {
                 <Grid item xs={8}>
                   <FormControl fullWidth>
                     <InputLabel id="fc_order_page">Bestellseite</InputLabel>
-                    <Select labelId="fc_order_page" id="fc_order_page-select" value={orderPage} label="Bestellseite" onChange={(e) => setOrderPage(e.target.value)}>
-                      {pages.map((page) => (
+                    <Select labelId="fc_order_page" id="fc_order_page-select" value={orderPage} label="Bestellseite" onChange={e => setOrderPage(e.target.value)}>
+                      {pages.map(page => (
                         <MenuItem key={page.id} value={page.id}>
                           {page.title}
                         </MenuItem>
@@ -295,19 +295,19 @@ const Settings = () => {
               {__("Preise öffentlich anzeigen?", "fcplugin")}
             </Grid>
             <Grid item xs={8}>
-              <Switch checked={publicPrices} onChange={(event) => setPublicPrices(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+              <Switch checked={publicPrices} onChange={event => setPublicPrices(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
             <Grid item xs={4}>
               {__("Produktbilder und Produktseiten aktivieren?", "fcplugin")}
             </Grid>
             <Grid item xs={8}>
-              <Switch checked={publicProducts} onChange={(event) => setPublicProducts(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+              <Switch checked={publicProducts} onChange={event => setPublicProducts(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
             <Grid item xs={4}>
               {__("Mitgliederliste in Mein Konto anzeigen?", "fcplugin")}
             </Grid>
             <Grid item xs={8}>
-              <Switch checked={publicMembers} onChange={(event) => setPublicMembers(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+              <Switch checked={publicMembers} onChange={event => setPublicMembers(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
           </Grid>
         </CardContent>

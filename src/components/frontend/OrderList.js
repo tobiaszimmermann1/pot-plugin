@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, createContext } from "react"
 import axios from "axios"
-import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material"
+import { Box, Stack, Typography, Button, CircularProgress, Alert, Divider } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -110,7 +110,7 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
       .then(function (response) {
         if (response.data) {
-          response.data.length === 3 ? setPublicPrices(true) : setPublicPrices(false)
+          response.data === '"0"' ? setPublicPrices(false) : setPublicPrices(true)
         }
       })
       .catch(error => console.log(error))
@@ -119,7 +119,7 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_products`)
       .then(function (response) {
         if (response.data) {
-          response.data.length === 3 ? setAdditionalProductInformation(true) : setAdditionalProductInformation(false)
+          response.data === '"0"' ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
         }
       })
       .catch(error => console.log(error))
@@ -140,30 +140,29 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
             <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt", marginBottom: "20px", textAlign: "right" }}>
               <CelebrationIcon /> {__("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")}
             </Typography>
-            <table>
-              <tbody>
-                <tr>
-                  <td>
-                    <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
-                  </td>
-                  <td>{activeBestellrunde} </td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
-                  </td>
-                  <td>
-                    {format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")} {__("bis", "fcplugin")} {format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}{" "}
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>{__("Verteiltag: ", "fcplugin")}</strong>{" "}
-                  </td>
-                  <td>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")} </td>
-                </tr>
-              </tbody>
-            </table>
+
+            <h2 className="fc_order_list_header_steps">{__("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")}</h2>
+
+            <h2 className="fc_order_list_header_info">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
+                    </td>
+                    <td>
+                      {format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")} {__("bis", "fcplugin")} {format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}{" "}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>{__("Abholen: ", "fcplugin")}</strong>{" "}
+                    </td>
+                    <td>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </h2>
           </>
         ) : (
           <Box sx={{}}>

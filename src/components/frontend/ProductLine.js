@@ -100,9 +100,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
             </span>
           </>
         ) : (
-          <span className="fc_order_list_col col_2x" onClick={handleOpen}>
-            {product.name}
-          </span>
+          <span className="fc_order_list_col col_2x">{product.name}</span>
         )}
 
         <span className="fc_order_list_col col_25">{product.short_description}</span>

@@ -16,6 +16,7 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "mpdf/mpdf": "dev-development"
+    "mpdf/mpdf": "dev-development",
+    "chillerlan/php-qrcode": "dev-main"
   }
 }

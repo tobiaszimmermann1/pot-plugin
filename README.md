@@ -27,6 +27,7 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 4. Run `composer install` in the plugin directory
 5. Run `npm install` in the plugin directory
 6. Activate Foodcoop Plugin
+7. Recommended: Use an SMTP Plugin to improve email deliverability
 
 ## Contact, Requests & Issues
 
@@ -34,6 +35,26 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 - www.neues-food-depot.ch
 
 ## Changelog
+
+### 1.6.0
+
+- added transaction types: deposit, refund, manual transaction, yearly fee, order
+- added a new overview for membership fee payments in members table
+- new user registration: only require name and email
+- new user registration: disabled standard email and added custom welcome email
+- enabled inline editing for members table
+- Mutations: added an option to refund a product to only a selected part of the orders instead of all or nothing
+- Mutations: improved the layout of the mutations window
+- Frontend: fixed a bug in CSS Transitions that messed up the selected products
+- Frontend: Added a progress indicator in the ordering list and checkout
+- Frontend: Added more concise warnings to indicate products in cart and not enough credit
+- Frontend: Allow to save products if credit is too low
+- Frontend: Added option to generate a QR bill with the desired amount
+- Added notifications for wallet transactions. Maximum one email per user and per hour will be sent with all transactions that happened in the preivous hour.
+- Added SKU to product import / export and to the product table
+- Added functions to generate QR Code labels (per product or all at once) in product table for use in self checkout web app
+- Bugfix: settings for public prices and images and description in frontend did not work correctly
+- Bugfix: product import no longer messes up existing product pictures
 
 ### 1.5.5
 

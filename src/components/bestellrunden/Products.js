@@ -9,6 +9,7 @@ import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import IconButton from "@mui/material/IconButton"
 import CloseIcon from "@mui/icons-material/Close"
+import { Alert } from "@mui/material"
 const __ = wp.i18n.__
 
 function ProductsOfBestellrundeModal({ id, setModalClose }) {
@@ -170,6 +171,10 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
             minHeight: "500px"
           }}
         >
+          <Alert sx={{ marginBottom: 1 }} severity="info">
+            {__("Produkte auswählen, die in dieser Bestellrunde bestellt werden können, dann speichern.", "fcplugin")}
+          </Alert>
+
           <MaterialReactTable
             muiTablePaperProps={{
               elevation: 0,
