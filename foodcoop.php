@@ -199,8 +199,11 @@ function fc_wp_load_scripts() {
     'homeUrl' => home_url(),
     'pluginUrl' => plugin_dir_url(__FILE__),
     'cartUrl' => wc_get_checkout_url(),
+    'accountUrl' => get_permalink( get_option('woocommerce_myaccount_page_id') ),
     'nonce' => wp_create_nonce('wp_rest'),
-    'currentUser' => wp_get_current_user()
+    'woo_nonce' => wp_create_nonce( 'wc_store_api' ),
+    'currentUser' => wp_get_current_user(),
+    'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
   wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.5' );
@@ -515,7 +518,24 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
  */
 
  add_shortcode('foodcoop_addtocart', function() {
-  ?>
-    <div id="fc_add_to_cart"></div>
-  <?php
+  if (is_user_logged_in()) {
+    ?>
+      <div id="fc_add_to_cart"></div>
+    <?php
+  } else {
+    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+      $url = "https://";  
+    } else {  
+      $url = "http://";   
+    }
+    $url.= $_SERVER['HTTP_HOST'];   
+    $url.= $_SERVER['REQUEST_URI'];    
+
+    wp_login_form( array(
+      'redirect' => $url,
+      'echo' => true,
+      'remember' => false
+    ) );
+  }
+
 });

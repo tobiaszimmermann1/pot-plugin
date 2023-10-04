@@ -711,6 +711,11 @@ html {
   animation-fill-mode: forwards;
 }
 
+#loginform p label,
+#loginform p input {
+  width: 100%;
+}
+
 @keyframes hideAnimation {
   to {
     visibility: hidden;

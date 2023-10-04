@@ -471,6 +471,29 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * GET all pages
+     */
+    register_rest_route( 'foodcoop/v1', 'getProduct', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getProduct'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * POST add to cart (self checkout)
+     * params: cart object from self checkout
+     */
+    register_rest_route( 'foodcoop/v1', 'addToCart', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'addToCart'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
 
 
     
@@ -2141,6 +2164,82 @@ class FoodcoopRestRoutes {
   }
 
     return json_encode($pages_return);
+  }
+
+
+
+  /**
+   * getProduct
+   */
+  function getProduct($data) {
+ 
+    $sku = intval($data['sku']);
+    $product_id = wc_get_product_id_by_sku($sku);
+    $product = wc_get_product($product_id);
+
+    if ($product) {
+      $product_data = array(
+        'name' => $product->get_name(),
+        'price' => $product->get_price(),
+        'unit' => $product->get_meta('_einheit'),
+        'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
+        'amount' => 1, 
+        'sku' => $sku,
+        'product_id' => $product->get_id()
+      );
+  
+      return json_encode($product_data);
+    } else {
+      return json_encode(false);
+    }
+
+
+  }
+
+
+
+  /**
+   * addToCart
+   */
+  function addToCart($data) {
+    if ( defined( 'WC_ABSPATH' ) ) {
+      include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+      include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+      include_once WC_ABSPATH . 'includes/wc-template-hooks.php';
+    }
+
+    $cart = json_decode($data['data']);
+    $user = json_decode($data['user']);
+    $user_id = $user->ID;
+
+    if ( null === WC()->session ) {
+      $session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
+      WC()->session = new $session_class();
+      WC()->session->init();
+    }
+  
+    if ( null === WC()->customer ) {
+      WC()->customer = new WC_Customer( $user_id, true );
+    }
+  
+    if ( null === WC()->cart ) {
+        WC()->cart = new WC_Cart();
+        WC()->cart->get_cart();
+    }
+  
+    WC()->cart->empty_cart();
+
+    $result = "";
+    foreach($cart as $item) {
+      $result = WC()->cart->add_to_cart( $item->product_id, $item->amount  );
+    }
+
+    if ($result) {
+      return json_encode(wc_get_checkout_url());
+    } else {
+      return http_response_code(400);
+    }
+    
   }
 
 
