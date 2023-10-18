@@ -16,7 +16,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import { CSSTransition } from "react-transition-group"
 const __ = wp.i18n.__
 
-const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
+const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBestellrunde }) => {
   const [currentTotal, setCurrentTotal] = useState(0)
   const [shoppingListVisibility, setShoppingListVisibility] = useState(false)
   const [helpVisibility, setHelpVisibility] = useState(false)
@@ -107,33 +107,43 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart }) => {
   /**
    * Add to Cart function
    */
-  const addToCart = async () => {
+
+  function addToCart() {
+    let cart = []
+
     const size = Object.keys(shoppingList).length
     let i = 1
     for (const key in shoppingList) {
       if (shoppingList[key].amount > 0) {
-        try {
-          const response = await axios.post(
-            `${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`,
-            {
-              id: shoppingList[key].id,
-              quantity: parseInt(shoppingList[key].amount)
-            },
-            {
-              headers: {
-                "X-WC-Store-API-Nonce": cartNonce
-              }
-            }
-          )
-        } catch (error) {
-          console.log(error)
-        }
+        cart.push({ name: shoppingList[key].name, product_id: shoppingList[key].product_id, amount: shoppingList[key].amount, name: shoppingList[key].name, bestellrunde: activeBestellrunde })
       }
       i++
-      if (i === size) {
-        setAddingToCart(false)
-        window.location.href = frontendLocalizer.cartUrl
-      }
+    }
+
+    if (cart.length > 0) {
+      axios
+        .post(
+          `${frontendLocalizer.apiUrl}/foodcoop/v1/addToCart`,
+          {
+            data: JSON.stringify(cart),
+            user: JSON.stringify(frontendLocalizer.currentUser)
+          },
+          {
+            headers: {
+              "X-WP-Nonce": frontendLocalizer.nonce
+            }
+          }
+        )
+        .then(function (response) {
+          setAddingToCart(false)
+          location.href = JSON.parse(response.data)
+        })
+        .catch(error => console.log(error.message))
+        .finally(response => {
+          setAddingToCart(false)
+        })
+    } else {
+      setAddingToCart(false)
     }
   }
 

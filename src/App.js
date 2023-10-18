@@ -38,7 +38,7 @@ const theme = createTheme({
 })
 
 function App() {
-  const [activeTab, setActiveTab] = useState("products")
+  const [activeTab, setActiveTab] = useState("orderingRounds")
   const [name, setName] = useState()
 
   useEffect(() => {

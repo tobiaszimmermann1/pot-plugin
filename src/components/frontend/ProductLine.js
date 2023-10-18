@@ -34,7 +34,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
       if (currentShoppingList === null) {
         currentShoppingList = {}
       }
-      currentShoppingList[product.id] = { name: product.name, amount: amount, unit: product.unit, price: product.price, id: product.id }
+      currentShoppingList[product.id] = { name: product.name, amount: amount, unit: product.unit, price: product.price, product_id: product.id }
       setShoppingList(currentShoppingList)
       setTrigger(trigger + 1)
     }

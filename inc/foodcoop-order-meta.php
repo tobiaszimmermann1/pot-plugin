@@ -14,27 +14,18 @@ class OrderMeta
    * Add order meta to created orders ('betellrunde_id)
    */
   function before_checkout_create_order( $order, $data ) {
-    // check if bestellrunde is active and if yes, set the id
-    $bestellrunden = get_posts(array(
-      'numberposts' => -1,
-      'post_type'   => 'bestellrunden',
-      'meta_key' => 'bestellrunde_start',
-      'orderby' => 'meta_value',
-    ));
-
-    $bestellrunde_dates = array();
-    $now = date('Y-m-d');
-    $active = false;
-    foreach ($bestellrunden as $b) {
-      $id = $b->ID;
-      $start = get_post_meta( $id, 'bestellrunde_start', true );
-      $end = get_post_meta( $id, 'bestellrunde_ende', true );
-      if ($start <= $now AND $end >= $now) {
-          $active = $id;
+    // get cart items to fetch bestellrunde_id
+    $bestellrunde_ids_in_cart = array();
+    foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+      $bestellrunde_id = $cart_item['bestellrunde'];
+      if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
+        array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
       }
     }
-
-    $order->update_meta_data( 'bestellrunde_id', $active );
+    
+    if (count($bestellrunde_ids_in_cart) == 1) {
+      $order->update_meta_data( 'bestellrunde_id', $bestellrunde_ids_in_cart[0] );
+    }
   }
 
 

@@ -418,6 +418,17 @@ class FoodcoopRestRoutes {
     /**
      * GET Dashboard Data
      */
+    register_rest_route( 'foodcoop/v1', 'getActiveBestellrunden', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'getActiveBestellrunden'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * GET Dashboard Data
+     */
     register_rest_route( 'foodcoop/v1', 'getProductList', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'getProductList'), 
@@ -713,6 +724,7 @@ class FoodcoopRestRoutes {
         "id" => $b->ID,
         "author" => $b->post_author,
         "date_created" => $b->post_date,
+        "bestellrunde_bild" => get_the_post_thumbnail_url( $b->ID )
       );
       
       $the_meta = get_post_meta($b->ID);
@@ -739,6 +751,44 @@ class FoodcoopRestRoutes {
     add_post_meta( $id, 'bestellrunde_start', $data['bestellrunde_start'], true );
     add_post_meta( $id, 'bestellrunde_ende', $data['bestellrunde_ende'], true );
     add_post_meta( $id, 'bestellrunde_verteiltag', $data['bestellrunde_verteiltag'], true );
+    add_post_meta( $id, 'bestellrunde_name', $data['bestellrunde_name'], true );
+
+    if ($data['bestellrunde_bild']) {
+
+      // upload image
+      $image_url        = $data['bestellrunde_bild'];
+      $ext              = pathinfo($data['bestellrunde_bild'], PATHINFO_EXTENSION);
+      $image_name       = $id.".".$ext;
+      $upload_dir       = wp_upload_dir();
+      $image_data       = file_get_contents($image_url);
+      $unique_file_name = wp_unique_filename( $upload_dir['path'], $image_name );
+      $filename         = basename( $unique_file_name );
+
+      if( wp_mkdir_p( $upload_dir['path'] ) ) {
+        $file = $upload_dir['path'] . '/' . $filename;
+      } else {
+        $file = $upload_dir['basedir'] . '/' . $filename;
+      }
+
+      file_put_contents( $file, $image_data );
+      $wp_filetype = wp_check_filetype( $filename, null );
+
+      // create post attachment for thumbnail
+      $attachment = array(
+        'post_mime_type' => $wp_filetype['type'],
+        'post_title'     => sanitize_file_name( $filename ),
+        'post_content'   => '',
+        'post_status'    => 'inherit'
+      );
+      $attach_id = wp_insert_attachment( $attachment, $file, $id );
+      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+      wp_update_attachment_metadata( $attach_id, $attach_data );
+      set_post_thumbnail( $id, $attach_id );
+
+    }
+
+
 
     return json_encode($id);
   }
@@ -751,6 +801,42 @@ class FoodcoopRestRoutes {
     update_post_meta( $id, 'bestellrunde_start', $data['bestellrunde_start'] );
     update_post_meta( $id, 'bestellrunde_ende', $data['bestellrunde_ende'] );
     update_post_meta( $id, 'bestellrunde_verteiltag', $data['bestellrunde_verteiltag'] );
+    update_post_meta( $id, 'bestellrunde_name', $data['bestellrunde_name'] );
+
+    if ($data['bestellrunde_bild']) {
+
+      // upload image
+      $image_url        = $data['bestellrunde_bild'];
+      $ext              = pathinfo($data['bestellrunde_bild'], PATHINFO_EXTENSION);
+      $image_name       = $id.".".$ext;
+      $upload_dir       = wp_upload_dir();
+      $image_data       = file_get_contents($image_url);
+      $unique_file_name = wp_unique_filename( $upload_dir['path'], $image_name );
+      $filename         = basename( $unique_file_name );
+
+      if( wp_mkdir_p( $upload_dir['path'] ) ) {
+        $file = $upload_dir['path'] . '/' . $filename;
+      } else {
+        $file = $upload_dir['basedir'] . '/' . $filename;
+      }
+
+      file_put_contents( $file, $image_data );
+      $wp_filetype = wp_check_filetype( $filename, null );
+
+      // create post attachment for thumbnail
+      $attachment = array(
+        'post_mime_type' => $wp_filetype['type'],
+        'post_title'     => sanitize_file_name( $filename ),
+        'post_content'   => '',
+        'post_status'    => 'inherit'
+      );
+      $attach_id = wp_insert_attachment( $attachment, $file, $id );
+      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+      wp_update_attachment_metadata( $attach_id, $attach_data );
+      set_post_thumbnail( $id, $attach_id );
+
+    }
 
     return json_encode($id);
   }
@@ -1921,9 +2007,9 @@ class FoodcoopRestRoutes {
 
 
   /**
-  * getProductList
+  * getActiveBestellrunden
   */
-  function getProductList($post_data) { 
+  function getActiveBestellrunden($data) { 
     // check if bestellrunde is active and if yes, set the id
     $bestellrunden = get_posts(array(
       'numberposts' => -1,
@@ -1932,37 +2018,73 @@ class FoodcoopRestRoutes {
       'orderby' => 'meta_value',
     ));
 
-    $bestellrunde = null;
-    $bestellrunde_dates = array();
-    $next_bestellrunde_dates = array();
-    $now = date('Y-m-d');
-    $active = false;
-    $next = 0;
+    $active_bestellrunden = array();
+    $active_bestellrunden_ids = array();
+    
     foreach ($bestellrunden as $b) {
+      $bestellrunde = array();
+
       $id = $b->ID;
       $start = get_post_meta( $id, 'bestellrunde_start', true );
       $end = get_post_meta( $id, 'bestellrunde_ende', true );
       $dist = get_post_meta( $id, 'bestellrunde_verteiltag', true );
-      // currently active bestellrunde
+      $name = get_post_meta( $id, 'bestellrunde_name', true );
+      $img = get_the_post_thumbnail_url( $id );
+
+      // determine if bestellrunde is currently active
+      $now = date('Y-m-d');
       if ($start <= $now AND $end >= $now) {
-        $bestellrunde = $id;
-        array_push($bestellrunde_dates, $start, $end, $dist);
-        $active = true;
+        $bestellrunde['id'] = $id;
+        $bestellrunde['name'] = $name;
+        $bestellrunde['img'] = $img;
+        $bestellrunde['start'] = $start;
+        $bestellrunde['end'] = $end;
+        $bestellrunde['dist'] = $dist;
+        array_push($active_bestellrunden, $bestellrunde);
+        array_push($active_bestellrunden_ids, $bestellrunde['id']);
       }
-      // next bestellrunde
-      if ($start > $now) {
-        if (empty($next_bestellrunde_dates)) {
-          $next = $start;
-          $next_bestellrunde_dates = array();
-          array_push($next_bestellrunde_dates, $start, $end, $dist);
-        } else {
-          if ($start < $next) {
-            $next_bestellrunde_dates = array();
-            array_push($next_bestellrunde_dates, $start, $end, $dist);
+    }
+
+    // get orders of this user if they exist
+    $customer = new WC_Customer(intval($post_data['user']));
+    $query = new WC_Order_Query( array(
+      'limit' => 10,
+      'orderby' => 'date',
+      'order' => 'DESC',
+      'return' => 'ids',
+      'customer' => intval($customer),
+    ));
+    $order_ids = $query->get_orders();
+    $orders = array();
+    foreach($order_ids as $order_id) {
+      $this_order = wc_get_order($order_id)->get_data();
+      $meta_data = $this_order['meta_data'];
+      foreach($meta_data as $meta) {
+        if ($meta->key = 'bestellrunde_id') {
+          if (in_array($meta->value, $active_bestellrunden_ids)) {
+            array_push($orders, intval($meta->value));
           }
         }
       }
     }
+
+    return (wp_json_encode([$active_bestellrunden, $orders]));
+  }
+
+
+
+
+  /**
+  * getProductList
+  */
+  function getProductList($post_data) { 
+    $bestellrunde = $post_data['bestellrunde'];
+    $bestellrunde_dates = array();
+    $start = get_post_meta( $bestellrunde, 'bestellrunde_start', true );
+    $end = get_post_meta( $bestellrunde, 'bestellrunde_ende', true );
+    $dist = get_post_meta( $bestellrunde, 'bestellrunde_verteiltag', true );
+    array_push($bestellrunde_dates, $start, $end, $dist);
+    $active = true;
 
     // get product ids of active bestellrunde
     $bestellrunde_products = array();
@@ -1985,13 +2107,24 @@ class FoodcoopRestRoutes {
     // get order of this user and in this bestellrunde, if it exists
     $order = null;
     $customer = new WC_Customer(intval($post_data['user']));
-    $last_order = $customer->get_last_order();
-    if ($last_order) {
-      $order_data = $last_order->get_data();
-      $bestellrunde_of_this_order = get_post_meta( $last_order->get_id(), 'bestellrunde_id', true );
-      
-      if ($bestellrunde_of_this_order == $bestellrunde) {
-        $order = $order_data;
+
+    $query = new WC_Order_Query( array(
+      'limit' => 20,
+      'orderby' => 'date',
+      'order' => 'DESC',
+      'return' => 'ids',
+      'customer' => intval($customer),
+    ));
+    $order_ids = $query->get_orders();
+    $order = null;
+    $current_order = null;
+    foreach($order_ids as $order_id) {
+      $this_order = wc_get_order($order_id);
+      $order_bestellrunde = intval($this_order->get_meta('bestellrunde_id'));
+
+      if ($order_bestellrunde == intval($bestellrunde)) {
+        $order = $this_order->get_data();
+        $current_order = $this_order;
       }
     }
 
@@ -2031,7 +2164,7 @@ class FoodcoopRestRoutes {
       // check if user has already ordered in this bestellrunde and if yes, set amount
       $amount = 0;
       if ($order) {
-        foreach($last_order->get_items() as $item_id => $item) {
+        foreach($current_order->get_items() as $item_id => $item) {
           $item_product_id = $item->get_meta( '_pid', true );
           if ($item_product_id == $product->get_id()) {
             $amount = $item->get_quantity();
@@ -2231,7 +2364,7 @@ class FoodcoopRestRoutes {
 
     $result = "";
     foreach($cart as $item) {
-      $result = WC()->cart->add_to_cart( $item->product_id, $item->amount  );
+      $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, NULL, array('bestellrunde'=>$item->bestellrunde) );
     }
 
     if ($result) {

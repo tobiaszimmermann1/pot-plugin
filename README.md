@@ -36,6 +36,12 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.6.1
+
+- added the option to run several ordering rounds at the same time
+- added a visual cue in the backend to show which ordering rounds are currently active
+- self checkout
+
 ### 1.6.0
 
 - added transaction types: deposit, refund, manual transaction, yearly fee, order

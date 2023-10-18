@@ -8,7 +8,7 @@
 Plugin Name: Foodcoop Manager
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
-Version: 1.6.0
+Version: 1.6.1
 Author: Tobias Zimmermann
 Author URI: https://neues-food-depot.ch
 License: GPLv2 or later
@@ -177,7 +177,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.5.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.6.1', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -187,13 +187,13 @@ function fc_admin_load_scripts() {
     'currentUser' => wp_get_current_user()
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.5' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.1' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.5.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.6.1', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -206,7 +206,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.5' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.1' );
 }
 
 add_action( 'init', 'fc_init');
@@ -234,7 +234,7 @@ function fc_init() {
   $args = array(
     'label'                 => __( 'Bestellrunden'),
     'labels'                => $labels,
-    'supports'              => array('author', 'custom-fields'),
+    'supports'              => array('author', 'custom-fields', 'thumbnail'),
     'taxonomies'            => array(),
     'hierarchical'          => false,
     'public'                => true,
@@ -517,7 +517,7 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
  * Self-Checkout Module: Add to Cart  shortcode [foodcoop_addtocart]
  */
 
- add_shortcode('foodcoop_addtocart', function() {
+add_shortcode('foodcoop_addtocart', function() {
   if (is_user_logged_in()) {
     ?>
       <div id="fc_add_to_cart"></div>
@@ -539,3 +539,21 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
   }
 
 });
+
+
+
+/**
+ * Cart item metadata
+ * add 'bestellrunde' to cart items
+ */
+
+function fcplugin_get_item_data( $item_data, $cart_item_data ) {
+  if( isset( $cart_item_data['bestellrunde'] ) ) {
+  $item_data[] = array(
+  'key' => __( 'bestellrunde', 'fcplugin' ),
+  'value' => wc_clean( $cart_item_data['bestellrunde'] )
+  );
+  }
+  return $item_data;
+ }
+ add_filter( 'woocommerce_get_item_data', 'fcplugin_get_item_data', 10, 2 );
