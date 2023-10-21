@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
-import { Box, Stack, Typography, Button, CircularProgress, Alert } from "@mui/material"
+import { Box, Stack, Typography, Button, CircularProgress, Alert, IconButton } from "@mui/material"
+import Tooltip from "@mui/material/Tooltip"
 import LoadingButton from "@mui/lab/LoadingButton"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import { ShoppingContext } from "./ShoppingContext"
@@ -26,6 +27,7 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
   const [originalBalance, setOriginalBalance] = useState(null)
   const [balanceLoading, setBalanceLoading] = useState(true)
   const [walletBalance, setWalletBalance] = useState(null)
+  const [myAccountLink, setMyAccountLink] = useState(null)
 
   /**
    * Shopping List
@@ -56,7 +58,7 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
   /**
    * balance calculations
    */
-  // get current wallet balance of user
+  // get current wallet balance of user and list of payment gateways
   useEffect(() => {
     axios
       .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
@@ -65,11 +67,12 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          let b = res
+          let b = res[0]
           if (b === null) {
             b = 0
           }
           setWalletBalance(parseFloat(b))
+          setMyAccountLink(res[1])
         }
       })
       .catch(error => console.log(error))
@@ -191,10 +194,13 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
         </CSSTransition>
         <CSSTransition in={helpVisibility} timeout={500} classNames="transition-y-up" unmountOnExit>
           <div className="order_manual_public">
-            <div style={{ borderBottom: "1px solid #cacaca", marginBottom: "10px", fontWeight: "bold", width: "100%" }}>{__("Anleitung", "fcplugin")}:</div>
-
-            <span>
-              <AccountBalanceWalletIcon /> {__("Guthaben aufladen.", "fcplugin")}
+            <div style={{ borderBottom: "1px solid #cacaca", marginBottom: "10px", fontWeight: "bold", width: "100%" }}>{__("So bestellst du mit", "fcplugin")}:</div>
+            <span
+              onClick={() => {
+                window.open(myAccountLink + "foodcoop-wallet/", "_blank")
+              }}
+            >
+              <AccountBalanceWalletIcon /> {__("Guthaben aufladen ", "fcplugin")}
             </span>
             <hr />
             <span>
@@ -216,19 +222,6 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
         </CSSTransition>
 
         <div id="fc_order_bar">
-          <div className="fc_order_bar_warning">
-            {order && (
-              <Alert sx={{ marginBottom: 1 }} severity="warning">
-                {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
-              </Alert>
-            )}
-            {cart && (
-              <Alert sx={{ marginBottom: 1 }} severity="warning">
-                {__("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")}
-              </Alert>
-            )}
-            {newBalance < 0 && <Alert severity="error">{__("Du kannst den Warenkorb speichern. Zum Bestellen musst du allerdings mehr Guthaben aufladen.", "fcplugin")}</Alert>}
-          </div>
           <div className="fc_order_bar_col fc_order_bar_finances">
             {balanceLoading ? (
               <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
@@ -258,17 +251,33 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
             )}
           </div>
           <div className="fc_order_bar_actions">
-            <div className="multi-button">
-              <Button startIcon={<HelpOutlineIcon />} variant="text" sx={{ marginBottom: "10px", marginRight: "5px" }} size="small" onClick={helpClick}>
-                {__("Anleitung", "fcplugin")}
-              </Button>
-              <Button startIcon={<ListAltIcon />} variant="text" sx={{ marginBottom: "10px", marginLeft: "5px" }} size="small" onClick={shoppingListClick}>
-                {__("Einkaufszettel", "fcplugin")}
-              </Button>
-            </div>
             <LoadingButton className="cartButton" color="info" loading={addingToCart} loadingPosition="center" startIcon={<ShoppingCartIcon />} variant="outlined" sx={{}} size="large" onClick={handleAddToCart}>
               {__("In den Warenkorb", "fcplugin")}
             </LoadingButton>
+            <div className="multi-button">
+              <Tooltip title={__("Hilfe", "fcplugin")} placement="top">
+                <IconButton sx={{ marginTop: "5px", marginRight: "5px" }} size="small" color="primary" onClick={helpClick}>
+                  <HelpOutlineIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={__("Einkaufszettel", "fcplugin")} placement="top">
+                <IconButton sx={{ marginTop: "5px", marginRight: "5px", marginLeft: "5px" }} size="small" color="primary" onClick={shoppingListClick}>
+                  <ListAltIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={__("Guthaben aufladen", "fcplugin")} placement="top">
+                <IconButton
+                  sx={{ marginTop: "5px", marginLeft: "5px" }}
+                  size="small"
+                  color="primary"
+                  onClick={() => {
+                    window.open(myAccountLink + "foodcoop-wallet/", "_blank")
+                  }}
+                >
+                  <AccountBalanceWalletIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </>

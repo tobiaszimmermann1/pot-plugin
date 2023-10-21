@@ -32,7 +32,6 @@ const OrderingRounds = () => {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log("orders:", res)
           setBestellrunden(res[0])
           setActiveOrders(res[1])
         }
@@ -94,6 +93,15 @@ const OrderingRounds = () => {
     }
   }, [bestellrunden])
 
+  useEffect(() => {
+    if (!loading && bestellrunden) {
+      if (bestellrunden.length === 1) {
+        setActiveOrderRound(bestellrunden[0].id)
+        setActiveOrderRoundData([bestellrunden[0].name, bestellrunden[0].id, bestellrunden[0].img])
+      }
+    }
+  }, [loading])
+
   return bestellrunden && !loading ? (
     <>
       {!activeOrderRound && (
@@ -119,21 +127,19 @@ const OrderingRounds = () => {
                 href="#"
                 style={{ fontWeight: "bold", color: "#1C7070" }}
                 onClick={() => {
-                  if (bestellrunden.length > 1) {
-                    axios
-                      .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
-                      .then(function (response) {
-                        axios
-                          .delete(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
-                            headers: {
-                              "X-WC-Store-API-Nonce": response.headers["x-wc-store-api-nonce"]
-                            }
-                          })
-                          .then(setPreviouslyOrdered(null))
-                          .catch(error => console.log(error))
-                      })
-                      .catch(error => console.log(error))
-                  }
+                  axios
+                    .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
+                    .then(function (response) {
+                      axios
+                        .delete(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
+                          headers: {
+                            "X-WC-Store-API-Nonce": response.headers["x-wc-store-api-nonce"]
+                          }
+                        })
+                        .then(setPreviouslyOrdered(null))
+                        .catch(error => console.log(error))
+                    })
+                    .catch(error => console.log(error))
                 }}
               >
                 {__("Warenkorb leeren", "fcplugin")}

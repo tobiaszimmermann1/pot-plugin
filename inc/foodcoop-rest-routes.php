@@ -505,12 +505,30 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * POST instant top up for wallet credit
+     * params: amount, user_id
+     */
+    register_rest_route( 'foodcoop/v1', 'instantTopup', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'instantTopup'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
 
+    /**
+     * POST email notification for bestellrunden
+     * params: orders
+     */
+    register_rest_route( 'foodcoop/v1', 'emailNotificationBestellrunden', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'emailNotificationBestellrunden'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
 
-    
-
-    
-    
   }
   
   
@@ -587,7 +605,7 @@ class FoodcoopRestRoutes {
       // product sku (for self-checkout)
       $the_product['sku'] = $product->get_sku();
 
-      array_push($products, $the_product);
+      if ($the_product['sku'] != "fcplugin_instant_topup_product") array_push($products, $the_product);
     }
          
     return json_encode(array($products, $categories));
@@ -610,6 +628,7 @@ class FoodcoopRestRoutes {
     $woocommerce_store_city = get_option('woocommerce_store_city');
     $woocommerce_store_postcode = get_option('woocommerce_store_postcode');
     $blogname = get_option('blogname');
+    $instantTopup = get_option('fc_instant_topup');
 
     $id = $data['id'];
     $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
@@ -617,7 +636,7 @@ class FoodcoopRestRoutes {
     $postcode = get_user_meta($id, 'billing_postcode', true);
     $city = get_user_meta($id, 'billing_city', true);
 
-    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city));
+    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup));
   }
 
   /**
@@ -668,6 +687,9 @@ class FoodcoopRestRoutes {
     
     $publicMembers = $data['publicMembers'];
     $publicMembers == true  ? update_option('fc_public_members', '1') : update_option('fc_public_members', '0');
+    
+    $instantTopup = $data['instantTopup'];
+    $instantTopup == true  ? update_option('fc_instant_topup', '1') : update_option('fc_instant_topup', '0');
     
     $publicProducts = $data['publicProducts'];
     $publicProducts == true  ? update_option('fc_public_products', '1') : update_option('fc_public_products', '0');
@@ -877,6 +899,7 @@ class FoodcoopRestRoutes {
         "total" => $o->get_total(),
         "date_created" => $o->get_date_created()->date("Y-m-d"),
         "url" => $o->get_edit_order_url(),
+        "customer_email" => $o->get_billing_email()
       );
 
       $line_items = array();
@@ -1103,7 +1126,7 @@ class FoodcoopRestRoutes {
       // product category (only the first one!)
       $the_product['category_name'] = $categories[$product->get_category_ids()[0]];
 
-      array_push($products, $the_product);
+      if ($product->get_sku() != 'fcplugin_instant_topup_product') array_push($products, $the_product);
     }
          
 
@@ -2113,8 +2136,8 @@ class FoodcoopRestRoutes {
       'orderby' => 'date',
       'order' => 'DESC',
       'return' => 'ids',
-      'customer' => intval($customer),
     ));
+    $query->set( 'customer', intval($customer->ID) );
     $order_ids = $query->get_orders();
     $order = null;
     $current_order = null;
@@ -2196,6 +2219,7 @@ class FoodcoopRestRoutes {
   function getBalance($data) {
     global $wpdb;
 
+    // get user balance
     $results = $wpdb->get_results(
       $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $data['id'])
     );
@@ -2205,8 +2229,7 @@ class FoodcoopRestRoutes {
       $current_balance = $result->balance;
     }
 
-
-    return json_encode($current_balance);
+    return json_encode([$current_balance, get_permalink( get_option('woocommerce_myaccount_page_id') )]);
   }
 
 
@@ -2377,8 +2400,77 @@ class FoodcoopRestRoutes {
 
 
 
+  /**
+   * instantTopup
+   */
+  function instantTopup($data) {
+    if ( defined( 'WC_ABSPATH' ) ) {
+      include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+      include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+      include_once WC_ABSPATH . 'includes/wc-template-hooks.php';
+    }
+
+    $amount = json_decode($data['amount']);
+    $user_id = json_decode($data['user_id']);
+
+    if ( null === WC()->session ) {
+      $session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
+      WC()->session = new $session_class();
+      WC()->session->init();
+    }
   
+    if ( null === WC()->customer ) {
+      WC()->customer = new WC_Customer( $user_id, true );
+    }
+  
+    if ( null === WC()->cart ) {
+        WC()->cart = new WC_Cart();
+        WC()->cart->get_cart();
+    }
+  
+    WC()->cart->empty_cart();
+
+    $instant_topup_product = wc_get_product_id_by_sku( "fcplugin_instant_topup_product" );
+
+    $result = WC()->cart->add_to_cart( $instant_topup_product, $amount );
+
+    if ($result) {
+      return json_encode(wc_get_checkout_url());
+    } else {
+      return http_response_code(400);
+    }
+  }
 
 
 
+  /**
+  * Email notification feature for Bestellrunden 
+  */
+
+  function emailNotificationBestellrunden($data) {
+    $orders = json_decode($data['orders']);
+    $message = $data['message'];
+    $subject = $data['subject'];
+    $number = 0;
+    
+    // loop through orders to get users email and name
+    foreach($orders as $order) {
+      $email = $order->customer_email;
+      $name = $order->customer_name;
+
+      $message_to_send = '<h2>Hallo '.$name.'</h2>';
+      $message_to_send .= $message;      
+
+      $headers[] = 'From: '. get_option('admin_email');
+      $headers[] = 'Reply-To: ' . get_option('admin_email');
+      $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+      if ($email) {
+        wp_mail( $email, $subject, $message_to_send, $headers);
+        $number++;
+      }
+    }
+
+    return ($number);
+  }
 }

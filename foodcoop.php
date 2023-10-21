@@ -549,11 +549,127 @@ add_shortcode('foodcoop_addtocart', function() {
 
 function fcplugin_get_item_data( $item_data, $cart_item_data ) {
   if( isset( $cart_item_data['bestellrunde'] ) ) {
-  $item_data[] = array(
-  'key' => __( 'bestellrunde', 'fcplugin' ),
-  'value' => wc_clean( $cart_item_data['bestellrunde'] )
-  );
+    $item_data[] = array(
+      'key' => __( 'bestellrunde', 'fcplugin' ),
+      'value' => wc_clean( $cart_item_data['bestellrunde'] )
+    );
   }
   return $item_data;
  }
  add_filter( 'woocommerce_get_item_data', 'fcplugin_get_item_data', 10, 2 );
+
+
+
+/**
+* Instant Top Up Product
+* Check if it exists via wpcron. If yes, do nothing. If no, create it
+*/
+
+add_filter( 'cron_schedules', 'fcplugin_instant_topup_hook_interval' );
+function fcplugin_instant_topup_hook_interval( $schedules ) { 
+    $schedules['minutely'] = array(
+        'interval' => 60,
+        'display'  => esc_html__( 'Every Minute' ), );
+    return $schedules;
+}
+
+add_action( 'fcplugin_instant_topup_hook', 'fcplugin_instant_topup_function' );
+
+if ( !wp_next_scheduled( 'fcplugin_instant_topup_hook' )) {
+  wp_schedule_event( time(), 'minutely', 'fcplugin_instant_topup_hook' );
+}
+
+function fcplugin_instant_topup_function() {
+  $sku = "fcplugin_instant_topup_product";
+  $instant_topup_product = wc_get_product_id_by_sku( $sku );
+
+  if (!$instant_topup_product) {
+    $product = new WC_Product_Simple();
+    $product->set_name( 'Foodcoop Guthaben' );
+    $product->set_slug( 'foodcoop_guthaben' );
+    $product->set_sku($sku);
+    $product->set_regular_price( 1.00 );
+    $product->save();
+ }
+}
+
+function fcplugin_instant_topup_add_amount($order) { 
+  global $wpdb;
+
+  $customer_id = $order->get_user_id();
+
+  $table = $wpdb->prefix.'foodcoop_wallet';
+  date_default_timezone_set('Europe/Zurich');
+  $date = date("Y-m-d H:i:s");
+  $details = 'Instant Topup ('.$order->get_id().') via '.$order->get_payment_method_title();
+  $created_by = $customer_id;
+
+  $is_instant_topup_product = false;
+  $amount = 10;
+
+  foreach ( $order->get_items() as $item_id => $item ) {
+    $product_id = $item->get_product_id();
+    $product = $item->get_product();
+    $sku = $product->get_sku();
+    if ($sku = 'fcplugin_instant_topup_product') {
+      $is_instant_topup_product = true;
+    }
+    $amount = $item->get_total();
+  }
+
+  if ($is_instant_topup_product) {
+    $results = $wpdb->get_results(
+      $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $customer_id)
+    );
+
+    foreach ( $results as $result )
+    {
+      $current_balance = number_format($result->balance, 2, '.', '');
+    }
+
+    $new_balance = $current_balance + $amount;
+    $new_balance = number_format($new_balance, 2, '.', '');
+    $data = array('user_id' => $customer_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+    $wpdb->insert($table, $data);
+  }
+}
+
+add_action( 'woocommerce_checkout_order_created', 'fcplugin_instant_topup_add_amount' );
+
+
+
+/**
+* Instant Top Up Product
+* Hide all payment methods except wallet, if order is part of any bestellrunde
+*/
+
+add_filter('woocommerce_available_payment_gateways', 'fcplugin_conditional_payment_gateways', 10, 1);
+function fcplugin_conditional_payment_gateways( $available_gateways ) {
+  if(is_admin()) return $available_gateways;
+
+  // check if cart includes products for bestellrunde
+  $order_is_part_of_bestellrunde = false;
+  $order_contains_instant_topup = false;
+  foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+    if( isset( $cart_item['bestellrunde'] ) ) {
+      $order_is_part_of_bestellrunde = true;
+    }
+    $product = $cart_item['data'];
+    $sku = $product->get_sku();
+    if ($sku == 'fcplugin_instant_topup_product') {
+      $order_contains_instant_topup = true;
+    }
+  }
+  
+  if ($order_is_part_of_bestellrunde) {
+    $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
+    $available_gateways = array();
+    $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+  }
+  
+  if ($order_contains_instant_topup) {
+    unset($available_gateways['foodcoop_guthaben']);
+  }
+
+  return $available_gateways;
+}

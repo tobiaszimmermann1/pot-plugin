@@ -12,6 +12,7 @@ import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
 import OrderOverview from "./OrderOverview"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
+
 const __ = wp.i18n.__
 
 const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRoundData, setActiveOrderRound }) => {
@@ -46,7 +47,6 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log("orderlist", res)
           setAllProducts(res[3])
           setBestellrundenProducts(res[2])
           setCategories(res[4])
@@ -190,6 +190,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
             <h2 className="fc_order_list_header_steps">{__("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")}</h2>
 
             <h2 className="fc_order_list_header_info">
+              <div style={{ backgroundImage: activeOrderRoundData[2] ? `url(${activeOrderRoundData[2]})` : `url(${frontendLocalizer.pluginUrl}/images/bestellrunde.png`, backgroundSize: "cover", backgroundPosition: "center center" }} className="fc_order_list_header_image" />
               <table>
                 <tbody>
                   <tr>
@@ -219,6 +220,16 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
                 </tbody>
               </table>
             </h2>
+            {order && (
+              <Alert sx={{ marginBottom: 1 }} severity="info">
+                {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
+              </Alert>
+            )}
+            {cart && (
+              <Alert sx={{ marginBottom: 1 }} severity="info">
+                {__("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")}
+              </Alert>
+            )}
           </>
         ) : (
           <Box sx={{}}>
@@ -243,7 +254,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
     </TriggerContext.Provider>
   ) : (
     <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-      {__("Produkte werden geladen...", "fcplugin")} <CircularProgress />
+      <CircularProgress />
     </div>
   )
 }
