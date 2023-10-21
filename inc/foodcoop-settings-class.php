@@ -53,6 +53,9 @@ class FoocoopPluginSettings {
    
     add_settings_field( 'fc_public_members', __('Zeige eine Mitgliederliste in "Mein Account"?', 'fcplugin'), array($this, 'fc_public_members_html'), 'foodcoop-settings-page', 'fc_display' );
     register_setting( 'foodcoop_plugin', 'fc_public_members', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
+   
+    add_settings_field( 'fc_instant_topup', __('Instant Topup aktivieren?', 'fcplugin'), array($this, 'fc_instant_topup_html'), 'foodcoop-settings-page', 'fc_display' );
+    register_setting( 'foodcoop_plugin', 'fc_instant_topup', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
   }
 
   function sanitize_margin($input) {
@@ -116,6 +119,11 @@ class FoocoopPluginSettings {
   function fc_public_members_html() { ?>
     <input name="fc_public_members" type="checkbox" id="fc_public_members" value="1" <?php checked(get_option('fc_public_members'), '1') ?> />
     <p class="description"><?php echo esc_html__('Zeigt eingeloggten Mitgliedern eine Liste aller Foodcoop Mitglieder mit Name und Email.', 'fcplugin'); ?></p>
+  <?php }
+
+  function fc_instant_topup_html() { ?>
+    <input name="fc_instant_topup" type="checkbox" id="fc_instant_topup" value="1" <?php checked(get_option('fc_instant_topup'), '1') ?> />
+    <p class="description"><?php echo esc_html__('Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).', 'fcplugin'); ?></p>
   <?php }
 
   function fc_order_page_html() { 

@@ -13,7 +13,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh"
 import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, CircularProgress, Stack, TextField, Tooltip } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker"
-import { format, isValid, parse } from "date-fns"
+import { format, isValid, parse, isBefore, isAfter, isFuture, isPast } from "date-fns"
 const __ = wp.i18n.__
 import OrdersOfBestellrundeModal from "./bestellrunden/Orders"
 import ProductsOfBestellrundeModal from "./bestellrunden/Products"
@@ -22,10 +22,17 @@ import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import FormControl from "@mui/material/FormControl"
 import Grid from "@mui/material/Grid"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import PendingIcon from "@mui/icons-material/Pending"
+import UpdateIcon from "@mui/icons-material/Update"
+import EmailIcon from "@mui/icons-material/Email"
+import Divider from "@mui/material/Divider"
+import NotificationModal from "./bestellrunden/Notification"
 
 const Bestellrunden = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [orderModalOpen, setOrderModalOpen] = useState(false)
+  const [notificationModalOpen, setNotificationModalOpen] = useState(false)
   const [productsModalOpen, setProductsModalOpen] = useState(false)
   const [mutationsModalOpen, setMutationsModalOpen] = useState(false)
   const [bestellrunden, setBestellrunden] = useState()
@@ -52,6 +59,12 @@ const Bestellrunden = () => {
             bestellrundeToDo.bestellrunde_ende = format(new Date(b.bestellrunde_ende), "yyyy-MM-dd")
             bestellrundeToDo.bestellrunde_verteiltag = format(new Date(b.bestellrunde_verteiltag), "yyyy-MM-dd")
             bestellrundeToDo.id = b.id
+            bestellrundeToDo.bestellrunde_name = b.bestellrunde_name
+            bestellrundeToDo.bestellrunde_bild = b.bestellrunde_bild
+
+            if (!bestellrundeToDo.bestellrunde_name) {
+              bestellrundeToDo.bestellrunde_name = __("Bestellrunde", "fcplugin") + " " + bestellrundeToDo.id
+            }
 
             reArrangedBestellrunden.push(bestellrundeToDo)
           })
@@ -76,6 +89,39 @@ const Bestellrunden = () => {
         header: __("ID", "fcplugin"),
         enableEditing: false,
         size: 50
+      },
+      {
+        header: __("Status", "fcplugin"),
+        enableEditing: false,
+        size: 50,
+        Cell: ({ row }) => {
+          //           if (isBefore(parse(new Date(row.original.bestellrunde_start)), parse(new Date())) && isBefore(parse(new Date()), isBefore(parse(new Date(row.original.bestellrunde_start))))) {
+
+          if (isFuture(new Date(row.original.bestellrunde_verteiltag)) && isPast(new Date(row.original.bestellrunde_start))) {
+            return <PendingIcon color="warning" />
+          } else {
+            if (isPast(new Date(row.original.bestellrunde_ende))) {
+              return <CheckCircleIcon color="success" />
+            } else {
+              return (
+                <>
+                  <UpdateIcon color="info" />
+                </>
+              )
+            }
+          }
+        }
+      },
+      {
+        accessorKey: "bestellrunde_bild",
+        header: __("Bild", "fcplugin"),
+        Cell: ({ cell }) => (cell.getValue() ? <img src={cell.getValue()} height="35px" /> : ""),
+        enableSorting: false,
+        size: 50
+      },
+      {
+        accessorKey: "bestellrunde_name",
+        header: __("Bezeichnung", "fcplugin")
       },
       {
         accessorKey: "bestellrunde_start",
@@ -129,7 +175,9 @@ const Bestellrunden = () => {
             bestellrunde_start: format(new Date(values.bestellrunde_start), "yyyy-MM-dd"),
             bestellrunde_ende: format(new Date(values.bestellrunde_ende), "yyyy-MM-dd"),
             bestellrunde_verteiltag: format(new Date(values.bestellrunde_verteiltag), "yyyy-MM-dd"),
-            id: values.id
+            id: values.id,
+            bestellrunde_name: values.bestellrunde_name,
+            bestellrunde_bild: values.bestellrunde_bild
           },
           {
             headers: {
@@ -220,51 +268,62 @@ const Bestellrunden = () => {
           "mrt-row-actions": {
             header: "",
             Cell: ({ row, table }) => (
-              <Box>
-                <ButtonGroup
-                  variant="text"
-                  aria-label="text button group"
-                  sx={{
-                    padding: "5px 10px 5px 10px"
+              <Box sx={{ display: "flex", gap: "5px", p: "0.5rem", flexWrap: "nowrap" }}>
+                <IconButton color="#cccccc" size="small" onClick={() => table.setEditingRow(row)}>
+                  <EditIcon />
+                </IconButton>
+                <Divider orientation="vertical" flexItem />
+                <IconButton color="#cccccc" size="small" onClick={() => handleDeleteRow(row)}>
+                  <DeleteIcon />
+                </IconButton>
+                <Divider orientation="vertical" flexItem />
+                <Button
+                  sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+                  size="small"
+                  startIcon={<ShoppingBasketIcon />}
+                  onClick={() => {
+                    setSelectedBestellrunde(row.original.id)
+                    setProductsModalOpen(true)
                   }}
                 >
-                  <Button size="small" onClick={() => table.setEditingRow(row)}>
-                    <EditIcon />
-                  </Button>
-                  <Button size="small" onClick={() => handleDeleteRow(row)}>
-                    <DeleteIcon />
-                  </Button>
-                  <Button
-                    size="small"
-                    startIcon={<ShoppingBasketIcon />}
-                    onClick={() => {
-                      setSelectedBestellrunde(row.original.id)
-                      setProductsModalOpen(true)
-                    }}
-                  >
-                    {__("Produkte", "fcplugin")}
-                  </Button>
-                  <Button
-                    size="small"
-                    startIcon={<AutoFixHighIcon />}
-                    onClick={() => {
-                      setSelectedBestellrunde(row.original.id)
-                      setMutationsModalOpen(true)
-                    }}
-                  >
-                    {__("Mutation", "fcplugin")}
-                  </Button>
-                  <Button
-                    size="small"
-                    startIcon={<AllInboxIcon />}
-                    onClick={() => {
-                      setSelectedBestellrunde(row.original.id)
-                      setOrderModalOpen(true)
-                    }}
-                  >
-                    {__("Bestellungen", "fcplugin")}
-                  </Button>
-                </ButtonGroup>
+                  {__("Produkte", "fcplugin")}
+                </Button>
+                <Divider orientation="vertical" flexItem />
+                <Button
+                  sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+                  size="small"
+                  startIcon={<AutoFixHighIcon />}
+                  onClick={() => {
+                    setSelectedBestellrunde(row.original.id)
+                    setMutationsModalOpen(true)
+                  }}
+                >
+                  {__("Mutation", "fcplugin")}
+                </Button>
+                <Divider orientation="vertical" flexItem />
+                <Button
+                  sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+                  size="small"
+                  startIcon={<AllInboxIcon />}
+                  onClick={() => {
+                    setSelectedBestellrunde(row.original.id)
+                    setOrderModalOpen(true)
+                  }}
+                >
+                  {__("Bestellungen", "fcplugin")}
+                </Button>
+                <Divider orientation="vertical" flexItem />
+                <Button
+                  sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+                  size="small"
+                  startIcon={<EmailIcon />}
+                  onClick={() => {
+                    setSelectedBestellrunde(row.original.id)
+                    setNotificationModalOpen(true)
+                  }}
+                >
+                  {__("Benachrichtigung", "fcplugin")}
+                </Button>
               </Box>
             )
           }
@@ -285,6 +344,7 @@ const Bestellrunden = () => {
       />
       <CreateNewBestellrundeModal columns={columns} open={createModalOpen} onClose={() => setCreateModalOpen(false)} onSubmit={handleCreateNewRow} />
       <OrdersOfBestellrundeModal open={orderModalOpen} id={selectedBestellrunde} setModalClose={setOrderModalOpen} />
+      <NotificationModal open={notificationModalOpen} id={selectedBestellrunde} setModalClose={setNotificationModalOpen} />
       {productsModalOpen && <ProductsOfBestellrundeModal id={selectedBestellrunde} setModalClose={setProductsModalOpen} />}
       {mutationsModalOpen && <Mutations id={selectedBestellrunde} setModalClose={setMutationsModalOpen} />}
     </>
@@ -313,7 +373,9 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
           {
             bestellrunde_start: format(new Date(valueStart), "yyyy-MM-dd"),
             bestellrunde_ende: format(new Date(valueEnd), "yyyy-MM-dd"),
-            bestellrunde_verteiltag: format(new Date(valueDist), "yyyy-MM-dd")
+            bestellrunde_verteiltag: format(new Date(valueDist), "yyyy-MM-dd"),
+            bestellrunde_name: valueName,
+            bestellrunde_bild: valueImg
           },
           {
             headers: {
@@ -327,6 +389,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
             values["bestellrunde_start"] = format(new Date(valueStart), "yyyy-MM-dd")
             values["bestellrunde_ende"] = format(new Date(valueEnd), "yyyy-MM-dd")
             values["bestellrunde_verteiltag"] = format(new Date(valueDist), "yyyy-MM-dd")
+            values["bestellrunde_name"] = valueName
             onSubmit(values)
             setSubmitting(false)
             onClose()
@@ -346,6 +409,8 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
   const [valueStart, setValueStart] = useState(format(new Date(), "dd.MM.yyyy"))
   const [valueEnd, setValueEnd] = useState(format(new Date(), "dd.MM.yyyy"))
   const [valueDist, setValueDist] = useState(format(new Date(), "dd.MM.yyyy"))
+  const [valueName, setValueName] = useState("")
+  const [valueImg, setValueImg] = useState("")
 
   return (
     <Dialog fullScreen open={open} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -368,6 +433,22 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
         <form onSubmit={e => e.preventDefault()}>
           <Box sx={{ padding: 2 }}>
             <Grid container spacing={2} rowGap={2} alignItems="baseline">
+              <Grid item xs={4}>
+                {__("Bestellrunde Bezeichnung", "fcplugin")}
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl fullWidth>
+                  <TextField size="normal" id="bestellrunde_name" label={__("Bestellrunde Bezeichnung", "fcplugin")} name="bestellrunde_name" variant="outlined" value={valueName} onChange={e => setValueName(e.target.value)} />
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                {__("Bestellrunde Bild", "fcplugin")}
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl fullWidth>
+                  <TextField size="normal" id="bestellrunde_bild" label={__("URL Bild", "fcplugin")} name="bestellrunde_bild" variant="outlined" value={valueImg} onChange={e => setValueImg(e.target.value)} />
+                </FormControl>
+              </Grid>
               <Grid item xs={4}>
                 {__("Bestellrunde Start", "fcplugin")}
               </Grid>

@@ -29,6 +29,7 @@ const Settings = () => {
   const [orderPage, setOrderPage] = useState()
   const [publicPrices, setPublicPrices] = useState()
   const [publicMembers, setPublicMembers] = useState()
+  const [instantTopup, setInstantTopup] = useState()
   const [publicProducts, setPublicProducts] = useState()
   const [adminEmail, setAdminEmail] = useState()
   const [submitting, setSubmitting] = useState(false)
@@ -82,6 +83,7 @@ const Settings = () => {
       options.fc_public_prices == "1" ? setPublicPrices(true) : setPublicPrices(false)
       options.fc_public_members == "1" ? setPublicMembers(true) : setPublicMembers(false)
       options.fc_public_products == "1" ? setPublicProducts(true) : setPublicProducts(false)
+      options.fc_instant_topup == "1" ? setInstantTopup(true) : setInstantTopup(false)
       setAdminEmail(options.admin_email)
     }
   }, [options])
@@ -103,6 +105,7 @@ const Settings = () => {
           orderPage: orderPage,
           publicPrices: publicPrices,
           publicMembers: publicMembers,
+          instantTopup: instantTopup,
           publicProducts: publicProducts,
           adminEmail: adminEmail
         },
@@ -308,6 +311,14 @@ const Settings = () => {
             </Grid>
             <Grid item xs={8}>
               <Switch checked={publicMembers} onChange={event => setPublicMembers(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+            </Grid>
+            <Grid item xs={4}>
+              {__("Instant Topup aktivieren?", "fcplugin")}
+              <br />
+              <small>{__("Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <Switch checked={instantTopup} onChange={event => setInstantTopup(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
           </Grid>
         </CardContent>

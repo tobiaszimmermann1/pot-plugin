@@ -11,9 +11,11 @@ import BedtimeIcon from "@mui/icons-material/Bedtime"
 import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
 import OrderOverview from "./OrderOverview"
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
+
 const __ = wp.i18n.__
 
-const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestellrundenDates, activeBestellrunde, nextBestellrunde, activeState, categories }) => {
+const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRoundData, setActiveOrderRound }) => {
   const [products, setProducts] = useState()
   const [productsLoading, setProductsLoading] = useState(true)
   const [cart, setCart] = useState(null)
@@ -23,6 +25,42 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
   const [loading, setLoading] = useState(true)
   const [shoppingList, setShoppingList] = useState({})
   const [trigger, setTrigger] = useState(0)
+
+  /**
+   * Get Data for Bestellrunde
+   */
+  const [allProducts, setAllProducts] = useState()
+  const [bestellrundenProducts, setBestellrundenProducts] = useState()
+  const [categories, setCategories] = useState()
+  const [bestellrundenDates, setBestellrundenDates] = useState()
+  const [nextBestellrunde, setNextBestellrunde] = useState()
+  const [activeState, setActiveState] = useState(null)
+  const [order, setOrder] = useState(null)
+  const [currency, setCurrency] = useState(null)
+
+  useEffect(() => {
+    axios
+      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductList`, {
+        user: frontendLocalizer.currentUser.ID,
+        bestellrunde: activeBestellrunde
+      })
+      .then(function (response) {
+        if (response.data) {
+          const res = JSON.parse(response.data)
+          setAllProducts(res[3])
+          setBestellrundenProducts(res[2])
+          setCategories(res[4])
+          setActiveState(res[0])
+          setBestellrundenDates(res[6])
+          setNextBestellrunde(res[8])
+          if (res[5] !== null) {
+            setOrder(res[5])
+          }
+          setCurrency(res[7])
+        }
+      })
+      .catch(error => console.log(error))
+  }, [])
 
   /**
    * Get cart data of user
@@ -134,35 +172,64 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
   return !loading ? (
     <TriggerContext.Provider value={trigger}>
       <ShoppingContext.Provider value={shoppingList}>
-        {frontendLocalizer.currentUser.ID ? <OrderOverview currency={currency} order={order} cartNonce={cartNonce} activeState={activeState} cart={cart} /> : ""}
+        {frontendLocalizer.currentUser.ID ? <OrderOverview currency={currency} order={order} cartNonce={cartNonce} activeState={activeState} cart={cart} activeBestellrunde={activeBestellrunde} /> : ""}
         {activeState && bestellrundenDates ? (
           <>
-            <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "14pt", marginBottom: "20px", textAlign: "right" }}>
-              <CelebrationIcon /> {__("Aktuell ist das Bestellfenster geöffnet.", "fcplugin")}
-            </Typography>
-
+            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                startIcon={<ArrowBackIcon />}
+                variant="text"
+                onClick={() => {
+                  setActiveOrderRound(null)
+                  setActiveOrderRoundData(null)
+                }}
+              >
+                {__("zurück", "fcplugin")}
+              </Button>
+            </div>
             <h2 className="fc_order_list_header_steps">{__("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")}</h2>
 
             <h2 className="fc_order_list_header_info">
+              <div style={{ backgroundImage: activeOrderRoundData[2] ? `url(${activeOrderRoundData[2]})` : `url(${frontendLocalizer.pluginUrl}/images/bestellrunde.png`, backgroundSize: "cover", backgroundPosition: "center center" }} className="fc_order_list_header_image" />
               <table>
                 <tbody>
+                  <tr>
+                    <td>
+                      <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
+                    </td>
+                    <td>
+                      <strong>{activeOrderRoundData[0]}</strong> ({activeOrderRoundData[1]})
+                    </td>
+                  </tr>
                   <tr>
                     <td>
                       <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
                     </td>
                     <td>
-                      {format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")} {__("bis", "fcplugin")} {format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}{" "}
+                      <strong>{format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")}</strong> {__("bis", "fcplugin")} <strong>{format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}</strong>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <strong>{__("Abholen: ", "fcplugin")}</strong>{" "}
                     </td>
-                    <td>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")} </td>
+                    <td>
+                      <strong>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")}</strong>{" "}
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </h2>
+            {order && (
+              <Alert sx={{ marginBottom: 1 }} severity="info">
+                {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
+              </Alert>
+            )}
+            {cart && (
+              <Alert sx={{ marginBottom: 1 }} severity="info">
+                {__("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")}
+              </Alert>
+            )}
           </>
         ) : (
           <Box sx={{}}>
@@ -187,7 +254,7 @@ const OrderList = ({ currency, order, allProducts, bestellrundenProducts, bestel
     </TriggerContext.Provider>
   ) : (
     <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-      {__("Produkte werden geladen...", "fcplugin")} <CircularProgress />
+      <CircularProgress />
     </div>
   )
 }

@@ -53,7 +53,6 @@ class WalletDashboard
 
         <div class="fc_account_wallet">
             <p class="fc_account_wallet_balance">Dein aktuelles Guthaben beträgt <strong style="color:<?php echo $balance_color; ?>;" >CHF <?php echo $balance; ?></strong></p>
-            <p><?php echo get_option('fc_transfer'); ?></p>
             <div id="fc_topup"></div>
         </div>
 

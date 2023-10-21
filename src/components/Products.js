@@ -13,6 +13,7 @@ import ImportProducts from "./products/ImportProducts"
 import ProducerImportProducts from "./products/ProducerImportProducts"
 import ImageIcon from "@mui/icons-material/Image"
 import QrCodeIcon from "@mui/icons-material/QrCode"
+import Divider from "@mui/material/Divider"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -296,15 +297,17 @@ const Products = () => {
         displayColumnDefOptions={{
           "mrt-row-actions": {
             header: "",
-            size: 100,
+            size: 180,
             Cell: ({ row, table }) => (
-              <Box>
+              <Box sx={{ display: "flex", gap: "5px", p: "0.5rem", flexWrap: "nowrap" }}>
                 <IconButton onClick={() => table.setEditingRow(row)}>
                   <EditIcon />
                 </IconButton>
+                <Divider orientation="vertical" flexItem />
                 <IconButton onClick={() => handleQRCode(row)} disabled={buttonLoading}>
                   <QrCodeIcon />
                 </IconButton>
+                <Divider orientation="vertical" flexItem />
                 <IconButton onClick={() => handleDeleteRow(row)}>
                   <DeleteIcon />
                 </IconButton>

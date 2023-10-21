@@ -100,26 +100,21 @@ function fc_init_gateway_class() {
 
             
 
-
-            // check if bestellrunde is active and if yes, set the id
-            $bestellrunden = get_posts(array(
-                'numberposts' => -1,
-                'post_type'   => 'bestellrunden',
-                'meta_key' => 'bestellrunde_start',
-                'orderby' => 'meta_value',
-            ));
-        
-            $bestellrunde_dates = array();
-            $now = date('Y-m-d');
+            // get cart items to fetch bestellrunde_id
             $active = false;
-            foreach ($bestellrunden as $b) {
-                $id = $b->ID;
-                $start = get_post_meta( $id, 'bestellrunde_start', true );
-                $end = get_post_meta( $id, 'bestellrunde_ende', true );
-                if ($start <= $now AND $end >= $now) {
-                    $active = $id;
-                }
+            $bestellrunde_ids_in_cart = array();
+            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+            $bestellrunde_id = $cart_item['bestellrunde'];
+            if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
+                array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
             }
+            }
+            
+            if (count($bestellrunde_ids_in_cart) == 1) {
+                $active = $bestellrunde_ids_in_cart[0];
+            }
+
+            
 
             // Get previous order value
             if ($user_id) {
@@ -266,24 +261,18 @@ function fc_init_gateway_class() {
 
             $order_total = $woocommerce->cart->total;
 
-            // check if bestellrunde is active and if yes, set the id
-            $bestellrunden = get_posts(array(
-                'numberposts' => -1,
-                'post_type'   => 'bestellrunden',
-                'meta_key' => 'bestellrunde_start',
-                'orderby' => 'meta_value',
-            ));
-        
-            $bestellrunde_dates = array();
-            $now = date('Y-m-d');
+            // get cart items to fetch bestellrunde_id
             $active = false;
-            foreach ($bestellrunden as $b) {
-                $id = $b->ID;
-                $start = get_post_meta( $id, 'bestellrunde_start', true );
-                $end = get_post_meta( $id, 'bestellrunde_ende', true );
-                if ($start <= $now AND $end >= $now) {
-                    $active = $id;
-                }
+            $bestellrunde_ids_in_cart = array();
+            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+            $bestellrunde_id = $cart_item['bestellrunde'];
+            if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
+                array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+            }
+            }
+            
+            if (count($bestellrunde_ids_in_cart) == 1) {
+                $active = $bestellrunde_ids_in_cart[0];
             }
 
 

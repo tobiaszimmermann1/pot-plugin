@@ -8,7 +8,7 @@
 Plugin Name: Foodcoop Manager
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
-Version: 1.6.0
+Version: 1.6.1
 Author: Tobias Zimmermann
 Author URI: https://neues-food-depot.ch
 License: GPLv2 or later
@@ -177,7 +177,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.5.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.6.1', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -187,23 +187,26 @@ function fc_admin_load_scripts() {
     'currentUser' => wp_get_current_user()
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.5' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.1' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.5.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.6.1', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
     'pluginUrl' => plugin_dir_url(__FILE__),
     'cartUrl' => wc_get_checkout_url(),
+    'accountUrl' => get_permalink( get_option('woocommerce_myaccount_page_id') ),
     'nonce' => wp_create_nonce('wp_rest'),
-    'currentUser' => wp_get_current_user()
+    'woo_nonce' => wp_create_nonce( 'wc_store_api' ),
+    'currentUser' => wp_get_current_user(),
+    'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.5.5' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.1' );
 }
 
 add_action( 'init', 'fc_init');
@@ -231,7 +234,7 @@ function fc_init() {
   $args = array(
     'label'                 => __( 'Bestellrunden'),
     'labels'                => $labels,
-    'supports'              => array('author', 'custom-fields'),
+    'supports'              => array('author', 'custom-fields', 'thumbnail'),
     'taxonomies'            => array(),
     'hierarchical'          => false,
     'public'                => true,
@@ -514,8 +517,159 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
  * Self-Checkout Module: Add to Cart  shortcode [foodcoop_addtocart]
  */
 
- add_shortcode('foodcoop_addtocart', function() {
-  ?>
-    <div id="fc_add_to_cart"></div>
-  <?php
+add_shortcode('foodcoop_addtocart', function() {
+  if (is_user_logged_in()) {
+    ?>
+      <div id="fc_add_to_cart"></div>
+    <?php
+  } else {
+    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+      $url = "https://";  
+    } else {  
+      $url = "http://";   
+    }
+    $url.= $_SERVER['HTTP_HOST'];   
+    $url.= $_SERVER['REQUEST_URI'];    
+
+    wp_login_form( array(
+      'redirect' => $url,
+      'echo' => true,
+      'remember' => false
+    ) );
+  }
+
 });
+
+
+
+/**
+ * Cart item metadata
+ * add 'bestellrunde' to cart items
+ */
+
+function fcplugin_get_item_data( $item_data, $cart_item_data ) {
+  if( isset( $cart_item_data['bestellrunde'] ) ) {
+    $item_data[] = array(
+      'key' => __( 'bestellrunde', 'fcplugin' ),
+      'value' => wc_clean( $cart_item_data['bestellrunde'] )
+    );
+  }
+  return $item_data;
+ }
+ add_filter( 'woocommerce_get_item_data', 'fcplugin_get_item_data', 10, 2 );
+
+
+
+/**
+* Instant Top Up Product
+* Check if it exists via wpcron. If yes, do nothing. If no, create it
+*/
+
+add_filter( 'cron_schedules', 'fcplugin_instant_topup_hook_interval' );
+function fcplugin_instant_topup_hook_interval( $schedules ) { 
+    $schedules['minutely'] = array(
+        'interval' => 60,
+        'display'  => esc_html__( 'Every Minute' ), );
+    return $schedules;
+}
+
+add_action( 'fcplugin_instant_topup_hook', 'fcplugin_instant_topup_function' );
+
+if ( !wp_next_scheduled( 'fcplugin_instant_topup_hook' )) {
+  wp_schedule_event( time(), 'minutely', 'fcplugin_instant_topup_hook' );
+}
+
+function fcplugin_instant_topup_function() {
+  $sku = "fcplugin_instant_topup_product";
+  $instant_topup_product = wc_get_product_id_by_sku( $sku );
+
+  if (!$instant_topup_product) {
+    $product = new WC_Product_Simple();
+    $product->set_name( 'Foodcoop Guthaben' );
+    $product->set_slug( 'foodcoop_guthaben' );
+    $product->set_sku($sku);
+    $product->set_regular_price( 1.00 );
+    $product->save();
+ }
+}
+
+function fcplugin_instant_topup_add_amount($order) { 
+  global $wpdb;
+
+  $customer_id = $order->get_user_id();
+
+  $table = $wpdb->prefix.'foodcoop_wallet';
+  date_default_timezone_set('Europe/Zurich');
+  $date = date("Y-m-d H:i:s");
+  $details = 'Instant Topup ('.$order->get_id().') via '.$order->get_payment_method_title();
+  $created_by = $customer_id;
+
+  $is_instant_topup_product = false;
+  $amount = 10;
+
+  foreach ( $order->get_items() as $item_id => $item ) {
+    $product_id = $item->get_product_id();
+    $product = $item->get_product();
+    $sku = $product->get_sku();
+    if ($sku = 'fcplugin_instant_topup_product') {
+      $is_instant_topup_product = true;
+    }
+    $amount = $item->get_total();
+  }
+
+  if ($is_instant_topup_product) {
+    $results = $wpdb->get_results(
+      $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $customer_id)
+    );
+
+    foreach ( $results as $result )
+    {
+      $current_balance = number_format($result->balance, 2, '.', '');
+    }
+
+    $new_balance = $current_balance + $amount;
+    $new_balance = number_format($new_balance, 2, '.', '');
+    $data = array('user_id' => $customer_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+    $wpdb->insert($table, $data);
+  }
+}
+
+add_action( 'woocommerce_checkout_order_created', 'fcplugin_instant_topup_add_amount' );
+
+
+
+/**
+* Instant Top Up Product
+* Hide all payment methods except wallet, if order is part of any bestellrunde
+*/
+
+add_filter('woocommerce_available_payment_gateways', 'fcplugin_conditional_payment_gateways', 10, 1);
+function fcplugin_conditional_payment_gateways( $available_gateways ) {
+  if(is_admin()) return $available_gateways;
+
+  // check if cart includes products for bestellrunde
+  $order_is_part_of_bestellrunde = false;
+  $order_contains_instant_topup = false;
+  foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+    if( isset( $cart_item['bestellrunde'] ) ) {
+      $order_is_part_of_bestellrunde = true;
+    }
+    $product = $cart_item['data'];
+    $sku = $product->get_sku();
+    if ($sku == 'fcplugin_instant_topup_product') {
+      $order_contains_instant_topup = true;
+    }
+  }
+  
+  if ($order_is_part_of_bestellrunde) {
+    $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
+    $available_gateways = array();
+    $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+  }
+  
+  if ($order_contains_instant_topup) {
+    unset($available_gateways['foodcoop_guthaben']);
+  }
+
+  return $available_gateways;
+}

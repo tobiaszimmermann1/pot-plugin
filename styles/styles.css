@@ -146,11 +146,15 @@ html {
   max-width: 70% !important;
 }
 
+.MuiAlert-icon {
+  width: auto !important;
+}
+
 .order_manual_public {
   width: 100%;
   display: flex;
   flex-direction: column;
-  z-index: 99999;
+  z-index: 1498;
 }
 
 .fc_order_list_input {
@@ -179,18 +183,32 @@ html {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   background-color: #f9f9f9;
-  margin-bottom: 25px !important;
+  margin-bottom: 10px !important;
   margin-top: 10px;
-  padding: 10px;
   font-size: 1em !important;
   font-weight: normal;
   transition: all 0.1s;
   border: none;
   z-index: 100;
   border-radius: 5px;
+}
+
+.fc_order_list_header_image {
+  height: 100px;
+  width: 20%;
+  margin-right: 15px;
+}
+
+.fc_order_list_header_info table {
+  margin-top: 5px !important;
+}
+
+.fc_order_list_header_info td {
+  padding-bottom: 5px;
+  vertical-align: top;
 }
 
 .fc_order_list_title {
@@ -241,6 +259,11 @@ html {
   justify-content: flex-start;
   align-items: flex-start;
   font-size: 0.8em;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.fc_order_list_mobile_img {
+  display: none;
 }
 
 .fc_order_list_col {
@@ -366,7 +389,7 @@ html {
   flex-direction: row;
   justify-content: flex-end;
   align-items: flex-start;
-  z-index: 999999;
+  z-index: 1499;
 }
 
 #fc_order_bar .multi-button {
@@ -409,22 +432,11 @@ html {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .fc_order_bar_actions button {
   font-size: 0.8em !important;
-  background-color: #e3e3e3;
-  border-color: #5a5a5a;
-  color: #000000;
-  padding: 10px 15px;
-  min-width: 200px;
-  width: 40%;
-}
-
-.fc_order_bar_actions button:hover {
-  background-color: #cacaca;
-  border-color: #cacaca;
 }
 
 .fc_order_bar_actions .cartButton {
@@ -434,6 +446,7 @@ html {
   color: #fff;
   padding: 10px 25px;
   width: 100%;
+  min-width: 300px;
 }
 
 .fc_order_bar_actions .cartButton:hover {
@@ -459,7 +472,7 @@ html {
   justify-content: flex-start;
   align-items: flex-start;
   transition: all 0.2s;
-  z-index: 99999;
+  z-index: 1498;
 }
 
 #fc_shopping_list hr {
@@ -619,7 +632,7 @@ html {
 .productModalImage {
   max-height: 400px !important;
   object-fit: contain !important;
-  background: #f0f0f0 !important;
+  background: #ffffff !important;
 }
 
 .fc_account_wallet {
@@ -711,6 +724,11 @@ html {
   animation-fill-mode: forwards;
 }
 
+#loginform p label,
+#loginform p input {
+  width: 100%;
+}
+
 @keyframes hideAnimation {
   to {
     visibility: hidden;
@@ -719,17 +737,39 @@ html {
   }
 }
 
-.fc_topup_input {
+.fc_topup_input,
+.fc_instant_topup_input {
   margin-right: 20px;
 }
 
+.variation-bestellrunde {
+  visibility: hidden;
+  height: 1px;
+}
+
 @media only screen and (max-width: 800px) {
+  .fc_order_list_line_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 2.5%;
+  }
+
+  .fc_order_list_mobile_img {
+    display: block;
+    width: 20%;
+    margin-right: 5%;
+  }
+
   .fc_order_list_line {
     flex-wrap: wrap;
+    padding: 0 10px;
+    width: 65%;
   }
 
   .fc_order_list_col {
-    padding: 5px 1%;
+    padding: 2px 1%;
     border-bottom: none;
     align-self: stretch;
   }
@@ -739,55 +779,81 @@ html {
   }
 
   .col_1 {
-    width: 20%;
+    width: 30%;
+    padding-top: 15px;
   }
 
   .col_15 {
-    width: 30%;
+    display: none;
+    width: 100%;
   }
 
   .col_2 {
-    width: 50%;
+    width: 100%;
     font-weight: bold;
-    font-size: 1.25em;
+    font-size: 1.5em;
   }
 
   .col_2x {
-    width: 50%;
+    width: 100%;
     font-weight: bold;
+    font-size: 1.5em;
   }
 
   .col_25 {
-    width: 20%;
-    border-bottom: 1px solid #e3e3e3;
+    width: 100%;
   }
 
   .col_3 {
-    width: 20%;
-    border-bottom: 1px solid #e3e3e3;
+    width: 100%;
   }
 
   .col_4 {
-    width: 20%;
-    text-align: right;
-    border-bottom: 1px solid #e3e3e3;
+    width: 50%;
+    text-align: left;
   }
 
   .col_5 {
-    width: 20%;
-    text-align: right;
-    border-bottom: 1px solid #e3e3e3;
+    display: none;
   }
 
   .col_6 {
-    width: 20%;
+    width: 50%;
     text-align: right;
-    border-bottom: 1px solid #e3e3e3;
+    font-weight: bold;
   }
 
   .productModalImage {
     max-height: 200px !important;
     object-fit: contain !important;
-    background: #f0f0f0 !important;
+    background: #ffffff !important;
+  }
+
+  #fc_order_bar {
+    height: auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .fc_order_bar_col {
+    width: 95%;
+    padding: 10px;
+    margin: 10px;
+    display: flex;
+    font-size: 0.8em;
+  }
+
+  .order_manual_public,
+  #fc_shopping_list {
+    bottom: auto;
+    top: 0;
+    right: auto;
+    left: 0;
+    width: 100%;
+    max-height: 80vh;
+    transition: none;
   }
 }

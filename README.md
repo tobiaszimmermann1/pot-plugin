@@ -36,6 +36,16 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.6.1
+
+- added the option to run several ordering rounds at the same time
+- ordering rounds now have a name and an image associated to it
+- added an icon in the backend to show the status of an ordering round
+- full mobile support for ordering list
+- added an instant top up option to allow users to top up their wallet balance from their account page using enabled woocommerce payment gateways (such as credit cards, twint etc.)
+- added a notification function: admins may send email notifications to all members of a specific ordering round.
+- various ui improvements
+
 ### 1.6.0
 
 - added transaction types: deposit, refund, manual transaction, yearly fee, order
