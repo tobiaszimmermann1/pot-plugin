@@ -14,6 +14,7 @@ import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
 import OrderOverview from "./OrderOverview"
 import OrderList from "./OrderList"
+import OrderListInActive from "./OrderListInActive"
 const __ = wp.i18n.__
 
 const OrderingRounds = () => {
@@ -102,7 +103,7 @@ const OrderingRounds = () => {
     }
   }, [loading])
 
-  return bestellrunden && !loading ? (
+  return bestellrunden && !loading && bestellrunden.length > 0 ? (
     <>
       {!activeOrderRound && (
         <>
@@ -210,17 +211,20 @@ const OrderingRounds = () => {
       <CircularProgress />
     </div>
   ) : (
-    <Box sx={{}}>
-      <Grid item xs={12}>
-        <Card sx={{ minWidth: 275, boxShadow: "none" }}>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "right" }}>
-              <BedtimeIcon /> {__("Aktuell gibt es keine aktiven Bestellrunden.", "fcplugin")}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Box>
+    <>
+      <Box sx={{}}>
+        <Grid item xs={12}>
+          <Card sx={{ minWidth: 275, boxShadow: "none" }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "right" }}>
+                <BedtimeIcon /> {__("Aktuell gibt es keine aktiven Bestellrunden.", "fcplugin")}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Box>
+      <OrderListInActive />
+    </>
   )
 }
 
