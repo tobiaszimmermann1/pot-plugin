@@ -249,7 +249,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "100px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (

@@ -8,7 +8,7 @@
 Plugin Name: Foodcoop Manager
 Plugin URI: https://neues-food-depot.ch
 Description: Plugin for Foodcoops
-Version: 1.6.1
+Version: 1.6.2
 Author: Tobias Zimmermann
 Author URI: https://neues-food-depot.ch
 License: GPLv2 or later
@@ -177,7 +177,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.6.1', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.6.2', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -187,13 +187,13 @@ function fc_admin_load_scripts() {
     'currentUser' => wp_get_current_user()
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.1' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.2' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.6.1', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.6.2', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -206,7 +206,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.1' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.2' );
 }
 
 add_action( 'init', 'fc_init');
@@ -370,9 +370,7 @@ function fc_add_gateway_class( $gateways ) {
 
 // register 
 add_shortcode('foodcoop_list', function() {
-  ?>
-    <div id="fc_order_list"></div>
-  <?php
+  return '<div id="fc_order_list"></div>';
 });
 
 
@@ -593,19 +591,22 @@ function fcplugin_instant_topup_function() {
  }
 }
 
-function fcplugin_instant_topup_add_amount($order) { 
+function fcplugin_instant_topup_add_amount($order_id) { 
+
   global $wpdb;
+
+  $order = wc_get_order($order_id);
 
   $customer_id = $order->get_user_id();
 
   $table = $wpdb->prefix.'foodcoop_wallet';
   date_default_timezone_set('Europe/Zurich');
   $date = date("Y-m-d H:i:s");
-  $details = 'Instant Topup ('.$order->get_id().') via '.$order->get_payment_method_title();
+  $details = 'Instant Topup ('.$order_id.') via '.$order->get_payment_method_title();
   $created_by = $customer_id;
 
   $is_instant_topup_product = false;
-  $amount = 10;
+  $amount = 0;
 
   foreach ( $order->get_items() as $item_id => $item ) {
     $product_id = $item->get_product_id();
@@ -617,7 +618,10 @@ function fcplugin_instant_topup_add_amount($order) {
     $amount = $item->get_total();
   }
 
-  if ($is_instant_topup_product) {
+  if ($is_instant_topup_product && !$order->get_meta('instantTopUp')) {
+    $order->add_meta_data('instantTopUp','ok');
+    $order->save();
+
     $results = $wpdb->get_results(
       $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $customer_id)
     );
@@ -633,8 +637,10 @@ function fcplugin_instant_topup_add_amount($order) {
     $wpdb->insert($table, $data);
   }
 }
+add_action( 'woocommerce_pre_payment_complete', 'fcplugin_instant_topup_add_amount' );
 
-add_action( 'woocommerce_checkout_order_created', 'fcplugin_instant_topup_add_amount' );
+
+
 
 
 

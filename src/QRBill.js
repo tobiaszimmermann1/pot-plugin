@@ -76,7 +76,6 @@ function QRBill() {
   }
 
   function handleInstandTopUp() {
-    console.log(instantTopUpAmount)
     if (instantTopUpAmount > 0) {
       axios
         .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/instantTopup`, {

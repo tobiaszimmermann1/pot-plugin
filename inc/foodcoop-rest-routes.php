@@ -438,6 +438,17 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET Dashboard Data
+     */
+    register_rest_route( 'foodcoop/v1', 'getProductListInActive', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'getProductListInActive'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
      * GET Balance
      */
     register_rest_route( 'foodcoop/v1', 'getBalance', array(
@@ -1796,7 +1807,6 @@ class FoodcoopRestRoutes {
       $msg = $msg_header.$msg_content.$msg_footer;
 
       $send_user = wp_mail( $email, $subj_user, $msg, $headers, '' );
-      $send_admin = wp_mail( get_option('admin_email'), $subj_admin, 'test', $headers, '' );
 
       if ($send_user && $send_admin) {
         return array($firstName." ".$lastName, $user_id);
@@ -2208,6 +2218,77 @@ class FoodcoopRestRoutes {
     $currency = get_woocommerce_currency_symbol();
 
     return json_encode(array($active, $bestellrunde, $bestellrunde_products, $products, $categories, $order, $bestellrunde_dates, $currency, $next_bestellrunde_dates));
+  }
+
+
+
+
+  /**
+  * getProductListInActive
+  */
+  function getProductListInActive($post_data) { 
+
+    // get all categories
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );    
+    $categories = array();
+    $cats = array();
+    foreach( $product_categories as $category ) {
+      array_push($categories, $category->name);
+      $cats[$category->term_id] = $category->name;
+    } 
+
+    // get all products
+    $p = wc_get_products(array(
+      'status'            => array( 'publish' ),
+      'limit'             => -1,
+      'page'              => 1,
+      'return'            => 'objects',
+      'paginate'          => false,
+      'orderby'           => 'title',
+      'order'             => 'ASC'
+    ));
+
+    $products = array();
+    foreach ($p as $product) {
+      if ($product->get_sku() != "fcplugin_instant_topup_product") {
+        // product name
+        $the_product = array(
+          "id" => $product->get_id(),
+          "name" => $product->get_name(),
+          "price" => $product->get_price(),
+          "category_id" => $product->get_category_ids()[0],
+          "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
+          "description" => $product->get_description()
+        );
+      
+        // product meta data
+        $the_meta = $product->get_meta_data();
+        foreach($the_meta as $meta) {
+          $data = $meta->get_data();
+          $the_product[$data['key']] = $data['value'];
+        }
+    
+        // product category (only the first one!)
+        $the_product['category_name'] = $cats[$product->get_category_ids()[0]];
+
+        $the_product['amount'] = 0;
+
+        // add short description of product to array
+        $the_product["short_description"] = $product->get_short_description();
+
+        array_push($products, $the_product);
+      }
+    }
+
+    usort($products, fn($a, $b) => $a['category_name'] <=> $b['category_name']);
+
+    // get store currency
+    $currency = get_woocommerce_currency_symbol();
+
+    return json_encode(array(true, null, null, $products, $categories, null, null, $currency, null));
   }
 
 

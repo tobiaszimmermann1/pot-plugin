@@ -36,6 +36,10 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.6.2
+
+- various bug fixes
+
 ### 1.6.1
 
 - added the option to run several ordering rounds at the same time
