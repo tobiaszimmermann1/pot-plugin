@@ -36,6 +36,10 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.6.3
+
+- fixed bug for instant topup feature
+
 ### 1.6.2
 
 - various bug fixes
