@@ -33,9 +33,7 @@ const OrderListInActive = () => {
 
   useEffect(() => {
     axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListInActive`, {
-        user: frontendLocalizer.currentUser.ID
-      })
+      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListInActive`)
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
