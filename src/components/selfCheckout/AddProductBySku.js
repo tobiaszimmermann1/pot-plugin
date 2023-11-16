@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useContext } from "react"
 import axios from "axios"
-import { CircularProgress, Divider } from "@mui/material"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, Alert } from "@mui/material"
+import { Button, Stack, TextField } from "@mui/material"
 import { cartContext } from "./cartContext"
 const __ = wp.i18n.__
 

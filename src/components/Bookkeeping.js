@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Box, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -7,6 +7,7 @@ import Transactions from "./bookkeeping/Transactions"
 import Orders from "./bookkeeping/Orders"
 import Expenses from "./bookkeeping/Expenses"
 import Journal from "./bookkeeping/Journal"
+import BillingOverview from "./bookkeeping/BillingOverview"
 const __ = wp.i18n.__
 
 const Bookkeeping = () => {
@@ -42,6 +43,9 @@ const Bookkeeping = () => {
                     <span id="journal" className="menuItem " onClick={() => setActiveTab("journal")}>
                       {__("Milchbüechli", "fcplugin")}
                     </span>
+                    <span id="billingOverview" className="menuItem " onClick={() => setActiveTab("billingOverview")}>
+                      {__("Abrechnung", "fcplugin")}
+                    </span>
                   </span>
                 </Typography>
               </CardContent>
@@ -55,6 +59,7 @@ const Bookkeeping = () => {
         {activeTab === "orders" && <Orders />}
         {activeTab === "expenses" && <Expenses />}
         {activeTab === "journal" && <Journal />}
+        {activeTab === "billingOverview" && <BillingOverview />}
       </div>
     </>
   )

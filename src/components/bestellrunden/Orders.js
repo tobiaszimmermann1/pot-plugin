@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import axios from "axios"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import EditIcon from "@mui/icons-material/Edit"
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"
 import GridOnIcon from "@mui/icons-material/GridOn"
-import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, CircularProgress, Stack, TextField, Tooltip } from "@mui/material"
+import { Box, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { format } from "date-fns"
 import { useExcelDownloder } from "react-xls"
@@ -319,10 +319,12 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
         })
         //shorten lieferant string to max 30 chars
         let lieferantString = lieferant
-        if (lieferant.length > 30) {
-          lieferantString = lieferant.substring(0, 29)
+        if (typeof lieferant !== "undefined") {
+          if (lieferant.length > 30) {
+            lieferantString = lieferant.substring(0, 29)
+          }
+          dataMatrix[lieferantString] = rows
         }
-        dataMatrix[lieferantString] = rows
       })
       setExportData(dataMatrix)
     }

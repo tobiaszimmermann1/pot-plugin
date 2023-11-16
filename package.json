@@ -20,16 +20,11 @@
   },
   "homepage": "https://github.com/tobiaszimmermann1/foodcoop-plugin#readme",
   "dependencies": {
-    "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@fontsource/roboto": "^4.5.8",
     "@mui/lab": "^5.0.0-alpha.111",
     "@mui/material": "^5.10.17",
-    "@mui/styles": "^5.14.4",
     "@mui/x-date-pickers": "^5.0.10",
-    "@wordpress/api-fetch": "^6.19.0",
-    "@wordpress/data": "^7.6.0",
     "@wordpress/scripts": "^24.6.0",
     "animated-number-react": "^0.1.2",
     "axios": "^1.2.1",
@@ -37,13 +32,10 @@
     "export-to-csv": "^0.2.1",
     "html5-qrcode": "^2.3.8",
     "material-react-table": "^1.14.0",
-    "prop-types": "^15.8.1",
     "react-papaparse": "^4.1.0",
-    "react-router-dom": "^6.14.2",
     "react-transition-group": "^4.4.5",
     "react-xls": "^0.1.1",
-    "swissqrbill": "^3.2.3",
-    "wp-scripts": "^0.0.1-security"
+    "swissqrbill": "^3.2.3"
   },
   "devDependencies": {
     "node-polyfill-webpack-plugin": "^2.0.1"

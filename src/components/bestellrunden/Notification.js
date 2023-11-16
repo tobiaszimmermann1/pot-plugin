@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import axios from "axios"
-import SaveIcon from "@mui/icons-material/Save"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, Stack, TextField, Autocomplete, Alert } from "@mui/material"
+import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
-import Radio from "@mui/material/Radio"
-import RadioGroup from "@mui/material/RadioGroup"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import FormControl from "@mui/material/FormControl"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import IconButton from "@mui/material/IconButton"
 import CloseIcon from "@mui/icons-material/Close"
-import List from "@mui/material/List"
-import ListItem from "@mui/material/ListItem"
-import ListItemButton from "@mui/material/ListItemButton"
-import ListItemIcon from "@mui/material/ListItemIcon"
-import ListItemText from "@mui/material/ListItemText"
-import Checkbox from "@mui/material/Checkbox"
-import Divider from "@mui/material/Divider"
-import PageviewIcon from "@mui/icons-material/Pageview"
 import SendIcon from "@mui/icons-material/Send"
 const __ = wp.i18n.__
 
@@ -39,7 +26,6 @@ function NotificationModal({ id, open, setModalClose }) {
           }
         })
         .then(function (response) {
-          console.log(JSON.parse(response.data))
           setOrders(JSON.parse(response.data))
         })
         .catch(error => console.log(error))
@@ -89,8 +75,6 @@ function NotificationModal({ id, open, setModalClose }) {
                 color="inherit"
                 onClick={() => {
                   setModalClose(false)
-                  setProductsLoading(true)
-                  setProducts(null)
                 }}
                 aria-label="close"
               >

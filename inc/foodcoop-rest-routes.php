@@ -138,7 +138,7 @@ class FoodcoopRestRoutes {
      * GET all orders
      */
     register_rest_route( 'foodcoop/v1', 'getAllOrders', array(
-      'methods' => WP_REST_SERVER::READABLE,
+      'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'getAllOrders'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
@@ -946,31 +946,32 @@ class FoodcoopRestRoutes {
   /**
    * getAllOrders
    */
-  function getAllOrders() {
-    $args = array(
-      'numberposts' => -1,
-      'post_type'   => 'shop_order',
-      'post_status'        => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pending'),
-      'fields' => 'ids'
+  function getAllOrders($data) {
 
-    );
-    $orders = get_posts( $args );
+    if ($data['year']) {
+      $orders = wc_get_orders(array(
+        'type' => 'shop_order',
+        'limit' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'date_created' => $data['year'].'-01-01...'.$data['year'].'-12-31',
+        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pending'),
+      ));
+    } else {
+      $orders = wc_get_orders(array(
+        'type' => 'shop_order',
+        'limit' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pending'),
+      ));
+    }
 
     $order_data = array();
-    foreach($orders as $order_id) {
-      $o = wc_get_order($order_id);
-      $the_order = array(
-        "id" => $order_id,
-        "customer_name" => $o->get_billing_first_name()." ".$o->get_billing_last_name(),
-        "customer_id" => $o->get_customer_id(),
-        "total" => $o->get_total() - $o->get_total_refunded(),
-        "date_created" => $o->get_date_created()->date("Y-m-d"),
-        "url" => $o->get_edit_order_url(),
-        "bestellrunde_id" => get_post_meta( $order_id, 'bestellrunde_id', true )
-      );
-      
-      array_push($order_data, $the_order);
+    foreach($orders as $order) {
+      array_push($order_data, $order->get_data());
     }
+  
 
     return json_encode($order_data);
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { ShoppingContext } from "./ShoppingContext"
 import { TriggerContext } from "./ShoppingContext"
 import IconButton from "@mui/material/IconButton"

@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { Box, Typography, Button } from "@mui/material"
-import Grid from "@mui/material/Grid"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
 import axios from "axios"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import MaterialReactTable from "material-react-table"
@@ -76,16 +73,39 @@ const Orders = () => {
 
   useEffect(() => {
     axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOrders`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
+      .post(
+        `${appLocalizer.apiUrl}/foodcoop/v1/getAllOrders`,
+        {
+          year: null
+        },
+        {
+          headers: {
+            "X-WP-Nonce": appLocalizer.nonce
+          }
         }
-      })
+      )
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          setOrders(res)
-          setAllOrders(res)
+
+          let ordersReArranged = []
+          res.map(order => {
+            let theOrder = {}
+            theOrder["id"] = order.id
+            theOrder["date_created"] = order.date_created.date
+            theOrder["customer_name"] = order.billing.first_name + " " + order.billing.last_name
+            // bestellrunde id
+            order.meta_data.map(meta => {
+              if (meta.key === "bestellrunde_id") {
+                theOrder["bestellrunde_id"] = meta.value
+              }
+            })
+            theOrder["total"] = parseFloat(order.total).toFixed(2)
+            ordersReArranged.push(theOrder)
+          })
+
+          setOrders(ordersReArranged)
+          setAllOrders(ordersReArranged)
         }
       })
       .catch(error => {
@@ -158,7 +178,7 @@ const Orders = () => {
 
       setTotalBalance(totalBalance)
     }
-  }, [allOrders, users])
+  }, [allOrders, users, bestellrunden])
 
   /**
    * Export to CSV
@@ -273,7 +293,8 @@ const Orders = () => {
                   </Select>
                 </FormControl>
               )}
-              {users && (
+              {/*
+              users && (
                 <FormControl size="small">
                   <InputLabel>{__("Mitglied", "fcplugin")}</InputLabel>
                   <Select value={selectedUserId} label={__("Mitglied", "fcplugin")} onChange={handleChange}>
@@ -290,7 +311,8 @@ const Orders = () => {
                     )}
                   </Select>
                 </FormControl>
-              )}
+              )
+              */}
               <Button
                 color="primary"
                 //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
