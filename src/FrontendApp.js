@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react"
-import axios from "axios"
+import React from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import OrderList from "./components/frontend/OrderList"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import OrderingRounds from "./components/frontend/OrderingRounds"
 const __ = wp.i18n.__

@@ -1,0 +1,1720 @@
+# Copyright (C) 2023 Tobias Zimmermann
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Foodcoop Manager 1.6.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/foodcoop\n"
+"Last-Translator: \n"
+"Language-Team: French (France)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-11-15T16:21:32+00:00\n"
+"PO-Revision-Date: 2023-11-15 18:02+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: fcplugin\n"
+"\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Loco-Version: 2.6.6; wp-6.4.1"
+
+#. Plugin Name of the plugin
+msgid "Foodcoop Manager"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://neues-food-depot.ch"
+msgstr ""
+
+#. Description of the plugin
+msgid "Plugin for Foodcoops"
+msgstr ""
+
+#. Author of the plugin
+msgid "Tobias Zimmermann"
+msgstr ""
+
+#: foodcoop.php:120
+msgid ""
+"Datenbank wurde für Foodcoop Manager Version > 1.6.0 aktualisiert. Vielen "
+"Dank!"
+msgstr ""
+
+#: foodcoop.php:390
+msgid "Hallo Admin! Zum Foodcoop Manager"
+msgstr ""
+
+#: foodcoop.php:422
+msgid ""
+"Schritt 2 / 2: Rechnungsadresse aktualisieren und Bestellung abschliessen."
+msgstr ""
+
+#: foodcoop.php:472 build/index.js:57507 src/components/Members.js:125
+#: src/components/members/Wallet.js:195 src/components/members/Wallet.js:289
+#: src/components/members/Wallet.js:360 src/components/members/Wallet.js:364
+#: src/components/Settings.js:164 build/backend.js:49859 build/backend.js:50558
+#: build/backend.js:53257 build/backend.js:53351 build/backend.js:53422
+#: build/backend.js:53426 build/index.js:47416
+msgid "Jahresbeitrag"
+msgstr ""
+
+#: foodcoop.php:475 src/components/members/Wallet.js:194
+#: src/components/members/Wallet.js:283 build/backend.js:53256
+#: build/backend.js:53345
+msgid "Einzahlung"
+msgstr ""
+
+#: foodcoop.php:478 src/components/members/Wallet.js:192
+#: src/components/members/Wallet.js:286 build/backend.js:53254
+#: build/backend.js:53348
+msgid "Manuelle Transaktion"
+msgstr ""
+
+#: foodcoop.php:481 build/index.js:55270 build/index.js:55305
+#: src/components/Bestellrunden.js:301 src/components/members/Wallet.js:193
+#: build/backend.js:49328 build/backend.js:53255 build/index.js:45534
+#: build/index.js:45580
+msgid "Mutation"
+msgstr ""
+
+#: foodcoop.php:484 inc/rest_functions/get-receipts-pdf.php:44
+#: build/index.js:56516 src/components/bestellrunden/Orders.js:36
+#: src/components/bookkeeping/Orders.js:41 src/components/members/Wallet.js:196
+#: build/backend.js:51171 build/backend.js:52417 build/backend.js:53258
+#: build/index.js:46566
+msgid "Bestellung"
+msgstr ""
+
+#: foodcoop.php:504
+msgid "Dein Foodcoop Guthaben"
+msgstr ""
+
+#: foodcoop.php:551
+msgid "bestellrunde"
+msgstr ""
+
+#: inc/foodcoop-members-dashboard.php:18 inc/foodcoop-payment-gateway.php:21
+#: inc/foodcoop-payment-gateway.php:64
+msgid "Foodcoop Guthaben"
+msgstr ""
+
+#: inc/foodcoop-members-dashboard.php:126
+msgid "Foodcoop Mitglieder"
+msgstr ""
+
+#: inc/foodcoop-payment-gateway.php:22
+msgid "Pre-Pay Guthaben für die Foodcoop"
+msgstr ""
+
+#: inc/foodcoop-payment-gateway.php:54
+msgid "Aktivieren"
+msgstr ""
+
+#: inc/foodcoop-payment-gateway.php:55
+msgid "Foodcoop Guthaben aktivieren"
+msgstr ""
+
+#: inc/foodcoop-payment-gateway.php:63
+msgid "Titel, den Mitglieder beim Checkout sehen."
+msgstr ""
+
+#: inc/foodcoop-payment-gateway.php:70
+msgid "Beschreibung, die Mitglieder beim Checkout sehen."
+msgstr ""
+
+#: inc/foodcoop-payment-gateway.php:71
+msgid "Bezahle mit deinem Foodcoop Guthaben."
+msgstr ""
+
+#: inc/foodcoop-rest-routes.php:1778
+msgid "Willkommen bei"
+msgstr ""
+
+#: inc/foodcoop-rest-routes.php:1778
+msgid "Dein Account wurde erstellt."
+msgstr ""
+
+#: inc/foodcoop-rest-routes.php:1779
+msgid "Neuer Account für die Foodcoop"
+msgstr ""
+
+#: inc/foodcoop-rest-routes.php:1779
+msgid "wurde erstellt."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:28
+msgid "Foodcoop"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:29
+msgid "Anzeige"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:32
+msgid "Jahresbeitrag (CHF)"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:35
+msgid "Bankverbindung"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:38
+msgid "Instruktionen Banküberweisung"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:41
+msgid "Marge (%)"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:45
+msgid "Produktpreise öffentlich anzeigen?"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:48 src/components/Settings.js:278
+#: build/backend.js:50672
+msgid "Bestellseite"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:51 src/components/Settings.js:303
+#: build/backend.js:50697
+msgid "Produktbilder und Produktseiten aktivieren?"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:54
+msgid "Zeige eine Mitgliederliste in \"Mein Account\"?"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:57 src/components/Settings.js:315
+#: build/backend.js:50709
+msgid "Instant Topup aktivieren?"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:64
+msgid "Marge muss eine Zahl sein."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:73
+msgid "Jahresbeitrag muss eine Zahl sein."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:89
+msgid "Ungültige Bestellseite."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:97
+msgid "Der Jahresbeitrag kann direkt dem Mitgliederguthaben belastet werden."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:102
+msgid "Die Bankverbindung für Guthabeneinzahlungen."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:107
+msgid "Die Instruktionen für die Guthabeneinzahlungen."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:112
+msgid ""
+"Eine globale Marge, die beim Produkteimport auf alle Produktpreise "
+"aufgeschlagen wird."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:121
+msgid ""
+"Zeigt eingeloggten Mitgliedern eine Liste aller Foodcoop Mitglieder mit Name "
+"und Email."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:126 src/components/Settings.js:317
+#: build/backend.js:50711
+msgid ""
+"Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment "
+"Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n)."
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:142
+msgid ""
+"Auf dieser Seite wird die Bestell-Liste eingefügt. Die Bestell-Liste kann "
+"auch manuell an einer beliebigen Stelle eingefügt werden. Benutze dazu den "
+"Shortcode"
+msgstr ""
+
+#: inc/foodcoop-settings-class.php:147
+msgid ""
+"Produktbilder erscheinen in der Bestell-Liste. Overlays für einzelne "
+"Produkte (mit Beschreibung und Details) werden aktiviert."
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:4
+#: inc/rest_functions/get-data-export.php:4
+#: inc/rest_functions/get-distlist-detail-pdf.php:4
+#: inc/rest_functions/get-distlist-pdf.php:4
+#: inc/rest_functions/get-orderlist-pdf.php:4
+#: inc/rest_functions/get-receipts-pdf.php:10 build/index.js:55105
+#: build/index.js:55788 build/index.js:56030 build/index.js:56947
+#: src/components/Bestellrunden.js:89
+#: src/components/bestellrunden/Products.js:76 src/components/Members.js:74
+#: src/components/Products.js:71 build/backend.js:49116 build/backend.js:49808
+#: build/backend.js:50115 build/backend.js:51642 build/index.js:45365
+#: build/index.js:45938 build/index.js:46162 build/index.js:46974
+msgid "ID"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:5
+#: inc/rest_functions/get-data-export.php:5
+#: inc/rest_functions/get-distlist-detail-pdf.php:5
+#: inc/rest_functions/get-distlist-pdf.php:5
+#: inc/rest_functions/get-orderlist-pdf.php:5
+#: inc/rest_functions/get-receipts-pdf.php:11
+msgid "Bestellfenster"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:6
+#: inc/rest_functions/get-data-export.php:6
+#: inc/rest_functions/get-distlist-detail-pdf.php:6
+#: inc/rest_functions/get-distlist-pdf.php:6
+#: inc/rest_functions/get-orderlist-pdf.php:6
+#: inc/rest_functions/get-receipts-pdf.php:12
+#: src/components/Bestellrunden.js:469 build/backend.js:49496
+msgid "Verteiltag"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:153
+#: inc/rest_functions/get-categorylist-pdf.php:176
+#: inc/rest_functions/get-distlist-detail-pdf.php:130
+#: inc/rest_functions/get-distlist-detail-pdf.php:153
+msgid "Verteilliste Detail"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:156 build/index.js:56057
+#: build/index.js:56974 src/components/bestellrunden/Products.js:110
+#: src/components/Products.js:134 build/backend.js:50178 build/backend.js:51676
+#: build/index.js:46196 build/index.js:47008
+msgid "Kategorie"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:159
+#: inc/rest_functions/get-distlist-detail-pdf.php:136
+#: inc/rest_functions/get-distlist-pdf.php:138
+#: inc/rest_functions/get-orderlist-pdf.php:145
+#: inc/rest_functions/get-receipts-pdf.php:52 build/index.js:55197
+#: src/components/Bestellrunden.js:66 src/components/Bestellrunden.js:226
+#: src/components/bookkeeping/Orders.js:57
+#: src/components/bookkeeping/Orders.js:260
+#: src/components/bookkeeping/Orders.js:261 build/backend.js:49093
+#: build/backend.js:49253 build/backend.js:52433 build/backend.js:52636
+#: build/backend.js:52637 build/index.js:45454
+msgid "Bestellrunde"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:179
+#: inc/rest_functions/get-distlist-detail-pdf.php:156 build/index.js:56035
+#: build/index.js:56379 build/index.js:56952
+#: src/components/bestellrunden/Mutations.js:190
+#: src/components/bestellrunden/Products.js:82
+#: src/components/frontend/ProductCategory.js:31
+#: src/components/frontend/ProductCategory.js:34 src/components/Products.js:99
+#: build/backend.js:50143 build/backend.js:50925 build/backend.js:51648
+#: build/frontend.js:28510 build/frontend.js:28513 build/index.js:46168
+#: build/index.js:46472 build/index.js:46980
+msgid "Produkt"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:183
+#: inc/rest_functions/get-distlist-detail-pdf.php:160 build/index.js:56042
+#: build/index.js:56959 src/components/bestellrunden/Products.js:91
+#: src/components/frontend/ProductCategory.js:39 src/components/Products.js:115
+#: src/components/selfCheckout/SelfCheckoutCartItem.js:66
+#: build/backend.js:50159 build/backend.js:51657 build/frontend.js:28518
+#: build/frontend.js:28929 build/index.js:46177 build/index.js:46989
+msgid "Einheit"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:187
+#: inc/rest_functions/get-distlist-detail-pdf.php:164
+#: inc/rest_functions/get-distlist-pdf.php:134
+#: inc/rest_functions/get-orderlist-pdf.php:141 build/index.js:58214
+#: src/components/products/ProducerImportProducts.js:255 build/backend.js:54031
+#: build/index.js:48062
+msgid "Lieferant"
+msgstr ""
+
+#: inc/rest_functions/get-categorylist-pdf.php:238
+#: inc/rest_functions/get-distlist-detail-pdf.php:215
+#: inc/rest_functions/get-distlist-pdf.php:208
+#: inc/rest_functions/get-orderlist-pdf.php:209
+msgid "Seite"
+msgstr ""
+
+#: inc/rest_functions/get-distlist-detail-pdf.php:133 build/index.js:56050
+#: build/index.js:56967 src/components/bestellrunden/Products.js:101
+#: src/components/frontend/ProductCategory.js:38 src/components/Products.js:125
+#: build/backend.js:50169 build/backend.js:51667 build/frontend.js:28517
+#: build/index.js:46187 build/index.js:46999
+msgid "Produzent"
+msgstr ""
+
+#: inc/rest_functions/get-distlist-pdf.php:131
+msgid "Verteilliste"
+msgstr ""
+
+#: inc/rest_functions/get-orderlist-pdf.php:138
+msgid "Bestellformular"
+msgstr ""
+
+#: inc/rest_functions/get-receipts-pdf.php:47
+#: src/components/bookkeeping/Journal.js:74
+#: src/components/bookkeeping/Orders.js:52
+#: src/components/bookkeeping/Orders.js:275
+#: src/components/bookkeeping/Orders.js:276
+#: src/components/bookkeeping/Transactions.js:108
+#: src/components/bookkeeping/Transactions.js:195
+#: src/components/bookkeeping/Transactions.js:196 build/backend.js:52180
+#: build/backend.js:52428 build/backend.js:52651 build/backend.js:52652
+#: build/backend.js:52813 build/backend.js:52900 build/backend.js:52901
+msgid "Mitglied"
+msgstr ""
+
+#: inc/rest_functions/get-receipts-pdf.php:49
+msgid "Tel"
+msgstr ""
+
+#: inc/rest_functions/get-receipts-pdf.php:56 build/index.js:56534
+#: src/components/bestellrunden/Orders.js:52
+#: src/components/bookkeeping/Orders.js:62 build/backend.js:51187
+#: build/backend.js:52438 build/index.js:46582
+msgid "Total"
+msgstr ""
+
+#: inc/rest_functions/get-receipts-pdf.php:150
+msgid "Quittung"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55561 src/components/Dashboard.js:47
+#: build/backend.js:49626 build/index.js:45770
+msgid "Hallo"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55566 src/components/Dashboard.js:50
+#: build/backend.js:49629 build/index.js:45773
+msgid ""
+"Willkommen in deinem Foodcoop Dashboard. Hier kannst du Bestellrunden, "
+"Produkte und Mitglieder verwalten."
+msgstr ""
+
+#: build/backend.js:74 build/index.js:54980 build/index.js:55584 src/App.js:82
+#: src/components/Dashboard.js:60 build/backend.js:48982 build/backend.js:49639
+#: build/index.js:45262 build/index.js:45783
+msgid "Bestellrunden"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55589 src/components/Dashboard.js:63
+#: build/backend.js:49642 build/index.js:45786
+msgid "wurden schon durchgeführt!"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:54984 build/index.js:55262
+#: build/index.js:55298 build/index.js:55607 src/App.js:85
+#: src/components/Bestellrunden.js:289 src/components/Dashboard.js:75
+#: build/backend.js:48985 build/backend.js:49316 build/backend.js:49654
+#: build/index.js:45265 build/index.js:45523 build/index.js:45570
+#: build/index.js:45798
+msgid "Produkte"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55612 src/components/Dashboard.js:78
+#: build/backend.js:49657 build/index.js:45801
+msgid "sind in deiner Produkteliste erfasst!"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55277 build/index.js:55312
+#: build/index.js:55627 src/components/Bestellrunden.js:313
+#: src/components/Bookkeeping.js:37 src/components/Dashboard.js:89
+#: build/backend.js:49340 build/backend.js:49552 build/backend.js:49668
+#: build/index.js:45544 build/index.js:45590 build/index.js:45812
+msgid "Bestellungen"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55632 src/components/Dashboard.js:92
+#: build/backend.js:49671 build/index.js:45815
+msgid "wurden bereits ausgelöst und verarbeitet."
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55647 src/components/Dashboard.js:102
+#: build/backend.js:49681 build/index.js:45825
+msgid "Transaktionen"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55652 src/components/Dashboard.js:105
+#: build/backend.js:49684 build/index.js:45828
+msgid "wurden bereits erfasst!"
+msgstr ""
+
+#: build/backend.js:74 build/index.js:55672 src/components/Dashboard.js:118
+#: build/backend.js:49697 build/index.js:45841
+msgid "Mitglieder hat deine Foodcoop!"
+msgstr ""
+
+#: build/frontend.js:101 src/components/frontend/ProductLine.js:121
+#: build/frontend.js:28655
+msgid "für Mitglieder"
+msgstr ""
+
+#: build/index.js:54976 src/App.js:79 build/backend.js:48979
+#: build/index.js:45259
+msgid "Dashboard"
+msgstr ""
+
+#: build/index.js:54988 src/App.js:88 build/backend.js:48988
+#: build/index.js:45268
+msgid "Mitglieder"
+msgstr ""
+
+#: build/index.js:55110 src/components/Bestellrunden.js:128
+#: build/backend.js:49155 build/index.js:45371
+msgid "Bestellfenster Start"
+msgstr ""
+
+#: build/index.js:55125 src/components/Bestellrunden.js:139
+#: build/backend.js:49166 build/index.js:45382
+msgid "Bestellfenster Ende"
+msgstr ""
+
+#: build/index.js:55140 src/components/Bestellrunden.js:150
+#: build/backend.js:49177 build/index.js:45393
+msgid "Verteilung"
+msgstr ""
+
+#: build/index.js:55175 src/components/Bestellrunden.js:191
+#: build/backend.js:49218 build/index.js:45427
+msgid "Bestellrunde wurde gespeichert."
+msgstr ""
+
+#: build/index.js:55185 build/index.js:55402
+#: src/components/Bestellrunden.js:202 src/components/Bestellrunden.js:405
+#: src/components/bookkeeping/Expenses.js:235 build/backend.js:49229
+#: build/backend.js:49432 build/backend.js:52014 build/index.js:45438
+#: build/index.js:45663
+msgid "Datumformat ist ungültig"
+msgstr ""
+
+#: build/index.js:55189 build/index.js:55817 build/index.js:56087
+#: src/components/Bestellrunden.js:207 src/components/Members.js:155
+#: src/components/Products.js:173 build/backend.js:49234 build/backend.js:49889
+#: build/backend.js:50217 build/index.js:45443 build/index.js:45973
+#: build/index.js:46230
+msgid "löschen?"
+msgstr ""
+
+#: build/index.js:55197 src/components/Bestellrunden.js:226
+#: build/backend.js:49253 build/index.js:45454
+msgid "kann nicht gelöscht werden, da schon Bestellungen existieren."
+msgstr ""
+
+#: build/index.js:55202 build/index.js:55828 build/index.js:56098
+#: src/components/Bestellrunden.js:232 src/components/Members.js:177
+#: src/components/Products.js:193 build/backend.js:49259 build/backend.js:49911
+#: build/backend.js:50237 build/index.js:45460 build/index.js:45988
+#: build/index.js:46245
+msgid "wurde gelöscht."
+msgstr ""
+
+#: build/index.js:55341 src/components/Bestellrunden.js:340
+#: build/backend.js:49367 build/index.js:45607
+msgid "Neue Bestellrunde"
+msgstr ""
+
+#: build/index.js:55412 src/components/Bestellrunden.js:419
+#: build/backend.js:49446 build/index.js:45673
+msgid "Bestellrunde erstellen"
+msgstr ""
+
+#: build/index.js:55421 src/components/Bestellrunden.js:453
+#: build/backend.js:49480 build/index.js:45683
+msgid "Bestellrunde Start"
+msgstr ""
+
+#: build/index.js:55430 src/components/Bestellrunden.js:461
+#: build/backend.js:49488 build/index.js:45687
+msgid "Bestellrunde Ende"
+msgstr ""
+
+#: build/index.js:55439 build/index.js:45691
+msgid "Bestellrunde Verteiltag"
+msgstr ""
+
+#: build/index.js:55452 src/components/bookkeeping/Expenses.js:312
+#: src/components/members/Wallet.js:315 build/backend.js:52091
+#: build/backend.js:53377 build/index.js:45698
+msgid "Abbrechen"
+msgstr ""
+
+#: build/index.js:55458 src/components/Bestellrunden.js:478
+#: build/backend.js:49505 build/index.js:45700
+msgid "Erstellen"
+msgstr ""
+
+#: build/index.js:55801 build/index.js:56530
+#: src/components/bestellrunden/Orders.js:47 src/components/Members.js:85
+#: build/backend.js:49819 build/backend.js:51182 build/index.js:45948
+#: build/index.js:46577
+msgid "Name"
+msgstr ""
+
+#: build/index.js:55804 src/components/Members.js:89 build/backend.js:49823
+#: build/index.js:45952
+msgid "E-Mail"
+msgstr ""
+
+#: build/index.js:55807 src/components/Members.js:93 build/backend.js:49827
+#: build/index.js:45956
+msgid "Adresse"
+msgstr ""
+
+#: build/index.js:55810 src/components/Members.js:105 build/backend.js:49839
+#: build/index.js:45960
+msgid "Guthaben"
+msgstr ""
+
+#: build/index.js:55813 src/components/Members.js:146 build/backend.js:49880
+#: build/index.js:45964
+msgid "Rolle"
+msgstr ""
+
+#: build/index.js:55925 build/index.js:56185 build/index.js:57544
+#: src/components/Members.js:294 src/components/members/Wallet.js:345
+#: src/components/Products.js:326 build/backend.js:50028 build/backend.js:50370
+#: build/backend.js:53407 build/index.js:46083 build/index.js:46321
+#: build/index.js:47445
+msgid "Exportieren"
+msgstr ""
+
+#: build/index.js:55931 src/components/Members.js:297 build/backend.js:50031
+#: build/index.js:46086
+msgid "Neues Mitglied"
+msgstr ""
+
+#: build/index.js:56038 build/index.js:56955
+#: src/components/bestellrunden/Products.js:86
+#: src/components/frontend/ProductCategory.js:41 src/components/Products.js:110
+#: build/backend.js:50154 build/backend.js:51652 build/frontend.js:28520
+#: build/index.js:46172 build/index.js:46984
+msgid "Preis"
+msgstr ""
+
+#: build/index.js:56046 build/index.js:56963
+#: src/components/bestellrunden/Products.js:96 src/components/Products.js:120
+#: build/backend.js:50164 build/backend.js:51662 build/index.js:46182
+#: build/index.js:46994
+msgid "Gebindegrösse"
+msgstr ""
+
+#: build/index.js:56053 build/index.js:56970
+#: src/components/bestellrunden/Products.js:105 src/components/Products.js:129
+#: build/backend.js:50173 build/backend.js:51671 build/index.js:46191
+#: build/index.js:47003
+msgid "Herkunft"
+msgstr ""
+
+#: build/index.js:56075 src/components/Products.js:159 build/backend.js:50203
+#: build/index.js:46216
+msgid "wurde gespeichert."
+msgstr ""
+
+#: build/index.js:56192 build/index.js:57910 build/index.js:58246
+#: src/components/Products.js:329 src/components/products/ImportProducts.js:316
+#: build/backend.js:50373 build/backend.js:53756 build/index.js:46324
+#: build/index.js:47778 build/index.js:48091
+msgid "Importieren"
+msgstr ""
+
+#: build/index.js:56199 build/index.js:46327
+msgid "Lieferant importieren"
+msgstr ""
+
+#: build/index.js:56357 src/components/bestellrunden/Mutations.js:151
+#: build/backend.js:50886 build/index.js:46454
+msgid "Neue Mutation in Bestellrunde"
+msgstr ""
+
+#: build/index.js:56390 build/index.js:46477
+msgid "Produkt wurde nicht geliefert"
+msgstr ""
+
+#: build/index.js:56395 src/components/bestellrunden/Mutations.js:196
+#: build/backend.js:50931 build/index.js:46478
+msgid "Preis anpassen"
+msgstr ""
+
+#: build/index.js:56407 src/components/bestellrunden/Mutations.js:211
+#: src/components/bestellrunden/Mutations.js:256 build/backend.js:50946
+#: build/backend.js:50991 build/index.js:46486
+msgid "Betroffene Bestellungen"
+msgstr ""
+
+#: build/index.js:56417 src/components/bestellrunden/Mutations.js:260
+#: build/backend.js:50995 build/index.js:46497
+msgid "Mutation wurde verarbeitet."
+msgstr ""
+
+#: build/index.js:56431 build/index.js:46507
+msgid "Mutation speichern"
+msgstr ""
+
+#: build/index.js:56438 build/index.js:56842 build/index.js:57051
+#: build/index.js:57239 build/index.js:57550 build/index.js:57917
+#: build/index.js:58253 src/components/products/ImportProducts.js:327
+#: src/components/products/ProducerImportProducts.js:296 build/backend.js:53767
+#: build/backend.js:54072 build/index.js:46517 build/index.js:46885
+#: build/index.js:47082 build/index.js:47198 build/index.js:47458
+#: build/index.js:47789 build/index.js:48103
+msgid "Schliessen"
+msgstr ""
+
+#: build/index.js:56520 build/index.js:57399
+#: src/components/bestellrunden/Orders.js:41
+#: src/components/bookkeeping/Expenses.js:70
+#: src/components/bookkeeping/Expenses.js:297
+#: src/components/bookkeeping/Journal.js:114
+#: src/components/bookkeeping/Orders.js:46
+#: src/components/bookkeeping/Transactions.js:103
+#: src/components/members/Wallet.js:168 build/backend.js:51176
+#: build/backend.js:51849 build/backend.js:52076 build/backend.js:52220
+#: build/backend.js:52422 build/backend.js:52808 build/backend.js:53230
+#: build/index.js:46571 build/index.js:47342
+msgid "Datum"
+msgstr ""
+
+#: build/index.js:56748 src/components/bestellrunden/Orders.js:339
+#: build/backend.js:51474 build/index.js:46812
+msgid "Bestellungen in Bestellrunde"
+msgstr ""
+
+#: build/index.js:56801 src/components/bestellrunden/Orders.js:394
+#: build/backend.js:51529 build/index.js:46848
+msgid "Quittungen"
+msgstr ""
+
+#: build/index.js:56807 src/components/bestellrunden/Orders.js:397
+#: build/backend.js:51532 build/index.js:46851
+msgid "Verteillisten"
+msgstr ""
+
+#: build/index.js:56813 src/components/bestellrunden/Orders.js:400
+#: build/backend.js:51535 build/index.js:46854
+msgid "Verteillisten Detail"
+msgstr ""
+
+#: build/index.js:56819 src/components/bestellrunden/Orders.js:403
+#: build/backend.js:51538 build/index.js:46857
+msgid "Bestellformulare"
+msgstr ""
+
+#: build/index.js:56828 build/index.js:56833
+#: src/components/bestellrunden/Orders.js:412
+#: src/components/bestellrunden/Orders.js:417 build/backend.js:51547
+#: build/backend.js:51552 build/index.js:46863 build/index.js:46868
+msgid "Datenexport"
+msgstr ""
+
+#: build/index.js:57000 src/components/bestellrunden/Products.js:147
+#: build/backend.js:51713 build/index.js:47039
+msgid "Produkte in Bestellrunde"
+msgstr ""
+
+#: build/index.js:57046 src/components/bestellrunden/Products.js:151
+#: src/components/Settings.js:265 src/components/Settings.js:326
+#: build/backend.js:50659 build/backend.js:50720 build/backend.js:51717
+#: build/index.js:47074
+msgid "Speichern"
+msgstr ""
+
+#: build/index.js:57130 build/index.js:57320
+#: src/components/members/AddMember.js:23 src/components/members/Wallet.js:42
+#: build/backend.js:52973 build/backend.js:53104 build/index.js:47133
+#: build/index.js:47247
+msgid "Felder dürfen nicht leer sein."
+msgstr ""
+
+#: build/index.js:57166 build/index.js:47170
+msgid "Neues Mitglied hinzufügen"
+msgstr ""
+
+#: build/index.js:57180 src/components/members/AddMember.js:100
+#: build/backend.js:53050 build/index.js:47179
+msgid "Vorname"
+msgstr ""
+
+#: build/index.js:57188 src/components/members/AddMember.js:101
+#: build/backend.js:53051 build/index.js:47180
+msgid "Nachname"
+msgstr ""
+
+#: build/index.js:57196 src/components/members/AddMember.js:102
+#: build/backend.js:53052 build/index.js:47181
+msgid "Email"
+msgstr ""
+
+#: build/index.js:57205 build/index.js:47182
+msgid "Strasse"
+msgstr ""
+
+#: build/index.js:57213 build/index.js:47183
+msgid "Postleitzahl"
+msgstr ""
+
+#: build/index.js:57221 src/components/Members.js:101 build/backend.js:49835
+#: build/index.js:47184
+msgid "Ort"
+msgstr ""
+
+#: build/index.js:57235 src/components/bookkeeping/Expenses.js:314
+#: build/backend.js:52093 build/index.js:47191
+msgid "Hinzufügen"
+msgstr ""
+
+#: build/index.js:57355 src/components/members/Wallet.js:99
+#: build/backend.js:53161 build/index.js:47288
+msgid "Jahresbeitrag "
+msgstr ""
+
+#: build/index.js:57396 src/components/bookkeeping/Journal.js:110
+#: src/components/bookkeeping/Transactions.js:99
+#: src/components/members/Wallet.js:164 build/backend.js:52216
+#: build/backend.js:52804 build/backend.js:53226 build/index.js:47338
+msgid "Transaktionsnummer"
+msgstr ""
+
+#: build/index.js:57408 build/index.js:57474
+#: src/components/bookkeeping/Expenses.js:79
+#: src/components/bookkeeping/Expenses.js:301
+#: src/components/bookkeeping/Transactions.js:112
+#: src/components/members/Wallet.js:173 src/components/members/Wallet.js:296
+#: build/backend.js:51858 build/backend.js:52080 build/backend.js:52817
+#: build/backend.js:53235 build/backend.js:53358 build/index.js:47347
+#: build/index.js:47407
+msgid "Betrag"
+msgstr ""
+
+#: build/index.js:57411 src/components/bookkeeping/Transactions.js:116
+#: src/components/members/Wallet.js:177 build/backend.js:52821
+#: build/backend.js:53239 build/index.js:47351
+msgid "Neues Guthaben"
+msgstr ""
+
+#: build/index.js:57414 src/components/bookkeeping/Expenses.js:66
+#: src/components/bookkeeping/Transactions.js:120
+#: src/components/members/Wallet.js:201 build/backend.js:51845
+#: build/backend.js:52825 build/backend.js:53263 build/index.js:47355
+msgid "Erstellt von"
+msgstr ""
+
+#: build/index.js:57417 build/index.js:57483
+#: src/components/bookkeeping/Expenses.js:84
+#: src/components/bookkeeping/Expenses.js:305
+#: src/components/bookkeeping/Journal.js:131
+#: src/components/bookkeeping/Transactions.js:124
+#: src/components/frontend/ProductCategory.js:37
+#: src/components/members/Wallet.js:205 src/components/members/Wallet.js:308
+#: src/components/Products.js:104 build/backend.js:50148 build/backend.js:51863
+#: build/backend.js:52084 build/backend.js:52237 build/backend.js:52829
+#: build/backend.js:53267 build/backend.js:53370 build/frontend.js:28516
+#: build/index.js:47359 build/index.js:47408
+msgid "Details"
+msgstr ""
+
+#: build/index.js:57449 src/components/members/Wallet.js:258
+#: build/backend.js:53320 build/index.js:47393
+msgid "Wallet von"
+msgstr ""
+
+#: build/index.js:57471 build/index.js:47405
+msgid "Neue Transaktion hinzufügen:"
+msgstr ""
+
+#: build/index.js:57498 build/index.js:47413
+msgid "Transaktion hinzufügen"
+msgstr ""
+
+#: build/index.js:57507 src/components/members/Wallet.js:364
+#: build/backend.js:53426 build/index.js:47416
+msgid "belasten"
+msgstr ""
+
+#: build/index.js:57676 build/index.js:58158
+#: src/components/products/ImportProducts.js:69
+#: src/components/products/ProducerImportProducts.js:204 build/backend.js:53509
+#: build/backend.js:53980 build/index.js:47554 build/index.js:48008
+msgid "Während aktiven Bestellrunden können keine Produkte importiert werden."
+msgstr ""
+
+#: build/index.js:57686 build/index.js:58168
+#: src/components/products/ImportProducts.js:89 build/backend.js:53529
+#: build/index.js:47567 build/index.js:48021
+msgid "Import fertiggestellt:"
+msgstr ""
+
+#: build/index.js:57686 build/index.js:58168
+#: src/components/products/ImportProducts.js:89 build/backend.js:53529
+#: build/index.js:47567 build/index.js:48021
+msgid "Neu:"
+msgstr ""
+
+#: build/index.js:57686 build/index.js:58168
+#: src/components/products/ImportProducts.js:89 build/backend.js:53529
+#: build/index.js:47567 build/index.js:48021
+msgid "Aktualisiert:"
+msgstr ""
+
+#: build/index.js:57686 src/components/products/ImportProducts.js:89
+#: build/backend.js:53529 build/index.js:47567
+msgid "Gelöscht:"
+msgstr ""
+
+#: build/index.js:57701 build/index.js:58183
+#: src/components/products/ImportProducts.js:102 build/backend.js:53542
+#: build/index.js:47580 build/index.js:48034
+msgid "Produkte importieren"
+msgstr ""
+
+#: build/index.js:57721 build/index.js:47602
+msgid "Die Datei hat nicht exakt 8 Spalten."
+msgstr ""
+
+#: build/index.js:57729 build/index.js:58059
+#: src/components/products/ImportProducts.js:132
+#: src/components/products/ProducerImportProducts.js:90 build/backend.js:53572
+#: build/backend.js:53866 build/index.js:47610 build/index.js:47906
+msgid "Spalte 1 muss 'name' heissen."
+msgstr ""
+
+#: build/index.js:57733 build/index.js:58063
+#: src/components/products/ImportProducts.js:136
+#: src/components/products/ProducerImportProducts.js:94 build/backend.js:53576
+#: build/backend.js:53870 build/index.js:47614 build/index.js:47910
+msgid "Spalte 2 muss 'price' heissen."
+msgstr ""
+
+#: build/index.js:57737 build/index.js:58067
+#: src/components/products/ImportProducts.js:140
+#: src/components/products/ProducerImportProducts.js:98 build/backend.js:53580
+#: build/backend.js:53874 build/index.js:47618 build/index.js:47914
+msgid "Spalte 3 muss 'unit' heissen."
+msgstr ""
+
+#: build/index.js:57741 build/index.js:58071
+#: src/components/products/ImportProducts.js:144
+#: src/components/products/ProducerImportProducts.js:102 build/backend.js:53584
+#: build/backend.js:53878 build/index.js:47622 build/index.js:47918
+msgid "Spalte 4 muss 'lot' heissen."
+msgstr ""
+
+#: build/index.js:57745 build/index.js:58075
+#: src/components/products/ImportProducts.js:148
+#: src/components/products/ProducerImportProducts.js:106 build/backend.js:53588
+#: build/backend.js:53882 build/index.js:47626 build/index.js:47922
+msgid "Spalte 5 muss 'producer' heissen."
+msgstr ""
+
+#: build/index.js:57749 build/index.js:58079
+#: src/components/products/ImportProducts.js:152
+#: src/components/products/ProducerImportProducts.js:110 build/backend.js:53592
+#: build/backend.js:53886 build/index.js:47630 build/index.js:47926
+msgid "Spalte 6 muss 'origin' heissen."
+msgstr ""
+
+#: build/index.js:57753 build/index.js:58083
+#: src/components/products/ImportProducts.js:156
+#: src/components/products/ProducerImportProducts.js:114 build/backend.js:53596
+#: build/backend.js:53890 build/index.js:47634 build/index.js:47930
+msgid "Spalte 7 muss 'category' heissen."
+msgstr ""
+
+#: build/index.js:57757 src/components/products/ImportProducts.js:160
+#: build/backend.js:53600 build/index.js:47638
+msgid "Spalte 8 muss 'id' heissen."
+msgstr ""
+
+#: build/index.js:57772 build/index.js:57794 build/index.js:57798
+#: build/index.js:57802 build/index.js:57821 build/index.js:58098
+#: build/index.js:58120 build/index.js:58124
+#: src/components/products/ImportProducts.js:191
+#: src/components/products/ImportProducts.js:213
+#: src/components/products/ImportProducts.js:217
+#: src/components/products/ImportProducts.js:221
+#: src/components/products/ImportProducts.js:241
+#: src/components/products/ProducerImportProducts.js:141
+#: src/components/products/ProducerImportProducts.js:163
+#: src/components/products/ProducerImportProducts.js:167 build/backend.js:53631
+#: build/backend.js:53653 build/backend.js:53657 build/backend.js:53661
+#: build/backend.js:53681 build/backend.js:53917 build/backend.js:53939
+#: build/backend.js:53943 build/index.js:47653 build/index.js:47675
+#: build/index.js:47679 build/index.js:47683 build/index.js:47703
+#: build/index.js:47945 build/index.js:47967 build/index.js:47971
+msgid "Zeile"
+msgstr ""
+
+#: build/index.js:57772 build/index.js:57794 build/index.js:57798
+#: build/index.js:57802 build/index.js:57821 build/index.js:58098
+#: build/index.js:58120 build/index.js:58124
+#: src/components/products/ImportProducts.js:191
+#: src/components/products/ImportProducts.js:213
+#: src/components/products/ImportProducts.js:217
+#: src/components/products/ImportProducts.js:221
+#: src/components/products/ImportProducts.js:241
+#: src/components/products/ProducerImportProducts.js:141
+#: src/components/products/ProducerImportProducts.js:163
+#: src/components/products/ProducerImportProducts.js:167 build/backend.js:53631
+#: build/backend.js:53653 build/backend.js:53657 build/backend.js:53661
+#: build/backend.js:53681 build/backend.js:53917 build/backend.js:53939
+#: build/backend.js:53943 build/index.js:47653 build/index.js:47675
+#: build/index.js:47679 build/index.js:47683 build/index.js:47703
+#: build/index.js:47945 build/index.js:47967 build/index.js:47971
+msgid "Zelle"
+msgstr ""
+
+#: build/index.js:57782 build/index.js:47663
+msgid "Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten)."
+msgstr ""
+
+#: build/index.js:57809 build/index.js:58131
+#: src/components/products/ImportProducts.js:229
+#: src/components/products/ProducerImportProducts.js:175 build/backend.js:53669
+#: build/backend.js:53951 build/index.js:47691 build/index.js:47979
+msgid "Spalten 'price', 'lot' und 'id' müssen Zahlen sein."
+msgstr ""
+
+#: build/index.js:57828 src/components/products/ImportProducts.js:249
+#: build/backend.js:53689 build/index.js:47711
+msgid "Kategorie stimmt nicht mit den erfassten Kategorien überein."
+msgstr ""
+
+#: build/index.js:57832 src/components/products/ImportProducts.js:254
+#: build/backend.js:53694 build/index.js:47716
+msgid "Datei wurde geprüft und ist bereit zum Import"
+msgstr ""
+
+#: build/index.js:57865 src/components/products/ImportProducts.js:272
+#: build/backend.js:53712 build/index.js:47734
+msgid "Importiere Produkte aus einer CSV Datei."
+msgstr ""
+
+#: build/index.js:57868 src/components/products/ImportProducts.js:275
+#: build/backend.js:53715 build/index.js:47737
+msgid "Für eine Vorlage, exportiere deine aktuelle Produktliste."
+msgstr ""
+
+#: build/index.js:57871 src/components/products/ImportProducts.js:278
+#: build/backend.js:53718 build/index.js:47740
+msgid "Produkte mit identischer ID werden überschrieben."
+msgstr ""
+
+#: build/index.js:57874 src/components/products/ImportProducts.js:281
+#: build/backend.js:53721 build/index.js:47743
+msgid "Produkte, die nicht aktualisiert werden, werden gelöscht."
+msgstr ""
+
+#: build/index.js:57877 src/components/products/ImportProducts.js:284
+#: build/backend.js:53724 build/index.js:47746
+msgid ""
+"Produktkategorien können unter Produkte > Kategorien erstellt und editiert "
+"werden."
+msgstr ""
+
+#: build/index.js:57885 src/components/products/ImportProducts.js:289
+#: build/backend.js:53729 build/index.js:47751
+msgid "CSV Datei wählen"
+msgstr ""
+
+#: build/index.js:57894 src/components/products/ImportProducts.js:301
+#: build/backend.js:53741 build/index.js:47763
+msgid "Datei entfernen"
+msgstr ""
+
+#: build/index.js:58051 build/index.js:47898
+msgid "Die Datei hat nicht exakt 7 Spalten."
+msgstr ""
+
+#: build/index.js:58108 build/index.js:47955
+msgid "Zellen dürfen nicht leer sein."
+msgstr ""
+
+#: build/index.js:58135 build/index.js:47984
+msgid "Daten wurden geprüft und sind bereit zum Import"
+msgstr ""
+
+#: build/index.js:58202 src/components/products/ProducerImportProducts.js:240
+#: build/backend.js:54016 build/index.js:48044
+msgid "Importiere Produkte ausgewählter Lieferanten direkt."
+msgstr ""
+
+#: build/index.js:58205 build/index.js:48047
+msgid "Produkte mit identischem Namen werden aktualisiert."
+msgstr ""
+
+#: build/index.js:58208 build/index.js:48050
+msgid ""
+"Produkte, die nicht existieren (mit identischem Namen) werden neu erstellt."
+msgstr ""
+
+#: build/index.js:58211 build/index.js:48053
+msgid "Produktkategorien, die nicht vorhanden sind, werden neu erstellt."
+msgstr ""
+
+#: build/index.js:58229 src/components/products/ProducerImportProducts.js:269
+#: build/backend.js:54045 build/index.js:48076
+msgid "Produkte suchen"
+msgstr ""
+
+#: build/index.js:58235 src/components/products/ProducerImportProducts.js:277
+#: build/backend.js:54053 build/index.js:48084
+msgid "Produkte gefunden."
+msgstr ""
+
+#: src/AddToCart.js:60 src/components/selfCheckout/AddProductBySku.js:17
+#: build/frontend.js:27169 build/frontend.js:28712
+msgid "Produkt ist schon im Warenkorb. Du kannst die Menge erhöhen"
+msgstr ""
+
+#: src/AddToCart.js:172 build/frontend.js:27281
+msgid "Self Checkout"
+msgstr ""
+
+#: src/App.js:91 build/backend.js:48991
+msgid "Buchhaltung"
+msgstr ""
+
+#: src/components/Bestellrunden.js:94 build/backend.js:49121
+msgid "Status"
+msgstr ""
+
+#: src/components/Bestellrunden.js:117 build/backend.js:49144
+msgid "Bild"
+msgstr ""
+
+#: src/components/Bestellrunden.js:124 build/backend.js:49151
+msgid "Bezeichnung"
+msgstr ""
+
+#: src/components/Bestellrunden.js:325 build/backend.js:49352
+msgid "Benachrichtigung"
+msgstr ""
+
+#: src/components/Bestellrunden.js:437 src/components/Bestellrunden.js:441
+#: build/backend.js:49464 build/backend.js:49468
+msgid "Bestellrunde Bezeichnung"
+msgstr ""
+
+#: src/components/Bestellrunden.js:445 build/backend.js:49472
+msgid "Bestellrunde Bild"
+msgstr ""
+
+#: src/components/Bestellrunden.js:449 build/backend.js:49476
+msgid "URL Bild"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:155 build/backend.js:50890
+msgid "Mutation Speichern"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:195 build/backend.js:50930
+msgid "Produkt wurde (teilweise) nicht geliefert"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:202 build/backend.js:50937
+msgid "Neuer Preis"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:213 build/backend.js:50948
+msgid ""
+"Bestellungen, in denen das Produkt rückerstattet werden soll, auswählen, "
+"dann speichern."
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:214 build/backend.js:50949
+msgid "Der Preis für das Produkt wird in allen Bestellungen angepasst."
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:242 build/backend.js:50977
+msgid "hat"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:242 build/backend.js:50977
+msgid "bestellt"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:242
+#: src/components/members/Wallet.js:364 build/backend.js:50977
+#: build/backend.js:53426
+msgid "für"
+msgstr ""
+
+#: src/components/bestellrunden/Mutations.js:257 build/backend.js:50992
+msgid "keine Bestellungen betroffen."
+msgstr ""
+
+#: src/components/bestellrunden/Notification.js:70 build/backend.js:51092
+msgid "Nachricht senden für Bestellrunde"
+msgstr ""
+
+#: src/components/bestellrunden/Notification.js:94 build/backend.js:51116
+msgid "Betreff"
+msgstr ""
+
+#: src/components/bestellrunden/Notification.js:95 build/backend.js:51117
+msgid "Nachricht"
+msgstr ""
+
+#: src/components/bestellrunden/Notification.js:97 build/backend.js:51119
+msgid "Nachricht senden"
+msgstr ""
+
+#: src/components/bestellrunden/Notification.js:102 build/backend.js:51124
+msgid "Nachricht wurde an"
+msgstr ""
+
+#: src/components/bestellrunden/Notification.js:102 build/backend.js:51124
+msgid "Mitglieder versendet."
+msgstr ""
+
+#: src/components/bestellrunden/Orders.js:406 build/backend.js:51541
+msgid "Kategorielisten"
+msgstr ""
+
+#: src/components/bestellrunden/Products.js:175 build/backend.js:51741
+msgid ""
+"Produkte auswählen, die in dieser Bestellrunde bestellt werden können, dann "
+"speichern."
+msgstr ""
+
+#: src/components/Bookkeeping.js:34 build/backend.js:49549
+msgid "Guthaben & Transaktionen"
+msgstr ""
+
+#: src/components/Bookkeeping.js:40 src/components/bookkeeping/Journal.js:125
+#: src/components/bookkeeping/Journal.js:251
+#: src/components/bookkeeping/Journal.js:255 build/backend.js:49555
+#: build/backend.js:52231 build/backend.js:52357 build/backend.js:52361
+msgid "Ausgaben"
+msgstr ""
+
+#: src/components/Bookkeeping.js:43 build/backend.js:49558
+msgid "Milchbüechli"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:62 build/backend.js:51841
+msgid "Nummer"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:75 build/backend.js:51854
+msgid "type"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:165
+#: src/components/bookkeeping/Journal.js:236
+#: src/components/bookkeeping/Orders.js:300
+#: src/components/bookkeeping/Transactions.js:220 build/backend.js:51944
+#: build/backend.js:52342 build/backend.js:52676 build/backend.js:52925
+msgid "Ansicht exportieren"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:168 build/backend.js:51947
+msgid "Neue Ausgabe"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:248 build/backend.js:52027
+msgid "Ausgabe hinzufügen"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:259 build/backend.js:52038
+msgid "Erstellt von Mitglied"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:263
+#: src/components/bookkeeping/Journal.js:106 build/backend.js:52042
+#: build/backend.js:52212
+msgid "Typ"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:267 build/backend.js:52046
+msgid "Lieferantenrechnung"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:270 build/backend.js:52049
+msgid "Dienstleistung"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:273 build/backend.js:52052
+msgid "Spesen"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:276 build/backend.js:52055
+msgid "Transport"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:279 build/backend.js:52058
+msgid "Miete"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:282 build/backend.js:52061
+msgid "Verpackungsmaterial"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:285 build/backend.js:52064
+msgid "Büromaterial"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:288 build/backend.js:52067
+msgid "Spende"
+msgstr ""
+
+#: src/components/bookkeeping/Expenses.js:291 build/backend.js:52070
+msgid "Sonstiges"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:71 build/backend.js:52177
+msgid "Guthaben Transaktion"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:81 build/backend.js:52187
+msgid "Ausgabe"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:84 build/backend.js:52190
+msgid "erstellt von Mitglied"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:119
+#: src/components/bookkeeping/Journal.js:242
+#: src/components/bookkeeping/Journal.js:246 build/backend.js:52225
+#: build/backend.js:52348 build/backend.js:52352
+msgid "Einnahmen"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:222 build/backend.js:52328
+msgid "Eingrenzen von"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:223 build/backend.js:52329
+msgid "Eingrenzen bis"
+msgstr ""
+
+#: src/components/bookkeeping/Journal.js:225 build/backend.js:52331
+msgid "Zurücksetzen"
+msgstr ""
+
+#: src/components/bookkeeping/Orders.js:263 build/backend.js:52639
+msgid "Alle Bestellrunden"
+msgstr ""
+
+#: src/components/bookkeeping/Orders.js:278
+#: src/components/bookkeeping/Transactions.js:198 build/backend.js:52654
+#: build/backend.js:52903
+msgid "Alle Mitglieder"
+msgstr ""
+
+#: src/components/bookkeeping/Orders.js:306 build/backend.js:52682
+msgid "Wert der Bestellungen von"
+msgstr ""
+
+#: src/components/bookkeeping/Orders.js:311 build/backend.js:52687
+msgid "Wert der Bestellungen von Bestellrunde"
+msgstr ""
+
+#: src/components/bookkeeping/Orders.js:315 build/backend.js:52691
+msgid "Wert aller Bestellungen"
+msgstr ""
+
+#: src/components/bookkeeping/Transactions.js:227 build/backend.js:52932
+msgid "Guthaben von"
+msgstr ""
+
+#: src/components/bookkeeping/Transactions.js:233 build/backend.js:52938
+msgid "Guthaben aller Mitglieder"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:111 build/frontend.js:28361
+msgid "Hurrah! Es gibt aktive Bestellrunden!"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:118 build/frontend.js:28368
+msgid ""
+"Hier siehst du alle aktiven Sammelbestellungen. Du kannst gleichzeitig in "
+"jeder Sammelbestellung mitmachen. Bitte beachte jeweils das Bestellfenster "
+"und das Datum der Abholung."
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:122 build/frontend.js:28372
+msgid "Deine Bestellung in der Sammelbestellung"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:122 build/frontend.js:28372
+msgid ""
+"ist noch nicht abgeschlossen. Schliesse die Bestellung ab, um in anderen "
+"Sammelbestellungen teilzunehmen."
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:122 build/frontend.js:28372
+msgid "Oder"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:142 build/frontend.js:28392
+msgid "Warenkorb leeren"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:166 build/frontend.js:28416
+msgid "Bestellen vom"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:166
+#: src/components/frontend/OrderList.js:207
+#: src/components/frontend/OrderList.js:242 build/frontend.js:27769
+#: build/frontend.js:27804 build/frontend.js:28416
+msgid "bis"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:169 build/frontend.js:28419
+msgid "Abholen am"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:183
+#: src/components/frontend/OrderingRounds.js:194 build/frontend.js:28433
+#: build/frontend.js:28444
+msgid "Bestellung anpassen"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:183
+#: src/components/frontend/OrderingRounds.js:194 build/frontend.js:28433
+#: build/frontend.js:28444
+msgid "Bestellen"
+msgstr ""
+
+#: src/components/frontend/OrderingRounds.js:216 build/frontend.js:28466
+msgid "Aktuell gibt es keine aktiven Bestellrunden."
+msgstr ""
+
+#: src/components/frontend/OrderList.js:185 build/frontend.js:27747
+msgid "zurück"
+msgstr ""
+
+#: src/components/frontend/OrderList.js:188 build/frontend.js:27750
+msgid ""
+"Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb "
+"bleibt gespeichert."
+msgstr ""
+
+#: src/components/frontend/OrderList.js:196 build/frontend.js:27758
+msgid "Bestellrunde: "
+msgstr ""
+
+#: src/components/frontend/OrderList.js:204 build/frontend.js:27766
+msgid "Bestellfenster: "
+msgstr ""
+
+#: src/components/frontend/OrderList.js:212 build/frontend.js:27774
+msgid "Abholen: "
+msgstr ""
+
+#: src/components/frontend/OrderList.js:223 build/frontend.js:27785
+msgid ""
+"Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung "
+"wurde geladen."
+msgstr ""
+
+#: src/components/frontend/OrderList.js:228 build/frontend.js:27790
+msgid "Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung."
+msgstr ""
+
+#: src/components/frontend/OrderList.js:238 build/frontend.js:27800
+msgid "Aktuell ist das Bestellfenster geschlossen."
+msgstr ""
+
+#: src/components/frontend/OrderList.js:242 build/frontend.js:27804
+msgid "Das nächste Bestellfenster"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:174
+#: src/components/frontend/OrderOverview.js:261 build/frontend.js:28133
+#: build/frontend.js:28220
+msgid "Einkaufszettel"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:195 build/frontend.js:28154
+msgid "So bestellst du mit"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:201 build/frontend.js:28160
+msgid "Guthaben aufladen "
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:205 build/frontend.js:28164
+msgid "Mengen in der Bestell-Liste eingeben."
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:209 build/frontend.js:28168
+msgid ""
+"Produkte in den Warenkorb legen (Bestellung wird für später gespeichert)."
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:213 build/frontend.js:28172
+msgid "An der Kasse die Bestellung abschliessen."
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:217 build/frontend.js:28176
+msgid "Anpassungen können bis zum Ende des Bestellfenster vorgenommen werden."
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:231 build/frontend.js:28190
+msgid "Verfügbares Guthaben"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:237 build/frontend.js:28196
+msgid "Aktueller Bestellwert"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:243 build/frontend.js:28202
+msgid "Restguthaben"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:253 build/frontend.js:28212
+msgid "In den Warenkorb"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:256 build/frontend.js:28215
+msgid "Hilfe"
+msgstr ""
+
+#: src/components/frontend/OrderOverview.js:266 build/frontend.js:28225
+msgid "Guthaben aufladen"
+msgstr ""
+
+#: src/components/frontend/ProductCategory.js:27
+#: src/components/selfCheckout/SelfCheckoutCartItem.js:70
+#: build/frontend.js:28506 build/frontend.js:28933
+msgid "Menge"
+msgstr ""
+
+#: src/components/frontend/ProductCategory.js:40 build/frontend.js:28519
+msgid "Gebinde"
+msgstr ""
+
+#: src/components/Members.js:97 build/backend.js:49831
+msgid "PLZ"
+msgstr ""
+
+#: src/components/Members.js:138 build/backend.js:49872
+msgid "Nein"
+msgstr ""
+
+#: src/components/members/AddMember.js:53 build/backend.js:53003
+msgid "Benutzer erstellt. Fehler beim Versenden der Email Bestätigung."
+msgstr ""
+
+#: src/components/members/AddMember.js:55 build/backend.js:53005
+msgid ""
+"Fehler beim Erstellen des Benutzers. Bitte verwende eine andere Email "
+"Adresse."
+msgstr ""
+
+#: src/components/members/AddMember.js:73 build/backend.js:53023
+msgid "Neues Mitglied einladen"
+msgstr ""
+
+#: src/components/members/AddMember.js:77 build/backend.js:53027
+msgid "Einladen"
+msgstr ""
+
+#: src/components/members/Wallet.js:181 src/components/members/Wallet.js:280
+#: build/backend.js:53243 build/backend.js:53342
+msgid "Transaktionsart"
+msgstr ""
+
+#: src/components/members/Wallet.js:277 build/backend.js:53339
+msgid "Neue Transaktion:"
+msgstr ""
+
+#: src/components/members/Wallet.js:306 build/backend.js:53368
+msgid ""
+"Vorzeichen beachten! Positive Beträge werden addiert - Negative werden "
+"subtrahiert."
+msgstr ""
+
+#: src/components/members/Wallet.js:312 build/backend.js:53374
+msgid "Transaktion speichern"
+msgstr ""
+
+#: src/components/members/Wallet.js:356 build/backend.js:53418
+msgid "Neue Transaktion für"
+msgstr ""
+
+#: src/components/members/Wallet.js:360 build/backend.js:53422
+msgid "bezahlt"
+msgstr ""
+
+#: src/components/Products.js:77
+#: src/components/selfCheckout/AddProductBySku.js:54 build/backend.js:50121
+#: build/frontend.js:28749
+msgid "Artikelnummer"
+msgstr ""
+
+#: src/components/Products.js:332 build/backend.js:50376
+msgid "QR Etiketten generieren"
+msgstr ""
+
+#: src/components/products/ImportProducts.js:124
+#: src/components/products/ProducerImportProducts.js:82 build/backend.js:53564
+#: build/backend.js:53858
+msgid "Die Datei hat nicht exakt 11 Spalten."
+msgstr ""
+
+#: src/components/products/ImportProducts.js:164
+#: src/components/products/ProducerImportProducts.js:118 build/backend.js:53604
+#: build/backend.js:53894
+msgid "Spalte 9 muss 'short_description' heissen."
+msgstr ""
+
+#: src/components/products/ImportProducts.js:168
+#: src/components/products/ProducerImportProducts.js:122 build/backend.js:53608
+#: build/backend.js:53898
+msgid "Spalte 10 muss 'image' heissen."
+msgstr ""
+
+#: src/components/products/ImportProducts.js:172
+#: src/components/products/ProducerImportProducts.js:126 build/backend.js:53612
+#: build/backend.js:53902
+msgid "Spalte 11 muss 'description' heissen."
+msgstr ""
+
+#: src/components/products/ImportProducts.js:176 build/backend.js:53616
+msgid "Spalte 12 muss 'sku' heissen."
+msgstr ""
+
+#: src/components/products/ImportProducts.js:201 build/backend.js:53641
+msgid ""
+"Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,"
+"'short_description', 'image', 'description' und 'sku')."
+msgstr ""
+
+#: src/components/products/ProducerImportProducts.js:151 build/backend.js:53927
+msgid ""
+"Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,"
+"'short_description', 'image' und 'description')."
+msgstr ""
+
+#: src/components/products/ProducerImportProducts.js:180 build/backend.js:53956
+msgid "Daten wurden geprüft. Die Import-Liste ist bereit zum Download."
+msgstr ""
+
+#: src/components/products/ProducerImportProducts.js:230 build/backend.js:54006
+msgid "Produkte von Lieferanten"
+msgstr ""
+
+#: src/components/products/ProducerImportProducts.js:243 build/backend.js:54019
+msgid "Du kannst eine fixfertige Import-Liste downloaden."
+msgstr ""
+
+#: src/components/products/ProducerImportProducts.js:246 build/backend.js:54022
+msgid "Übernimm aus der Liste was du willst in deine Produkteliste."
+msgstr ""
+
+#: src/components/products/ProducerImportProducts.js:284 build/backend.js:54060
+msgid "Liste downloaden"
+msgstr ""
+
+#: src/components/selfCheckout/AddProductBySku.js:56 build/frontend.js:28751
+msgid "Zum Warenkorb hinzufügen"
+msgstr ""
+
+#: src/components/selfCheckout/SelfCheckoutCart.js:51 build/frontend.js:28857
+msgid "Warenkorb leer. Scanne ein Produkt."
+msgstr ""
+
+#: src/components/selfCheckout/SelfCheckoutCartItem.js:61
+#: build/frontend.js:28924
+msgid "Menge eingeben"
+msgstr ""
+
+#: src/components/selfCheckout/SelfCheckoutCartItem.js:67
+#: build/frontend.js:28930
+msgid "Menge x Einheit = Gesamtmenge"
+msgstr ""
+
+#: src/components/selfCheckout/SelfCheckoutCartItem.js:75
+#: build/frontend.js:28938
+msgid "Menge Übernehmen"
+msgstr ""
+
+#: src/components/Settings.js:129 build/backend.js:50523
+msgid "Foodcoop Einstellungen"
+msgstr ""
+
+#: src/components/Settings.js:132 build/backend.js:50526
+msgid "Name der Foodcoop"
+msgstr ""
+
+#: src/components/Settings.js:148 build/backend.js:50542
+msgid "Administrator Email"
+msgstr ""
+
+#: src/components/Settings.js:181 build/backend.js:50575
+msgid "Bankverbindung IBAN"
+msgstr ""
+
+#: src/components/Settings.js:197 build/backend.js:50591
+msgid "Instruktionen für die Banküberweisung"
+msgstr ""
+
+#: src/components/Settings.js:216 build/backend.js:50610
+msgid "Adresse des Verteillokals"
+msgstr ""
+
+#: src/components/Settings.js:273 build/backend.js:50667
+msgid "Anzeige Einstellungen"
+msgstr ""
+
+#: src/components/Settings.js:292 build/backend.js:50686
+msgid ""
+"Die Bestell-Liste kann auch mit dem Shortcode [foodcoop_list] eingefügt "
+"werden."
+msgstr ""
+
+#: src/components/Settings.js:297 build/backend.js:50691
+msgid "Preise öffentlich anzeigen?"
+msgstr ""
+
+#: src/components/Settings.js:309 build/backend.js:50703
+msgid "Mitgliederliste in Mein Konto anzeigen?"
+msgstr ""
+
+#: src/QRBill.js:104 build/frontend.js:27500
+msgid "Guthaben per Banküberweisung aufladen"
+msgstr ""
+
+#: src/QRBill.js:108 build/frontend.js:27504
+msgid ""
+"Generiere hier einen QR Einzahlungsschein, um Geld auf unser Vereinskonto zu "
+"überweisen"
+msgstr ""
+
+#: src/QRBill.js:114 build/frontend.js:27510
+msgid "Einzahlungsschein generieren"
+msgstr ""
+
+#: src/QRBill.js:126 build/frontend.js:27522
+msgid "Guthaben sofort aufladen"
+msgstr ""
+
+#: src/QRBill.js:129 build/frontend.js:27525
+msgid ""
+"Lade dein Guthaben über eine Zahlungsschnittstelle auf, um es sofort "
+"verfügbar zu haben (evtl. fallen Gebühren an)."
+msgstr ""
+
+#: src/QRBill.js:130 build/frontend.js:27526
+msgid "Achtung: Der bestehende Warenkorb wird geleert!"
+msgstr ""
+
+#: src/QRBill.js:148 build/frontend.js:27544
+msgid "Zur Kasse"
+msgstr ""

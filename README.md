@@ -36,6 +36,11 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.6.4
+
+- Added english and french translations
+- Added a billing overview in Bookkeeping tab
+
 ### 1.6.3
 
 - fixed bug for instant topup feature

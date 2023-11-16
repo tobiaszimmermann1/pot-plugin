@@ -1,17 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo, createContext } from "react"
+import React, { useState, useEffect } from "react"
 import axios from "axios"
-import { Box, Stack, Typography, Button, CircularProgress, Alert, Divider } from "@mui/material"
-import LoadingButton from "@mui/lab/LoadingButton"
-import Grid from "@mui/material/Grid"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import { format } from "date-fns"
-import CelebrationIcon from "@mui/icons-material/Celebration"
-import BedtimeIcon from "@mui/icons-material/Bedtime"
+import { Box, CircularProgress } from "@mui/material"
 import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
-import OrderOverview from "./OrderOverview"
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 
 const __ = wp.i18n.__
 

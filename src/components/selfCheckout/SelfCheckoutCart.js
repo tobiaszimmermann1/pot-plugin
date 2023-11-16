@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, Alert } from "@mui/material"
+import { Button, Stack } from "@mui/material"
 import List from "@mui/material/List"
 import SelfCheckoutCartItem from "./SelfCheckoutCartItem"
 import { cartContext } from "./cartContext"

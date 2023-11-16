@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useMemo } from "react"
+import React, { useState } from "react"
 const __ = wp.i18n.__
 import ProductLine from "./ProductLine"
-import { CSSTransition } from "react-transition-group"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 
