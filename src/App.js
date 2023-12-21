@@ -68,8 +68,7 @@ function App() {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(JSON.parse(res.permissions))
-          setPermissions(res.permissions)
+          res.permissions && setPermissions(res.permissions)
           setRole(res.role)
           setLoading(false)
         }
