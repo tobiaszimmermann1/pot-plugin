@@ -13,6 +13,8 @@ import PointOfSaleIcon from "@mui/icons-material/PointOfSale"
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges"
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import { CSSTransition } from "react-transition-group"
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 const __ = wp.i18n.__
 
 const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBestellrunde }) => {
@@ -26,6 +28,7 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
   const [balanceLoading, setBalanceLoading] = useState(true)
   const [walletBalance, setWalletBalance] = useState(null)
   const [myAccountLink, setMyAccountLink] = useState(null)
+  const [orderBarVisibility, setOrderBarVisibility] = useState(true)
 
   /**
    * Shopping List
@@ -164,6 +167,11 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
     }
   }
 
+  function handleHideOrderBar() {
+    const currentState = orderBarVisibility
+    setOrderBarVisibility(!currentState)
+  }
+
   return (
     activeState && (
       <>
@@ -219,7 +227,10 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
           </div>
         </CSSTransition>
 
-        <div id="fc_order_bar">
+        <div id="fc_order_bar" className={orderBarVisibility ? "" : "fc_order_bar_hidden"}>
+          <div className="fc_order_bar_handle" onClick={handleHideOrderBar}>
+            {orderBarVisibility ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />}
+          </div>
           <div className="fc_order_bar_col fc_order_bar_finances">
             {balanceLoading ? (
               <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>

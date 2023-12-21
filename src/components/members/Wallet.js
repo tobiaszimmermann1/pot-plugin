@@ -330,7 +330,7 @@ function Wallet({ setModalClose, walletID, walletName }) {
                 }
               }}
               enableFullScreenToggle={false}
-              initialState={{ density: "compact" }}
+              initialState={{ density: "compact", pagination: { pageSize: 25 } }}
               renderTopToolbarCustomActions={({ table }) => (
                 <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap" }}>
                   <Button

@@ -3,13 +3,28 @@ const __ = wp.i18n.__
 import ProductLine from "./ProductLine"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip"
+import { styled } from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 
-const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation }) => {
+const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation, stockManagement }) => {
   const [visibility, setVisibility] = useState(true)
 
   function visClick() {
     visibility ? setVisibility(false) : setVisibility(true)
   }
+
+  const HtmlTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#f5f5f9",
+      color: "rgba(0, 0, 0, 0.87)",
+      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+      maxWidth: 300,
+      fontSize: theme.typography.pxToRem(13),
+      padding: 10
+    }
+  }))
 
   return (
     <>
@@ -34,15 +49,39 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
                 <span className="fc_order_list_header col_2x">{__("Produkt", "fcplugin")}</span>
               )}
 
-              <span className="fc_order_list_header col_25">{__("Details", "fcplugin")}</span>
-              <span className="fc_order_list_header col_3">{__("Produzent", "fcplugin")}</span>
-              <span className="fc_order_list_header col_4">{__("Einheit", "fcplugin")}</span>
-              <span className="fc_order_list_header col_5">{__("Gebinde", "fcplugin")}</span>
+              <span className="fc_order_list_header col_25">
+                <HtmlTooltip title={__("Produktionsmethoden, Arbeitsbedinungen und andere wichtige Informationen zum Produkt.", "fcplugin")} placement="top-start">
+                  <span>
+                    {__("Details", "fcplugin")} <HelpOutlineIcon style={{ marginLeft: 3, fontSize: "1.3em", color: "#888" }} />
+                  </span>
+                </HtmlTooltip>
+              </span>
+              <span className="fc_order_list_header col_3">
+                <HtmlTooltip title={__("Zeigt dir woher das Produkt stammt, wer es produziert und wer es uns liefert.", "fcplugin")} placement="top-start">
+                  <span>
+                    {__("Produktion & Lieferung", "fcplugin")} <HelpOutlineIcon style={{ marginLeft: 3, fontSize: "1.3em", color: "#888" }} />
+                  </span>
+                </HtmlTooltip>
+              </span>
+              <span className="fc_order_list_header col_4">
+                <HtmlTooltip title={__("Die Einheit, in der das Produkt dir geliefert wird.", "fcplugin")} placement="top-start">
+                  <span>
+                    {__("Einheit", "fcplugin")} <HelpOutlineIcon style={{ marginLeft: 3, fontSize: "1.3em", color: "#888" }} />
+                  </span>
+                </HtmlTooltip>
+              </span>
+              <span className="fc_order_list_header col_5">
+                <HtmlTooltip title={__("Die Anzahl Einheiten, die vom Lieferanten bestellt werden müssen.", "fcplugin")} placement="top-start">
+                  <span>
+                    {__("Gebinde", "fcplugin")} <HelpOutlineIcon style={{ marginLeft: 3, fontSize: "1.3em", color: "#888" }} />
+                  </span>
+                </HtmlTooltip>
+              </span>
               <span className="fc_order_list_header col_6">{__("Preis", "fcplugin")}</span>
             </div>
 
             {products.map(product => (
-              <ProductLine publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
+              <ProductLine stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
             ))}
           </div>
         </div>

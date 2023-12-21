@@ -8,6 +8,7 @@
   // orders query
   $orders = wc_get_orders( array(
     'limit'         => -1, 
+    'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
     'orderby'       => 'date',
     'order'         => 'DESC',
     'meta_key'      => 'bestellrunde_id', 

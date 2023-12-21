@@ -186,7 +186,7 @@ const Transactions = () => {
           }
         }}
         enableFullScreenToggle={false}
-        initialState={{ density: "compact" }}
+        initialState={{ density: "compact", pagination: { pageSize: 25 } }}
         renderTopToolbarCustomActions={({ table }) => (
           <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
             <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "nowrap", flexDirection: "row", justifyContent: "flex-start" }}>

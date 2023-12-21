@@ -28,6 +28,8 @@ const OrderListInActive = () => {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
+          console.log(res)
+
           setAllProducts(res[3])
 
           let productsByCategory = {}
@@ -57,7 +59,7 @@ const OrderListInActive = () => {
         productToDo.name = p.name
         productToDo.unit = p._einheit
         productToDo.lot = p._gebinde
-        productToDo.details = p._lieferant + ", " + p._herkunft
+        productToDo.details = `<strong>${p._produzent}</strong> (${p._herkunft})<br /> <i style="font-size:0.75rem;margin-top: 5px;">${__("geliefert von", "fcplugin")} ${p._lieferant}</i>`
         productToDo.category = p.category_name
         productToDo.id = p.id
         productToDo.short_description = p.short_description

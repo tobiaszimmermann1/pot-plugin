@@ -5,12 +5,12 @@
  * @package FoodcoopPlugin 
  */
 /*
-Plugin Name: Foodcoop Manager
-Plugin URI: https://neues-food-depot.ch
-Description: Plugin for Foodcoops
-Version: 1.6.4
-Author: Tobias Zimmermann
-Author URI: https://neues-food-depot.ch
+Plugin Name: POT Plugin
+Plugin URI: https://plugin.pot.ch
+Description: Plugin for managing foodcoops. 
+Version: 1.7.0
+Author: Tobias Zimmermann / Verein POT Netzwerk
+Author URI: https://plugin.pot.ch
 License: GPLv2 or later
 Text Domain: fcplugin
 Domain Path: /languages
@@ -18,6 +18,19 @@ Domain Path: /languages
 
 if (!defined( 'ABSPATH' )) {
   die;
+}
+
+// add documentation link to plugin meta
+add_filter( 'plugin_row_meta', 'fc_plugin_row_meta', 10, 2 );
+
+function fc_plugin_row_meta( $links, $file ) {    
+    if ( plugin_basename( __FILE__ ) == $file ) {
+        $row_meta = array(
+          'docs'    => '<a href="' . esc_url( 'https://plugin.pot.ch/dokumentation' ) . '" target="_blank" aria-label="' . esc_attr__( 'Dokumentation', 'fcplugin' ) . '">' . esc_html__( 'Dokumentation', 'fcplugin' ) . '</a>'
+        );
+        return array_merge( $links, $row_meta );
+    }
+    return (array) $links;
 }
 
 /**
@@ -47,6 +60,7 @@ function activate_foodcoop_plugin() {
   }
 
   foodcoop_wallet_install();
+  add_roles_on_plugin_activation();
   flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'activate_foodcoop_plugin' );
@@ -78,6 +92,38 @@ function foodcoop_wallet_install() {
   dbDelta( $sql );
 }
 
+
+
+
+/**
+ * User capabilities
+ */
+function add_roles_on_plugin_activation() {
+  add_role( 'foodcoop_manager', 'Foodcoop Manager', get_role( 'shop_manager' )->capabilities );
+}
+
+// Hide menu items for foodcoop_manager
+add_action( 'admin_init', 'fc_remove_menu_pages' );
+function fc_remove_menu_pages() {
+
+  $user = wp_get_current_user();
+  if (in_array('foodcoop_manager', $user->roles)) {
+   remove_menu_page('edit.php');
+   remove_menu_page('upload.php');
+   remove_menu_page('link-manager.php');
+   remove_menu_page('edit-comments.php');
+   remove_menu_page('edit.php?post_type=page');
+   remove_menu_page('users.php');
+   remove_menu_page('tools.php');
+   remove_menu_page('themes.php');
+   remove_menu_page('tools.php'); 
+   remove_menu_page('edit.php?post_type=product'); 
+   remove_menu_page('edit.php?post_type=fc_theme_frontpage'); 
+   remove_menu_page('woocommerce'); 
+   remove_menu_page('wc-admin&path=/analytics/overview');
+   remove_menu_page('woocommerce-marketing');
+  }
+}
 
 
 
@@ -177,23 +223,24 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.6.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.0', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
     'adminUrl' => parse_url(admin_url())['path'].'admin.php?page=foodcoop-plugin',
     'pluginUrl' => plugin_dir_url(__FILE__),
     'nonce' => wp_create_nonce('wp_rest'),
-    'currentUser' => wp_get_current_user()
+    'currentUser' => wp_get_current_user(),
+    'version' => "1.7.0"
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.4' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.0' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.6.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.0', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -206,7 +253,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.6.4' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.0' );
 }
 
 add_action( 'init', 'fc_init');
@@ -285,6 +332,78 @@ function fc_init() {
     'capability_type'       => 'post',
   );
   register_post_type( 'expenses', $args_expenses );
+
+  // cpt: suppliers
+  $labels_suppliers = array(
+    'name'                  => __( 'Suppliers'),
+    'singular_name'         => __( 'Supplier'),
+    'menu_name'             => __( 'Lieferanten'),
+    'name_admin_bar'        => __( 'Lieferanten'),
+    'archives'              => __( 'Lieferantenarchiv'),
+    'all_items'             => __( 'Alle Lieferanten'),
+    'add_new_item'          => __( 'Neuer Lieferant hinzufügen'),
+    'add_new'               => __( 'Hinzufügen'),
+    'new_item'              => __( 'Lieferant hinzufügen'),
+    'edit_item'             => __( 'Lieferant bearbeiten'),
+    'update_item'           => __( 'Lieferant speichern'),
+    'view_item'             => __( 'Lieferant ansehen'),
+    'view_items'            => __( 'Lieferanten ansehen'),
+  );
+
+  $args_suppliers = array(
+    'label'                 => __( 'Lieferanten'),
+    'labels'                => $labels_suppliers,
+    'supports'              => array('author', 'custom-fields', 'title', 'editor', 'excerpt', 'thumbnail'),
+    'taxonomies'            => array(),
+    'hierarchical'          => false,
+    'public'                => true,
+    'show_ui'               => true,
+    'show_in_menu'          => false,
+    'show_in_admin_bar'     => false,
+    'show_in_nav_menus'     => false,
+    'can_export'            => true,
+    'has_archive'           => true,
+    'exclude_from_search'   => true,
+    'publicly_queryable'    => true,
+    'capability_type'       => 'post',
+  );
+  register_post_type( 'suppliers', $args_suppliers );
+
+  // cpt: producers
+  $labels_producers = array(
+    'name'                  => __( 'Producers'),
+    'singular_name'         => __( 'Producer'),
+    'menu_name'             => __( 'Produzenten'),
+    'name_admin_bar'        => __( 'Produzenten'),
+    'archives'              => __( 'Produzentenarchiv'),
+    'all_items'             => __( 'Alle Produzenten'),
+    'add_new_item'          => __( 'Neuer Produzent hinzufügen'),
+    'add_new'               => __( 'Hinzufügen'),
+    'new_item'              => __( 'Produzent hinzufügen'),
+    'edit_item'             => __( 'Produzent bearbeiten'),
+    'update_item'           => __( 'Produzent speichern'),
+    'view_item'             => __( 'Produzent ansehen'),
+    'view_items'            => __( 'Produzenten ansehen'),
+  );
+
+  $args_producers = array(
+    'label'                 => __( 'Produzenten'),
+    'labels'                => $labels_producers,
+    'supports'              => array('author', 'custom-fields', 'title', 'editor', 'excerpt', 'thumbnail'),
+    'taxonomies'            => array(),
+    'hierarchical'          => false,
+    'public'                => true,
+    'show_ui'               => true,
+    'show_in_menu'          => false,
+    'show_in_admin_bar'     => false,
+    'show_in_nav_menus'     => false,
+    'can_export'            => true,
+    'has_archive'           => true,
+    'exclude_from_search'   => true,
+    'publicly_queryable'    => true,
+    'capability_type'       => 'post',
+  );
+  register_post_type( 'producers', $args_producers );
 }
 
 
@@ -370,7 +489,9 @@ function fc_add_gateway_class( $gateways ) {
 
 // register 
 add_shortcode('foodcoop_list', function() {
-  return '<div id="fc_order_list"></div>';
+  ob_start();
+  echo '<div id="fc_order_list"></div>';
+  return ob_get_clean();
 });
 
 
@@ -383,7 +504,7 @@ add_shortcode('foodcoop_list', function() {
  function wpb_admin_notice_warn() {
   if( is_user_logged_in() ) {
     $user = wp_get_current_user();
-    if (in_array('administrator', $user->roles)) {
+    if (in_array('administrator', $user->roles) || in_array('foodcoop_manager', $user->roles)) {
       ?>
         <div class="admin-alert">
           <a href="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=foodcoop-plugin">
@@ -517,9 +638,9 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
 
 add_shortcode('foodcoop_addtocart', function() {
   if (is_user_logged_in()) {
-    ?>
-      <div id="fc_add_to_cart"></div>
-    <?php
+    ob_start();
+    echo '<div id="fc_add_to_cart"></div>';
+    return ob_get_clean();
   } else {
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
       $url = "https://";  
@@ -653,29 +774,59 @@ add_filter('woocommerce_available_payment_gateways', 'fcplugin_conditional_payme
 function fcplugin_conditional_payment_gateways( $available_gateways ) {
   if(is_admin()) return $available_gateways;
 
-  // check if cart includes products for bestellrunde
-  $order_is_part_of_bestellrunde = false;
-  $order_contains_instant_topup = false;
-  foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-    if( isset( $cart_item['bestellrunde'] ) ) {
-      $order_is_part_of_bestellrunde = true;
-    }
-    $product = $cart_item['data'];
-    $sku = $product->get_sku();
-    if ($sku == 'fcplugin_instant_topup_product') {
-      $order_contains_instant_topup = true;
-    }
-  }
-  
-  if ($order_is_part_of_bestellrunde) {
-    $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
-    $available_gateways = array();
-    $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
-  }
-  
-  if ($order_contains_instant_topup) {
-    unset($available_gateways['foodcoop_guthaben']);
-  }
+  // If cart is empty - bail and return false
+  if (empty (WC()->cart->get_cart())) {  
+    return $available_gateways;
+  } else {
+    // check if cart includes products for bestellrunde
+    $order_is_part_of_bestellrunde = false;
+    $order_contains_instant_topup = false;
 
-  return $available_gateways;
+    foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+      if( isset( $cart_item['bestellrunde'] ) ) {
+        $order_is_part_of_bestellrunde = true;
+      }
+      $product = $cart_item['data'];
+      $sku = $product->get_sku();
+      if ($sku == 'fcplugin_instant_topup_product') {
+        $order_contains_instant_topup = true;
+      }
+    }
+    
+    if ($order_is_part_of_bestellrunde) {
+      $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
+      $available_gateways = array();
+      $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+    }
+    
+    if ($order_contains_instant_topup) {
+      unset($available_gateways['foodcoop_guthaben']);
+    }
+
+    return $available_gateways;
+  }
 }
+
+
+
+/**
+ * Suppliers shortcode [foodcoop_suppliers] 
+ */
+
+ add_shortcode('foodcoop_suppliers', function() {
+    ob_start();
+    echo '<div id="fc_suppliers_list"></div>';
+    return ob_get_clean();
+});
+
+
+
+/**
+ * Producers shortcode [foodcoop_producers] 
+ */
+
+ add_shortcode('foodcoop_producers', function() {
+    ob_start();
+    echo '<div id="fc_producers_list"></div>';
+    return ob_get_clean();
+});

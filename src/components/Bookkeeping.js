@@ -28,7 +28,7 @@ const Bookkeeping = () => {
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <Card sx={{ minWidth: 275, borderRadius: 0 }}>
-              <CardContent>
+              <CardContent sx={{ paddingBottom: "16px !important" }}>
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                   <span className="pluginMenu" ref={pluginMenu}>
                     <span id="transactions" className="menuItem firstMenuItem" onClick={() => setActiveTab("transactions")}>

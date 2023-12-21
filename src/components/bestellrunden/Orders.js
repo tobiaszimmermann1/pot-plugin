@@ -386,7 +386,7 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
               }
             }}
             enableFullScreenToggle={false}
-            initialState={{ density: "compact" }}
+            initialState={{ density: "compact", pagination: { pageSize: 25 } }}
             renderTopToolbarCustomActions={({ table }) => (
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <ButtonGroup variant="text" aria-label="outlined button group">

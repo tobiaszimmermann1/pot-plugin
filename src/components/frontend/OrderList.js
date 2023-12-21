@@ -20,6 +20,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
   const [cartNonce, setCartNonce] = useState(null)
   const [publicPrices, setPublicPrices] = useState(null)
   const [additionalProductInformation, setAdditionalProductInformation] = useState(null)
+  const [stockManagement, setStockManagement] = useState(null)
   const [loading, setLoading] = useState(true)
   const [shoppingList, setShoppingList] = useState({})
   const [trigger, setTrigger] = useState(0)
@@ -100,12 +101,13 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
         productToDo.name = p.name
         productToDo.unit = p._einheit
         productToDo.lot = p._gebinde
-        productToDo.details = p._lieferant + ", " + p._herkunft
+        productToDo.details = `<strong>${p._produzent}</strong> (${p._herkunft})<br /> <i style="font-size:0.75rem;margin-top:5px;">${__("Geliefert von", "fcplugin")} ${p._lieferant}</i>`
         productToDo.category = p.category_name
         productToDo.id = p.id
         productToDo.short_description = p.short_description
         productToDo.image = p.image
         productToDo.description = p.description
+        productToDo.stock = p.stock
 
         productToDo.price = p.price
         // public prices?
@@ -156,6 +158,15 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
       .then(function (response) {
         if (response.data) {
           response.data === '"0"' ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
+        }
+      })
+      .catch(error => console.log(error))
+
+    axios
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
+      .then(function (response) {
+        if (response.data) {
+          response.data === '"yes"' ? setStockManagement(true) : setStockManagement(false)
         }
       })
       .catch(error => console.log(error))
@@ -218,6 +229,11 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
                 </tbody>
               </table>
             </h2>
+            {stockManagement && (
+              <Alert sx={{ marginBottom: 1 }} severity="info">
+                {__("Die Lagerverwaltung ist aktiviert. Du kannst nur so viel bestellen wie derzeit an Lager ist. Gespeicherte Bestellungen wurden allenfalls den verfügbaren Mengen angepasst.", "fcplugin")}
+              </Alert>
+            )}
             {order && (
               <Alert sx={{ marginBottom: 1 }} severity="info">
                 {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
@@ -247,7 +263,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (
