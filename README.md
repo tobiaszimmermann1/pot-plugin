@@ -1,4 +1,4 @@
-# FOODCOOP MANAGER
+# POT Plugin
 
 ## Introduction
 
