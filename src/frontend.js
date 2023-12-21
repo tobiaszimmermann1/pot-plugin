@@ -3,6 +3,8 @@ import ReactDOM from "react-dom"
 import FrontendApp from "./FrontendApp"
 import QRBill from "./QRBill"
 import AddToCart from "./AddToCart"
+import SuppliersList from "./components/frontend/SuppliersList"
+import ProducersList from "./components/frontend/ProducersList"
 
 document.addEventListener("DOMContentLoaded", function () {
   var element = document.getElementById("fc_topup")
@@ -22,5 +24,19 @@ document.addEventListener("DOMContentLoaded", function () {
   var element = document.getElementById("fc_add_to_cart")
   if (typeof element !== "undefined" && element !== null) {
     ReactDOM.render(<AddToCart />, document.getElementById("fc_add_to_cart"))
+  }
+})
+
+document.addEventListener("DOMContentLoaded", function () {
+  var element = document.getElementById("fc_suppliers_list")
+  if (typeof element !== "undefined" && element !== null) {
+    ReactDOM.render(<SuppliersList />, document.getElementById("fc_suppliers_list"))
+  }
+})
+
+document.addEventListener("DOMContentLoaded", function () {
+  var element = document.getElementById("fc_producers_list")
+  if (typeof element !== "undefined" && element !== null) {
+    ReactDOM.render(<ProducersList />, document.getElementById("fc_producers_list"))
   }
 })

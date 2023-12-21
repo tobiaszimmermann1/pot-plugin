@@ -166,7 +166,7 @@ class MembersListDashboard
 
               $userdata = get_userdata( $user->ID );
               if(!empty( $userdata ) && $userdata){
-                if (in_array('administrator', $user->roles)) {
+                if (in_array('administrator', $user->roles) || in_array('foodcoop_manager', $user->roles)) {
                   $role = "x";
                 }
               }

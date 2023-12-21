@@ -313,23 +313,34 @@ class FoodcoopRestRoutes {
     ));
 
     /**
-     * POST Import products lieferant
-     * params: products
+     * GET users
      */
-    register_rest_route( 'foodcoop/v1', 'postImportProductsLieferant', array(
-      'methods' => WP_REST_SERVER::CREATABLE,
-      'callback' => array($this, 'postImportProductsLieferant'), 
+    register_rest_route( 'foodcoop/v1', 'getUsers', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getUsers'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
       }
     ));
 
     /**
-     * GET users
+     * GET user
      */
-    register_rest_route( 'foodcoop/v1', 'getUsers', array(
+    register_rest_route( 'foodcoop/v1', 'getUser', array(
       'methods' => WP_REST_SERVER::READABLE,
-      'callback' => array($this, 'getUsers'), 
+      'callback' => array($this, 'getUser'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST set user permissions
+     * params: id, role, permissions
+     */
+    register_rest_route( 'foodcoop/v1', 'setUserPermissions', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'setUserPermissions'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
       }
@@ -540,10 +551,196 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * POST email notification for bestellrunden test
+     * params: orders
+     */
+    register_rest_route( 'foodcoop/v1', 'emailNotificationBestellrundenTest', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'emailNotificationBestellrundenTest'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET getProductCategories
+     */
+    register_rest_route( 'foodcoop/v1', 'getProductCategories', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getProductCategories'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * POST Category update
+     * params: id, values
+     */
+    register_rest_route( 'foodcoop/v1', 'postCategoryUpdate', array(
+      'methods' => 'POST',
+      'callback' => array($this, 'postCategoryUpdate'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST Category delete
+     * params: id
+     */
+    register_rest_route( 'foodcoop/v1', 'postCategoryDelete', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postCategoryDelete'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST add category
+     * params: name
+     */
+    register_rest_route( 'foodcoop/v1', 'postAddCategory', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postAddCategory'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET getSuppliers
+     */
+    register_rest_route( 'foodcoop/v1', 'getSuppliers', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getSuppliers'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * POST Supplier update
+     * params: id, values
+     */
+    register_rest_route( 'foodcoop/v1', 'postSupplierUpdate', array(
+      'methods' => 'POST',
+      'callback' => array($this, 'postSupplierUpdate'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST Supplier delete
+     * params: id
+     */
+    register_rest_route( 'foodcoop/v1', 'postSupplierDelete', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSupplierDelete'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST add supplier
+     * params: name
+     */
+    register_rest_route( 'foodcoop/v1', 'postAddSupplier', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postAddSupplier'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET getProducers
+     */
+    register_rest_route( 'foodcoop/v1', 'getProducers', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getProducers'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * POST Producer update
+     * params: id, values
+     */
+    register_rest_route( 'foodcoop/v1', 'postProducerUpdate', array(
+      'methods' => 'POST',
+      'callback' => array($this, 'postProducerUpdate'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST Producer delete
+     * params: id
+     */
+    register_rest_route( 'foodcoop/v1', 'postProducerDelete', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postProducerDelete'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST add producer
+     * params: name
+     */
+    register_rest_route( 'foodcoop/v1', 'postAddProducer', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postAddProducer'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET product details
+     * params: product_id
+     */
+    register_rest_route( 'foodcoop/v1', 'getProductDetails', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getProductDetails'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * POST save inventory
+     * params: products
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveInventory', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveInventory'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST save delivery
+     * params: products
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveDelivery', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveDelivery'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
   }
-  
-  
-    
 
   
   
@@ -600,7 +797,8 @@ class FoodcoopRestRoutes {
         "category_id" => $product->get_category_ids()[0],
         "short_description" => $product->get_short_description(),
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
-        "description" => $product->get_description()
+        "description" => $product->get_description(),
+        "stock" => $product->get_stock_quantity()
       );
     
       // product meta data
@@ -709,6 +907,32 @@ class FoodcoopRestRoutes {
     if($adminEmail) update_option('admin_email', $adminEmail);
     if($adminEmail) update_option('new_admin_email', $adminEmail);
 
+    $enableStock = $data['enableStock'];
+    $products = wc_get_products( array(
+      'limit' => -1,
+      'return' => 'ids',
+    ));
+
+    if ($enableStock == true) {
+      update_option('woocommerce_manage_stock', 'yes');
+      update_option('woocommerce_notify_no_stock_amount', 0);
+
+      $instant_topup_product = wc_get_product_id_by_sku( "fcplugin_instant_topup_product" );
+      foreach($products as $product_id) {
+        if ($product_id !== $instant_topup_product) {
+          update_post_meta($product_id, "_manage_stock", 'yes');
+          if (get_post_meta( $product_id, "_stock", true ) == null) {
+            update_post_meta($product_id, "_stock", 0);
+          }
+        }
+      }
+    } else {
+      update_option('woocommerce_manage_stock', 'no');
+      foreach($products as $product_id) {
+        update_post_meta($product_id, "_manage_stock", 'no');
+      }
+    }
+
 
     return http_response_code(200);
   }
@@ -721,7 +945,8 @@ class FoodcoopRestRoutes {
     $product = wc_get_product($data['id']);
     $product->set_name($data['updatedValues']['name']);
     $product->set_regular_price($data['updatedValues']['price']);
-    $product->update_meta_data('_lieferant', $data['updatedValues']['producer']);
+    $product->update_meta_data('_lieferant', $data['updatedValues']['supplier']);
+    $product->update_meta_data('_produzent', $data['updatedValues']['producer']);
     $product->update_meta_data('_herkunft', $data['updatedValues']['origin']);
     $product->update_meta_data('_gebinde', $data['updatedValues']['lot']);
     $product->update_meta_data('_einheit', $data['updatedValues']['unit']);
@@ -891,7 +1116,7 @@ class FoodcoopRestRoutes {
     }
 
     $args = array(
-      'status'        => array('completed', 'processing', 'on-hold', 'refunded', 'pending'),
+      'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
       'meta_key'     => 'bestellrunde_id',
       'meta_value'  =>  $data['bestellrunde'],
       'meta_compare' => '=', 
@@ -955,7 +1180,7 @@ class FoodcoopRestRoutes {
         'orderby' => 'date',
         'order' => 'DESC',
         'date_created' => $data['year'].'-01-01...'.$data['year'].'-12-31',
-        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pending'),
+        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
       ));
     } else {
       $orders = wc_get_orders(array(
@@ -963,7 +1188,7 @@ class FoodcoopRestRoutes {
         'limit' => -1,
         'orderby' => 'date',
         'order' => 'DESC',
-        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pending'),
+        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
       ));
     }
 
@@ -1057,7 +1282,7 @@ class FoodcoopRestRoutes {
     }
 
     $args = array(
-      'status'        => array('completed', 'processing', 'on-hold', 'refunded', 'pending'),
+      'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
       'meta_key'     => 'bestellrunde_id',
       'meta_value'  =>  $data['id'],
       'meta_compare' => '=',
@@ -1155,6 +1380,7 @@ class FoodcoopRestRoutes {
     // orders query
     $orders = wc_get_orders( array(
       'limit'         => -1, 
+      'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
       'orderby'       => 'date',
       'order'         => 'DESC',
       'meta_key'      => 'bestellrunde_id', 
@@ -1424,7 +1650,7 @@ class FoodcoopRestRoutes {
     // count changes
     $changed_products = 0;
     $new_products = 0;
-    $deleted_products = 0;
+    $deleted_products = -1;
 
     // product id's to delete are not included in updated_product_ids array
     $all_products_before_import = wc_get_products( array( 'return' => 'ids', 'limit' => -1 ) );
@@ -1453,15 +1679,16 @@ class FoodcoopRestRoutes {
           'meta_input'    => array(
                   '_einheit'    => sanitize_text_field($product[2]),
                   '_gebinde'    => sanitize_text_field($product[3]),
-                  '_lieferant'  => sanitize_text_field($product[4]),
+                  '_lieferant'  => sanitize_text_field($product[12]),
                   '_herkunft'   => sanitize_text_field($product[5]),
+                  '_produzent'   => sanitize_text_field($product[4]),
                 )
         );
         wp_update_post( $data );
 
         // update product price
         $p = wc_get_product($id);
-        $p->set_price((float) $product[1]);
+        $p->set_regular_price(floatval($product[1]));
 
         // update product short_description
         $p->set_short_description( $product[8] );
@@ -1516,8 +1743,9 @@ class FoodcoopRestRoutes {
           'meta_input'          => array(
                                       '_einheit'    => sanitize_text_field($product[2]),
                                       '_gebinde'    => sanitize_text_field($product[3]),
-                                      '_lieferant'  => sanitize_text_field($product[4]),
+                                      '_lieferant'  => sanitize_text_field($product[12]),
                                       '_herkunft'   => sanitize_text_field($product[5]),
+                                      '_produzent'   => sanitize_text_field($product[4]),
                                     ),
           'post_excerpt' => $product[8],
           'post_content' => $product[10],
@@ -1574,94 +1802,11 @@ class FoodcoopRestRoutes {
   }
 
   
+
+
   /**
-   * postImportProductsLieferant
+   * getUsers
    */
-  function postImportProductsLieferant($data) {
-    $products = json_decode($data['products']);
-
-    // count changes
-    $changed_products = 0;
-    $new_products = 0;
-
-    foreach($products as $product) {
-      // get product name and lieferant and check if product exists already
-      $product_name = $product[0];
-      $check_if_product_exists = get_page_by_title($product_name, OBJECT, 'product');
-
-      // if the product exists, update product
-      if ($check_if_product_exists && $check_if_product_exists->post_status == 'publish') {
-        $id = $check_if_product_exists->ID;
-
-        // sanitize special chars
-        $title = str_replace("&","+",$product[0]);
-        $title = str_replace("<","",$title);
-        $title = str_replace(">","",$title);
-
-        $data = array(
-          'ID'            => $id,
-          'post_title'    => sanitize_text_field($title),
-          'meta_input'    => array(
-                  '_einheit'    => sanitize_text_field($product[2]),
-                  '_gebinde'    => sanitize_text_field($product[3]),
-                  '_lieferant'  => sanitize_text_field($product[4]),
-                  '_herkunft'   => sanitize_text_field($product[5]),
-                )
-        );
-        wp_update_post( $data );
-
-        // update product price
-        $p = wc_get_product($id);
-        $p->set_price((float) $product[1]);
-        $p->save();
-
-        // update product category
-        wp_set_object_terms( $id, sanitize_text_field($product[6]), 'product_cat' );
-
-        $changed_products++;
-      } 
-      // if product does not exists, create new product
-      else {
-        // sanitize special chars
-        $title = str_replace("&","+",$product[0]);
-        $title = str_replace("<","",$title);
-        $title = str_replace(">","",$title);
-
-        $data = array(
-          'post_type'            => 'product',
-          'post_status'         => 'publish',
-          'post_title'          => sanitize_text_field($title),
-          'meta_input'          => array(
-                  '_einheit'    => sanitize_text_field($product[2]),
-                  '_gebinde'    => sanitize_text_field($product[3]),
-                  '_lieferant'  => sanitize_text_field($product[4]),
-                  '_herkunft'   => sanitize_text_field($product[5]),
-                )
-        );
-        $post_id = wp_insert_post( $data );
-
-        // update product price
-        update_post_meta($post_id, '_price', (float) $product[1]);
-        update_post_meta($post_id, '_regular_price', (float) $product[1]);
-        update_post_meta($post_id, '_featured', 'no');
-        update_post_meta($post_id, '_virtual', 'no');
-        update_post_meta($post_id, '_visibility', 'visible');
-        update_post_meta($post_id, '_stock_status', 'instock');
-        update_post_meta($post_id, '_downloadable', 'no');
-        update_post_meta($post_id, '_downloadable', 'no');
-
-        // update product category
-        wp_set_object_terms( $post_id, sanitize_text_field($product[6]), 'product_cat' );
-        wp_set_object_terms( $post_id, 'simple', 'product_type' );
-
-        $new_products++;
-      }
-    }
-
-    return array($changed_products,$new_products); 
-  }
-
-
 
   function getUsers() {
     $users = get_users();
@@ -1677,6 +1822,7 @@ class FoodcoopRestRoutes {
       $address = get_user_meta($id, 'billing_address_1', true);
       $postcode = get_user_meta($id, 'billing_postcode', true);
       $city = get_user_meta($id, 'billing_city', true);
+      $permission = get_user_meta($id, 'fc_admin_permission', true);
 
       // get balance and membership fees
       global $wpdb;
@@ -1717,11 +1863,50 @@ class FoodcoopRestRoutes {
       $the_user['city'] = $city;
       $the_user['active'] = $membership_fees;
       $the_user['last_fee'] = $last_fee;
+      $the_user['permission'] = $permission;
 
       array_push($userData, $the_user);
     }
 
     return json_encode($userData);
+  }
+
+  
+
+
+  /**
+   * getUser
+   */
+
+  function getUser($data) {
+    $user = get_user_by("id", $data['id']);
+    $permission = get_user_meta($data['id'], 'fc_admin_permission', true);
+    $role = implode($user->roles);
+
+    return json_encode(array("role" => $role, "permissions" => $permission));
+  }
+
+  
+
+
+  /**
+   * setUserPermissions
+   */
+
+  function setUserPermissions($data) {
+    update_user_meta($data['id'], 'fc_admin_permission', json_encode($data['permissions']));
+    
+    $user = new WP_User($data['id']);
+
+    if ($data['role'] == 'customer') {
+      $user->set_role( 'customer' );
+    }
+
+    if ($data['role'] == 'foodcoop_manager') {
+      $user->set_role( 'foodcoop_manager' );
+    }
+
+    return json_encode($data['id']);
   }
 
 
@@ -1777,7 +1962,6 @@ class FoodcoopRestRoutes {
       $headers[] = 'Content-Type: text/html; charset=UTF-8';
 
       $subj_user = __('Willkommen bei', 'fcplugin') . " " . get_option('blogname') . ". " . __('Dein Account wurde erstellt.', 'fcplugin');
-      $subj_admin = __('Neuer Account für die Foodcoop', 'fcplugin') . " " . get_option('blogname') . " " . __('wurde erstellt.', 'fcplugin');
 
       ob_start();
       $incl_header = include(__DIR__ . '/email/header-new-user.php');
@@ -1809,7 +1993,7 @@ class FoodcoopRestRoutes {
 
       $send_user = wp_mail( $email, $subj_user, $msg, $headers, '' );
 
-      if ($send_user && $send_admin) {
+      if ($send_user) {
         return array($firstName." ".$lastName, $user_id);
       } else {
         return 'error_email';
@@ -1820,7 +2004,7 @@ class FoodcoopRestRoutes {
     
   }
 
-
+  
   /**
    * postUpdateUser
    */
@@ -2022,7 +2206,7 @@ class FoodcoopRestRoutes {
     ));
 
     $orders = wc_get_orders(array(
-      'status'        => array('completed', 'processing', 'on-hold', 'refunded', 'pending'),
+      'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
       'return'        => 'ids',
       'limit'   => -1
     ));
@@ -2182,7 +2366,8 @@ class FoodcoopRestRoutes {
         "price" => $product->get_price(),
         "category_id" => $product->get_category_ids()[0],
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
-        "description" => $product->get_description()
+        "description" => $product->get_description(),
+        "stock" => $product->get_stock_quantity()
       );
     
       // product meta data
@@ -2538,9 +2723,7 @@ class FoodcoopRestRoutes {
     // loop through orders to get users email and name
     foreach($orders as $order) {
       $email = $order->customer_email;
-      $name = $order->customer_name;
 
-      $message_to_send = '<h2>Hallo '.$name.'</h2>';
       $message_to_send .= $message;      
 
       $headers[] = 'From: '. get_option('admin_email');
@@ -2555,4 +2738,446 @@ class FoodcoopRestRoutes {
 
     return ($number);
   }
+
+
+
+  /**
+  * Email notification feature for Bestellrunden 
+  */
+
+  function emailNotificationBestellrundenTest($data) {
+    $emailaddress = $data['email'];
+    $message = $data['message'];
+    $subject = $data['subject'];
+    $number = 0;
+    
+    $email = $emailaddress;
+    $message_to_send .= $message;      
+    $headers[] = 'From: '. get_option('admin_email');
+    $headers[] = 'Reply-To: ' . get_option('admin_email');
+    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+    if ($email) {
+      wp_mail( $email, $subject, $message_to_send, $headers);
+      $number++;
+    }
+
+    return ($number);
+  }
+
+  /**
+   * Get Product Categories
+   */
+  function getProductCategories() {
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false,
+      'orderby' => 'name',
+			'order' => 'ASC',
+      'count' => true
+    ) );   
+
+    $categories = array();
+
+    foreach($product_categories as $cat) {
+      $the_cat = array();
+      $thumb_id = get_woocommerce_term_meta( $cat->term_id, 'thumbnail_id', true );
+      $term_img = wp_get_attachment_url(  $thumb_id );
+      $the_cat['image'] = $term_img;
+      $the_cat['term_id'] = $cat->term_id;
+      $the_cat['name'] = $cat->name;
+      $the_cat['count'] = $cat->count;
+      array_push($categories, $the_cat);
+    }
+    
+    return json_encode($categories);
+  }  
+  
+  /**
+  * postCategoryUpdate
+  */
+ function postCategoryUpdate($data) {
+
+  $update = wp_update_term( $data['id'], 'product_cat', array(
+    'name' => $data['updatedValues']['name'],
+    'slug' => $data['updatedValues']['slug']
+  ) );
+  
+  if ( ! is_wp_error( $update ) ) {
+    return json_encode($data['updatedValues']['name']);
+  } else {
+    return http_response_code(500);
+  }
+ }
+
+ /**
+  * postCategoryDelete
+  */
+ function postCategoryDelete($data) {
+   $category = wp_delete_term($data['id'], 'product_cat');
+
+   if ( ! is_wp_error( $category ) ) {
+    return json_encode($data['name']);
+  } else {
+    return http_response_code(500);
+  }
+ }
+
+ /**
+  * postAddCategory
+  */
+ function postAddCategory($data) {
+  if( !term_exists($data['name'], 'product_cat') ) {
+    $category_id = wp_insert_term($data['name'], 'product_cat');
+  }
+  else {
+    return http_response_code(500);
+  }
+
+  if ( ! is_wp_error( $category_id ) ) {
+    return json_encode($category_id['term_id']);
+  } else {
+    return http_response_code(500);
+  }
+ }
+
+ /**
+   * Get Suppliers
+   */
+  function getSuppliers() {
+
+    $suppliers = get_posts( array(
+      'post_type'  => 'suppliers',
+      'numberposts' => -1,
+    ));  
+
+    $all_suppliers = array();
+    foreach($suppliers as $sup) {
+      $the_sup = array();
+      $the_sup['image'] = wp_get_attachment_url( get_post_thumbnail_id( $sup->ID ), 'thumbnail');
+      $the_sup['id'] = $sup->ID;
+      $the_sup['name'] = $sup->post_title;
+      $the_sup['short_description'] = $sup->post_excerpt;
+      $the_sup['description'] = ($sup->post_content);
+
+      // supplier meta data
+      $the_meta = get_post_meta($sup->ID);
+      foreach($the_meta as $key => $value) {
+        $the_sup[$key] = $value[0];
+      }
+      array_push($all_suppliers, $the_sup);
+    }
+    
+    return json_encode($all_suppliers);
+  }  
+  
+  /**
+  * postSupplierUpdate
+  */
+  function postSupplierUpdate($data) {
+    // update product featured image
+    require_once(ABSPATH . 'wp-admin/includes/media.php');
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+    $update = wp_update_post( array(
+      'ID'           => $data['id'],
+      'post_title' => esc_attr($data['name']), 
+      'post_excerpt' => esc_attr($data['short_description']), 
+      'post_content' => $data['description']
+    ));
+
+    update_post_meta( $data['id'], 'address', $data['address'] );
+    update_post_meta( $data['id'], 'phone', $data['phone'] );
+    update_post_meta( $data['id'], 'email', $data['email'] );
+    update_post_meta( $data['id'], 'website', $data['website'] );
+    update_post_meta( $data['id'], 'contact', $data['contact'] );
+    update_post_meta( $data['id'], 'customerNumber', $data['customerNumber'] );
+    update_post_meta( $data['id'], 'note', $data['note'] );
+      
+    // check if current image is the same as imported one
+    $current_attachment = wp_get_attachment_url( get_post_thumbnail_id( $data['id'] ), 'thumbnail');
+    if ($current_attachment) {
+      if ($current_attachment != $data['image']) {
+        // delete current featured image
+        $attachmentid = get_post_thumbnail_id( $data['id'] );
+        wp_delete_attachment( $attachmentid, true );
+
+        $image = media_sideload_image( $data['image'], $data['id'], $data['name'], 'id' );
+        set_post_thumbnail( $data['id'], $image );
+      }
+    }
+
+    
+    if ( ! is_wp_error( $update ) ) {
+      return json_encode($data['name']);
+    } else {
+      return http_response_code(500);
+    }
+  }
+
+  /**
+    * postSupplierDelete
+    */
+  function postSupplierDelete($data) {
+    $post = wp_delete_post($data['id']);
+
+    if ( ! is_wp_error( $post ) ) {
+      return json_encode($data['name']);
+    } else {
+      return http_response_code(500);
+    }
+  }
+
+ /**
+  * postAddSupplier
+  */
+  function postAddSupplier($data) {   
+    // update product featured image
+    require_once(ABSPATH . 'wp-admin/includes/media.php');
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+    $id = wp_insert_post(array(
+      'post_type' => 'suppliers',
+      'post_status' => 'publish',
+      'post_title' => esc_attr($data['name']), 
+      'post_excerpt' => esc_attr($data['short_description']), 
+      'post_content' => $data['description']
+    ));
+
+    if($id) {
+      $image = media_sideload_image( $data['image'], $id, $data['name'], 'id' );
+      set_post_thumbnail( $id, $image );
+
+      add_post_meta( $id, 'address', $data['address'], true );
+      add_post_meta( $id, 'phone', $data['phone'], true );
+      add_post_meta( $id, 'email', $data['email'], true );
+      add_post_meta( $id, 'website', $data['website'], true );
+      add_post_meta( $id, 'contact', $data['contact'], true );
+      add_post_meta( $id, 'customerNumber', $data['customerNumber'], true );
+      add_post_meta( $id, 'note', $data['note'], true );
+    }
+
+    if ( ! is_wp_error( $id ) ) {
+      return json_encode($id);
+    } else {
+      return http_response_code(500);
+    }
+    
+  }
+
+
+  /**
+    * Get Producers
+    */
+   function getProducers() {
+ 
+     $producers = get_posts( array(
+       'post_type'  => 'producers',
+       'numberposts' => -1,
+     ));  
+ 
+     $all_producers = array();
+     foreach($producers as $prod) {
+       $the_prod = array();
+       $the_prod['image'] = wp_get_attachment_url( get_post_thumbnail_id( $prod->ID ), 'thumbnail');
+       $the_prod['id'] = $prod->ID;
+       $the_prod['name'] = $prod->post_title;
+       $the_prod['short_description'] = $prod->post_excerpt;
+       $the_prod['description'] = $prod->post_content;
+
+       // supplier meta data
+       $the_meta = get_post_meta($prod->ID);
+       foreach($the_meta as $key => $value) {
+         $the_prod[$key] = $value[0];
+       }
+
+       array_push($all_producers, $the_prod);
+     }
+     
+     return json_encode($all_producers);
+   } 
+  
+   /**
+   * postProducerUpdate
+   */
+   function postProducerUpdate($data) {
+     // update product featured image
+     require_once(ABSPATH . 'wp-admin/includes/media.php');
+     require_once(ABSPATH . 'wp-admin/includes/file.php');
+     require_once(ABSPATH . 'wp-admin/includes/image.php');
+ 
+     $update = wp_update_post( array(
+       'ID'           => $data['id'],
+       'post_title' => esc_attr($data['name']), 
+       'post_excerpt' => esc_attr($data['short_description']), 
+       'post_content' => $data['description']
+     ));
+
+     update_post_meta( $data['id'], 'origin', $data['origin'] );
+     update_post_meta( $data['id'], 'website', $data['website'] );
+       
+     // check if current image is the same as imported one
+     $current_attachment = wp_get_attachment_url( get_post_thumbnail_id( $data['id'] ), 'thumbnail');
+     if ($current_attachment) {
+       if ($current_attachment != $data['image']) {
+         // delete current featured image
+         $attachmentid = get_post_thumbnail_id( $data['id'] );
+         wp_delete_attachment( $attachmentid, true );
+ 
+         $image = media_sideload_image( $data['image'], $data['id'], $data['name'], 'id' );
+         set_post_thumbnail( $data['id'], $image );
+       }
+     }
+ 
+     
+     if ( ! is_wp_error( $update ) ) {
+       return json_encode($data['name']);
+     } else {
+       return http_response_code(500);
+     }
+   }
+ 
+   /**
+     * postProducerDelete
+     */
+   function postProducerDelete($data) {
+     $post = wp_delete_post($data['id']);
+ 
+     if ( ! is_wp_error( $post ) ) {
+       return json_encode($data['name']);
+     } else {
+       return http_response_code(500);
+     }
+   }
+ 
+  /**
+   * postAddProducer
+   */
+   function postAddProducer($data) {   
+     // update product featured image
+     require_once(ABSPATH . 'wp-admin/includes/media.php');
+     require_once(ABSPATH . 'wp-admin/includes/file.php');
+     require_once(ABSPATH . 'wp-admin/includes/image.php');
+ 
+     $id = wp_insert_post(array(
+       'post_type' => 'producers',
+       'post_status' => 'publish',
+       'post_title' => esc_attr($data['name']), 
+       'post_excerpt' => esc_attr($data['short_description']), 
+       'post_content' => $data['description']
+     ));
+ 
+     if($id) {
+      $image = media_sideload_image( $data['image'], $id, $data['name'], 'id' );
+      set_post_thumbnail( $id, $image );
+
+      add_post_meta( $id, 'origin', $data['origin'] );
+      add_post_meta( $id, 'website', $data['website'] );
+     }
+ 
+     if ( ! is_wp_error( $id ) ) {
+       return json_encode($id);
+     } else {
+       return http_response_code(500);
+     }
+     
+   }
+
+   /**
+    * getProductDetails
+    */
+   function getProductDetails($data) {
+    global $wpdb;
+
+    $product = wc_get_product($data['id']);
+    $supplier = '';
+    $supplier_data = [];
+    $producer = '';
+    $producer_data = [];
+
+    if ($product) {
+      $the_meta = $product->get_meta_data();
+      foreach($the_meta as $meta) {
+        $data = $meta->get_data();
+
+        if ($data['key'] == '_lieferant') {
+          $supplier = $data['value'];
+        }
+
+        if ($data['key'] == '_produzent') {
+          $producer = $data['value'];
+        }
+
+      }
+    }
+
+    if ($supplier != '') {
+      $supplier_post = $wpdb->get_var ( $wpdb->prepare ( "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type='suppliers'", $supplier ) );
+      if ($supplier_post) {
+        $post = get_post( $supplier_post );
+        array_push($supplier_data, $post->post_title, $post->post_excerpt, get_post_meta($post->ID, 'address', true), get_post_meta($post->ID, 'website', true), $post->post_content);
+      }
+    }
+
+    if ($producer != '') {
+      $producer_post = $wpdb->get_var ( $wpdb->prepare ( "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type='producers'", $producer ) );
+      if ($producer_post) {
+        $post = get_post( $producer_post );
+        array_push($producer_data, $post->post_title, $post->post_excerpt, get_post_meta($post->ID, 'origin', true), get_post_meta($post->ID, 'website', true), $post->post_content);
+      }
+    }
+
+    if ( count($supplier_data) > 0 || $producer_data > 0 ) {
+      return json_encode([$supplier_data, $producer_data]);
+    } else {
+      return http_response_code(500);
+    }
+    
+  }
+
+
+
+
+  /**
+  * postSaveInventory
+  */
+  function postSaveInventory($data) {
+    $products = json_decode($data['products']);
+    
+    $number = 0;
+    foreach($products as $product) {
+      update_post_meta( $product->id, "_stock", intval($product->stock) );
+      $number++;
+    }
+    
+    return ($number);
+    
+  }
+
+
+
+
+  /**
+  * postSaveDelivery
+  */
+  function postSaveDelivery($data) {
+    $products = json_decode($data['products']);
+    
+    $number = 0;
+    foreach($products as $product) {
+      $current_stock = intval(get_post_meta( $product->id, "_stock", true ));
+      $new_stock = $current_stock + intval($product->amount);
+      update_post_meta( $product->id, "_stock", $new_stock );
+      $number++;
+    }
+    
+    return ($number);
+    
+  }
+
+
+
+
 }

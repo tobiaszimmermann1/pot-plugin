@@ -107,11 +107,13 @@ function ImportProducts({ setModalClose, categories }) {
           }}
         >
           <CSVReader
+            config={{ delimiter: ";" }}
             onError={error => {
               setValidationError(error.message)
             }}
             onRemoveFile={() => {}}
             onUploadAccepted={results => {
+              console.log(results.data)
               /**
                * Validate uploaded products csv file
                */
@@ -120,8 +122,8 @@ function ImportProducts({ setModalClose, categories }) {
               /**
                * 1. Validate Number of Columns
                */
-              if (results.data[0].length !== 12) {
-                setValidationError(__("Die Datei hat nicht exakt 11 Spalten.", "fcplugin"))
+              if (results.data[0].length !== 13) {
+                setValidationError(__("Die Datei hat nicht exakt 13 Spalten.", "fcplugin"))
                 validated = false
               }
 
@@ -174,6 +176,10 @@ function ImportProducts({ setModalClose, categories }) {
               }
               if (results.data[0][11] !== "sku") {
                 setValidationError(__("Spalte 12 muss 'sku' heissen.", "fcplugin"))
+                validated = false
+              }
+              if (results.data[0][12] !== "supplier") {
+                setValidationError(__("Spalte 13 muss 'supplier' heissen.", "fcplugin"))
                 validated = false
               }
 

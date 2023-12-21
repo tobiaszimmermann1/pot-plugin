@@ -12,10 +12,11 @@ import CardMedia from "@mui/material/CardMedia"
 import CloseIcon from "@mui/icons-material/Close"
 import Typography from "@mui/material/Typography"
 import useMediaQuery from "@mui/material/useMediaQuery"
+import ProductDialog from "./ProductDialog"
 const __ = wp.i18n.__
 
-const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation }) => {
-  const [amount, setAmount] = useState(product.amount)
+const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation, stockManagement }) => {
+  const [amount, setAmount] = useState(0)
 
   /**
    * Product information modal
@@ -47,6 +48,10 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
     if (newAmount == null) {
       newAmount = 0
     }
+
+    if (stockManagement === true && newAmount >= product.stock) {
+      newAmount = product.stock
+    }
     setAmount(newAmount)
   }
 
@@ -61,6 +66,22 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
     setAmount(newAmount)
   }
 
+  useEffect(() => {
+    if (stockManagement !== null) {
+      if (stockManagement === true) {
+        product.stock > product.amount ? setAmount(product.amount) : setAmount(product.stock)
+      } else {
+        setAmount(product.amount)
+      }
+    }
+  }, [stockManagement])
+
+  useEffect(() => {
+    if (stockManagement === true) {
+      product.stock < amount && setAmount(product.stock)
+    }
+  }, [amount])
+
   return (
     <>
       <div className="fc_order_list_line_wrapper" id={product.id} style={amount > 0 ? { backgroundColor: "#f2fbe8" } : { backgroundColor: "#f9f9f9" }}>
@@ -70,26 +91,20 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
           </div>
         )}
         <div className="fc_order_list_line">
-          {activeState ? (
-            frontendLocalizer.currentUser.ID ? (
-              <span className="fc_order_list_col col_1 col_nmbr">
-                <a onClick={removeOne}>
-                  <IconButton aria-label="-" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
-                    <RemoveIcon />
-                  </IconButton>
-                </a>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} style={amount > 0 ? { width: "100%", backgroundColor: "#f2fbe8" } : { width: "100%" }} />
-                <a onClick={addOne}>
-                  <IconButton aria-label="+" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
-                    <AddIcon />
-                  </IconButton>
-                </a>
-              </span>
-            ) : (
-              <span className="fc_order_list_col col_1 col_nmbr">
-                <input type="number" disabled />
-              </span>
-            )
+          {activeState && frontendLocalizer.currentUser.ID ? (
+            <span className="fc_order_list_col col_1 col_nmbr">
+              <a onClick={removeOne}>
+                <IconButton aria-label="-" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
+                  <RemoveIcon />
+                </IconButton>
+              </a>
+              <input type="number" value={amount} onChange={e => setAmount(e.target.value)} style={amount > 0 ? { width: "100%", backgroundColor: "#f2fbe8" } : { width: "100%" }} />
+              <a onClick={addOne}>
+                <IconButton aria-label="+" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
+                  <AddIcon />
+                </IconButton>
+              </a>
+            </span>
           ) : (
             <span className="fc_order_list_col col_1 col_nmbr">
               <input type="number" disabled />
@@ -102,14 +117,26 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
               </span>
               <span className="fc_order_list_col col_2" onClick={handleOpen}>
                 {product.name}
+                {stockManagement === true && (
+                  <>
+                    <br /> <span style={{ fontStyle: "italic", fontWeight: "normal", marginTop: "5px", fontSize: "0.95em" }}>{product.stock > 0 ? product.stock + " " + __("lagernd", "fcplugin") : __("ausverkauft", "fcplugin")}</span>
+                  </>
+                )}
               </span>
             </>
           ) : (
-            <span className="fc_order_list_col col_2x">{product.name}</span>
+            <span className="fc_order_list_col col_2x">
+              {product.name}
+              {stockManagement === true && (
+                <>
+                  <br /> <span style={{ fontStyle: "italic", fontWeight: "normal", marginTop: "5px", fontSize: "0.95em" }}>{product.stock > 0 ? product.stock + " " + __("lagernd", "fcplugin") : __("ausverkauft", "fcplugin")}</span>
+                </>
+              )}
+            </span>
           )}
 
           <span className="fc_order_list_col col_25">{product.short_description}</span>
-          <span className="fc_order_list_col col_3">{product.details}</span>
+          <span className="fc_order_list_col col_3" dangerouslySetInnerHTML={{ __html: product.details }} />
           <span className="fc_order_list_col col_4">{product.unit}</span>
           <span className="fc_order_list_col col_5">{product.lot}</span>
           <span className="fc_order_list_col col_6">
@@ -123,29 +150,8 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
           </span>
         </div>
       </div>
-      <Dialog scroll="body" fullScreen={useMediaQuery("(max-width:800px)")} open={open} onClose={handleClose} sx={{ zIndex: 1501 }}>
-        <Card variant="outlined" sx={{ border: "none" }}>
-          <CardActions sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
-            <IconButton onClick={handleClose}>
-              <CloseIcon />
-            </IconButton>
-          </CardActions>
-          {product.image && <CardMedia component="img" image={product.image} className="productModalImage" />}
-          <CardContent style={{ padding: 20 }}>
-            <Typography gutterBottom variant="h5" component="div">
-              {product.name}
-            </Typography>
-            <Typography variant="body2" color="text.primary" style={{ backgroundColor: "#f0f0f0", padding: "10px 10px 10px 10px", borderBottom: "1px solid #ccc" }}>
-              <strong>{product.details}</strong> | {product.unit} | <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(product.price).toFixed(2)}
-            </Typography>
-            <Typography variant="body2" color="text.primary" style={{ marginBottom: 20, backgroundColor: "#f0f0f0", padding: "10px 10px" }}>
-              {product.short_description}
-            </Typography>
-            <Typography variant="body2" color="text.primary" style={{ marginBottom: 10 }}>
-              {product.description}
-            </Typography>
-          </CardContent>
-        </Card>
+      <Dialog scroll="body" fullScreen={useMediaQuery("(max-width:800px)")} open={open} onClose={handleClose} sx={{ zIndex: 15016 }}>
+        <ProductDialog product={product} handleClose={handleClose} currency={currency} stockManagement={stockManagement} />
       </Dialog>
     </>
   )

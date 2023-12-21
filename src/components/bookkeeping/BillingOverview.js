@@ -43,7 +43,6 @@ function BillingOverview() {
         .then(function (response) {
           if (response.data) {
             const res = JSON.parse(response.data)
-            console.log(res)
 
             let bestellrundenInYear = []
             let usersInYear = []

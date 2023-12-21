@@ -36,6 +36,27 @@ This plugin turns Wordpress (with WooCommerce) into an application to manage you
 
 ## Changelog
 
+### 1.7.0
+
+- Renamed to POT Plugin
+- Added option to add and edit product categories from the backend
+- Added suppliers and producers post types: New differentiation of producers and suppliers. Neither producers, nor suppliers must exist. If they do exist, they will be linked in the frontend.
+- Suppliers are used to generate distribution lists. Users can add suppliers via UI and fill in information about them. Meant for intermediary distributors.
+- Producers are used for purely informational purposes. Users can add producers via UI and fill in information about them. Producers are not used for creating lists etc.
+- Added shortcode [foodcoop_suppliers] to show an overview of available suppliers in frontend
+- Added shortcode [foodcoop_producers] to show an overview of available producers in frontend
+- Added support for stock management: option in settings to activate stock management for all products
+- Function for taking inventory
+- Function for accepting deliveries
+- Stock Management in Frontend: If activated, products can only be ordered if in stock and only up to the current stock number
+- Added support for more granular access control: new role 'foodcoop_manager' with permissions for the plugin
+- Order bar may now be hidden for better visibility
+- Notifications for Bestellrunden: Added TinyMCE as texteditor for formatting options
+- Fixed a bug where cancelled orderes were added to Bestellrunden totals
+- Fixed a bug where an error was mistakenly shown when registering a new member
+- Dashboard redesign in preparation for overhaul
+- Various small bugfixes
+
 ### 1.6.4
 
 - Added english and french translations

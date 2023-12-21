@@ -25,6 +25,7 @@
     "@mui/lab": "^5.0.0-alpha.111",
     "@mui/material": "^5.10.17",
     "@mui/x-date-pickers": "^5.0.10",
+    "@tinymce/tinymce-react": "^4.3.2",
     "@wordpress/scripts": "^24.6.0",
     "animated-number-react": "^0.1.2",
     "axios": "^1.2.1",
@@ -38,6 +39,8 @@
     "swissqrbill": "^3.2.3"
   },
   "devDependencies": {
+    "css-loader": "^6.8.1",
+    "mini-css-extract-plugin": "^2.7.6",
     "node-polyfill-webpack-plugin": "^2.0.1"
   }
 }

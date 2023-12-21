@@ -198,7 +198,7 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
             state={{ isLoading: productsLoading, rowSelection }}
             localization={MRT_Localization_DE}
             enableFullScreenToggle={false}
-            initialState={{ density: "compact" }}
+            initialState={{ density: "compact", pagination: { pageSize: 25 } }}
           />
         </DialogContent>
       </Dialog>

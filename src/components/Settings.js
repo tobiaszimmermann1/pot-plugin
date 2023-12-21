@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 import { LoadingButton } from "@mui/lab"
 import Grid from "@mui/material/Grid"
+import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import Card from "@mui/material/Card"
 import CardActions from "@mui/material/CardActions"
@@ -11,8 +12,11 @@ import MenuItem from "@mui/material/MenuItem"
 import FormControl from "@mui/material/FormControl"
 import Select from "@mui/material/Select"
 import Switch from "@mui/material/Switch"
-import CircularProgress from "@mui/material/CircularProgress"
+import LinearProgress from "@mui/material/LinearProgress"
 import SaveIcon from "@mui/icons-material/Save"
+import Alert from "@mui/material/Alert"
+import ToggleButton from "@mui/material/ToggleButton"
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup"
 const __ = wp.i18n.__
 
 const Settings = () => {
@@ -32,6 +36,7 @@ const Settings = () => {
   const [publicProducts, setPublicProducts] = useState()
   const [adminEmail, setAdminEmail] = useState()
   const [submitting, setSubmitting] = useState(false)
+  const [enableStock, setEnableStock] = useState(false)
 
   useEffect(() => {
     axios
@@ -47,6 +52,7 @@ const Settings = () => {
         console.log(error)
       })
   }, [])
+
   useEffect(() => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getPages`, {
@@ -84,6 +90,7 @@ const Settings = () => {
       options.fc_public_products == "1" ? setPublicProducts(true) : setPublicProducts(false)
       options.fc_instant_topup == "1" ? setInstantTopup(true) : setInstantTopup(false)
       setAdminEmail(options.admin_email)
+      options.woocommerce_manage_stock === "yes" ? setEnableStock(true) : setEnableStock(false)
     }
   }, [options])
 
@@ -106,7 +113,8 @@ const Settings = () => {
           publicMembers: publicMembers,
           instantTopup: instantTopup,
           publicProducts: publicProducts,
-          adminEmail: adminEmail
+          adminEmail: adminEmail,
+          enableStock: enableStock
         },
         {
           headers: {
@@ -124,7 +132,7 @@ const Settings = () => {
     <>
       <Card sx={{ display: "flex", padding: "1rem", paddingTop: 0, flexWrap: "wrap", backgroundColor: "white", fontSize: "1rem", borderRadius: 0 }} elevation={2}>
         <CardContent>
-          <Grid container spacing={2} rowGap={2} alignItems="baseline">
+          <Grid container spacing={2} rowGap={2} alignItems="flex-start">
             <Grid item xs={12}>
               <h2>{__("Foodcoop Einstellungen", "fcplugin")}</h2>
             </Grid>
@@ -258,11 +266,40 @@ const Settings = () => {
                 </Grid>
               </Grid>
             </Grid>
+            <Grid item xs={4}>
+              {__("Lagerverwaltung", "fcplugin")}
+              <br />
+              <small>{__("Aktiviert, bzw. deaktiviert die Lagerverwaltung generell und auf Produktebene für alle Produkte.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enableStock}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnableStock(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+              <Alert severity="warning" sx={{ marginTop: "10px" }}>
+                <strong>{__("Achtung!", "fcplugin")}</strong> {__("Aktiviert oder deaktiviert die Lagerverwaltung für alle Produkte! Die Einstellung verändert jedoch nicht den Lagerbestand. Allenfalls ist eine Inventur notwendig!", "fcplugin")}{" "}
+              </Alert>
+            </Grid>
+            <Grid item xs={4}>
+              {__("Instant Topup aktivieren?", "fcplugin")}
+              <br />
+              <small>{__("Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <Switch checked={instantTopup} onChange={event => setInstantTopup(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+            </Grid>
           </Grid>
         </CardContent>
         <CardActions>
           <LoadingButton variant="contained" size="large" onClick={handleSave} loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting}>
-            {__("Speichern", "fcplugin")}
+            {__("Einstellungen Speichern", "fcplugin")}
           </LoadingButton>
         </CardActions>
       </Card>
@@ -311,28 +348,20 @@ const Settings = () => {
             <Grid item xs={8}>
               <Switch checked={publicMembers} onChange={event => setPublicMembers(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
-            <Grid item xs={4}>
-              {__("Instant Topup aktivieren?", "fcplugin")}
-              <br />
-              <small>{__("Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).", "fcplugin")}</small>
-            </Grid>
-            <Grid item xs={8}>
-              <Switch checked={instantTopup} onChange={event => setInstantTopup(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
-            </Grid>
           </Grid>
         </CardContent>
         <CardActions>
           <LoadingButton variant="contained" size="large" onClick={handleSave} loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting}>
-            {__("Speichern", "fcplugin")}
+            {__("Einstellungen Speichern", "fcplugin")}
           </LoadingButton>
         </CardActions>
       </Card>
     </>
   ) : (
-    <Card elevation={2} sx={{ display: "flex", padding: "1rem", flexWrap: "wrap", backgroundColor: "white", fontSize: "1rem", borderRadius: 0 }}>
-      <Grid alignItems="center" justify="center">
-        <CircularProgress />
-      </Grid>
+    <Card elevation={2} sx={{ display: "flex", justifyContent: "center", padding: "15px 0", flexWrap: "wrap", backgroundColor: "white", fontSize: "1rem", borderRadius: 0, width: "100%" }}>
+      <Box sx={{ width: "98%" }}>
+        <LinearProgress />
+      </Box>
     </Card>
   )
 }

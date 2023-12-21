@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 import SaveIcon from "@mui/icons-material/Save"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, Stack, TextField, Autocomplete, Alert } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Stack, TextField, Autocomplete, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import Radio from "@mui/material/Radio"
 import RadioGroup from "@mui/material/RadioGroup"
@@ -43,8 +43,6 @@ function Mutations({ id, setModalClose }) {
         .then(function (response) {
           let reArrangeProductData = []
           if (response.data) {
-            const res = JSON.parse(response.data)
-
             Object.keys(res[1]).forEach(function (key, index) {
               let productToDo = {}
               productToDo.label = res[1][key].name + ", " + res[1][key].einheit
@@ -56,8 +54,6 @@ function Mutations({ id, setModalClose }) {
 
             setOrders(res[2])
             setProducts(reArrangeProductData)
-            console.log(res[2])
-            console.log(reArrangeProductData)
           }
         })
         .catch(error => console.log(error))
@@ -260,8 +256,8 @@ function Mutations({ id, setModalClose }) {
               {success && <Alert severity="success">{__("Mutation wurde verarbeitet.", "fcplugin")}</Alert>}
             </Stack>
           ) : (
-            <Box sx={{ width: "100%", paddingTop: "20px", display: "flex", justifyContent: "center" }}>
-              <CircularProgress />
+            <Box sx={{ width: "98%" }}>
+              <LinearProgress />
             </Box>
           )}
         </DialogContent>

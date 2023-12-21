@@ -9,9 +9,10 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import { ExportToCsv } from "export-to-csv"
 import AddMember from "./members/AddMember"
 import Wallet from "./members/Wallet"
+import Permissions from "./members/Permissions"
 import CheckIcon from "@mui/icons-material/Check"
 import CloseIcon from "@mui/icons-material/Close"
-import SellIcon from "@mui/icons-material/Sell"
+import EditIcon from "@mui/icons-material/Edit"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import { getYear, format, isSameYear } from "date-fns"
 const __ = wp.i18n.__
@@ -28,6 +29,9 @@ const Members = () => {
   const [walletModalOpen, setWalletModalOpen] = useState(false)
   const [walletID, setWalletID] = useState()
   const [walletName, setWalletName] = useState()
+  const [permissionsModalOpen, setPermissionsModalOpen] = useState(false)
+  const [permissionsID, setPermissionsID] = useState()
+  const [permissionsName, setPermissionsName] = useState()
 
   useEffect(() => {
     axios
@@ -52,6 +56,7 @@ const Members = () => {
             userToDo.id = u.id
             userToDo.active = u.active
             userToDo.lastFee = u.last_fee
+            userToDo.permission = u.permission
 
             reArrangedUserData.push(userToDo)
           })
@@ -95,7 +100,8 @@ const Members = () => {
       },
       {
         accessorKey: "postcode",
-        header: __("PLZ", "fcplugin")
+        header: __("PLZ", "fcplugin"),
+        size: 50
       },
       {
         accessorKey: "city",
@@ -145,7 +151,52 @@ const Members = () => {
       {
         accessorKey: "role",
         header: __("Rolle", "fcplugin"),
-        enableEditing: false
+        enableEditing: false,
+        size: 75
+      },
+      {
+        accessorKey: "permission",
+        header: __("Berechtigungen", "fcplugin"),
+        enableEditing: false,
+        Cell: ({ row, cell }) => {
+          if (row.original.role === "customer") {
+            return (
+              <Button
+                onClick={() => {
+                  setPermissionsID(row.original.id)
+                  setPermissionsName(row.original.name)
+                  setPermissionsModalOpen(true)
+                }}
+                variant="text"
+                color="primary"
+                startIcon={<EditIcon />}
+              >
+                keine
+              </Button>
+            )
+          }
+
+          if (cell.getValue() !== "" && (row.original.role === "foodcoop_manager" || row.original.role === "administrator")) {
+            return row.original.role === "administrator" ? (
+              <Button variant="text" color="primary" startIcon={<CheckIcon />}>
+                alle
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  setPermissionsID(row.original.id)
+                  setPermissionsName(row.original.name)
+                  setPermissionsModalOpen(true)
+                }}
+                variant="text"
+                color="primary"
+                startIcon={<EditIcon />}
+              >
+                {JSON.parse(cell.getValue()).join(", ")}
+              </Button>
+            )
+          }
+        }
       }
     ],
     []
@@ -225,7 +276,6 @@ const Members = () => {
   // saving edits
   const handleSaveCell = (cell, value) => {
     users[cell.row.index][cell.column.id] = value
-    console.log(cell.row.original.id, value)
 
     axios
       .post(
@@ -241,9 +291,6 @@ const Members = () => {
           }
         }
       )
-      .then(response => {
-        if (response) console.log(response)
-      })
       .catch(error => console.log(error))
 
     setUsers([...users])
@@ -279,7 +326,7 @@ const Members = () => {
           }
         })}
         enableFullScreenToggle={false}
-        initialState={{ density: "compact" }}
+        initialState={{ density: "compact", pagination: { pageSize: 25 } }}
         positionToolbarAlertBanner="bottom"
         renderTopToolbarCustomActions={({ table }) => (
           <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap" }}>
@@ -302,6 +349,7 @@ const Members = () => {
       />
       {createModalOpen && <AddMember setModalClose={setCreateModalOpen} handleAddMember={handleAddMember} />}
       {walletModalOpen && <Wallet setModalClose={setWalletModalOpen} walletID={walletID} walletName={walletName} />}
+      {permissionsModalOpen && <Permissions setModalClose={setPermissionsModalOpen} permissionsID={permissionsID} permissionsName={permissionsName} />}
     </>
   )
 }
