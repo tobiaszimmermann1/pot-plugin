@@ -255,6 +255,7 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
       let orderItems = []
 
       orders.map(order => {
+        console.log(order)
         // add user to array, if it is not already
         !users.includes(order.customer_name) && users.push(order.customer_name)
         // map line_items of order
@@ -268,11 +269,26 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
             lieferant: lineItem.allmeta[0]?.value,
             einheit: lineItem.allmeta[1]?.value
           })
-          // add product to array, if it is not already and add product data to products object
-          !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
-          productsData[lineItem.product_name] = [lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
-          // add lieferant to array, if it is not already
-          !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
+
+          if (typeof lineItem.product_sku !== "undefined") {
+            // add product to array, if it is not already and add product data to products object
+            !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
+            productsData[lineItem.product_name] = [lineItem.product_name, lineItem.product_sku, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
+            // add lieferant to array, if it is not already
+            !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
+          } else if (typeof lineItem.allmeta[5] !== "undefined") {
+            // add product to array, if it is not already and add product data to products object
+            !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
+            productsData[lineItem.product_name] = [lineItem.product_name, lineItem.allmeta[5].value, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
+            // add lieferant to array, if it is not already
+            !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
+          } else {
+            // add product to array, if it is not already and add product data to products object
+            !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
+            productsData[lineItem.product_name] = [lineItem.product_name, "-", lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
+            // add lieferant to array, if it is not already
+            !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
+          }
         })
       })
 
@@ -306,7 +322,7 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
         let rows = []
 
         productsByLieferant[lieferant].map(product => {
-          let row = { produkt: product, einheit: productsData[product][2] }
+          let row = { product: product, sku: productsData[product][1], supplier: productsData[product][2], unit: productsData[product][3] }
 
           usersByLieferant[lieferant].map(user => {
             orderItems.map(orderItem => {
@@ -326,6 +342,7 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
           dataMatrix[lieferantString] = rows
         }
       })
+      console.log(dataMatrix)
       setExportData(dataMatrix)
     }
   }, [orders, id])

@@ -7,7 +7,7 @@ class OrderMeta
   {
     add_action('woocommerce_checkout_create_order', array($this,'before_checkout_create_order'), 20, 2);
     add_action( 'woocommerce_admin_order_data_after_order_details', array($this,'display_meta_orders'), 10, 1 );
-    add_action( 'woocommerce_thankyou', array($this,'meta_to_line_item') );
+    add_action( 'woocommerce_checkout_order_processed', array($this,'meta_to_line_item') );
   }
 
   /**
@@ -67,6 +67,10 @@ class OrderMeta
 
         $key = '_category';
         $value = $p->get_category_ids()[0];
+        wc_update_order_item_meta($item_id, $key, $value);
+
+        $key = '_sku';
+        $value = $p->get_sku();
         wc_update_order_item_meta($item_id, $key, $value);
 
     }

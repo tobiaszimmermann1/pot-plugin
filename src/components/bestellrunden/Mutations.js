@@ -43,6 +43,7 @@ function Mutations({ id, setModalClose }) {
         .then(function (response) {
           let reArrangeProductData = []
           if (response.data) {
+            let res = JSON.parse(response.data)
             Object.keys(res[1]).forEach(function (key, index) {
               let productToDo = {}
               productToDo.label = res[1][key].name + ", " + res[1][key].einheit

@@ -52,7 +52,15 @@
       if(!$product_id) {
         $product_id = $item->get_product_id();
       }
-      array_push($item_array,$product_lieferant);
+      array_push($item_array,$product_id);
+
+      // product sku
+      $product_sku = wc_get_order_item_meta( $item_id, '_sku', true);
+      // fallback
+      if(!$product_sku) {
+        $product_sku = $item->get_product()->get_sku();
+      }
+      array_push($item_array,$product_sku);
 
       // einheit
       $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));

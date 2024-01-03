@@ -1146,6 +1146,11 @@ class FoodcoopRestRoutes {
         $the_line_item['variation_id'] = $item->get_variation_id();
         $the_line_item['product'] = $item->get_product(); 
         $the_line_item['product_name'] = $item->get_name();
+        
+        // sku:
+        if ($item->get_product()) {
+          $the_line_item['product_sku'] = $item->get_product()->get_sku();
+        }
 
         $item_total_quantity = $item->get_quantity(); 
         $item_quantity_refunded = $o->get_qty_refunded_for_item( $item_id );
