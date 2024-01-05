@@ -28,6 +28,15 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.2
+
+- Bugfix: Stock status of products with 0 stock did not change to instock when inventory was disabled
+- Self Checkout can now be added through shortcode [foodcoop_addtocart]: Allows scanning of QR Codes (SKU) to add products to a virtual cart and check out.
+- New setting for activating / deactivating Self Checkout
+- Products which are available in Self Checkout may now be selected in the products tab, if self checkout is activated
+- New form to request credit payout in my account page
+- Added shortcode [foodcoop_product_overview] to show a comprehensive overview of all available products with filtering options
+
 ### 1.7.1
 
 - Various bugfixes

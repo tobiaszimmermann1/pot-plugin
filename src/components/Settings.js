@@ -17,6 +17,7 @@ import SaveIcon from "@mui/icons-material/Save"
 import Alert from "@mui/material/Alert"
 import ToggleButton from "@mui/material/ToggleButton"
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup"
+import { Divider } from "@mui/material"
 const __ = wp.i18n.__
 
 const Settings = () => {
@@ -37,6 +38,7 @@ const Settings = () => {
   const [adminEmail, setAdminEmail] = useState()
   const [submitting, setSubmitting] = useState(false)
   const [enableStock, setEnableStock] = useState(false)
+  const [enableSelfCheckout, setEnableSelfCheckout] = useState(false)
 
   useEffect(() => {
     axios
@@ -77,6 +79,7 @@ const Settings = () => {
 
   useEffect(() => {
     if (options) {
+      console.log(options)
       setFee(options.fc_fee)
       setBank(options.fc_bank)
       setTransfer(options.fc_transfer)
@@ -91,6 +94,7 @@ const Settings = () => {
       options.fc_instant_topup == "1" ? setInstantTopup(true) : setInstantTopup(false)
       setAdminEmail(options.admin_email)
       options.woocommerce_manage_stock === "yes" ? setEnableStock(true) : setEnableStock(false)
+      options.fc_self_checkout === "1" ? setEnableSelfCheckout("1") : setEnableSelfCheckout("0")
     }
   }, [options])
 
@@ -114,7 +118,8 @@ const Settings = () => {
           instantTopup: instantTopup,
           publicProducts: publicProducts,
           adminEmail: adminEmail,
-          enableStock: enableStock
+          enableStock: enableStock,
+          enableSelfCheckout: enableSelfCheckout
         },
         {
           headers: {
@@ -287,6 +292,26 @@ const Settings = () => {
                 <strong>{__("Achtung!", "fcplugin")}</strong> {__("Aktiviert oder deaktiviert die Lagerverwaltung für alle Produkte! Die Einstellung verändert jedoch nicht den Lagerbestand. Allenfalls ist eine Inventur notwendig!", "fcplugin")}{" "}
               </Alert>
             </Grid>
+
+            <Grid item xs={4}>
+              {__("Self Checkout", "fcplugin")}
+              <br />
+              <small>{__("Aktiviert, bzw. deaktiviert den Self-Checkout.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enableSelfCheckout}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnableSelfCheckout(newStatus)
+                }}
+              >
+                <ToggleButton value={"1"}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={"0"}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+
             <Grid item xs={4}>
               {__("Instant Topup aktivieren?", "fcplugin")}
               <br />

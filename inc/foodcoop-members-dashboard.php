@@ -52,7 +52,7 @@ class WalletDashboard
         ?>
 
         <div class="fc_account_wallet">
-            <p class="fc_account_wallet_balance">Dein aktuelles Guthaben beträgt <strong style="color:<?php echo $balance_color; ?>;" >CHF <?php echo $balance; ?></strong></p>
+            <h2 class="fc_account_wallet_balance">Dein aktuelles Guthaben beträgt <strong style="color:<?php echo $balance_color; ?>;" >CHF <?php echo $balance; ?></strong></h2>
             <div id="fc_topup"></div>
         </div>
 
