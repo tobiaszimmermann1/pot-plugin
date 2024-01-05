@@ -22,6 +22,11 @@ function QRBill() {
   const [loading, setLoading] = useState(true)
   const [instantTopUpAmount, setInstantTopUpAmount] = useState(null)
   const [instantTopUp, setInstantTopUp] = useState(null)
+  const [payoutAmount, setPayoutAmount] = useState(null)
+  const [toIban, setToIban] = useState("")
+  const [toName, setToName] = useState("")
+  const [toCity, setToCity] = useState("")
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     // get banking options
@@ -91,6 +96,28 @@ function QRBill() {
     }
   }
 
+  function handlePayout() {
+    if (payoutAmount > 0 && toIban !== "" && toName !== "" && toCity !== "") {
+      axios
+        .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/payout`, {
+          user_id: frontendLocalizer.currentUser.ID,
+          amount: payoutAmount,
+          iban: toIban,
+          toname: toName,
+          tocity: toCity
+        })
+        .then(function (response) {
+          console.log(response.data)
+          if (response.data === 200) {
+            setSuccess(true)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       {loading ? (
@@ -109,8 +136,8 @@ function QRBill() {
               </p>
             </Grid>
             <Grid item xs={12}>
-              <input type="number" min="1" placeholder="Betrag in CHF" className="fc_topup_input" onChange={event => setAmount(event.target.value)} />
-              <button type="submit" onClick={handleQR}>
+              <input type="number" min="1" placeholder="Betrag in CHF" className="fc_topup_input" onChange={event => setAmount(event.target.value)} /> <br />
+              <button type="submit" onClick={handleQR} style={{ marginTop: 10 }}>
                 {__("Einzahlungsschein generieren", "fcplugin")}
               </button>
             </Grid>
@@ -143,17 +170,41 @@ function QRBill() {
                         event.preventDefault()
                       }
                     }}
-                  />
-                  <button type="submit" onClick={handleInstandTopUp}>
+                  />{" "}
+                  <br />
+                  <button type="submit" onClick={handleInstandTopUp} style={{ marginTop: 10 }}>
                     {__("Zur Kasse", "fcplugin")}
                   </button>
-                </Grid>
-                <Grid item xs={12}>
-                  <div id="qrSVG"></div>
                 </Grid>
               </Grid>
             </>
           )}
+          <>
+            <Divider sx={{ marginTop: 2, marginBottom: 2, borderColor: "#000000" }} />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <h2>{__("Guthaben auszahlen", "fcplugin")}</h2>
+              </Grid>
+              <Grid item xs={12}>
+                <p>{__("Veranlasse hier eine Auszahlung von Guthaben auf dein Konto.", "fcplugin")}</p>
+              </Grid>
+              <Grid item xs={12}>
+                <input type="number" min="0.05" step="any" placeholder="Betrag in CHF" className="fc_payout_amount" onChange={event => setPayoutAmount(event.target.value)} value={payoutAmount} />
+                <br />
+                <input type="text" placeholder={__("IBAN", "fcplugin")} className="fc_payout_iban" onChange={event => setToIban(event.target.value.toString())} value={toIban} style={{ marginTop: 10 }} /> <br />
+                <input type="text" placeholder={__("lautend auf", "fcplugin")} className="fc_payout_name" onChange={event => setToName(event.target.value)} value={toName} style={{ marginTop: 10 }} /> <br />
+                <input type="text" placeholder={__("PLZ / Ort", "fcplugin")} className="fc_payout_city" onChange={event => setToCity(event.target.value)} value={toCity} style={{ marginTop: 10 }} /> <br />
+                <button type="submit" onClick={handlePayout} style={{ marginTop: 10 }}>
+                  {__("Auszahlung veranlassen", "fcplugin")}
+                </button>
+                {success && (
+                  <Alert severity="success" sx={{ marginTop: "10px" }}>
+                    {__("Anfrage wurde versendet.", "fcplugin")}
+                  </Alert>
+                )}
+              </Grid>
+            </Grid>
+          </>
         </>
       )}
     </LocalizationProvider>

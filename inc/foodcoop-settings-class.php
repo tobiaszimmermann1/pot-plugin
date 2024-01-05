@@ -56,6 +56,7 @@ class FoocoopPluginSettings {
    
     add_settings_field( 'fc_instant_topup', __('Instant Topup aktivieren?', 'fcplugin'), array($this, 'fc_instant_topup_html'), 'foodcoop-settings-page', 'fc_display' );
     register_setting( 'foodcoop_plugin', 'fc_instant_topup', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
+   
   }
 
   function sanitize_margin($input) {

@@ -24,6 +24,8 @@ import ListAltIcon from "@mui/icons-material/ListAlt"
 import Inventory from "./products/Inventory"
 import WidgetsIcon from "@mui/icons-material/Widgets"
 import NewDelivery from "./products/NewDelivery"
+import SmartphoneIcon from "@mui/icons-material/Smartphone"
+import SelfCheckoutProducts from "./products/SelfCheckoutProducts"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -40,7 +42,9 @@ const Products = () => {
   const [deliveryModalOpen, setDeliveryModalOpen] = useState(false)
   const [buttonLoading, setButtonLoading] = useState(false)
   const [stockOption, setStockOption] = useState({ stock: false })
+  const [selfCheckoutOption, setSelfCheckoutOption] = useState(false)
   const [inventoryMode, setInventoryMode] = useState(false)
+  const [selectSelfCheckoutProducts, setSelectSelfCheckoutProducts] = useState(false)
 
   useEffect(() => {
     axios
@@ -49,6 +53,7 @@ const Products = () => {
         let reArrangeProductData = []
         if (response.data) {
           const res = JSON.parse(response.data)
+          console.log(res)
           res[0].map(p => {
             let productToDo = {}
             productToDo.name = p.name
@@ -81,6 +86,13 @@ const Products = () => {
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
       .then(function (res) {
         JSON.parse(res.data) === "yes" ? setStockOption({ stock: true }) : setStockOption({ stock: false })
+      })
+      .catch(error => console.log(error))
+
+    axios
+      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout`)
+      .then(function (res) {
+        JSON.parse(res.data) === "1" ? setSelfCheckoutOption(true) : setSelfCheckoutOption(false)
       })
       .catch(error => console.log(error))
   }, [])
@@ -443,11 +455,16 @@ const Products = () => {
                         </Button>
                       </Box>
                     )}
-                    <Box sx={{ marginLeft: "20px", gap: "1rem", display: "flex" }}>
-                      <Button color="primary" onClick={() => handleQRCodeAll()} startIcon={buttonLoading ? <CircularProgress size={14} /> : <QrCodeIcon />} variant="outlined" size="small" disabled={buttonLoading}>
-                        {__("QR Etiketten generieren", "fcplugin")}
-                      </Button>
-                    </Box>
+                    {selfCheckoutOption && (
+                      <Box sx={{ marginLeft: "20px", gap: "1rem", display: "flex" }}>
+                        <Button color="primary" onClick={() => handleQRCodeAll()} startIcon={buttonLoading ? <CircularProgress size={14} /> : <QrCodeIcon />} variant="outlined" size="small" disabled={buttonLoading}>
+                          {__("QR Etiketten generieren", "fcplugin")}
+                        </Button>
+                        <Button color="primary" onClick={() => setSelectSelfCheckoutProducts(true)} startIcon={buttonLoading ? <CircularProgress size={14} /> : <SmartphoneIcon />} variant="outlined" size="small" disabled={buttonLoading}>
+                          {__("Self Checkout Produkte", "fcplugin")}
+                        </Button>
+                      </Box>
+                    )}
                   </Box>
                 )}
               />
@@ -456,6 +473,7 @@ const Products = () => {
             )}
             {importModalOpen && <ImportProducts setModalClose={setImportModalOpen} categories={categories} />}
             {deliveryModalOpen && <NewDelivery setModalClose={setDeliveryModalOpen} prod={products} reload={reload} setReload={setReload} />}
+            {selectSelfCheckoutProducts && <SelfCheckoutProducts setModalClose={setSelectSelfCheckoutProducts} prods={products} />}
           </>
         )}
       </div>

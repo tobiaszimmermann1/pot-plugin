@@ -265,6 +265,18 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST save products for self checkout
+     * params: products
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveProductsSelfCheckout', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveProductsSelfCheckout'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET bestellrunde products
      * params: bestellrunde
      */
@@ -540,6 +552,18 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST request payout of credit
+     * params: amount, user_id
+     */
+    register_rest_route( 'foodcoop/v1', 'payout', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'payout'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
      * POST email notification for bestellrunden
      * params: orders
      */
@@ -740,6 +764,17 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * GET Product List for Overview
+     */
+    register_rest_route( 'foodcoop/v1', 'getProductListOverview', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'getProductListOverview'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
   }
 
   
@@ -798,7 +833,8 @@ class FoodcoopRestRoutes {
         "short_description" => $product->get_short_description(),
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
         "description" => $product->get_description(),
-        "stock" => $product->get_stock_quantity()
+        "stock" => $product->get_stock_quantity(),
+        "stock_status" => $product->get_stock_status()
       );
     
       // product meta data
@@ -930,8 +966,12 @@ class FoodcoopRestRoutes {
       update_option('woocommerce_manage_stock', 'no');
       foreach($products as $product_id) {
         update_post_meta($product_id, "_manage_stock", 'no');
+        update_post_meta($product_id, "_stock_status", 'instock');
       }
     }
+
+    $enableSelfCheckout = $data['enableSelfCheckout'];
+    update_option('fc_self_checkout', $enableSelfCheckout);
 
 
     return http_response_code(200);
@@ -1310,6 +1350,14 @@ class FoodcoopRestRoutes {
    */
   function postSaveProductsBestellrunde($data) {
     $update = update_post_meta( $data['bestellrunde'], 'bestellrunde_products', $data['products'] );
+    return($update);
+  }
+
+  /**
+   * postSaveProductsSelfCheckout
+   */
+  function postSaveProductsSelfCheckout($data) {
+    $update = update_option( 'fc_self_checkout_products', $data['products'] );
     return($update);
   }
 
@@ -2601,22 +2649,30 @@ class FoodcoopRestRoutes {
    */
   function getProduct($data) {
  
-    $sku = intval($data['sku']);
+    $sku = $data['sku'];
     $product_id = wc_get_product_id_by_sku($sku);
-    $product = wc_get_product($product_id);
+    $self_checkout_products = json_decode(get_option( 'fc_self_checkout_products' ));
 
-    if ($product) {
-      $product_data = array(
-        'name' => $product->get_name(),
-        'price' => $product->get_price(),
-        'unit' => $product->get_meta('_einheit'),
-        'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
-        'amount' => 1, 
-        'sku' => $sku,
-        'product_id' => $product->get_id()
-      );
-  
-      return json_encode($product_data);
+    if (in_array($product_id, $self_checkout_products)) {
+
+      $product = wc_get_product($product_id);
+
+      if ($product) {
+        $product_data = array(
+          'name' => $product->get_name(),
+          'price' => $product->get_price(),
+          'unit' => $product->get_meta('_einheit'),
+          'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
+          'amount' => 1, 
+          'sku' => $sku,
+          'product_id' => $product->get_id()
+        );
+    
+        return json_encode($product_data);
+
+      } else {
+        return json_encode(false);
+      }
     } else {
       return json_encode(false);
     }
@@ -2711,6 +2767,75 @@ class FoodcoopRestRoutes {
     } else {
       return http_response_code(400);
     }
+  }
+
+
+
+  /**
+   * payout
+   */
+  function payout($data) {  
+    $amount = ($data['amount']);
+    $user_id = ($data['user_id']);
+    $iban = ($data['iban']);
+    $toname = ($data['toname']);
+    $tocity = ($data['tocity']);
+
+    //user info
+    $user = get_user_by( 'id', $user_id );
+    $name = get_user_meta($user_id, 'billing_first_name', true)." ".get_user_meta($user_id, 'billing_last_name', true);
+    $reply_email = $user->data->user_email;
+    $address = get_user_meta($user_id, 'billing_address_1', true);
+    $postcode = get_user_meta($user_id, 'billing_postcode', true);
+    $city = get_user_meta($user_id, 'billing_city', true);
+
+    // email
+    $email = get_option('admin_email');
+
+    $headers[] = 'From: '. $email;
+    $headers[] = 'Reply-To: ' . $reply_email;
+    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+    $subject = get_option('blogname') . ": " . __("Neue Auszahlung angefordert");
+
+    $msg = '
+      <table border="0" cellpadding="0" cellspacing="0" class="list_block block-4" id="list-r1c0m3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td>Hallo Admin <br /></td>
+      <tr>
+      <tr>
+      <td>Das folgende Mitglied hat eine neue Auszahlung von Foodcoop Guthaben angefordert:</td>
+      <tr>
+      <td class="pad" style="padding-bottom:10px;padding-left:35px;padding-right:35px;padding-top:10px;">
+      <div class="levelOne" style="margin-left: 0;">
+      <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
+      <li style="margin-bottom: 0; text-align: left;">Mitgliedernummer: '.$user->ID.'</li>
+      <li style="margin-bottom: 0; text-align: left;">Name: '.$name.'</li>
+      <li style="margin-bottom: 0; text-align: left;">email: '.$reply_email.'</li>
+      <li style="margin-bottom: 0; text-align: left;">Adresse: '.$address.'</li>
+      <li style="margin-bottom: 0; text-align: left;">PLZ / Ort: '.$postcode.' '.$city.'</li>
+      <li style="margin-bottom: 0; text-align: left;"><strong>Betrag: CHF '.$amount.'</strong></li>
+      <li style="margin-bottom: 0; text-align: left;">IBAN: '.$iban.'</li>
+      <li style="margin-bottom: 0; text-align: left;">lautend auf Name: '.$toname.'</li>
+      <li style="margin-bottom: 0; text-align: left;">lautend auf PLZ / Ort: '.$tocity.'</li>
+      </ul>
+      </div>
+      </td>
+      </tr>
+      </table>
+    ';
+
+
+    if ($email) {
+      $result = wp_mail( $email, $subject, $msg, $headers);
+      if (!is_wp_error( $result)) {
+        return http_response_code(200);
+      } else {
+        return http_response_code(400);
+      }
+    }
+
+
   }
 
 
@@ -3180,6 +3305,91 @@ class FoodcoopRestRoutes {
     
     return ($number);
     
+  }  
+  
+  
+  
+  
+  /**
+  * getProductListOverview
+  */
+  function getProductListOverview() { 
+
+    // get all categories
+    $product_categories = get_terms( array(
+      'taxonomy' => 'product_cat',
+      'hide_empty' => false
+    ) );    
+    $categories = array();
+    $cats = array();
+    foreach( $product_categories as $category ) {
+      $thumb_id = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true );
+      $thumb_id ? $term_img = wp_get_attachment_url(  $thumb_id ) : $term_img = plugin_dir_url( __FILE__ ).'../images/category.jpg';
+      array_push($categories, array(
+        'id' => $category->term_id, 
+        'name' => $category->name, 
+        'img' => $term_img
+      ));
+      $cats[$category->term_id] = $category->name;
+    } 
+
+    // get all products
+    $p = wc_get_products(array(
+      'status'            => array( 'publish' ),
+      'limit'             => -1,
+      'page'              => 1,
+      'return'            => 'objects',
+      'paginate'          => false,
+      'orderby'           => 'title',
+      'order'             => 'ASC'
+    ));
+
+    $products = array();
+    foreach ($p as $product) {
+      if ($product->get_sku() != "fcplugin_instant_topup_product") {
+
+        $pimg = wp_get_attachment_url( $product->get_image_id(), 'thumbnail');
+        if (!$pimg) {
+          $pimg = plugin_dir_url( __FILE__ ).'../images/placeholder.png';
+        }
+
+        // product name
+        $the_product = array(
+          "id" => $product->get_id(),
+          "name" => $product->get_name(),
+          "price" => $product->get_price(),
+          "category_id" => $product->get_category_ids()[0],
+          "image" => $pimg,
+          "description" => $product->get_description(),
+          "stock" => $product->get_stock_quantity(),
+          "stock_status" => $product->get_stock_status()
+        );
+      
+        // product meta data
+        $the_meta = $product->get_meta_data();
+        foreach($the_meta as $meta) {
+          $data = $meta->get_data();
+          $the_product[$data['key']] = $data['value'];
+        }
+    
+        // product category (only the first one!)
+        $the_product['category_name'] = $cats[$product->get_category_ids()[0]];
+
+        $the_product['amount'] = 0;
+
+        // add short description of product to array
+        $the_product["short_description"] = $product->get_short_description();
+
+        array_push($products, $the_product);
+      }
+    }
+
+    usort($products, fn($a, $b) => $a['category_name'] <=> $b['category_name']);
+
+    // get store currency
+    $currency = get_woocommerce_currency_symbol();
+
+    return json_encode(array($products, $categories, $currency));
   }
 
 

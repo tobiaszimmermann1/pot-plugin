@@ -33,8 +33,8 @@ class OrderMeta
    * Display field value on the order edit page
    */
   function display_meta_orders( $order ){
-      $order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
-      $bestellrunde_id = get_post_meta( $order_id, 'bestellrunde_id', true );
+      $order_id = $order->get_id();
+      $bestellrunde_id = $order->get_meta('bestellrunde_id');
       
       echo    '<p style="display: inline-block;margin-top:20px; font-size:20px; padding: 10px!important;background-color:#f0f0f0;color:green;">'.__('Bestellrunde').':<strong> ' . $bestellrunde_id . '</strong></p>';    
   }

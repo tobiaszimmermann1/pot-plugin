@@ -31,9 +31,9 @@
     "axios": "^1.2.1",
     "date-fns": "^2.29.3",
     "export-to-csv": "^0.2.1",
-    "html5-qrcode": "^2.3.8",
     "material-react-table": "^1.14.0",
     "react-papaparse": "^4.1.0",
+    "react-qr-reader": "^3.0.0-beta-1",
     "react-transition-group": "^4.4.5",
     "react-xls": "^0.1.1",
     "swissqrbill": "^3.2.3"

@@ -17,6 +17,7 @@
 
   $query = new WC_Product_Query($args);
   $products = $query->get_products();
+  $self_checkout_products = json_decode(get_option( 'fc_self_checkout_products' ));
 
 
   // create pdf
@@ -42,33 +43,36 @@
 
     if ($sku) {
 
-      $mpdf->AddPage('','','','','',5,5,5,5,0,0);
+      if (in_array($product->get_id(),$self_checkout_products) ) {
 
-      $qrcode = (new QRCode)->render($sku);
+        $mpdf->AddPage('','','','','',5,5,5,5,0,0);
 
-      // pdf content
-      $content = '
-        <style>
-          @page *{
-            margin-top: 0.5cm;
-            margin-bottom: 0.5cm;
-            margin-left: 0.5cm;
-            margin-right: 0.5cm;
-        }
-        </style>
-        <table style="margin:0;">
-          <tr>
-            <td style="width:35mm;text-align:center;font-size:8pt;"><img src="'.$qrcode.'" width="35mm" height="35mm" />'.$sku.'</td>
-            <td style="width:80mm;font-size:12pt;font-weight:bold;">
-              <span style="font-size:16pt;">'.$product->get_name().'</span><br /><br />
-              CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'
-            </td>
-          </tr>
-        </table>
-      ';
+        $qrcode = (new QRCode)->render($sku);
 
-      $mpdf->WriteHTML($content);
-      
+        // pdf content
+        $content = '
+          <style>
+            @page *{
+              margin-top: 0.5cm;
+              margin-bottom: 0.5cm;
+              margin-left: 0.5cm;
+              margin-right: 0.5cm;
+          }
+          </style>
+          <table style="margin:0;">
+            <tr>
+              <td style="width:35mm;text-align:center;font-size:8pt;"><img src="'.$qrcode.'" width="35mm" height="35mm" />'.$sku.'</td>
+              <td style="width:80mm;font-size:12pt;font-weight:bold;">
+                <span style="font-size:16pt;">'.$product->get_name().'</span><br /><br />
+                CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'
+              </td>
+            </tr>
+          </table>
+        ';
+
+        $mpdf->WriteHTML($content);
+        
+      }
     }
   }
 

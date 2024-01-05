@@ -8,6 +8,7 @@ import RemoveIcon from "@mui/icons-material/Remove"
 import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
 import PhotoIcon from "@mui/icons-material/Photo"
+import DeleteIcon from "@mui/icons-material/Delete"
 const __ = wp.i18n.__
 
 function SelfCheckoutCartItem({ productData, itemIndex }) {
@@ -17,6 +18,7 @@ function SelfCheckoutCartItem({ productData, itemIndex }) {
   const [totalPrice, setTotalPrice] = useState(0)
   const [inputAmount, setInputAmount] = useState(false)
   const [inputAmountValue, setInputAmountValue] = useState(0)
+  const [disableMinus, setDisableMinus] = useState(false)
 
   useEffect(() => {
     if (productData) {
@@ -26,32 +28,22 @@ function SelfCheckoutCartItem({ productData, itemIndex }) {
   }, [productData, amount])
 
   useEffect(() => {
-    if (amount <= 0) {
-      const newCart = cart.filter(cartItem => {
-        return cartItem.id !== productData.id
-      })
-      setCart(newCart)
-
-      if (newCart.length > 0) {
-        localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
+    console.log(amount, typeof amount)
+    let newAmount = amount
+    const newCart = cart.map(cartItem => {
+      if (cartItem.product_id === productData.product_id) {
+        return { ...cartItem, amount: newAmount }
       } else {
-        localStorage.removeItem("fc_selfcheckout_cart")
-      }
-    } else {
-      const newCart = cart.map(cartItem => {
-        if (cartItem.id === productData.id) {
-          return { ...cartItem, amount: amount }
-        }
         return cartItem
-      })
-      setCart(newCart)
+      }
+    })
+    setCart(newCart)
 
-      localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
-    }
+    localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
   }, [amount])
 
   function setNewAmount() {
-    setAmount(inputAmountValue)
+    setAmount(parseInt(inputAmountValue))
     setInputAmount(false)
   }
 
@@ -77,29 +69,33 @@ function SelfCheckoutCartItem({ productData, itemIndex }) {
         </DialogActions>
       </Dialog>
       <ListItem sx={{ margin: "5px 0" }}>
-        <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
+        <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
           <Grid item xs={3}>
-            <Stack direction="column" spacing={1} alignItems="center" justifyContent="center">
-              <AddIcon onClick={() => setAmount(amount + 1)} />
+            <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+              <AddIcon onClick={() => setAmount(productData.amount + 1)} />
               <Chip
-                label={amount}
+                label={productData.amount}
                 sx={{ fontWeight: "bold" }}
                 onClick={() => {
                   setInputAmount(true)
                   setInputAmountValue(amount)
                 }}
               />
-              <RemoveIcon onClick={() => setAmount(amount - 1)} />
+              <RemoveIcon
+                onClick={() => {
+                  productData.amount > 0 && setAmount(productData.amount - 1)
+                }}
+              />
             </Stack>
           </Grid>
           <Grid item xs={7} sx={{ fontWeight: "bold", fontSize: "1rem" }}>
             <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start">
               <Grid item xs={12}>
                 <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
-                  <Grid item xs={3}>
+                  <Grid item xs={4}>
                     {productData.img ? <img src={productData.img} width={"50px"} height={"50px"} /> : <PhotoIcon />}
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid item xs={8}>
                     {productData.name}
                     <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start" sx={{ marginTop: "0px" }}>
                       <Grid item xs={12} sx={{ fontSize: "0.8rem", fontWeight: "normal" }}>
