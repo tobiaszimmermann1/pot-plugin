@@ -124,6 +124,7 @@ function fc_init_gateway_class() {
                     'meta_key'      => 'bestellrunde_id', 
                     'meta_value'    => $active,
                     'meta_compare'  => '=', 
+                    'status' => array('wc-processing', 'wc-on-hold', 'wc-refunded'),
                   );
                             
                 $orders = wc_get_orders( $args );
@@ -316,7 +317,11 @@ function fc_init_gateway_class() {
                 if ($new_balance >= 0) {
 
                     // DELETE PREVIOUS ORDER
-                    wp_trash_post($prev_order_id,true);
+                    $thisorder = wc_get_order($prev_order_id);
+                    $thisorder->set_status( 'cancelled' );
+                    $thisorder->save();
+                    $thisorder->delete();
+                    wp_delete_post($prev_order_id);
 
                     // create new order
                     $order = new WC_Order( $order_id );
@@ -363,7 +368,11 @@ function fc_init_gateway_class() {
                     wc_add_notice( __('Fehler: ', 'woothemes') . $error_message, 'error' );
 
                     // DELETE ORDER (so there is not unapid order)
-                    wp_trash_post($order_id,true);
+                    $thisorder = wc_get_order($order_id);
+                    $thisorder->set_status( 'cancelled' );
+                    $thisorder->save();
+                    $thisorder->delete();
+                    wp_delete_post($order_id, true);
 
                     return;
 
@@ -423,7 +432,11 @@ function fc_init_gateway_class() {
                     wc_add_notice( __('Fehler: ', 'woothemes') . $error_message, 'error' );
 
                     // DELETE ORDER (so there is not unapid order)
-                    wp_trash_post($order_id,true);
+                    $thisorder = wc_get_order($order_id);
+                    $thisorder->set_status( 'cancelled' );
+                    $thisorder->save();
+                    $thisorder->delete();
+                    wp_delete_post($order_id, true);
 
                     return;
 

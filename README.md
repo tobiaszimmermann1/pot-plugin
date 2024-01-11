@@ -28,6 +28,10 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.3
+
+- Bugfix: Payment Gateway did not delete previous orders in some circumstances
+
 ### 1.7.2
 
 - Bugfix: Stock status of products with 0 stock did not change to instock when inventory was disabled
