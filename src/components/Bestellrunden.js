@@ -79,7 +79,7 @@ const Bestellrunden = () => {
   }, [])
 
   /**
-   * Product Table
+   * Table
    */
 
   const columns = useMemo(

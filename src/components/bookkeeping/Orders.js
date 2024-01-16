@@ -45,7 +45,7 @@ const Orders = () => {
         accessorKey: "date_created",
         header: __("Datum", "fcplugin"),
         size: 80,
-        Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy")
+        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy")
       },
       {
         accessorKey: "customer_name",

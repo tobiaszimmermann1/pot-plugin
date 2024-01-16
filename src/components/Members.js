@@ -133,10 +133,10 @@ const Members = () => {
         size: 50,
         enableEditing: false,
         Cell: ({ row, cell }) => {
-          if (cell.getValue() && isSameYear(new Date(cell.getValue()), Date.now())) {
+          if (cell.getValue() && isSameYear(new Date(cell.getValue().replace(" ", "T")), Date.now())) {
             return (
               <Button variant="text" color="success" startIcon={<CheckIcon />}>
-                {format(new Date(cell.getValue()), "dd.MM.yyyy")}
+                {format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy")}
               </Button>
             )
           } else {

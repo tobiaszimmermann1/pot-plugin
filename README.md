@@ -30,7 +30,8 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ### 1.7.3
 
-- Bugfix: Payment Gateway did not delete previous orders in some circumstances
+- Bugfix: Payment Gateway fixed for WooCommerce HPOS compatibility
+- Bugfix: Safari interpreted ISO date format with space wrong in certain circumstances (older versions of the browser)
 
 ### 1.7.2
 

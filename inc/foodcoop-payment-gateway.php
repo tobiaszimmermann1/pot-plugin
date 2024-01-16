@@ -458,6 +458,10 @@ function fc_init_gateway_class() {
             $table = $wpdb->prefix.'foodcoop_wallet';
 
             $user_id = get_post_meta( $order_id, '_customer_user', true);
+            if (!$user_id) {
+                $order = wc_get_order($order_id);
+                $user_id = $order->get_user_id();
+            }
             $amount = number_format($amount, 2, '.', '');
             date_default_timezone_set('Europe/Zurich');
             $date = date("Y-m-d H:i:s");

@@ -101,7 +101,7 @@ const Transactions = () => {
       {
         accessorKey: "date",
         header: __("Datum", "fcplugin"),
-        Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy")
+        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy - HH:mm")
       },
       {
         accessorKey: "user_name",

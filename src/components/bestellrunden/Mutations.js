@@ -95,6 +95,7 @@ function Mutations({ id, setModalClose }) {
       .then(function (response) {
         if (response) {
           setSuccess(true)
+          console.log(response.data)
         }
       })
       .catch(error => console.log(error))

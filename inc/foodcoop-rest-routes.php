@@ -1588,7 +1588,7 @@ class FoodcoopRestRoutes {
           }
         }
       }
-      return json_encode( 'success' );           
+      return json_encode( array($refund_amount, $res, $order_id) );           
     } 
 
 
