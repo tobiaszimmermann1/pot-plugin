@@ -26,6 +26,8 @@ import WidgetsIcon from "@mui/icons-material/Widgets"
 import NewDelivery from "./products/NewDelivery"
 import SmartphoneIcon from "@mui/icons-material/Smartphone"
 import SelfCheckoutProducts from "./products/SelfCheckoutProducts"
+import PersonIcon from "@mui/icons-material/Person"
+import ProductOwnerModal from "./products/ProductOwnerModal"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -41,10 +43,12 @@ const Products = () => {
   const [importModalOpen, setImportModalOpen] = useState(false)
   const [deliveryModalOpen, setDeliveryModalOpen] = useState(false)
   const [buttonLoading, setButtonLoading] = useState(false)
-  const [stockOption, setStockOption] = useState({ stock: false })
+  const [visibilityOptions, setVisibilityOptions] = useState({ stock: false, tax: false })
   const [selfCheckoutOption, setSelfCheckoutOption] = useState(false)
   const [inventoryMode, setInventoryMode] = useState(false)
   const [selectSelfCheckoutProducts, setSelectSelfCheckoutProducts] = useState(false)
+  const [ownerModalOpen, setOwnerModalOpen] = useState(false)
+  const [ownerModalProduct, setOwnerModalProduct] = useState(null)
 
   useEffect(() => {
     axios
@@ -53,7 +57,6 @@ const Products = () => {
         let reArrangeProductData = []
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           res[0].map(p => {
             let productToDo = {}
             productToDo.name = p.name
@@ -70,6 +73,8 @@ const Products = () => {
             productToDo.description = p.description
             productToDo.sku = p.sku
             p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
+            productToDo.tax = p.tax
+            productToDo.owner = parseInt(p.fc_owner)
 
             reArrangeProductData.push(productToDo)
           })
@@ -83,16 +88,21 @@ const Products = () => {
 
   useEffect(() => {
     axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
-      .then(function (res) {
-        JSON.parse(res.data) === "yes" ? setStockOption({ stock: true }) : setStockOption({ stock: false })
+      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOptions`, {
+        headers: {
+          "X-WP-Nonce": appLocalizer.nonce
+        }
       })
-      .catch(error => console.log(error))
+      .then(res => {
+        let options = JSON.parse(res.data)
 
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout`)
-      .then(function (res) {
-        JSON.parse(res.data) === "1" ? setSelfCheckoutOption(true) : setSelfCheckoutOption(false)
+        let visOptions = {}
+        options.woocommerce_manage_stock === "yes" ? (visOptions["stock"] = true) : (visOptions["stock"] = false)
+        options.fc_taxes === "1" ? (visOptions["tax"] = true) : (visOptions["tax"] = false)
+
+        setVisibilityOptions(visOptions)
+
+        options.fc_self_checkout === "1" ? setSelfCheckoutOption(true) : setSelfCheckoutOption(false)
       })
       .catch(error => console.log(error))
   }, [])
@@ -145,6 +155,12 @@ const Products = () => {
       {
         accessorKey: "price",
         header: __("Preis", "fcplugin"),
+        size: 80,
+        Cell: ({ cell }) => parseFloat(cell.getValue()).toFixed(2)
+      },
+      {
+        accessorKey: "tax",
+        header: __("MWST", "fcplugin"),
         size: 80
       },
       {
@@ -293,6 +309,7 @@ const Products = () => {
       the_product["description"] = product.description
       the_product["sku"] = product.sku
       the_product["supplier"] = product.supplier
+      the_product["tax"] = product.tax
       exportProducts.push(the_product)
     })
 
@@ -403,8 +420,8 @@ const Products = () => {
               <MaterialReactTable
                 columns={columns}
                 data={products ?? []}
-                state={{ isLoading: productsLoading, columnVisibility: stockOption }}
-                onColumnVisibilityChange={setStockOption}
+                state={{ isLoading: productsLoading, columnVisibility: visibilityOptions }}
+                onColumnVisibilityChange={setVisibilityOptions}
                 localization={MRT_Localization_DE}
                 enableColumnResizing
                 enableRowActions
@@ -414,13 +431,24 @@ const Products = () => {
                     header: "",
                     size: 180,
                     Cell: ({ row, table }) => (
-                      <Box sx={{ display: "flex", gap: "5px", p: "0.5rem", flexWrap: "nowrap" }}>
+                      <Box sx={{ display: "flex", gap: 0, p: "0.5rem", flexWrap: "nowrap" }}>
                         <IconButton onClick={() => table.setEditingRow(row)}>
                           <EditIcon />
                         </IconButton>
                         <Divider orientation="vertical" flexItem />
                         <IconButton onClick={() => handleQRCode(row)} disabled={buttonLoading}>
                           <QrCodeIcon />
+                        </IconButton>
+                        <Divider orientation="vertical" flexItem />
+                        <IconButton
+                          onClick={() => {
+                            setOwnerModalOpen(true)
+                            setOwnerModalProduct(row.original)
+                          }}
+                          disabled={buttonLoading}
+                          color={products[row.id].owner ? "primary" : "secondary"}
+                        >
+                          <PersonIcon />
                         </IconButton>
                         <Divider orientation="vertical" flexItem />
                         <IconButton onClick={() => handleDeleteRow(row)}>
@@ -445,7 +473,7 @@ const Products = () => {
                       {__("Importieren", "fcplugin")}
                     </Button>
 
-                    {stockOption.stock && (
+                    {visibilityOptions.stock && (
                       <Box sx={{ marginLeft: "20px", gap: "1rem", display: "flex" }}>
                         <Button color="primary" onClick={() => setDeliveryModalOpen(true)} startIcon={buttonLoading ? <CircularProgress size={14} /> : <MoveToInboxIcon />} variant="outlined" size="small" disabled={buttonLoading}>
                           {__("Lieferung entgegen nehmen", "fcplugin")}
@@ -474,6 +502,7 @@ const Products = () => {
             {importModalOpen && <ImportProducts setModalClose={setImportModalOpen} categories={categories} />}
             {deliveryModalOpen && <NewDelivery setModalClose={setDeliveryModalOpen} prod={products} reload={reload} setReload={setReload} />}
             {selectSelfCheckoutProducts && <SelfCheckoutProducts setModalClose={setSelectSelfCheckoutProducts} prods={products} />}
+            {ownerModalOpen && <ProductOwnerModal setModalClose={setOwnerModalOpen} prods={products} product={ownerModalProduct} />}
           </>
         )}
       </div>

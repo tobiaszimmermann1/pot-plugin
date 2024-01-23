@@ -11,7 +11,7 @@ import PhotoIcon from "@mui/icons-material/Photo"
 import DeleteIcon from "@mui/icons-material/Delete"
 const __ = wp.i18n.__
 
-function SelfCheckoutCartItem({ productData, itemIndex }) {
+function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
 
   const [amount, setAmount] = useState(productData.amount)
@@ -68,27 +68,28 @@ function SelfCheckoutCartItem({ productData, itemIndex }) {
           </Button>
         </DialogActions>
       </Dialog>
-      <ListItem sx={{ margin: "5px 0" }}>
+      <ListItem sx={{ margin: "5px 0", padding: 1 }}>
         <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
           <Grid item xs={3}>
-            <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
-              <AddIcon onClick={() => setAmount(productData.amount + 1)} />
+            <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-start" sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}>
+              <AddIcon onClick={() => setAmount(productData.amount + 1)} sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }} />
               <Chip
                 label={productData.amount}
-                sx={{ fontWeight: "bold" }}
+                sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }}
                 onClick={() => {
                   setInputAmount(true)
                   setInputAmountValue(amount)
                 }}
               />
               <RemoveIcon
+                sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
                 onClick={() => {
                   productData.amount > 0 && setAmount(productData.amount - 1)
                 }}
               />
             </Stack>
           </Grid>
-          <Grid item xs={7} sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+          <Grid item xs={7} sx={{ fontWeight: "bold", fontSize: POSMode ? "1.5rem" : "1rem" }}>
             <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start">
               <Grid item xs={12}>
                 <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
@@ -98,16 +99,24 @@ function SelfCheckoutCartItem({ productData, itemIndex }) {
                   <Grid item xs={8}>
                     {productData.name}
                     <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start" sx={{ marginTop: "0px" }}>
-                      <Grid item xs={12} sx={{ fontSize: "0.8rem", fontWeight: "normal" }}>
-                        {productData.unit}
-                      </Grid>
+                      {POSMode ? (
+                        <Grid item xs={12}>
+                          <Chip label={productData.unit} sx={{ marginRight: 1, fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
+                          <Chip label={`CHF ${parseFloat(productData.price).toFixed(2)}`} sx={{ marginRight: 1, fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
+                          <Chip label={`sku: ${productData.sku}`} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
+                        </Grid>
+                      ) : (
+                        <Grid item xs={12} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }}>
+                          {productData.unit} | sku: {productData.sku}
+                        </Grid>
+                      )}
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={2} sx={{ fontWeight: "bold", textAlign: "right" }}>
+          <Grid item xs={2} sx={{ fontWeight: "bold", textAlign: "right", fontSize: POSMode ? "1.5rem" : "1rem" }}>
             {parseFloat(totalPrice).toFixed(2)}
           </Grid>
         </Grid>

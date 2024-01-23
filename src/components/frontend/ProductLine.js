@@ -15,8 +15,18 @@ import useMediaQuery from "@mui/material/useMediaQuery"
 import ProductDialog from "./ProductDialog"
 const __ = wp.i18n.__
 
-const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation, stockManagement }) => {
+const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation, stockManagement, showTaxes }) => {
   const [amount, setAmount] = useState(0)
+  const [taxValue, setTaxValue] = useState(null)
+
+  /**
+   * Sales Tax Logic
+   */
+  useEffect(() => {
+    if (showTaxes) {
+      setTaxValue(product.tax)
+    }
+  }, [])
 
   /**
    * Product information modal
@@ -142,7 +152,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
           <span className="fc_order_list_col col_6">
             {publicPrices ? (
               <>
-                <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(product.price).toFixed(2)}
+                <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(product.price).toFixed(2)} <br /> <small>{showTaxes && `(+ MWST: ${product.tax.toFixed(2)}%)`}</small>
               </>
             ) : (
               <span style={{ fontSize: "0.75em", fontStyle: "italic" }}>{__("für Mitglieder", "fcplugin")}</span>

@@ -119,7 +119,7 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
     let i = 1
     for (const key in shoppingList) {
       if (shoppingList[key].amount > 0) {
-        cart.push({ name: shoppingList[key].name, product_id: shoppingList[key].product_id, amount: shoppingList[key].amount, name: shoppingList[key].name, bestellrunde: activeBestellrunde })
+        cart.push({ name: shoppingList[key].name, product_id: shoppingList[key].product_id, amount: shoppingList[key].amount, name: shoppingList[key].name, bestellrunde: activeBestellrunde, order_type: "bestellrunde" })
       }
       i++
     }
@@ -157,7 +157,7 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
       axios
         .delete(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
           headers: {
-            "X-WC-Store-API-Nonce": cartNonce
+            Nonce: cartNonce
           }
         })
         .then(res => {

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import axios from "axios"
-import { Box, Typography, Button, CircularProgress, Alert } from "@mui/material"
+import { Box, Typography, Button, Alert, LinearProgress } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
@@ -25,6 +25,10 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
   const [shoppingList, setShoppingList] = useState({})
   const [trigger, setTrigger] = useState(0)
 
+  const stockAlert = useRef()
+  const cartAlert = useRef()
+  const orderAlert = useRef()
+
   /**
    * Get Data for Bestellrunde
    */
@@ -36,6 +40,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
   const [activeState, setActiveState] = useState(null)
   const [order, setOrder] = useState(null)
   const [currency, setCurrency] = useState(null)
+  const [showTaxes, setShowTaxes] = useState(false)
 
   useEffect(() => {
     axios
@@ -46,6 +51,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
+          console.log(res)
           setAllProducts(res[3])
           setBestellrundenProducts(res[2])
           setCategories(res[4])
@@ -68,7 +74,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
     axios
       .get(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items`)
       .then(function (response) {
-        setCartNonce(response.headers["x-wc-store-api-nonce"])
+        setCartNonce(response.headers["nonce"])
         if (response?.data?.length > 0) {
           const res = response.data
           let cartData = []
@@ -108,6 +114,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
         productToDo.image = p.image
         productToDo.description = p.description
         productToDo.stock = p.stock
+        productToDo.tax = p.tax
 
         productToDo.price = p.price
         // public prices?
@@ -170,6 +177,15 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
         }
       })
       .catch(error => console.log(error))
+
+    axios
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_taxes`)
+      .then(function (response) {
+        if (response.data) {
+          response.data === '"1"' ? setShowTaxes(true) : setShowTaxes(false)
+        }
+      })
+      .catch(error => console.log(error))
   }, [])
 
   useEffect(() => {
@@ -196,54 +212,84 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
                 {__("zurück", "fcplugin")}
               </Button>
             </div>
-            <h2 className="fc_order_list_header_steps">{__("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")}</h2>
 
             <h2 className="fc_order_list_header_info">
-              <div style={{ backgroundImage: activeOrderRoundData[2] ? `url(${activeOrderRoundData[2]})` : `url(${frontendLocalizer.pluginUrl}/images/bestellrunde.png`, backgroundSize: "cover", backgroundPosition: "center center" }} className="fc_order_list_header_image" />
-              <table>
-                <tbody>
-                  <tr>
-                    <td>
-                      <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
-                    </td>
-                    <td>
-                      <strong>{activeOrderRoundData[0]}</strong> ({activeOrderRoundData[1]})
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
-                    </td>
-                    <td>
-                      <strong>{format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")}</strong> {__("bis", "fcplugin")} <strong>{format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>{__("Abholen: ", "fcplugin")}</strong>{" "}
-                    </td>
-                    <td>
-                      <strong>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")}</strong>{" "}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="fc_order_list_header_infos">
+                <div style={{ backgroundImage: activeOrderRoundData[2] ? `url(${activeOrderRoundData[2]})` : `url(${frontendLocalizer.pluginUrl}/images/bestellrunde.png`, backgroundSize: "cover", backgroundPosition: "center center" }} className="fc_order_list_header_image" />
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <h2>
+                          <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
+                        </h2>
+                      </td>
+                      <td>
+                        <h2>
+                          <strong>{activeOrderRoundData[0]}</strong> ({activeOrderRoundData[1]})
+                        </h2>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
+                      </td>
+                      <td>
+                        <strong>{format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")}</strong> {__("bis", "fcplugin")} <strong>{format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}</strong>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>{__("Abholen: ", "fcplugin")}</strong>{" "}
+                      </td>
+                      <td>
+                        <strong>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")}</strong>{" "}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="fc_order_list_header_alerts">
+                <span className="fc_order_list_header_steps">{__("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")}</span>
+
+                {stockManagement && (
+                  <Alert
+                    sx={{ marginBottom: 1 }}
+                    severity="info"
+                    onClose={() => {
+                      stockAlert.current.classList.add("fc_hide")
+                    }}
+                    ref={stockAlert}
+                  >
+                    {__("Die Lagerverwaltung ist aktiviert. Du kannst nur so viel bestellen wie derzeit an Lager ist. Gespeicherte Bestellungen wurden allenfalls den verfügbaren Mengen angepasst.", "fcplugin")}
+                  </Alert>
+                )}
+                {order && (
+                  <Alert
+                    sx={{ marginBottom: 1 }}
+                    severity="info"
+                    onClose={() => {
+                      cartAlert.current.classList.add("fc_hide")
+                    }}
+                    ref={cartAlert}
+                  >
+                    {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
+                  </Alert>
+                )}
+                {cart && (
+                  <Alert
+                    sx={{ marginBottom: 1 }}
+                    severity="info"
+                    onClose={() => {
+                      orderAlert.current.classList.add("fc_hide")
+                    }}
+                    ref={orderAlert}
+                  >
+                    {__("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")}
+                  </Alert>
+                )}
+              </div>
             </h2>
-            {stockManagement && (
-              <Alert sx={{ marginBottom: 1 }} severity="info">
-                {__("Die Lagerverwaltung ist aktiviert. Du kannst nur so viel bestellen wie derzeit an Lager ist. Gespeicherte Bestellungen wurden allenfalls den verfügbaren Mengen angepasst.", "fcplugin")}
-              </Alert>
-            )}
-            {order && (
-              <Alert sx={{ marginBottom: 1 }} severity="info">
-                {__("Du hast in dieser Bestellrunde schon bestellt. Deine aktuelle Bestellung wurde geladen.", "fcplugin")}
-              </Alert>
-            )}
-            {cart && (
-              <Alert sx={{ marginBottom: 1 }} severity="info">
-                {__("Du hast gespeicherte Produkte im Warenkorb. Prüfe deine Bestellung.", "fcplugin")}
-              </Alert>
-            )}
           </>
         ) : (
           <Box sx={{}}>
@@ -263,13 +309,13 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory showTaxes={showTaxes} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-      <CircularProgress />
-    </div>
+    <Box sx={{ width: "100%" }}>
+      <LinearProgress />
+    </Box>
   )
 }
 

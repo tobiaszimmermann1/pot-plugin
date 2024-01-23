@@ -251,12 +251,11 @@ function fc_init_gateway_class() {
             $user_id = get_current_user_id();
             $had_ordered = false;
 
+            // get current users balance
             $results = $wpdb->get_results(
                         $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
                      );
-
-            foreach ( $results as $result )
-            {
+            foreach ( $results as $result ) {
                $current_balance = $result->balance;
             }
 
@@ -266,10 +265,10 @@ function fc_init_gateway_class() {
             $active = false;
             $bestellrunde_ids_in_cart = array();
             foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-            $bestellrunde_id = $cart_item['bestellrunde'];
-            if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
-                array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
-            }
+                $bestellrunde_id = $cart_item['bestellrunde'];
+                if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
+                    array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+                }
             }
             
             if (count($bestellrunde_ids_in_cart) == 1) {
@@ -279,19 +278,14 @@ function fc_init_gateway_class() {
 
             // Get previous order value
             if ($user_id) {
-
                 $args = array(
                     'customer' => $user_id,
                     'meta_key' => 'bestellrunde_id',
                     'meta_value' => $active,
                     'meta_compare' => '=',
                     'status'=> array( 'wc-processing' ),
-
-                  );
-                          
-                $had_ordered = false;  
+                );   
                 $prev_orders = wc_get_orders( $args );
-            
                 if ($prev_orders) {
                     foreach ($prev_orders as $prev_order) {
                         $prev_order_id = $prev_order->ID;
@@ -305,8 +299,7 @@ function fc_init_gateway_class() {
                 }
             }
 
-
-
+            // If user has a previous order in bestellrunde
             if ($had_ordered) {
 
                 $new_balance = $current_balance - $order_total + $previous_order_total;
@@ -321,11 +314,12 @@ function fc_init_gateway_class() {
                     $thisorder->set_status( 'cancelled' );
                     $thisorder->save();
                     $thisorder->delete();
-                    wp_delete_post($prev_order_id);
 
                     // create new order
+                    $order_note = 'Bestellung ('.$prev_order_id.') angepasst. Bezahlt mit Foodcoop Guthaben: CHF' . $order_total . '; Neues Guthaben: CHF' . $new_balance .'; Differenz: CHF '.$difference;
                     $order = new WC_Order( $order_id );
-                    $order->payment_complete();
+                    //$order->payment_complete();
+                    $order->update_status( 'processing', $order_note );
     
                     // Remove cart
                     $woocommerce->cart->empty_cart();
@@ -362,20 +356,13 @@ function fc_init_gateway_class() {
 
                     $missing_balance = -1 * $new_balance;
                     $missing_balance = number_format($missing_balance, 2, '.', '');
-    
                     $error_message = 'Dein aktuelles Guthaben ist zu klein. Bitte überweise weitere <strong>CHF '.$missing_balance.'</strong> auf unser Konto oder entferne Produkte aus deinem Warenkorb.';
-    
-                    wc_add_notice( __('Fehler: ', 'woothemes') . $error_message, 'error' );
+                    $order_note = 'Guthaben zu klein: ' . $missing_balance . 'zu wenig.';
 
-                    // DELETE ORDER (so there is not unapid order)
-                    $thisorder = wc_get_order($order_id);
-                    $thisorder->set_status( 'cancelled' );
-                    $thisorder->save();
-                    $thisorder->delete();
-                    wp_delete_post($order_id, true);
+                    $order = new WC_Order( $order_id );
+                    $order->update_status( 'failed', $order_note );
 
-                    return;
-
+                    throw new Exception( __( $error_message, 'fcplugin' ) );
                 }
 
             }
@@ -387,9 +374,10 @@ function fc_init_gateway_class() {
 
                 if ($new_balance >= 0) {
 
+                    $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order_total . '; Neues Guthaben: CHF' . $new_balance;
                     $order = new WC_Order( $order_id );
-
-                    $order->payment_complete();
+                    //$order->payment_complete();
+                    $order->update_status( 'processing', $order_note );
     
                     // Remove cart
                     $woocommerce->cart->empty_cart();
@@ -426,27 +414,16 @@ function fc_init_gateway_class() {
 
                     $missing_balance = -1 * $new_balance;
                     $missing_balance = number_format($missing_balance, 2, '.', '');
-    
                     $error_message = 'Dein aktuelles Guthaben ist zu klein. Bitte überweise weitere <strong>CHF '.$missing_balance.'</strong> auf unser Konto oder entferne Produkte aus deinem Warenkorb.';
-    
-                    wc_add_notice( __('Fehler: ', 'woothemes') . $error_message, 'error' );
+                    $order_note = 'Guthaben zu klein: ' . $missing_balance . 'zu wenig.';
 
-                    // DELETE ORDER (so there is not unapid order)
-                    $thisorder = wc_get_order($order_id);
-                    $thisorder->set_status( 'cancelled' );
-                    $thisorder->save();
-                    $thisorder->delete();
-                    wp_delete_post($order_id, true);
+                    $order = new WC_Order( $order_id );
+                    $order->update_status( 'failed', $order_note );
 
-                    return;
-
+                    throw new Exception( __( $error_message, 'fcplugin' ) );
                 }
 
             }
-
-
-
-
 
      	}
 
@@ -457,11 +434,10 @@ function fc_init_gateway_class() {
             global $wpdb;
             $table = $wpdb->prefix.'foodcoop_wallet';
 
-            $user_id = get_post_meta( $order_id, '_customer_user', true);
-            if (!$user_id) {
-                $order = wc_get_order($order_id);
-                $user_id = $order->get_user_id();
-            }
+
+            $order = wc_get_order($order_id);
+            $user_id = $order->get_user_id();
+
             $amount = number_format($amount, 2, '.', '');
             date_default_timezone_set('Europe/Zurich');
             $date = date("Y-m-d H:i:s");

@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.7.3
+Version: 1.7.4
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -64,6 +64,16 @@ function activate_foodcoop_plugin() {
   flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'activate_foodcoop_plugin' );
+
+
+/**
+ * Declare WooCommerce HPOS compatibility
+ */
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 
 
 
@@ -124,6 +134,24 @@ function fc_remove_menu_pages() {
    remove_menu_page('woocommerce-marketing');
   }
 }
+
+// Hide admin bar for foodcoop_manager
+function fc_remove_from_admin_bar($wp_admin_bar) {
+
+  $user = wp_get_current_user();
+  if (in_array('foodcoop_manager', $user->roles)) {
+    $wp_admin_bar->remove_node('updates');
+    $wp_admin_bar->remove_node('comments');
+    $wp_admin_bar->remove_node('new-content');
+    $wp_admin_bar->remove_node('wp-logo');
+    $wp_admin_bar->remove_node('site-name');
+    $wp_admin_bar->remove_node('my-account');
+    $wp_admin_bar->remove_node('search');
+    $wp_admin_bar->remove_node('customize');
+  }
+}
+add_action('admin_bar_menu', 'fc_remove_from_admin_bar', 999);
+
 
 
 
@@ -223,7 +251,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.3', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -231,16 +259,16 @@ function fc_admin_load_scripts() {
     'pluginUrl' => plugin_dir_url(__FILE__),
     'nonce' => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version' => "1.7.3"
+    'version' => "1.7.4"
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.3' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.4' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.3', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -253,7 +281,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.3' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.4' );
 }
 
 add_action( 'init', 'fc_init');
@@ -533,16 +561,17 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
 
 
 
-/**
+/*
  * Steps indicator 2/2 at checkout
- */
+ 
 
  add_action( 'woocommerce_before_checkout_form', 'skyverge_add_checkout_content', 12 );
  function skyverge_add_checkout_content() {
   echo '<h2 class="fc_order_list_header_steps">';
-  echo __("Schritt 2 / 2: Rechnungsadresse aktualisieren und Bestellung abschliessen.", "fcplugin");
+  echo __("Schritt 2 / 2: Rechnungsadresse aktualisieren und Einkauf abschliessen.", "fcplugin");
   echo '</h2>';
  }
+ */
 
 
  /**
@@ -662,24 +691,6 @@ add_shortcode('foodcoop_addtocart', function() {
 
 
 /**
- * Cart item metadata
- * add 'bestellrunde' to cart items
- */
-
-function fcplugin_get_item_data( $item_data, $cart_item_data ) {
-  if( isset( $cart_item_data['bestellrunde'] ) ) {
-    $item_data[] = array(
-      'key' => __( 'bestellrunde', 'fcplugin' ),
-      'value' => wc_clean( $cart_item_data['bestellrunde'] )
-    );
-  }
-  return $item_data;
- }
- add_filter( 'woocommerce_get_item_data', 'fcplugin_get_item_data', 10, 2 );
-
-
-
-/**
 * Instant Top Up Product
 * Check if it exists via wpcron. If yes, do nothing. If no, create it
 */
@@ -772,7 +783,10 @@ add_action( 'woocommerce_pre_payment_complete', 'fcplugin_instant_topup_add_amou
 
 add_filter('woocommerce_available_payment_gateways', 'fcplugin_conditional_payment_gateways', 10, 1);
 function fcplugin_conditional_payment_gateways( $available_gateways ) {
-  if(is_admin()) return $available_gateways;
+  if(is_admin())  return $available_gateways;
+
+  if ( ! WC()->cart ) 
+        return $available_gateways;
 
   // If cart is empty - bail and return false
   if (empty (WC()->cart->get_cart())) {  
@@ -809,6 +823,46 @@ function fcplugin_conditional_payment_gateways( $available_gateways ) {
 
 
 
+
+
+/**
+* POS Product
+* Check if it exists via wpcron. If yes, do nothing. If no, create it
+*/
+
+add_filter( 'cron_schedules', 'fcplugin_pos_hook_interval' );
+function fcplugin_pos_hook_interval( $schedules ) { 
+    $schedules['minutely'] = array(
+        'interval' => 60,
+        'display'  => esc_html__( 'Every Minute' ), );
+    return $schedules;
+}
+
+add_action( 'fcplugin_pos_hook', 'fcplugin_pos_function' );
+
+if ( !wp_next_scheduled( 'fcplugin_pos_hook' )) {
+  wp_schedule_event( time(), 'minutely', 'fcplugin_pos_hook' );
+}
+
+function fcplugin_pos_function() {
+  $sku = "fcplugin_pos_product";
+  $pos_product = wc_get_product_id_by_sku( $sku );
+
+  if (!$pos_product) {
+    $product = new WC_Product_Simple();
+    $product->set_name( 'Foodcoop POS Product' );
+    $product->set_slug( 'pos_product' );
+    $product->set_sku($sku);
+    $product->set_regular_price( 0 );
+    $product->save();
+ }
+}
+
+
+
+
+
+
 /**
  * Suppliers shortcode [foodcoop_suppliers] 
  */
@@ -842,6 +896,35 @@ function fcplugin_conditional_payment_gateways( $available_gateways ) {
     echo '<div id="fc_product_overview"></div>';
     return ob_get_clean();
 });
+
+
+
+/**
+ * Declare support for WooCommerce Checkout Blocks
+ */
+function delcalre_cart_checkout_blocks_compatibility() {
+  if (class_exists('\Auttomattic\WooCommerce\Utilities\FeaturesUtil')) {
+    \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+  }
+}
+add_action( 'before_woocommerce_init', 'delcalre_cart_checkout_blocks_compatibility');
+
+add_action( 'woocommerce_blocks_loaded', 'fc_register_fc_payment_method_type' );
+function fc_register_fc_payment_method_type() {
+  if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
+    return;
+  }
+
+  require_once plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-class-block.php';
+  
+  add_action( 'woocommerce_blocks_payment_method_type_registration', function(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
+    $payment_method_registry->register(new WC_Foodcoop_Guthaben_Blocks);
+  } );
+}
+
+
+
+
 
 
 

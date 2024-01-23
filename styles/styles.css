@@ -163,12 +163,11 @@ html {
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
-  background-color: #e4f1f0;
+  background-color: #f0f0f0;
   color: #000;
-  margin-bottom: 0 !important;
+  margin-bottom: 10px !important;
   margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 1em !important;
+  padding: 15px 20px;
   font-weight: bold;
   border: none;
   z-index: 100;
@@ -177,25 +176,40 @@ html {
 
 .fc_order_list_header_info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: flex-start;
   background-color: #f9f9f9;
-  margin-bottom: 10px !important;
+  margin-bottom: 30px !important;
   margin-top: 10px;
-  font-size: 1em !important;
+  font-size: 1em;
   font-weight: normal;
   transition: all 0.1s;
-  border: none;
   z-index: 100;
+  border: 1px solid #f0f0f0;
   border-radius: 5px;
+  overflow: hidden;
+  padding: 10px 10px 0 10px;
+}
+
+.fc_order_list_header_infos {
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  overflow: hidden;
 }
 
 .fc_order_list_header_image {
-  height: 100px;
+  height: 150px;
   width: 20%;
   margin-right: 15px;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .fc_order_list_header_info table {
@@ -205,6 +219,16 @@ html {
 .fc_order_list_header_info td {
   padding-bottom: 5px;
   vertical-align: top;
+}
+
+.fc_order_list_header_alerts {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-items: stretch;
+  width: 100%;
 }
 
 .fc_order_list_title {
@@ -220,7 +244,8 @@ html {
   font-size: 1.25em !important;
   font-weight: bold;
   transition: all 0.1s;
-  border: none;
+  border: 1px solid #e3e3e3;
+  border-bottom: none;
   z-index: 100;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
@@ -246,6 +271,10 @@ html {
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
   z-index: 50;
+  border: 1px solid #e3e3e3;
+  border-bottom: none;
+  border-top: none;
+  overflow: hidden;
 }
 
 .fc_order_list_line {
@@ -611,7 +640,6 @@ html {
 
 #fc_order_list table {
   margin: 0;
-  background-color: #f9f9f9;
   border: none;
   padding: 10px;
 }
@@ -943,6 +971,10 @@ html {
   padding-top: 10px;
   margin-top: 10px;
   border-top: 1px solid #ccc;
+}
+
+.fc_hide {
+  display: none !important;
 }
 
 @media only screen and (max-width: 800px) {

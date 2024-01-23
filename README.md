@@ -28,6 +28,18 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.4
+
+- Introduction of POS Mode for Self Checkout: create orders for users or guests
+- Improved ordering list ui
+- Added a setting to activate sales tax: Sales taxes will be shown in backend and frontend and added to cart and order totals
+- Added an option to set a user as a product owner. This user will be able to edit this product's information and stock level in their dashboard
+- Added a validation for product imports that checks for identical sku's and shows a warning
+- Added support for Woocommerce Checkout Block (mordern checkout ui)
+- Made all functions compatible with WooCommerce HPOS and declared HPOS compatibility
+- fixed admin bar for foodcoop_manager role (removed all items from it)
+- various fixes
+
 ### 1.7.3
 
 - Bugfix: Payment Gateway fixed for WooCommerce HPOS compatibility

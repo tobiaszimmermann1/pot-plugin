@@ -122,7 +122,7 @@ function ImportProducts({ setModalClose, categories }) {
               /**
                * 1. Validate Number of Columns
                */
-              if (results.data[0].length !== 13) {
+              if (results.data[0].length !== 14) {
                 setValidationError(__("Die Datei hat nicht exakt 13 Spalten.", "fcplugin"))
                 validated = false
               }
@@ -182,6 +182,10 @@ function ImportProducts({ setModalClose, categories }) {
                 setValidationError(__("Spalte 13 muss 'supplier' heissen.", "fcplugin"))
                 validated = false
               }
+              if (results.data[0][13] !== "tax") {
+                setValidationError(__("Spalte 14 muss 'tax' heissen.", "fcplugin"))
+                validated = false
+              }
 
               /**
                * 3. Validate that there are no empty cells
@@ -193,7 +197,7 @@ function ImportProducts({ setModalClose, categories }) {
                   let c = 1
                   row.map(cell => {
                     if (cell === "") {
-                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11 && c !== 12) {
+                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11 && c !== 12 && c !== 14) {
                         errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
                         validated = false
                       }
@@ -204,7 +208,7 @@ function ImportProducts({ setModalClose, categories }) {
                 }
               })
               if (errors !== "") {
-                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image', 'description' und 'sku').", "fcplugin") + errors)
+                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image', 'description', 'sku' und 'tax').", "fcplugin") + errors)
                 validated = false
               }
 
@@ -255,6 +259,30 @@ function ImportProducts({ setModalClose, categories }) {
                 setValidationError(__("Kategorie stimmt nicht mit den erfassten Kategorien überein.", "fcplugin") + errors)
                 validated = false
               }
+
+              /**
+               * 6. Validate skus: no identical skus allowed
+               */
+              r = 1
+              errors = ""
+              let skus = []
+              results.data.map(row => {
+                if (r !== results.data.length && r !== 1) {
+                  if (row[11] !== "") skus.push(row[11])
+                }
+                r++
+              })
+              errors += [...new Set(skus.filter((item, index) => skus.indexOf(item) !== index))]
+              console.log(errors)
+
+              if (errors.length !== 0) {
+                setValidationError(__("Doppelte Artikelnummern (sku) gefunden. Alle Artikelnummern müssen einzigartig sein:", "fcplugin") + ` ${errors} `)
+                validated = false
+              }
+
+              /**
+               * Validation completed
+               */
 
               if (validated === true) {
                 setValidationSuccess(__("Datei wurde geprüft und ist bereit zum Import", "fcplugin"))

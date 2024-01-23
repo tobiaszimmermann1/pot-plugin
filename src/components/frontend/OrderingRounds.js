@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
-import { Box, Typography, Button, CircularProgress, Alert, Chip } from "@mui/material"
+import { Box, Typography, Button, LinearProgress, Alert, Chip } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
@@ -64,7 +64,7 @@ const OrderingRounds = () => {
                   axios
                     .delete(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
                       headers: {
-                        "X-WC-Store-API-Nonce": response.headers["x-wc-store-api-nonce"]
+                        Nonce: response.headers["nonce"]
                       }
                     })
                     .then(setPreviouslyOrdered(null))
@@ -130,7 +130,7 @@ const OrderingRounds = () => {
                       axios
                         .delete(`${frontendLocalizer.apiUrl}/wc/store/v1/cart/items/`, {
                           headers: {
-                            "X-WC-Store-API-Nonce": response.headers["x-wc-store-api-nonce"]
+                            Nonce: response.headers["nonce"]
                           }
                         })
                         .then(setPreviouslyOrdered(null))
@@ -203,9 +203,9 @@ const OrderingRounds = () => {
       )}
     </>
   ) : loading ? (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-      <CircularProgress />
-    </div>
+    <Box sx={{ width: "100%" }}>
+      <LinearProgress />
+    </Box>
   ) : (
     <>
       <Box sx={{}}>

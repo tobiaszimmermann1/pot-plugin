@@ -1,12 +1,15 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import axios from "axios"
-import { Button, Stack, TextField } from "@mui/material"
+import { Button, Stack, TextField, Switch, Box } from "@mui/material"
 import { cartContext } from "./cartContext"
 const __ = wp.i18n.__
 
-function AddProductBySku({ setShowCart, setAdding, setProductError }) {
+function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
   const [sku, setSku] = useState("")
+  const [freePosition, setFreePosition] = useState("")
+  const [freePositionPrice, setFreePositionPrice] = useState(0)
+  const [freeEntry, setFreeEntry] = useState(false)
 
   function addProduct() {
     let execute = 1
@@ -33,7 +36,9 @@ function AddProductBySku({ setShowCart, setAdding, setProductError }) {
             } else {
               let newCart = cart
               res.id = newCart.length
+              res.order_type = "self_checkout"
               newCart.push(res)
+              console.log("log", res)
               setCart(newCart)
               if (newCart.length > 0) {
                 localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
@@ -49,12 +54,56 @@ function AddProductBySku({ setShowCart, setAdding, setProductError }) {
     }
   }
 
+  function addFreeProduct() {
+    let newCart = cart
+    newCart.push({
+      id: newCart.length,
+      order_type: "self_checkout",
+      amount: 1,
+      name: freePosition,
+      price: parseFloat(freePositionPrice),
+      product_id: 0,
+      sku: "fcplugin_pos_product",
+      unit: ""
+    })
+    setCart(newCart)
+    setShowCart(true)
+    setAdding(false)
+    setFreeEntry(false)
+    setFreePosition("")
+    setFreePositionPrice(0)
+  }
+
+  useEffect(() => {
+    !POSMode && setFreeEntry(false)
+  }, [POSMode])
+
   return (
-    <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
-      <TextField size="normal" id="Artikelnummer" label={__("Artikelnummer", "fcplugin")} name="Artikelnummer" variant="outlined" value={sku} onChange={e => setSku(e.target.value)} autoFocus />
-      <Button onClick={addProduct} variant="contained" size="large">
-        {__("Zum Warenkorb hinzufügen", "fcplugin")}
-      </Button>
+    <Stack spacing={3} sx={{ width: "100%", padding: "20px" }}>
+      <h2>{__("Produkt hinzufügen", "fcplugin")}</h2>
+
+      {POSMode && (
+        <Box sx={{ marginRight: 2 }}>
+          {__("Position frei erfassen?", "fcplugin")} <Switch checked={freeEntry} onChange={event => setFreeEntry(event.target.checked)} inputProps={{ "aria-label": "freeEntry" }} color={"POSModeColor"} />
+        </Box>
+      )}
+
+      {freeEntry ? (
+        <>
+          <TextField size="normal" id="Freie Eingabe" label={__("Freie Eingabe", "fcplugin")} name="Freie Eingabe" variant="outlined" value={freePosition} onChange={e => setFreePosition(e.target.value)} autoFocus color={POSMode ? "POSModeColor" : "primary"} />
+          <TextField size="normal" id="Preis" label={__("Preis", "fcplugin")} name="Preis" variant="outlined" value={freePositionPrice} onChange={e => setFreePositionPrice(e.target.value)} autoFocus color={POSMode ? "POSModeColor" : "primary"} />
+          <Button onClick={addFreeProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
+            {__("Zum Warenkorb hinzufügen", "fcplugin")}
+          </Button>
+        </>
+      ) : (
+        <>
+          <TextField size="normal" id="Artikelnummer" label={__("Artikelnummer", "fcplugin")} name="Artikelnummer" variant="outlined" value={sku} onChange={e => setSku(e.target.value)} autoFocus color={POSMode ? "POSModeColor" : "primary"} />
+          <Button onClick={addProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
+            {__("Zum Warenkorb hinzufügen", "fcplugin")}
+          </Button>
+        </>
+      )}
     </Stack>
   )
 }
