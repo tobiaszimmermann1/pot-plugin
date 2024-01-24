@@ -502,7 +502,7 @@ const Products = () => {
             {importModalOpen && <ImportProducts setModalClose={setImportModalOpen} categories={categories} />}
             {deliveryModalOpen && <NewDelivery setModalClose={setDeliveryModalOpen} prod={products} reload={reload} setReload={setReload} />}
             {selectSelfCheckoutProducts && <SelfCheckoutProducts setModalClose={setSelectSelfCheckoutProducts} prods={products} />}
-            {ownerModalOpen && <ProductOwnerModal setModalClose={setOwnerModalOpen} prods={products} product={ownerModalProduct} />}
+            {ownerModalOpen && <ProductOwnerModal setModalClose={setOwnerModalOpen} product={ownerModalProduct} reload={reload} setReload={setReload} />}
           </>
         )}
       </div>

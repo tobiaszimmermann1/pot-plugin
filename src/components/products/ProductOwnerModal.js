@@ -22,7 +22,7 @@ import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 const __ = wp.i18n.__
 
-function ProductOwnerModal({ product, setModalClose }) {
+function ProductOwnerModal({ product, setModalClose, reload, setReload }) {
   const [productOwner, setProductOwner] = useState()
   const [users, setUsers] = useState(null)
   const [selectedMember, setSelectedMember] = useState(null)
@@ -97,6 +97,7 @@ function ProductOwnerModal({ product, setModalClose }) {
       })
       .catch(error => console.log(error))
       .finally(() => {
+        setReload(reload => reload + 1)
         setSubmitting(false)
         setModalClose(false)
       })
@@ -149,7 +150,7 @@ function ProductOwnerModal({ product, setModalClose }) {
                   )
                 )}
 
-                <h2 style={{ marginTop: "20px", marginBottom: "10px" }}>{__("Produktbetreuung wählen", "fcplugin")}</h2>
+                <h2 style={{ marginTop: "20px", marginBottom: "20px" }}>{__("Produktbetreuung wählen", "fcplugin")}</h2>
 
                 <Stack gap={2} direction={"column"}>
                   {users && (
@@ -171,7 +172,7 @@ function ProductOwnerModal({ product, setModalClose }) {
                     <span>
                       <strong>{selectedMember.name}</strong> {__("als Produktebetreuung speichern?", "fcplugin")}
                     </span>
-                    <LoadingButton onClick={handleSubmit} variant="outlined" color="primary" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
+                    <LoadingButton onClick={handleSubmit} variant="contained" color="primary" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
                       {__("Speichern", "fcplugin")}
                     </LoadingButton>
                   </Stack>

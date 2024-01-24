@@ -395,6 +395,17 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET MY Transactions
+     */
+    register_rest_route( 'foodcoop/v1', 'getMyTransactions', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getMyTransactions'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
      * GET Transactions
      */
     register_rest_route( 'foodcoop/v1', 'getTransactions', array(
@@ -921,7 +932,7 @@ class FoodcoopRestRoutes {
   /**
    * getBankingOptions
    */
-  function getBankingOptions($data) {
+  function getBankingOptions() {
     $fc_bank = get_option('fc_bank');
     $woocommerce_store_address = get_option('woocommerce_store_address');
     $woocommerce_store_city = get_option('woocommerce_store_city');
@@ -929,13 +940,28 @@ class FoodcoopRestRoutes {
     $blogname = get_option('blogname');
     $instantTopup = get_option('fc_instant_topup');
 
-    $id = $data['id'];
+    $id = get_current_user_id();
     $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
     $address = get_user_meta($id, 'billing_address_1', true);
     $postcode = get_user_meta($id, 'billing_postcode', true);
     $city = get_user_meta($id, 'billing_city', true);
 
-    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup));
+    // get balance of user
+    global $wpdb;
+    $balance = '0.00';
+
+    if ($id) {
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $id)
+      );
+      foreach ( $results as $result ) {
+        $balance = $result->balance;
+      }
+    }
+
+    $currency = get_woocommerce_currency_symbol();
+
+    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup, $balance, $currency));
   }
 
   /**
@@ -2183,6 +2209,27 @@ class FoodcoopRestRoutes {
     } 
   }
 
+  
+  /**
+   * getMyTransactions
+   */
+  function getMyTransactions() {
+    global $wpdb;
+    $id = get_current_user_id();
+    if ($id) {
+      $transactions = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC", $id)
+      );
+    }
+    
+    $transactions_fixed = array();
+    foreach($transactions as $transaction) {
+      $the_transaction = $transaction;
+      array_push($transactions_fixed, $the_transaction);
+    }
+    
+    return json_encode($transactions_fixed);
+  }
 
 
   /**

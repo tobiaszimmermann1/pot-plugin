@@ -41,7 +41,7 @@ const theme = createTheme({
 })
 
 function App() {
-  const [activeTab, setActiveTab] = useState("products")
+  const [activeTab, setActiveTab] = useState("dashboard")
   const [name, setName] = useState()
   const [permissions, setPermissions] = useState([])
   const [role, setRole] = useState([])

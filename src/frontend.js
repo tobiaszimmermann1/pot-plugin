@@ -1,16 +1,16 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import FrontendApp from "./FrontendApp"
-import QRBill from "./QRBill"
+import FoodcoopMemberDashboard from "./FoodcoopMemberDashboard"
 import SelfCheckout from "./SelfCheckout"
 import SuppliersList from "./components/frontend/SuppliersList"
 import ProducersList from "./components/frontend/ProducersList"
 import ProductOverview from "./ProductOverview"
 
 document.addEventListener("DOMContentLoaded", function () {
-  var element = document.getElementById("fc_topup")
+  var element = document.getElementById("fc_members_dashboard")
   if (typeof element !== "undefined" && element !== null) {
-    ReactDOM.render(<QRBill />, document.getElementById("fc_topup"))
+    ReactDOM.render(<FoodcoopMemberDashboard />, document.getElementById("fc_members_dashboard"))
   }
 })
 
