@@ -1,47 +1,61 @@
 import React, { useState, useEffect, useRef } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import Grid from "@mui/material/Grid"
-import { SVG } from "swissqrbill/svg"
-import axios from "axios"
-import { Box, LinearProgress, Divider } from "@mui/material"
-import Alert from "@mui/material/Alert"
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney"
-import WidgetsIcon from "@mui/icons-material/Widgets"
 import MyBalance from "./components/membersDashboard/MyBalance"
 import MyTransactions from "./components/membersDashboard/MyTransactions"
 import MyProducts from "./components/membersDashboard/MyProducts"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 const __ = wp.i18n.__
 
+const theme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#00796b"
+    },
+    secondary: {
+      main: "#CFD8DC"
+    },
+    background: {
+      default: "#ffffff",
+      paper: "#ffffff"
+    },
+    success: {
+      main: "#00c853"
+    }
+  }
+})
+
 function FoodcoopMemberDashboard() {
-  const [activeTab, setActiveTab] = useState("balance")
+  const [activeTab, setActiveTab] = useState("products")
 
   const pluginMenu = useRef()
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <>
-        <div className="fc_members_dashboard_header">
-          <div className="pluginMenu" ref={pluginMenu}>
-            <span id="dashboard" className="menuItemDashboard firstMenuItem" onClick={() => setActiveTab("balance")}>
-              <h2>{__("Mein Guthaben", "fcplugin")}</h2>
-            </span>
-            <span id="orderingRounds" className="menuItemDashboard" onClick={() => setActiveTab("transactions")}>
-              <h2>{__("Meine Transaktionen", "fcplugin")}</h2>
-            </span>
-            <span id="products" className="menuItemDashboard" onClick={() => setActiveTab("products")}>
-              <h2>{__("Meine Produkte", "fcplugin")}</h2>
-            </span>
+    <ThemeProvider theme={theme}>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <>
+          <div className="fc_members_dashboard_header">
+            <div className="pluginMenu" ref={pluginMenu}>
+              <span id="dashboard" className="menuItemDashboard firstMenuItem" onClick={() => setActiveTab("balance")}>
+                <h2 style={{ fontWeight: activeTab === "balance" ? "bold" : "normal" }}>{__("Mein Guthaben", "fcplugin")}</h2>
+              </span>
+              <span id="orderingRounds" className="menuItemDashboard" onClick={() => setActiveTab("transactions")}>
+                <h2 style={{ fontWeight: activeTab === "transactions" ? "bold" : "normal" }}>{__("Meine Transaktionen", "fcplugin")}</h2>
+              </span>
+              <span id="products" className="menuItemDashboard" onClick={() => setActiveTab("products")}>
+                <h2 style={{ fontWeight: activeTab === "products" ? "bold" : "normal" }}>{__("Meine Produkte", "fcplugin")}</h2>
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="fc_members_dashboard_body">
-          {activeTab === "balance" && <MyBalance />}
-          {activeTab === "transactions" && <MyTransactions />}
-          {activeTab === "products" && <MyProducts />}
-        </div>
-      </>
-    </LocalizationProvider>
+          <div className="fc_members_dashboard_body">
+            {activeTab === "balance" && <MyBalance />}
+            {activeTab === "transactions" && <MyTransactions />}
+            {activeTab === "products" && <MyProducts />}
+          </div>
+        </>
+      </LocalizationProvider>
+    </ThemeProvider>
   )
 }
 

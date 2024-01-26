@@ -76,6 +76,19 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST product update by owner
+     * params: id, values
+     */
+    register_rest_route( 'foodcoop/v1', 'postProductUpdateByOwner', array(
+      'methods' => 'POST',
+      'callback' => array($this, 'postProductUpdateByOwner'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+    
+
+    /**
      * POST product delete
      * params: id
      */
@@ -1092,6 +1105,80 @@ class FoodcoopRestRoutes {
     $product->save();
     return json_encode($data['updatedValues']['name']);
 
+  }
+
+  /**
+   * postProductUpdateByOwner
+   */
+  function postProductUpdateByOwner($data) {
+
+    if (get_current_user_id() == $data['user_id']) {
+      $product = wc_get_product($data['id']);
+      $product->set_name($data['updatedValues']['name']);
+      $product->set_regular_price($data['updatedValues']['price']);
+      $product->update_meta_data('_lieferant', $data['updatedValues']['supplier']);
+      $product->update_meta_data('_produzent', $data['updatedValues']['producer']);
+      $product->update_meta_data('_herkunft', $data['updatedValues']['origin']);
+      $product->update_meta_data('_gebinde', $data['updatedValues']['lot']);
+      $product->update_meta_data('_einheit', $data['updatedValues']['unit']);
+      $product->update_meta_data('_sku', $data['updatedValues']['sku']);
+      $product->set_description($data['updatedValues']['description']);
+      $product->set_short_description($data['updatedValues']['short_description']);
+      $product->set_stock_quantity(floatval($data['updatedValues']['stock']));
+
+      // update category
+      $product_categories = get_terms( array(
+        'taxonomy' => 'product_cat',
+        'hide_empty' => false
+      ));    
+      $categories = array();
+      foreach( $product_categories as $category ) {
+        $categories[$category->name] = $category->term_id;
+      }
+      $newCategory = $categories[$data['updatedValues']['category_id']];
+      $product->set_category_ids(array($newCategory));
+
+      // save and return
+      $product->save();
+
+      // inform the admin about the change
+      $headers[] = 'From: '. get_option('admin_email');
+      $headers[] = 'Reply-To: ' . get_option('admin_email');
+      $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+      $subj = __('Neue Änderung durch Produktverwaltung an Produkt', 'fcplugin') . " " . $data['updatedValues']['name'] . "!";
+
+      $msg = '
+        <table border="0" cellpadding="0" cellspacing="0" class="list_block block-4" id="list-r1c0m3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+            <td class="pad" style="padding-bottom:10px;padding-left:35px;padding-right:35px;padding-top:10px;">
+            <div class="levelOne" style="margin-left: 0;">
+              <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
+                <li style="margin-bottom: 0; text-align: left;">Name: '.$data['updatedValues']['name'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Preis: '.$data['updatedValues']['price'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Lieferant: '.$data['updatedValues']['supplier'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Produzent: '.$data['updatedValues']['producer'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Herkunft: '.$data['updatedValues']['origin'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Gebinde: '.$data['updatedValues']['lot'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Einheit: '.$data['updatedValues']['unit'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Artikelnummer: '.$data['updatedValues']['sku'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Beschreibung:<br />'.$data['updatedValues']['description'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Details: '.$data['updatedValues']['short_description'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Lagerbestand: '.$data['updatedValues']['stock'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Kategorie: '.$data['updatedValues']['category_id'].'</li>
+              </ul>
+            </div>
+            </td>
+          </tr>
+        </table>
+      ';
+
+      $send = wp_mail( get_option('admin_email'), $subj, $msg, $headers, '' );
+
+      return http_response_code(200);
+    } else {
+      return http_response_code(401);
+    }
   }
 
   /**

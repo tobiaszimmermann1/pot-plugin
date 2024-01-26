@@ -33,7 +33,7 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Introduction of POS Mode for Self Checkout: create orders for users or guests
 - Improved ordering list ui
 - Added a setting to activate sales tax: Sales taxes will be shown in backend and frontend and added to cart and order totals
-- Added an option to set a user as a product owner. This user will be able to edit this product's information and stock level in their dashboard
+- Introduction of new feature: Product owner. This user will be able to edit this product's information and stock level in their dashboard
 - Introduction of redesigned Foodcoop Dashboard in My Account with tabs for balance, transactions and products
 - Added a validation for product imports that checks for identical sku's and shows a warning
 - Added support for Woocommerce Checkout Block (mordern checkout ui)

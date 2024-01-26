@@ -4,85 +4,88 @@ import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining"
 import EditIcon from "@mui/icons-material/Edit"
-import WidgetsIcon from "@mui/icons-material/Widgets"
-import { Box, Divider, IconButton, Grid, LinearProgress } from "@mui/material"
+import { Box, Divider, IconButton, Grid, LinearProgress, Tooltip } from "@mui/material"
+import MyProductsDeliveryModal from "./MyProductsDeliveryModal"
 const __ = wp.i18n.__
 
 function MyProducts() {
   const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState(null)
+  const [cats, setCats] = useState([])
+  const [deliveryModalOpen, setDeliveryModalOpen] = useState(false)
+  const [deliveryProduct, setDeliveryProduct] = useState(null)
 
   /**
    * Product Table
    */
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "id",
-        header: __("ID", "fcplugin"),
-        enableEditing: false,
-        size: 50
-      },
-      {
-        accessorKey: "sku",
-        header: __("Artikelnummer", "fcplugin"),
-        enableEditing: true,
-        size: 80
-      },
-      {
-        accessorKey: "name",
-        header: __("Produkt", "fcplugin")
-      },
-      {
-        accessorKey: "short_description",
-        id: "short_description",
-        header: __("Details", "fcplugin"),
-        enableEditing: false,
-        size: 80
-      },
-      {
-        accessorKey: "price",
-        header: __("Preis", "fcplugin"),
-        size: 80,
-        Cell: ({ cell }) => parseFloat(cell.getValue()).toFixed(2)
-      },
-      {
-        accessorKey: "unit",
-        header: __("Einheit", "fcplugin"),
-        size: 80
-      },
-      {
-        accessorKey: "lot",
-        header: __("Gebindegrösse", "fcplugin"),
-        size: 80
-      },
-      {
-        accessorKey: "stock",
-        header: __("Lagerbestand", "fcplugin"),
-        size: 120,
-        enableEditing: false
-      },
-      {
-        accessorKey: "category",
-        id: "category_id",
-        header: __("Kategorie", "fcplugin"),
-        enableEditing: false
-      },
-      {
-        accessorKey: "producer",
-        header: __("Produzent", "fcplugin")
-      },
-      {
-        accessorKey: "supplier",
-        header: __("Lieferant", "fcplugin")
-      },
-      {
-        accessorKey: "origin",
-        header: __("Herkunft", "fcplugin")
-      }
-    ],
-    []
-  )
+  const columns = [
+    {
+      accessorKey: "id",
+      header: __("ID", "fcplugin"),
+      enableEditing: false,
+      size: 50
+    },
+    {
+      accessorKey: "sku",
+      header: __("Artikelnummer", "fcplugin"),
+      enableEditing: true,
+      size: 80
+    },
+    {
+      accessorKey: "name",
+      header: __("Produkt", "fcplugin")
+    },
+    {
+      accessorKey: "short_description",
+      id: "short_description",
+      header: __("Details", "fcplugin"),
+      size: 80
+    },
+    {
+      accessorKey: "price",
+      header: __("Preis", "fcplugin"),
+      size: 80,
+      Cell: ({ cell }) => parseFloat(cell.getValue()).toFixed(2)
+    },
+    {
+      accessorKey: "unit",
+      header: __("Einheit", "fcplugin"),
+      size: 80
+    },
+    {
+      accessorKey: "lot",
+      header: __("Gebindegrösse", "fcplugin"),
+      size: 80
+    },
+    {
+      accessorKey: "stock",
+      header: __("Lagerbestand", "fcplugin"),
+      size: 120
+    },
+    {
+      accessorKey: "category",
+      id: "category_id",
+      header: __("Kategorie", "fcplugin"),
+      editVariant: "select",
+      editSelectOptions: cats
+    },
+    {
+      accessorKey: "producer",
+      header: __("Produzent", "fcplugin")
+    },
+    {
+      accessorKey: "supplier",
+      header: __("Lieferant", "fcplugin")
+    },
+    {
+      accessorKey: "origin",
+      header: __("Herkunft", "fcplugin")
+    },
+    {
+      accessorKey: "description",
+      header: __("Beschreibung", "fcplugin")
+    }
+  ]
 
   useEffect(() => {
     axios
@@ -94,6 +97,7 @@ function MyProducts() {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)[0]
+          const cats = JSON.parse(response.data)[1]
           let ownedProducts = []
 
           if (res.length > 0) {
@@ -115,6 +119,7 @@ function MyProducts() {
                 productToDo.sku = p.sku
                 p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
                 productToDo.tax = p.tax
+                productToDo.description = p.description
                 productToDo.owner = parseInt(p.fc_owner)
 
                 ownedProducts.push(productToDo)
@@ -123,17 +128,43 @@ function MyProducts() {
           }
 
           ownedProducts.length > 0 && setProducts(ownedProducts)
+          ownedProducts.length > 0 && setCats(cats)
           setLoading(false)
         }
       })
       .catch(error => console.log(error))
   }, [])
 
+  async function handleSaveRow({ exitEditingMode, row, values }) {
+    products[row.index] = values
+    console.log(values)
+    axios
+      .post(
+        `${frontendLocalizer.apiUrl}/foodcoop/v1/postProductUpdateByOwner`,
+        {
+          user_id: frontendLocalizer.currentUser.ID,
+          updatedValues: values,
+          id: values.id
+        },
+        {
+          headers: {
+            "X-WP-Nonce": frontendLocalizer.nonce
+          }
+        }
+      )
+      .then(function (response) {})
+      .catch(error => console.log(error))
+
+    // update table values
+    setProducts([...products])
+    exitEditingMode() //required to exit editing mode
+  }
+
   return loading ? (
     <Box sx={{ width: "100%", marginBottom: 4 }}>
       <LinearProgress />
     </Box>
-  ) : products ? (
+  ) : products && cats ? (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -155,25 +186,26 @@ function MyProducts() {
           displayColumnDefOptions={{
             "mrt-row-actions": {
               header: "",
-              size: 150,
+              size: 100,
               Cell: ({ row, table }) => (
                 <Box sx={{ display: "flex", gap: 0, p: "0.5rem", flexWrap: "nowrap" }}>
-                  <IconButton onClick={() => console.log("c")}>
-                    <EditIcon />
-                  </IconButton>
+                  <Tooltip title={__("Produktdaten edititieren", "fcplugin")} placement="top" arrow>
+                    <IconButton onClick={() => table.setEditingRow(row)}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
                   <Divider orientation="vertical" flexItem />
-                  <IconButton onClick={() => console.log("c")} disabled={loading}>
-                    <DeliveryDiningIcon />
-                  </IconButton>
-                  <Divider orientation="vertical" flexItem />
-                  <IconButton
-                    onClick={() => {
-                      console.log("c")
-                    }}
-                    disabled={loading}
-                  >
-                    <WidgetsIcon />
-                  </IconButton>
+                  <Tooltip title={__("Lieferung erfassen", "fcplugin")} placement="top" arrow>
+                    <IconButton
+                      onClick={() => {
+                        setDeliveryModalOpen(true)
+                        setDeliveryProduct(row.original)
+                      }}
+                      disabled={loading}
+                    >
+                      <DeliveryDiningIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               )
             }
@@ -185,11 +217,14 @@ function MyProducts() {
           enableColumnResizing
           enableRowActions
           positionActionsColumn="first"
-          enableEditing={false}
+          editingMode={"modal"}
+          enableEditing
+          onEditingRowSave={handleSaveRow}
           initialState={{ density: "compact", pagination: { pageSize: 10 } }}
           positionToolbarAlertBanner="bottom"
         />
       </Box>
+      {deliveryModalOpen && <MyProductsDeliveryModal setModalClose={setDeliveryModalOpen} product={deliveryProduct} />}
     </>
   ) : (
     <Grid container spacing={2}>

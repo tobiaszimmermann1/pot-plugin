@@ -139,7 +139,10 @@ function MyBalance() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <h2>
-                {__("Dein aktuelles Guthaben beträgt", "fcplugin")} <span dangerouslySetInnerHTML={{ __html: currency }} /> {balance}
+                {__("Dein aktuelles Guthaben beträgt", "fcplugin")}{" "}
+                <span style={{ color: parseFloat(balance) >= 0 ? "green" : "red" }}>
+                  <span dangerouslySetInnerHTML={{ __html: currency }} /> {balance}
+                </span>
               </h2>
             </Grid>
           </Grid>
@@ -172,7 +175,7 @@ function MyBalance() {
                   </Grid>
                   <Grid item xs={12}>
                     <p>{__("Lade dein Guthaben über eine Zahlungsschnittstelle auf, um es sofort verfügbar zu haben (evtl. fallen Gebühren an).", "fcplugin")}</p>
-                    <Alert severity="error">{__("Achtung: Der bestehende Warenkorb wird geleert!", "fcplugin")}</Alert>
+                    <Alert severity="warning">{__("Achtung: Der bestehende Warenkorb wird geleert!", "fcplugin")}</Alert>
                   </Grid>
                   <Grid item xs={12}>
                     <input
