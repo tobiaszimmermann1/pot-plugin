@@ -789,6 +789,19 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST save delivery by owner
+     * params: amount, user_id
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveDeliveryByOwner', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveDeliveryByOwner'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+    
+
+    /**
      * GET Product List for Overview
      */
     register_rest_route( 'foodcoop/v1', 'getProductListOverview', array(
@@ -2940,11 +2953,14 @@ class FoodcoopRestRoutes {
       }
     }
 
+    return json_encode(WC_ABSPATH);
+    /*
     if ($result) {
       return json_encode(wc_get_checkout_url());
     } else {
       return http_response_code(400);
     }
+    */
     
   }
 
@@ -3527,7 +3543,90 @@ class FoodcoopRestRoutes {
     
     return ($number);
     
+  } 
+
+
+
+
+  /**
+  * postSaveDeliveryByOwner
+  */
+  function postSaveDeliveryByOwner($data) {
+    global $wpdb;
+    $product_id = $data['product_id'];
+    $user_id = intval($data['user_id']);
+    $amount = $data['amount'];
+
+    // calculate new product stock
+    $product = wc_get_product($product_id);
+    $old_stock = $product->get_stock_quantity();
+    $new_stock = $old_stock + floatval($amount);
+
+    // calculate balance to pay to member
+    $price = $product->get_price();
+    $balance = floatval($price * $amount); 
+    $balance = number_format($balance, 2, '.', '');
+
+    if (get_current_user_id() == $user_id) {
+      // update product stock
+      $product->set_stock_quantity(floatval($new_stock));
+      $product->save();
+
+      // update user's wallet balance
+      $table = $wpdb->prefix.'foodcoop_wallet';
+
+      // get current balance
+      $current_balance = 0.00;
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+      );
+      foreach ( $results as $result ) {
+        $current_balance = $result->balance;
+      }
+
+      date_default_timezone_set('Europe/Zurich');
+      $date = date("Y-m-d H:i:s");
+      $details = 'Neue Lieferung von Produkt '.$product->get_name().'('.$amount.'x)';
+      $created_by = get_current_user_id();
+      $new_balance = $current_balance + $balance;
+      $new_balance = number_format($new_balance, 2, '.', '');
+
+      $data = array('user_id' => $user_id, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+      $wpdb->insert($table, $data);
+
+      // inform the admin about the change
+      $headers[] = 'From: '. get_option('admin_email');
+      $headers[] = 'Reply-To: ' . get_option('admin_email');
+      $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+      $subj = __('Neue Lieferung durch Produktverwaltung von Produkt', 'fcplugin') . " " . $product->get_name() . "!";
+
+      $msg = '
+        <table border="0" cellpadding="0" cellspacing="0" class="list_block block-4" id="list-r1c0m3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+            <td class="pad" style="padding-bottom:10px;padding-left:35px;padding-right:35px;padding-top:10px;">
+            <div class="levelOne" style="margin-left: 0;">
+              <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
+                <li style="margin-bottom: 0; text-align: left;">Alter Bestand: '.$old_stock.'</li>
+                <li style="margin-bottom: 0; text-align: left;">Angelieferte Menge: '.$amount.'</li>
+                <li style="margin-bottom: 0; text-align: left;">Neuer Bestand: '.$new_stock.'</li>
+                <li style="margin-bottom: 0; text-align: left;">Guthaben ausbezahlt an Produktmanager (Mitglied '.$user_id.'): '.$balance.'</li>
+              </ul>
+            </div>
+            </td>
+          </tr>
+        </table>
+      ';
+
+      $send = wp_mail( get_option('admin_email'), $subj, $msg, $headers, '' );
+
+      return http_response_code(200);
+    } else {
+      return http_response_code(401);
+    } 
   }  
+
+  
   
   
   

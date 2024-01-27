@@ -39,6 +39,8 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Added support for Woocommerce Checkout Block (mordern checkout ui)
 - Made all functions compatible with WooCommerce HPOS and declared HPOS compatibility
 - fixed admin bar for foodcoop_manager role (removed all items from it)
+- fixed a bug where previous order was not correctly filtered when placing regular woocommerce orders and there is a pending collective order
+- fixed a bug that prevented entering of decimal numbers in self checkout amount field
 - various fixes
 
 ### 1.7.3

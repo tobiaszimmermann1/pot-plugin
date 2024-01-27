@@ -14,6 +14,7 @@ function MyProducts() {
   const [cats, setCats] = useState([])
   const [deliveryModalOpen, setDeliveryModalOpen] = useState(false)
   const [deliveryProduct, setDeliveryProduct] = useState(null)
+  const [reload, setReload] = useState(0)
 
   /**
    * Product Table
@@ -133,7 +134,7 @@ function MyProducts() {
         }
       })
       .catch(error => console.log(error))
-  }, [])
+  }, [reload])
 
   async function handleSaveRow({ exitEditingMode, row, values }) {
     products[row.index] = values
@@ -224,7 +225,7 @@ function MyProducts() {
           positionToolbarAlertBanner="bottom"
         />
       </Box>
-      {deliveryModalOpen && <MyProductsDeliveryModal setModalClose={setDeliveryModalOpen} product={deliveryProduct} />}
+      {deliveryModalOpen && <MyProductsDeliveryModal setModalClose={setDeliveryModalOpen} product={deliveryProduct} setReload={setReload} reload={reload} />}
     </>
   ) : (
     <Grid container spacing={2}>

@@ -24,53 +24,43 @@ import DeleteIcon from "@mui/icons-material/Delete"
 const __ = wp.i18n.__
 
 function MyProductsDeliveryModal({ product, setModalClose, reload, setReload }) {
-  const [orders, setOrders] = useState()
-  const [productsLoading, setProductsLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState()
-  const [success, setSuccess] = useState(false)
-  const [products, setProducts] = useState(null)
-  const [deliveredProducts, setDeliveredProducts] = useState([])
   const [deliveredAmount, setDeliveredAmount] = useState(1)
 
-  console.log(product.original)
-
   const handleSubmit = () => {
-    /*
-    setSubmitting(true)
+    //setSubmitting(true)
 
     axios
       .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveDelivery`,
+        `${frontendLocalizer.apiUrl}/foodcoop/v1/postSaveDeliveryByOwner`,
         {
-          products: JSON.stringify(deliveredProducts)
+          product_id: product.id,
+          user_id: frontendLocalizer.currentUser.ID,
+          amount: deliveredAmount
         },
         {
           headers: {
-            "X-WP-Nonce": appLocalizer.nonce
+            "X-WP-Nonce": frontendLocalizer.nonce
           }
         }
       )
-      .then(function (response) {
-        if (response) {
-          console.log(response.data)
-        }
-      })
+      .then(function (response) {})
       .catch(error => console.log(error))
       .finally(() => {
-        setReload(reload => reload + 1)
+        setReload(reload + 1)
         setSubmitting(false)
         setModalClose(false)
       })
-    */
   }
 
   return (
     <>
       <Dialog open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <AppBar sx={{ position: "relative", padding: 0, margin: 0 }}>
-          <Toolbar sx={{ justifyContent: "space-between", width: "100%", paddingLeft: 0, paddingRight: 0 }}>
-            <DialogTitle textAlign="left">{__("Neue Lieferung", "fcplugin")}</DialogTitle>
+          <Toolbar sx={{ justifyContent: "space-between" }} disableGutters>
+            <DialogTitle textAlign="left">
+              {__("Neue Lieferung", "fcplugin")}: {product.name}
+            </DialogTitle>
             <DialogActions>
               <IconButton
                 edge="start"
@@ -113,8 +103,19 @@ function MyProductsDeliveryModal({ product, setModalClose, reload, setReload }) 
                 <strong>{__("Bitte gib die Anzahl Einheiten an, die du anlieferst", "fcplugin")}</strong>
               </div>
               <div style={{ display: "block", marginTop: "25px" }}>
-                <FormControl>
-                  <TextField id="amount" value={deliveredAmount} onChange={e => setDeliveredAmount(e.target.value)} variant="outlined" type="number" label={__("Anzahl Einheiten", "fcplugin")} />
+                <FormControl fullWidth>
+                  <TextField
+                    id="amount"
+                    value={deliveredAmount}
+                    onChange={e => setDeliveredAmount(e.target.value)}
+                    variant="outlined"
+                    type="number"
+                    inputProps={{
+                      min: "0",
+                      step: "1"
+                    }}
+                    label={__("Anzahl Einheiten", "fcplugin")}
+                  />
                 </FormControl>
               </div>
             </Stack>
@@ -123,8 +124,23 @@ function MyProductsDeliveryModal({ product, setModalClose, reload, setReload }) 
                 {__("Guthaben für dich", "fcplugin")}: {parseFloat(product.price * deliveredAmount).toFixed(2)}
               </strong>
             </Alert>
-            <Button color="primary" startIcon={<AddIcon />} variant="contained" size="large" disabled={false} sx={{ marginTop: "15px" }}>
+            <LoadingButton color="primary" startIcon={<AddIcon />} variant="contained" size="large" sx={{ marginTop: "15px" }} fullWidth loading={submitting} onClick={handleSubmit}>
               {__("Lieferung erstellen", "fcplugin")}
+            </LoadingButton>
+            <Button
+              color="secondary"
+              startIcon={<CloseIcon />}
+              variant="contained"
+              size="large"
+              sx={{ marginTop: "15px" }}
+              fullWidth
+              onClick={() => {
+                setModalClose(false)
+                setProductsLoading(true)
+              }}
+              disabled={submitting}
+            >
+              {__("Abbrechen", "fcplugin")}
             </Button>
           </>
         </DialogContent>

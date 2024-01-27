@@ -104,10 +104,10 @@ function fc_init_gateway_class() {
             $active = false;
             $bestellrunde_ids_in_cart = array();
             foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-            $bestellrunde_id = $cart_item['bestellrunde'];
-            if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
-                array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
-            }
+                $bestellrunde_id = $cart_item['bestellrunde'];
+                if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
+                    array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+                }
             }
             
             if (count($bestellrunde_ids_in_cart) == 1) {
@@ -117,8 +117,7 @@ function fc_init_gateway_class() {
             
 
             // Get previous order value
-            if ($user_id) {
-
+            if ($user_id && $active) {
                 $args = array(
                     'customer' => $user_id,
                     'meta_key'      => 'bestellrunde_id', 
@@ -171,7 +170,7 @@ function fc_init_gateway_class() {
 
                     echo '<p>Dein aktuelles Guthaben: <strong>CHF '.$current_balance.'</strong>';
 
-                    echo '<p>Bereits bezahltes Guthaben: <strong>CHF '.$previous_order_total.'</strong>';
+                    echo '<p>Bereits bezahltes Guthaben: <strong>CHF '.$previous_order_total.'</strong> (Bestellung #'.$order_id.' in Bestellrunde '.$active.')';
 
                     echo '<p>Differenzbetrag: <strong>'.$difference_text.'</strong>';
 
@@ -266,7 +265,7 @@ function fc_init_gateway_class() {
             $bestellrunde_ids_in_cart = array();
             foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
                 $bestellrunde_id = $cart_item['bestellrunde'];
-                if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
+                if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
                     array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
                 }
             }
@@ -277,7 +276,7 @@ function fc_init_gateway_class() {
 
 
             // Get previous order value
-            if ($user_id) {
+            if ($user_id && $active) {
                 $args = array(
                     'customer' => $user_id,
                     'meta_key' => 'bestellrunde_id',

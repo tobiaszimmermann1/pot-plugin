@@ -27,7 +27,7 @@ const theme = createTheme({
 })
 
 function FoodcoopMemberDashboard() {
-  const [activeTab, setActiveTab] = useState("products")
+  const [activeTab, setActiveTab] = useState("balance")
 
   const pluginMenu = useRef()
 

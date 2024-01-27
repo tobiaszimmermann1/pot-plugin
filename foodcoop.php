@@ -925,7 +925,23 @@ function fc_register_fc_payment_method_type() {
 
 
 
+/**
+ * Handle a custom 'bestellrunde_id' query var to get orders with the 'bestellrunde_id' meta.
+ * @param array $query - Args for WP_Query.
+ * @param array $query_vars - Query vars from WC_Order_Query.
+ * @return array modified $query
+ */
+function handle_custom_query_var( $query, $query_vars ) {
+	if ( ! empty( $query_vars['bestellrunde_id'] ) ) {
+		$query['meta_query'][] = array(
+			'key' => 'bestellrunde_id',
+			'value' => esc_attr( $query_vars['bestellrunde_id'] ),
+		);
+	}
 
+	return $query;
+}
+add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2 );
 
 
 

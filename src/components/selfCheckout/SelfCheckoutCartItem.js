@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import Grid from "@mui/material/Grid"
-import { Divider } from "@mui/material"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Stack, TextField } from "@mui/material"
+import { Divider, FormControl } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, TextField } from "@mui/material"
 import ListItem from "@mui/material/ListItem"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
@@ -43,27 +43,28 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   }, [amount])
 
   function setNewAmount() {
-    setAmount(parseInt(inputAmountValue))
+    setAmount(parseFloat(inputAmountValue))
     setInputAmount(false)
   }
 
   return productData ? (
     <>
-      <Dialog fullScreen open={inputAmount} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description" sx={{}}>
+      <Dialog open={inputAmount} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <DialogTitle id="alert-dialog-title">{__("Menge eingeben", "fcplugin")}</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
-            <DialogContentText>
-              {__("Einheit", "fcplugin")}: {productData.unit} <br /> <br />
+            <Box sx={{ padding: "10px", borderRadius: "5px", backgroundColor: "#f0f0f0" }}>
+              {__("Einheit", "fcplugin")}: {productData.unit} <br />
               {__("Menge x Einheit = Gesamtmenge", "fcplugin")}
-            </DialogContentText>
-            <Divider />
-            <TextField type="number" size="normal" id="amount" label={__("Menge", "fcplugin")} name="amount" variant="outlined" value={inputAmountValue} onChange={e => setInputAmountValue(e.target.value)} />
+            </Box>
+            <FormControl>
+              <TextField type="number" size="normal" id="amount" label={__("Menge", "fcplugin")} name="amount" variant="outlined" value={inputAmountValue} onChange={e => setInputAmountValue(e.target.value)} />
+            </FormControl>
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={setNewAmount} variant="contained">
+          <Button onClick={setNewAmount} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Menge Übernehmen", "fcplugin")}
           </Button>
         </DialogActions>
