@@ -60,11 +60,11 @@ final class WC_Foodcoop_Guthaben_Blocks extends AbstractPaymentMethodType {
     if ($results) {
       foreach ( $results as $result )
       {
-          $current_balance = $result->balance;
+        $current_balance = $result->balance;
       }
     }
     else {
-        $current_balance = 0;
+      $current_balance = 0;
     }
 
     $order_total = $woocommerce->cart->total;
@@ -75,49 +75,50 @@ final class WC_Foodcoop_Guthaben_Blocks extends AbstractPaymentMethodType {
     $active = false;
     $bestellrunde_ids_in_cart = array();
     foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-    $bestellrunde_id = $cart_item['bestellrunde'];
-    if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
-        array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
-    }
+      if (isset($cart_item['bestellrunde']) ) {
+        $bestellrunde_id = $cart_item['bestellrunde'];
+        if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart)) {
+          array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+        }
+      }
     }
     
     if (count($bestellrunde_ids_in_cart) == 1) {
-        $active = $bestellrunde_ids_in_cart[0];
+      $active = $bestellrunde_ids_in_cart[0];
     }
 
     
 
     // Get previous order value
     if ($user_id) {
+      $args = array(
+        'customer' => $user_id,
+        'meta_key'      => 'bestellrunde_id', 
+        'meta_value'    => $active,
+        'meta_compare'  => '=', 
+        'status' => array('wc-processing', 'wc-on-hold', 'wc-refunded'),
+      );
+                
+      $orders = wc_get_orders( $args );
+      $has_ordered = false;
+  
+      if ($orders) {
+        foreach ($orders as $order) {
+          $order_id = $order->ID;
+          $previous_order_total_before_refunds = $order->get_total();
+          $refunded_total = $order->get_total_refunded();
 
-        $args = array(
-            'customer' => $user_id,
-            'meta_key'      => 'bestellrunde_id', 
-            'meta_value'    => $active,
-            'meta_compare'  => '=', 
-            'status' => array('wc-processing', 'wc-on-hold', 'wc-refunded'),
-          );
-                    
-        $orders = wc_get_orders( $args );
-        $has_ordered = false;
-    
-        if ($orders) {
-            foreach ($orders as $order) {
-                $order_id = $order->ID;
-                $previous_order_total_before_refunds = $order->get_total();
-                $refunded_total = $order->get_total_refunded();
-
-                $previous_order_total = $previous_order_total_before_refunds - $refunded_total;
-                $previous_order_total = number_format($previous_order_total, 2, '.', '');
-            }
-
-            if ($order_id) {
-                $has_ordered = true;
-            }
-            else {
-                $has_ordered = false;
-            }
+          $previous_order_total = $previous_order_total_before_refunds - $refunded_total;
+          $previous_order_total = number_format($previous_order_total, 2, '.', '');
         }
+
+        if ($order_id) {
+          $has_ordered = true;
+        }
+        else {
+          $has_ordered = false;
+        }
+      }
     }
 
 

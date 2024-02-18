@@ -62,7 +62,7 @@ function ImportProducts({ setModalClose, categories }) {
     if (bestellrunden) {
       let active = false
       bestellrunden.map(bestellrunde => {
-        if (new Date(bestellrunde.bestellrunde_start).getTime() <= new Date().getTime() && new Date(bestellrunde.bestellrunde_verteiltag).getTime() >= new Date().getTime()) {
+        if (new Date(bestellrunde.bestellrunde_start).getTime() <= new Date().getTime() && new Date(bestellrunde.bestellrunde_ende).getTime() >= new Date().getTime()) {
           active = true
         }
       })

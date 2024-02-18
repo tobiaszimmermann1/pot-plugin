@@ -2953,14 +2953,11 @@ class FoodcoopRestRoutes {
       }
     }
 
-    return json_encode(WC_ABSPATH);
-    /*
     if ($result) {
       return json_encode(wc_get_checkout_url());
     } else {
       return http_response_code(400);
     }
-    */
     
   }
 
