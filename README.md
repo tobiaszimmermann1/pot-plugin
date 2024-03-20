@@ -38,11 +38,11 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Added a validation for product imports that checks for identical sku's and shows a warning
 - Added support for Woocommerce Checkout Block (mordern checkout ui)
 - Made all functions compatible with WooCommerce HPOS and declared HPOS compatibility
+- Added a setting to enable all payment methods for orders that are part of a bestellrunde
 - fixed admin bar for foodcoop_manager role (removed all items from it)
 - fixed a bug where previous order was not correctly filtered when placing regular woocommerce orders and there is a pending collective order
 - fixed a bug that prevented entering of decimal numbers in self checkout amount field
 - fixed a bug that blocked importing of products after end of an ordering round
-
 - various fixes
 
 ### 1.7.3

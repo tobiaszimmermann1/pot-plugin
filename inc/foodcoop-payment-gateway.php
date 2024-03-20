@@ -282,7 +282,7 @@ function fc_init_gateway_class() {
                     'meta_key' => 'bestellrunde_id',
                     'meta_value' => $active,
                     'meta_compare' => '=',
-                    'status'=> array( 'wc-processing' ),
+                    'status'=> array( 'wc-processing', 'wc-on-hold', 'wc-refunded'  ),
                 );   
                 $prev_orders = wc_get_orders( $args );
                 if ($prev_orders) {

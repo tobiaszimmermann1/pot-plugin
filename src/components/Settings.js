@@ -41,6 +41,7 @@ const Settings = () => {
   const [enableStock, setEnableStock] = useState(false)
   const [enableSelfCheckout, setEnableSelfCheckout] = useState(false)
   const [enableTaxes, setEnableTaxes] = useState(false)
+  const [enablePaymentByBill, setEnablePaymentByBill] = useState(false)
 
   useEffect(() => {
     axios
@@ -99,6 +100,7 @@ const Settings = () => {
       options.woocommerce_manage_stock === "yes" ? setEnableStock(true) : setEnableStock(false)
       options.fc_self_checkout === "1" ? setEnableSelfCheckout("1") : setEnableSelfCheckout("0")
       options.fc_taxes === "1" ? setEnableTaxes(true) : setEnableTaxes(false)
+      options.fc_enable_payment_by_bill === "1" ? setEnablePaymentByBill(true) : setEnablePaymentByBill(false)
     }
   }, [options])
 
@@ -125,7 +127,8 @@ const Settings = () => {
           enableStock: enableStock,
           enableSelfCheckout: enableSelfCheckout,
           margin: margin,
-          taxes: enableTaxes
+          taxes: enableTaxes,
+          enablePaymentByBill: enablePaymentByBill
         },
         {
           headers: {
@@ -340,6 +343,25 @@ const Settings = () => {
               >
                 <ToggleButton value={"1"}> {__("Aktiviert", "fcplugin")} </ToggleButton>
                 <ToggleButton value={"0"}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+
+            <Grid item xs={4}>
+              {__("Bezahlung auf Rechnung zulassen?", "fcplugin")}
+              <br />
+              <small>{__("Wenn aktiviert, lässt das Plugin bei Sammelbestellungen alle aktivierten Zahlungsmethoden zu.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enablePaymentByBill}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnablePaymentByBill(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
 

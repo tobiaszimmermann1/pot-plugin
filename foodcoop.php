@@ -808,9 +808,12 @@ function fcplugin_conditional_payment_gateways( $available_gateways ) {
     }
     
     if ($order_is_part_of_bestellrunde) {
-      $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
-      $available_gateways = array();
-      $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+
+      if (!get_option("fc_enable_payment_by_bill")) {
+        $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
+        $available_gateways = array();
+        $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+      }
     }
     
     if ($order_contains_instant_topup) {

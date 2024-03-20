@@ -1047,6 +1047,9 @@ class FoodcoopRestRoutes {
     
     $publicProducts = $data['publicProducts'];
     $publicProducts == true  ? update_option('fc_public_products', '1') : update_option('fc_public_products', '0');
+
+    $enable_payment_by_bill = $data["enablePaymentByBill"];
+    $enable_payment_by_bill == true  ? update_option('fc_enable_payment_by_bill', '1') : update_option('fc_enable_payment_by_bill', '0');
     
     $adminEmail = $data['adminEmail'];
     if($adminEmail) update_option('admin_email', $adminEmail);
@@ -1096,7 +1099,6 @@ class FoodcoopRestRoutes {
       update_option('woocommerce_tax_display_shop','excl');
       update_option('woocommerce_tax_display_cart','excl');
     }
-
 
     return http_response_code(200);
   }
@@ -2018,6 +2020,11 @@ class FoodcoopRestRoutes {
         update_post_meta($post_id, '_downloadable', 'no');
         update_post_meta($post_id, '_downloadable', 'no');
         update_post_meta($post_id, '_sku', sanitize_text_field($product[11]));
+
+        // update product tax class
+        $p = wc_get_product($post_id);
+        $p->set_tax_class(sanitize_text_field($product[13]));
+        $p->save();
 
         // update product category
         wp_set_object_terms( $post_id, intval($categories[$product[6]]), 'product_cat' );
