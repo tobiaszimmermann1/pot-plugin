@@ -37,7 +37,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
             if (response.data) {
               const res = JSON.parse(response.data)
               if (!res) {
-                setProductError("Produkt wurde nicht gefunden")
+                setProductError("Produkt wurde nicht gefunden oder ist nicht an Lager.")
               } else {
                 let newCart = cart
                 res.id = newCart.length

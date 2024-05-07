@@ -43,6 +43,8 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - fixed a bug where previous order was not correctly filtered when placing regular woocommerce orders and there is a pending collective order
 - fixed a bug that prevented entering of decimal numbers in self checkout amount field
 - fixed a bug that blocked importing of products after end of an ordering round
+- fixed a bug where user id was no saved for added transactions
+- fixed a bug in Self Checkout where cart margin was applied wrongly
 - various fixes
 
 ### 1.7.3

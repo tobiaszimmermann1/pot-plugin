@@ -34,8 +34,8 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
   }, [cart, margin])
 
   useEffect(() => {
-    setFinalTotal(total + cartMargin)
-  }, [cartMargin])
+    POSMode ? setFinalTotal(total + cartMargin) : setFinalTotal(total)
+  }, [cartMargin, POSMode])
 
   useEffect(() => {
     if (removeProduct) {

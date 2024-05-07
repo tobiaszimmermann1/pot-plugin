@@ -1735,6 +1735,7 @@ class FoodcoopRestRoutes {
     $new_product_price = number_format($data['price'], 2, '.', '');
     $product = $data['product'];
     $mutation_type = $data['mutation_type'];
+    $created_id = $data['created_by'];
 
     if ($mutation_type == "notDelivered") {
       foreach($orders as $o) {
@@ -1865,9 +1866,8 @@ class FoodcoopRestRoutes {
                   date_default_timezone_set('Europe/Zurich');
                   $date = date("Y-m-d H:i:s");
                   $details = 'Mutation: Produktpreisanpassung ('.$product_name.')';
-                  $created_by = get_current_user_id();
   
-                  $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+                  $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_id, 'balance' => $new_balance);
   
                   $wpdb->insert($table, $data);
               }
@@ -2351,6 +2351,17 @@ class FoodcoopRestRoutes {
     $transactions_fixed = array();
     foreach($transactions as $transaction) {
       $the_transaction = $transaction;
+
+      $id = intval($the_transaction->created_by);
+      if (is_int($id)) {
+        $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
+        $the_transaction->created_by = $name;
+      } 
+
+      $user_id = intval($the_transaction->user_id);
+      $user_name = get_user_meta($user_id, 'billing_first_name', true)." ".get_user_meta($user_id, 'billing_last_name', true);
+      $the_transaction->user_name = $user_name;
+
       array_push($transactions_fixed, $the_transaction);
     }
     return json_encode($transactions_fixed);
@@ -2372,8 +2383,10 @@ class FoodcoopRestRoutes {
       $the_transaction = $transaction;
 
       $id = intval($the_transaction->created_by);
-      $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
-      $the_transaction->created_by = $name;
+      if (is_int($id)) {
+        $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
+        $the_transaction->created_by = $name;
+      } 
 
       $user_id = intval($the_transaction->user_id);
       $user_name = get_user_meta($user_id, 'billing_first_name', true)." ".get_user_meta($user_id, 'billing_last_name', true);
@@ -2396,7 +2409,7 @@ class FoodcoopRestRoutes {
     $user_id = $data['user'];
     $date = $data['date'];
     $details = $data['details'];
-    $created_by = get_user_meta($data['created_by'], 'billing_first_name', true)." ".get_user_meta($data['created_by'], 'billing_last_name', true);
+    $created_by = intval($data['created_by']);
     $type = $data['type'];
 
     // amount
@@ -2427,28 +2440,6 @@ class FoodcoopRestRoutes {
     $user_info = get_userdata($user_id);
     $user_email = $user_info->user_email;
     $paid_date = date("j.m.Y - G:i",strtotime($date));
-
-    /*
-    $message = 'Hallo '.$update_username.'
-                Neue Foodcoop Guthaben Transaktion.
-                Benutzer: '.$update_username.' 
-                Datum: '.$paid_date.' 
-                Betrag: CHF '.$amount.'
-                Details: '.$details.' 
-                
-                Melde dich bei uns sofern diese Buchung nicht korrekt ist.
-                ';
-
-    //php mailer variables
-    $to = get_option('admin_email');
-    $subject = "Neue Foodcoop Transaktion";
-    $options = get_option( 'foodcoop_plugin_options' );
-    $admin_email = $options['email'];
-    $headers = array('From: '.bloginfo('name').' <'.$admin_email.'>');
-
-    //$admin = wp_mail($to, $subject, $message, $headers);
-    $user = wp_mail($user_email, $subject, $message, $headers);
-    */
 
     $wpdb->insert($table, $data);
     $transaction_id = $wpdb->insert_id;
@@ -2895,18 +2886,22 @@ class FoodcoopRestRoutes {
       $product = wc_get_product($product_id);
 
       if ($product) {
-        $product_data = array(
-          'name' => $product->get_name(),
-          'price' => $product->get_price(),
-          'unit' => $product->get_meta('_einheit'),
-          'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
-          'amount' => 1, 
-          'sku' => $sku,
-          'product_id' => $product->get_id()
-        );
-    
-        return json_encode($product_data);
+        $quantity = $product->get_stock_quantity();
 
+        if ($quantity > 0) {
+          $product_data = array(
+            'name' => $product->get_name(),
+            'price' => $product->get_price(),
+            'unit' => $product->get_meta('_einheit'),
+            'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
+            'amount' => 1, 
+            'sku' => $sku,
+            'product_id' => $product->get_id()
+          );
+          return json_encode($product_data);
+        } else {
+          return json_encode(false);
+        }
       } else {
         return json_encode(false);
       }

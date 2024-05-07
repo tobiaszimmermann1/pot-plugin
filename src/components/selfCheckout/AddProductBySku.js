@@ -32,7 +32,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
           if (response.data) {
             const res = JSON.parse(response.data)
             if (!res) {
-              setProductError("Produkt nicht gefunden.")
+              setProductError("Produkt nicht gefunden oder nicht an Lager.")
             } else {
               let newCart = cart
               res.id = newCart.length

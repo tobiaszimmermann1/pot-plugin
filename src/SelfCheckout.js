@@ -136,7 +136,9 @@ function SelfCheckout() {
         .then(function (response) {
           setSubmitting(false)
           localStorage.removeItem("fc_selfcheckout_cart")
+          console.log(JSON.parse(response.data))
           location.href = JSON.parse(response.data)
+          return false
         })
         .catch(error => console.log(error.message))
         .finally(response => {

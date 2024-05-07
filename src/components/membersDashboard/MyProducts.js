@@ -61,7 +61,8 @@ function MyProducts() {
     {
       accessorKey: "stock",
       header: __("Lagerbestand", "fcplugin"),
-      size: 120
+      size: 120,
+      enableEditing: false
     },
     {
       accessorKey: "category",

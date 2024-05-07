@@ -84,7 +84,8 @@ function Mutations({ id, setModalClose }) {
           product: selectedProduct.id,
           orders: ordersToMutate,
           mutation_type: mutationType,
-          price: priceAdjust
+          price: priceAdjust,
+          created_by: appLocalizer.currentUser.ID
         },
         {
           headers: {
