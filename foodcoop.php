@@ -946,6 +946,3 @@ function handle_custom_query_var( $query, $query_vars ) {
 }
 add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2 );
 
-
-
-

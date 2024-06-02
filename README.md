@@ -30,22 +30,25 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ### 1.7.4
 
-- Introduction of POS Mode for Self Checkout: create orders for users or guests
+- Introduction of new feature: **POS Mode for Self Checkout**: create orders for users or guests
+- Introduction of new feature: **Product ownership** Users can be owners of products and will be able
+- Added a setting to activate / deactivate **sales tax**: Sales taxes will be shown in backend and frontend and added to cart and order totalsto edit a the product's information and stock level in their dashboard
 - Improved ordering list ui
-- Added a setting to activate sales tax: Sales taxes will be shown in backend and frontend and added to cart and order totals
-- Introduction of new feature: Product owner. This user will be able to edit this product's information and stock level in their dashboard
-- Introduction of redesigned Foodcoop Dashboard in My Account with tabs for balance, transactions and products
+- Redesigned Foodcoop Dashboard in My Account with tabs for balance, transactions and products
 - Added a validation for product imports that checks for identical sku's and shows a warning
 - Added support for Woocommerce Checkout Block (mordern checkout ui)
 - Made all functions compatible with WooCommerce HPOS and declared HPOS compatibility
 - Added a setting to enable all payment methods for orders that are part of a bestellrunde
+- Fixed product image uploads when importing products: correct handling of wordpress media library. If an image is already in the library, it will be linked to the product instead of reuploaded (search by image name)
+- Added an option to edit product descriptions directly from the product list using a simplified wysiwyg editor
+- Added an option to duplicate an ordering round
 - fixed admin bar for foodcoop_manager role (removed all items from it)
 - fixed a bug where previous order was not correctly filtered when placing regular woocommerce orders and there is a pending collective order
 - fixed a bug that prevented entering of decimal numbers in self checkout amount field
 - fixed a bug that blocked importing of products after end of an ordering round
 - fixed a bug where user id was no saved for added transactions
 - fixed a bug in Self Checkout where cart margin was applied wrongly
-- various fixes
+- various other small fixes
 
 ### 1.7.3
 

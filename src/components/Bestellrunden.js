@@ -28,6 +28,7 @@ import UpdateIcon from "@mui/icons-material/Update"
 import EmailIcon from "@mui/icons-material/Email"
 import Divider from "@mui/material/Divider"
 import NotificationModal from "./bestellrunden/Notification"
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 
 const Bestellrunden = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -38,10 +39,11 @@ const Bestellrunden = () => {
   const [bestellrunden, setBestellrunden] = useState()
   const [selectedBestellrunde, setSelectedBestellrunde] = useState()
   const [loading, setLoading] = useState(true)
+  const [reload, setReload] = useState(0)
   const [statusMessage, setStatusMessage] = useState({
     message: null,
     type: null,
-    active: false
+    active: false,
   })
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const Bestellrunden = () => {
         if (response.data) {
           const res = JSON.parse(response.data)
 
-          res.map(b => {
+          res.map((b) => {
             let bestellrundeToDo = {}
             bestellrundeToDo.author = b.name
             bestellrundeToDo.bestellrunde_start = format(new Date(b.bestellrunde_start), "yyyy-MM-dd")
@@ -75,8 +77,8 @@ const Bestellrunden = () => {
           setLoading(false)
         }
       })
-      .catch(error => console.log(error))
-  }, [])
+      .catch((error) => console.log(error))
+  }, [reload])
 
   /**
    * Table
@@ -88,7 +90,7 @@ const Bestellrunden = () => {
         accessorKey: "id",
         header: __("ID", "fcplugin"),
         enableEditing: false,
-        size: 50
+        size: 50,
       },
       {
         header: __("Status", "fcplugin"),
@@ -110,52 +112,52 @@ const Bestellrunden = () => {
               )
             }
           }
-        }
+        },
       },
       {
         accessorKey: "bestellrunde_bild",
         header: __("Bild", "fcplugin"),
         Cell: ({ cell }) => (cell.getValue() ? <img src={cell.getValue()} height="35px" /> : ""),
         enableSorting: false,
-        size: 50
+        size: 50,
       },
       {
         accessorKey: "bestellrunde_name",
-        header: __("Bezeichnung", "fcplugin")
+        header: __("Bezeichnung", "fcplugin"),
       },
       {
         accessorKey: "bestellrunde_start",
         header: __("Bestellfenster Start", "fcplugin"),
         size: 80,
         muiTableBodyCellEditTextFieldProps: {
-          type: "date"
+          type: "date",
         },
         Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy"),
         sortingFn: "datetime",
-        enableSorting: false
+        enableSorting: false,
       },
       {
         accessorKey: "bestellrunde_ende",
         header: __("Bestellfenster Ende", "fcplugin"),
         size: 80,
         muiTableBodyCellEditTextFieldProps: {
-          type: "date"
+          type: "date",
         },
         Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy"),
         sortingFn: "datetime",
-        enableSorting: false
+        enableSorting: false,
       },
       {
         accessorKey: "bestellrunde_verteiltag",
         header: __("Verteilung", "fcplugin"),
         size: 80,
         muiTableBodyCellEditTextFieldProps: {
-          type: "date"
+          type: "date",
         },
         Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy"),
         sortingFn: "datetime",
-        enableSorting: false
-      }
+        enableSorting: false,
+      },
     ],
     []
   )
@@ -177,12 +179,12 @@ const Bestellrunden = () => {
             bestellrunde_verteiltag: format(new Date(values.bestellrunde_verteiltag), "yyyy-MM-dd"),
             id: values.id,
             bestellrunde_name: values.bestellrunde_name,
-            bestellrunde_bild: values.bestellrunde_bild
+            bestellrunde_bild: values.bestellrunde_bild,
           },
           {
             headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
+              "X-WP-Nonce": appLocalizer.nonce,
+            },
           }
         )
         .then(function (response) {
@@ -190,10 +192,10 @@ const Bestellrunden = () => {
             setStatusMessage({
               message: __("Bestellrunde wurde gespeichert.", "fcplugin"),
               type: "successStatus",
-              active: true
+              active: true,
             })
         })
-        .catch(error => console.log(error))
+        .catch((error) => console.log(error))
 
       // update table values
       setBestellrunden([...bestellrunden])
@@ -212,12 +214,12 @@ const Bestellrunden = () => {
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postBestellrundeDelete`,
         {
-          id: row.getValue("id")
+          id: row.getValue("id"),
         },
         {
           headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
+            "X-WP-Nonce": appLocalizer.nonce,
+          },
         }
       )
       .then(function (response) {
@@ -231,12 +233,34 @@ const Bestellrunden = () => {
             setStatusMessage({
               message: response.data + " " + __("wurde gelöscht.", "fcplugin"),
               type: "successStatus",
-              active: true
+              active: true,
             })
           }
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
+  }
+
+  function handleDuplicateRow(row) {
+    console.log(row)
+
+    axios
+      .post(
+        `${appLocalizer.apiUrl}/foodcoop/v1/postDuplicateBestellrunde`,
+        {
+          id: row.original.id,
+        },
+        {
+          headers: {
+            "X-WP-Nonce": appLocalizer.nonce,
+          },
+        }
+      )
+      .then(function (response) {
+        setReload(reload + 1)
+        console.log(response.data)
+      })
+      .catch((error) => console.log(error))
   }
 
   useEffect(() => {
@@ -244,12 +268,12 @@ const Bestellrunden = () => {
       setStatusMessage({
         message: null,
         type: null,
-        active: false
+        active: false,
       })
     }, 15000)
   }, [statusMessage])
 
-  const handleCreateNewRow = values => {
+  const handleCreateNewRow = (values) => {
     bestellrunden.unshift(values)
     setBestellrunden([...bestellrunden])
   }
@@ -275,6 +299,10 @@ const Bestellrunden = () => {
                 <Divider orientation="vertical" flexItem />
                 <IconButton color="#cccccc" size="small" onClick={() => handleDeleteRow(row)}>
                   <DeleteIcon />
+                </IconButton>
+                <Divider orientation="vertical" flexItem />
+                <IconButton color="#cccccc" size="small" onClick={() => handleDuplicateRow(row)}>
+                  <ContentCopyIcon />
                 </IconButton>
                 <Divider orientation="vertical" flexItem />
                 <Button
@@ -325,8 +353,8 @@ const Bestellrunden = () => {
                   {__("Benachrichtigung", "fcplugin")}
                 </Button>
               </Box>
-            )
-          }
+            ),
+          },
         }}
         editingMode={"modal"}
         enableEditing
@@ -375,12 +403,12 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
             bestellrunde_ende: format(new Date(valueEnd), "yyyy-MM-dd"),
             bestellrunde_verteiltag: format(new Date(valueDist), "yyyy-MM-dd"),
             bestellrunde_name: valueName,
-            bestellrunde_bild: valueImg
+            bestellrunde_bild: valueImg,
           },
           {
             headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
+              "X-WP-Nonce": appLocalizer.nonce,
+            },
           }
         )
         .then(function (response) {
@@ -395,7 +423,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
             onClose()
           }
         })
-        .catch(error => console.log(error))
+        .catch((error) => console.log(error))
         .finally(() => {
           setValueStart(null)
           setValueEnd(null)
@@ -427,10 +455,10 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
         dividers={scroll === "paper"}
         sx={{
           paddingTop: "20px",
-          minHeight: "500px"
+          minHeight: "500px",
         }}
       >
-        <form onSubmit={e => e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <Box sx={{ padding: 2 }}>
             <Grid container spacing={2} rowGap={2} alignItems="baseline">
               <Grid item xs={4}>
@@ -438,7 +466,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
               </Grid>
               <Grid item xs={8}>
                 <FormControl fullWidth>
-                  <TextField size="normal" id="bestellrunde_name" label={__("Bestellrunde Bezeichnung", "fcplugin")} name="bestellrunde_name" variant="outlined" value={valueName} onChange={e => setValueName(e.target.value)} />
+                  <TextField size="normal" id="bestellrunde_name" label={__("Bestellrunde Bezeichnung", "fcplugin")} name="bestellrunde_name" variant="outlined" value={valueName} onChange={(e) => setValueName(e.target.value)} />
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
@@ -446,7 +474,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
               </Grid>
               <Grid item xs={8}>
                 <FormControl fullWidth>
-                  <TextField size="normal" id="bestellrunde_bild" label={__("URL Bild", "fcplugin")} name="bestellrunde_bild" variant="outlined" value={valueImg} onChange={e => setValueImg(e.target.value)} />
+                  <TextField size="normal" id="bestellrunde_bild" label={__("URL Bild", "fcplugin")} name="bestellrunde_bild" variant="outlined" value={valueImg} onChange={(e) => setValueImg(e.target.value)} />
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
@@ -454,7 +482,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
               </Grid>
               <Grid item xs={8}>
                 <FormControl fullWidth>
-                  <DesktopDatePicker disablePast label="Bestellrunde Start" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueStart} onChange={e => setValueStart(e)} renderInput={params => <TextField {...params} />} />
+                  <DesktopDatePicker disablePast label="Bestellrunde Start" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueStart} onChange={(e) => setValueStart(e)} renderInput={(params) => <TextField {...params} />} />
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
@@ -462,7 +490,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
               </Grid>
               <Grid item xs={8}>
                 <FormControl fullWidth>
-                  <DesktopDatePicker disablePast label="Bestellrunde Ende" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueEnd} onChange={e => setValueEnd(e)} renderInput={params => <TextField {...params} />} />
+                  <DesktopDatePicker disablePast label="Bestellrunde Ende" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueEnd} onChange={(e) => setValueEnd(e)} renderInput={(params) => <TextField {...params} />} />
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
@@ -470,7 +498,7 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
               </Grid>
               <Grid item xs={8}>
                 <FormControl fullWidth>
-                  <DesktopDatePicker disablePast label="Verteiltag" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueDist} onChange={e => setValueDist(e)} renderInput={params => <TextField {...params} />} />
+                  <DesktopDatePicker disablePast label="Verteiltag" className="bestellrundeDatePicker" inputFormat="dd.MM.yyyy" value={valueDist} onChange={(e) => setValueDist(e)} renderInput={(params) => <TextField {...params} />} />
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
