@@ -46,7 +46,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
     axios
       .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductList`, {
         user: frontendLocalizer.currentUser.ID,
-        bestellrunde: activeBestellrunde
+        bestellrunde: activeBestellrunde,
       })
       .then(function (response) {
         if (response.data) {
@@ -63,7 +63,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
           setCurrency(res[7])
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [])
 
   /**
@@ -77,13 +77,13 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
         if (response?.data?.length > 0) {
           const res = response.data
           let cartData = []
-          res.map(item => {
+          res.map((item) => {
             cartData.push([item.id, item.quantity, item.name, item.prices.price / 100])
           })
           setCart(cartData)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [])
 
   /**
@@ -93,14 +93,14 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
     // create object from categories, to which we can then add all the products, sorted by category
     let productsByCategory = {}
     if (categories) {
-      categories.map(category => {
+      categories.map((category) => {
         productsByCategory[category] = []
       })
     }
 
     // go through each procduct, rearrange its information and add to productsByCategory object
     if (allProducts && activeState !== null) {
-      allProducts.map(p => {
+      allProducts.map((p) => {
         let productToDo = {}
         productToDo.amount = p.amount
         productToDo.name = p.name
@@ -127,7 +127,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
           if (bestellrundenProducts) {
             if (bestellrundenProducts.includes(p.id.toString())) {
               if (cart) {
-                cart.map(item => {
+                cart.map((item) => {
                   if (item[0] === p.id) {
                     productToDo.amount = item[1]
                   }
@@ -157,7 +157,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
           response.data === '"0"' ? setPublicPrices(false) : setPublicPrices(true)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
 
     axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_products`)
@@ -166,7 +166,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
           response.data === '"0"' ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
 
     axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
@@ -175,7 +175,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
           response.data === '"yes"' ? setStockManagement(true) : setStockManagement(false)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
 
     axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_taxes`)
@@ -184,7 +184,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
           response.data === '"1"' ? setShowTaxes(true) : setShowTaxes(false)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [])
 
   useEffect(() => {
@@ -214,39 +214,39 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
 
             <h2 className="fc_order_list_header_info">
               <div className="fc_order_list_header_infos">
-                <div style={{ backgroundImage: activeOrderRoundData[2] ? `url(${activeOrderRoundData[2]})` : `url(${frontendLocalizer.pluginUrl}/images/bestellrunde.png`, backgroundSize: "cover", backgroundPosition: "center center" }} className="fc_order_list_header_image" />
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <h2>
-                          <strong>{__("Bestellrunde: ", "fcplugin")}</strong>{" "}
-                        </h2>
-                      </td>
-                      <td>
-                        <h2>
+                <div className="fc_order_list_header_image">
+                  <img src={activeOrderRoundData[2] ? `${activeOrderRoundData[2]}` : `${frontendLocalizer.pluginUrl}/images/bestellrunde.png`} />
+                </div>
+                <div className="fc_order_list_header_table">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <strong>{__("Bestellrunde: ", "fcplugin")}</strong>
+                        </td>
+                        <td>
                           <strong>{activeOrderRoundData[0]}</strong> ({activeOrderRoundData[1]})
-                        </h2>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
-                      </td>
-                      <td>
-                        <strong>{format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")}</strong> {__("bis", "fcplugin")} <strong>{format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>{__("Abholen: ", "fcplugin")}</strong>{" "}
-                      </td>
-                      <td>
-                        <strong>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")}</strong>{" "}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>{__("Bestellfenster: ", "fcplugin")}</strong>{" "}
+                        </td>
+                        <td>
+                          <strong>{format(new Date(bestellrundenDates[0]), "dd.MM.yyyy")}</strong> {__("bis", "fcplugin")} <strong>{format(new Date(bestellrundenDates[1]), "dd.MM.yyyy")}</strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>{__("Abholen: ", "fcplugin")}</strong>{" "}
+                        </td>
+                        <td>
+                          <strong>{format(new Date(bestellrundenDates[2]), "dd.MM.yyyy")}</strong>{" "}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <div className="fc_order_list_header_alerts">
                 <span className="fc_order_list_header_steps">{__("Schritt 1 / 2: Produkte auswählen und in den Warenkorb legen. Der Warenkorb bleibt gespeichert.", "fcplugin")}</span>
@@ -308,7 +308,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory showTaxes={showTaxes} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "200px" }}>{categories.map((cat) => products[cat].length > 0 && <ProductCategory showTaxes={showTaxes} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (

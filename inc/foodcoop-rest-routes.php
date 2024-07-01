@@ -1298,8 +1298,6 @@ class FoodcoopRestRoutes {
 
     }
 
-
-
     return json_encode($id);
   }
 
@@ -1897,10 +1895,13 @@ class FoodcoopRestRoutes {
    * postImportProducts
    */
   function postImportProducts($data) {
+    global $wpdb;
+
     // update product featured image
     require_once(ABSPATH . 'wp-admin/includes/media.php');
     require_once(ABSPATH . 'wp-admin/includes/file.php');
     require_once(ABSPATH . 'wp-admin/includes/image.php');
+    require_once(ABSPATH . 'wp-admin/includes/post.php');
 
     $products = json_decode($data['products']);
 
@@ -1917,7 +1918,7 @@ class FoodcoopRestRoutes {
     // count changes
     $changed_products = 0;
     $new_products = 0;
-    $deleted_products = -1;
+    $deleted_products = -2;
 
     // product id's to delete are not included in updated_product_ids array
     $all_products_before_import = wc_get_products( array( 'return' => 'ids', 'limit' => -1 ) );
@@ -1940,60 +1941,48 @@ class FoodcoopRestRoutes {
         $title = str_replace("<","",$title);
         $title = str_replace(">","",$title);
 
-        $data = array(
-          'ID'            => $id,
-          'post_title'    => sanitize_text_field($title),
-          'meta_input'    => array(
-                  '_einheit'    => sanitize_text_field($product[2]),
-                  '_gebinde'    => sanitize_text_field($product[3]),
-                  '_lieferant'  => sanitize_text_field($product[12]),
-                  '_herkunft'   => sanitize_text_field($product[5]),
-                  '_produzent'   => sanitize_text_field($product[4]),
-                )
-        );
-        wp_update_post( $data );
-
-        // update product price
         $p = wc_get_product($id);
+
+        $p->set_name($title);
         $p->set_regular_price(floatval($product[1]));
-
-        // update product short_description
         $p->set_short_description( $product[8] );
-
-        // update product description
-        $p->set_description( $product[10] );
-
-        // update product sku
+        $p->set_description( $product[10] );  
         $p->set_sku(sanitize_text_field($product[11]));
-
-        // update product tax class
         $p->set_tax_class(sanitize_text_field($product[13]));
+        $p->set_category_ids( array( intval($categories[$product[6]]) ) );
+        $p->update_meta_data( '_einheit', sanitize_text_field($product[2]) );
+        $p->update_meta_data( '_gebinde', sanitize_text_field($product[3]) );
+        $p->update_meta_data( '_lieferant', sanitize_text_field($product[12]) );
+        $p->update_meta_data( '_herkunft', sanitize_text_field($product[5]) );
+        $p->update_meta_data( '_produzent', sanitize_text_field($product[4]) );
 
+        // if an image link is specified, check if it is the existing media library item.
         if ($product[9] != "") {
-          // check if current image is the same as imported one
-          $current_attachment = wp_get_attachment_url( get_post_thumbnail_id( $id ), 'thumbnail');
-          if ($current_attachment) {
-            if ($current_attachment != $product[9]) {
-              // delete current featured image
-              $attachmentid = get_post_thumbnail_id( $id );
-              wp_delete_attachment( $attachmentid, true );
 
-              $image = media_sideload_image( $product[9], $id, $title, 'id' );
-              set_post_thumbnail( $id, $image );
-            }
+          // check if image link is already in the media library
+          $img_title = basename( $product[9]);
+
+          $search_attachments = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."postmeta` WHERE `meta_value` LIKE '%/$img_title'");
+          $existing_attachment_id = 0;
+          foreach ( $search_attachments as $att ) {
+            $existing_attachment_id = intval($att->post_id);
           }
-        } else {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $id );
-          wp_delete_attachment( $attachmentid, true );
-          set_post_thumbnail( $id, '' );
+
+          // if there is already an existing attachment
+          if ($existing_attachment_id > 0) {
+            $p->set_image_id( $existing_attachment_id );
+
+          } else {
+            // sideload new attachment
+            $image = media_sideload_image( $product[9], $id, $title, 'id' );
+            $p->set_image_id( $image );
+          }
+        }  else {
+          $p->set_image_id( '' );
         }
 
         // save the product
         $p->save();
-
-        // update product category
-        wp_set_object_terms( $id, intval($categories[$product[6]]), 'product_cat' );
 
         $changed_products++;
       } 
@@ -2006,61 +1995,52 @@ class FoodcoopRestRoutes {
         $title = str_replace("<","",$title);
         $title = str_replace(">","",$title);
 
-        $data = array(
-          'post_type'           => 'product',
-          'post_status'         => 'publish',
-          'post_title'          => sanitize_text_field($title),
-          'meta_input'          => array(
-                                      '_einheit'    => sanitize_text_field($product[2]),
-                                      '_gebinde'    => sanitize_text_field($product[3]),
-                                      '_lieferant'  => sanitize_text_field($product[12]),
-                                      '_herkunft'   => sanitize_text_field($product[5]),
-                                      '_produzent'   => sanitize_text_field($product[4]),
-                                    ),
-          'post_excerpt' => $product[8],
-          'post_content' => $product[10],
-        );
-        $post_id = wp_insert_post( $data );
 
-        // update product price
-        update_post_meta($post_id, '_price', (float) $product[1]);
-        update_post_meta($post_id, '_regular_price', (float) $product[1]);
-        update_post_meta($post_id, '_featured', 'no');
-        update_post_meta($post_id, '_virtual', 'no');
-        update_post_meta($post_id, '_visibility', 'visible');
-        update_post_meta($post_id, '_stock_status', 'instock');
-        update_post_meta($post_id, '_downloadable', 'no');
-        update_post_meta($post_id, '_downloadable', 'no');
-        update_post_meta($post_id, '_sku', sanitize_text_field($product[11]));
+        $new_product = new WC_Product_Simple();
+        $new_product->set_name($title);
+        $new_product->set_regular_price(floatval($product[1]));
+        $new_product->set_short_description( $product[8] );
+        $new_product->set_description( $product[10] );  
+        $new_product->set_sku(sanitize_text_field($product[11]));
+        $new_product->set_tax_class(sanitize_text_field($product[13]));
+        $new_product->set_category_ids( array( intval($categories[$product[6]]) ) );
+        $new_product->update_meta_data( '_einheit', sanitize_text_field($product[2]) );
+        $new_product->update_meta_data( '_gebinde', sanitize_text_field($product[3]) );
+        $new_product->update_meta_data( '_lieferant', sanitize_text_field($product[12]) );
+        $new_product->update_meta_data( '_herkunft', sanitize_text_field($product[5]) );
+        $new_product->update_meta_data( '_produzent', sanitize_text_field($product[4]) );
+        $new_product->save_meta_data();
 
-        // update product tax class
-        $p = wc_get_product($post_id);
-        $p->set_tax_class(sanitize_text_field($product[13]));
-        $p->save();
-
-        // update product category
-        wp_set_object_terms( $post_id, intval($categories[$product[6]]), 'product_cat' );
-        wp_set_object_terms( $post_id, 'simple', 'product_type' );
 
         // update product featured image
         require_once(ABSPATH . 'wp-admin/includes/media.php');
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         require_once(ABSPATH . 'wp-admin/includes/image.php');
 
+        // if an image link is specified, check if it is the existing media library item.
         if ($product[9] != "") {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $post_id );
-          wp_delete_attachment( $attachmentid, true );
 
-          $image = media_sideload_image( $product[9], $post_id, $title, 'id' );
-          set_post_thumbnail( $post_id, $image );
-        } else {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $id );
-          wp_delete_attachment( $attachmentid, true );
-          set_post_thumbnail( $post_id, '' );
-        }
+          // check if image link is already in the media library
+          $img_title = basename( $product[9]);
 
+          $search_attachments = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."postmeta` WHERE `meta_value` LIKE '%/$img_title'");
+          $existing_attachment_id = 0;
+          foreach ( $search_attachments as $att ) {
+            $existing_attachment_id = intval($att->post_id);
+          }
+
+          // if there is already an existing attachment
+          if ($existing_attachment_id > 0) {
+            $new_product->set_image_id( $existing_attachment_id );
+
+          } else {
+            // sideload new attachment
+            $image = media_sideload_image( $product[9], $post_id, $title, 'id' );
+            $new_product->set_image_id( $image );
+          }
+        } 
+
+        $new_product->save();
         $new_products++;
       }
     }
@@ -3105,7 +3085,7 @@ class FoodcoopRestRoutes {
     foreach($orders as $order) {
       $email = $order->customer_email;
 
-      $message_to_send .= $message;      
+      $message_to_send = $message;      
 
       $headers[] = 'From: '. get_option('admin_email');
       $headers[] = 'Reply-To: ' . get_option('admin_email');
@@ -3911,6 +3891,46 @@ class FoodcoopRestRoutes {
       return http_response_code(500);
     }
   }  
+
+  /**
+  * postProductDescriptionUpdate
+  */
+  function postProductDescriptionUpdate($data) {
+    $product = wc_get_product(intval($data['id']));
+    $product->set_description($data['description']);
+    $product->save();
+    return json_encode($data['id']);
+  }
+
+
+  /**
+   * postDuplicateBestellrunde
+   */
+  function postDuplicateBestellrunde($data) {
+
+    $bestellrunde_to_duplicate = get_post(intval($data['id']));
+    $old_id = $bestellrunde_to_duplicate->ID;
+    
+    // unset id, rename, then duplicate
+    unset($bestellrunde_to_duplicate->ID);
+    $img_id = get_post_thumbnail_id($old_id);
+
+    $id = wp_insert_post($bestellrunde_to_duplicate);
+    set_post_thumbnail($id, $img_id);
+    update_post_meta( $id, 'bestellrunde_start', get_post_meta($old_id, 'bestellrunde_start', true ), true);
+    update_post_meta( $id, 'bestellrunde_ende', get_post_meta($old_id, 'bestellrunde_ende', true ), true);
+    update_post_meta( $id, 'bestellrunde_verteiltag', get_post_meta($old_id, 'bestellrunde_verteiltag', true ), true);
+    update_post_meta( $id, 'bestellrunde_name', 'Kopie von '. get_post_meta($old_id, 'bestellrunde_name', true ), true);
+    update_post_meta( $id, 'bestellrunde_products', get_post_meta($old_id, 'bestellrunde_products', true ), true);
+
+    if ($id) {
+      return http_response_code(200);
+    } else {
+      return http_response_code(500);
+    }
+
+  }
+
 
   
   /**

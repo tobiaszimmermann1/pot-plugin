@@ -28,6 +28,8 @@ import SmartphoneIcon from "@mui/icons-material/Smartphone"
 import SelfCheckoutProducts from "./products/SelfCheckoutProducts"
 import PersonIcon from "@mui/icons-material/Person"
 import ProductOwnerModal from "./products/ProductOwnerModal"
+import TextSnippetIcon from "@mui/icons-material/TextSnippet"
+import EditDescription from "./products/EditDescription"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -38,7 +40,7 @@ const Products = () => {
   const [statusMessage, setStatusMessage] = useState({
     message: null,
     type: null,
-    active: false
+    active: false,
   })
   const [importModalOpen, setImportModalOpen] = useState(false)
   const [deliveryModalOpen, setDeliveryModalOpen] = useState(false)
@@ -49,6 +51,10 @@ const Products = () => {
   const [selectSelfCheckoutProducts, setSelectSelfCheckoutProducts] = useState(false)
   const [ownerModalOpen, setOwnerModalOpen] = useState(false)
   const [ownerModalProduct, setOwnerModalProduct] = useState(null)
+  const [descriptionModalOpen, setDescriptionModalOpen] = useState(false)
+  const [selectedProductDescription, setSelectedProductDescription] = useState(null)
+  const [selectedProductDescriptionId, setSelectedProductDescriptionId] = useState(null)
+  const [selectedProductEditTitle, setSelectedProductEditTitle] = useState(null)
 
   useEffect(() => {
     axios
@@ -57,7 +63,7 @@ const Products = () => {
         let reArrangeProductData = []
         if (response.data) {
           const res = JSON.parse(response.data)
-          res[0].map(p => {
+          res[0].map((p) => {
             let productToDo = {}
             productToDo.name = p.name
             productToDo.price = p.price
@@ -83,17 +89,17 @@ const Products = () => {
           setProductsLoading(false)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [reload])
 
   useEffect(() => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOptions`, {
         headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
+          "X-WP-Nonce": appLocalizer.nonce,
+        },
       })
-      .then(res => {
+      .then((res) => {
         let options = JSON.parse(res.data)
 
         let visOptions = {}
@@ -104,7 +110,7 @@ const Products = () => {
 
         options.fc_self_checkout === "1" ? setSelfCheckoutOption(true) : setSelfCheckoutOption(false)
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [])
 
   /**
@@ -117,13 +123,13 @@ const Products = () => {
         accessorKey: "id",
         header: __("ID", "fcplugin"),
         enableEditing: false,
-        size: 50
+        size: 50,
       },
       {
         accessorKey: "sku",
         header: __("Artikelnummer", "fcplugin"),
         enableEditing: true,
-        size: 50
+        size: 50,
       },
       {
         accessorKey: "image",
@@ -139,64 +145,83 @@ const Products = () => {
             </a>
           ),
         size: 30,
-        enableColumnResizing: false
+        enableColumnResizing: false,
       },
       {
         accessorKey: "name",
-        header: __("Produkt", "fcplugin")
+        header: __("Produkt", "fcplugin"),
+      },
+      {
+        accessorKey: "description",
+        header: __("Beschreibung", "fcplugin"),
+        Cell: ({ cell }) => (
+          <IconButton
+            onClick={() => {
+              setSelectedProductDescription(cell.getValue())
+              setSelectedProductDescriptionId(cell.row.original.id)
+              setSelectedProductEditTitle(cell.row.original.name)
+              setDescriptionModalOpen(true)
+            }}
+            color={"primary"}
+          >
+            <TextSnippetIcon />
+          </IconButton>
+        ),
+        size: 50,
+        enableColumnResizing: false,
       },
       {
         accessorKey: "short_description",
         id: "short_description",
         header: __("Details", "fcplugin"),
         enableEditing: false,
-        size: 80
+        size: 80,
       },
       {
         accessorKey: "price",
         header: __("Preis", "fcplugin"),
         size: 80,
-        Cell: ({ cell }) => parseFloat(cell.getValue()).toFixed(2)
+        Cell: ({ cell }) => parseFloat(cell.getValue()).toFixed(2),
       },
       {
         accessorKey: "tax",
         header: __("MWST", "fcplugin"),
-        size: 80
+        size: 80,
       },
       {
         accessorKey: "unit",
         header: __("Einheit", "fcplugin"),
-        size: 80
+        size: 80,
       },
       {
         accessorKey: "lot",
         header: __("Gebindegrösse", "fcplugin"),
-        size: 80
+        size: 80,
       },
       {
         accessorKey: "stock",
         header: __("Lagerbestand", "fcplugin"),
         size: 120,
-        enableEditing: false
+        enableEditing: false,
       },
       {
         accessorKey: "category",
         id: "category_id",
         header: __("Kategorie", "fcplugin"),
-        enableEditing: false
+        enableEditing: false,
       },
       {
         accessorKey: "producer",
-        header: __("Produzent", "fcplugin")
+        header: __("Produzent", "fcplugin"),
       },
       {
         accessorKey: "supplier",
-        header: __("Lieferant", "fcplugin")
+        header: __("Lieferant", "fcplugin"),
       },
       {
         accessorKey: "origin",
-        header: __("Herkunft", "fcplugin")
-      }
+        header: __("Herkunft", "fcplugin"),
+      },
     ],
     []
   )
@@ -208,12 +233,12 @@ const Products = () => {
         `${appLocalizer.apiUrl}/foodcoop/v1/postProductUpdate`,
         {
           updatedValues: values,
-          id: values.id
+          id: values.id,
         },
         {
           headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
+            "X-WP-Nonce": appLocalizer.nonce,
+          },
         }
       )
       .then(function (response) {
@@ -221,10 +246,10 @@ const Products = () => {
           setStatusMessage({
             message: JSON.parse(response.data) + " " + __("wurde gespeichert.", "fcplugin"),
             type: "successStatus",
-            active: true
+            active: true,
           })
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
 
     // update table values
     setProducts([...products])
@@ -232,7 +257,7 @@ const Products = () => {
   }
 
   const handleDeleteRow = useCallback(
-    row => {
+    (row) => {
       if (!confirm(row.getValue("name") + " " + __("löschen?", "fcplugin"))) {
         return
       }
@@ -242,12 +267,12 @@ const Products = () => {
           `${appLocalizer.apiUrl}/foodcoop/v1/postProductDelete`,
           {
             name: row.getValue("name"),
-            id: row.getValue("id")
+            id: row.getValue("id"),
           },
           {
             headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
+              "X-WP-Nonce": appLocalizer.nonce,
+            },
           }
         )
         .then(function (response) {
@@ -255,10 +280,10 @@ const Products = () => {
             setStatusMessage({
               message: JSON.parse(response.data) + " " + __("wurde gelöscht.", "fcplugin"),
               type: "successStatus",
-              active: true
+              active: true,
             })
         })
-        .catch(error => console.log(error))
+        .catch((error) => console.log(error))
 
       products.splice(row.index, 1)
       setProducts([...products])
@@ -271,7 +296,7 @@ const Products = () => {
       setStatusMessage({
         message: null,
         type: null,
-        active: false
+        active: false,
       })
     }, 15000)
   }, [statusMessage])
@@ -286,7 +311,7 @@ const Products = () => {
     showLabels: true,
     useBom: true,
     useKeysAsHeaders: true,
-    filename: "foodcoop-products-" + new Date().toLocaleDateString() + new Date().toLocaleTimeString()
+    filename: "foodcoop-products-" + new Date().toLocaleDateString() + new Date().toLocaleTimeString(),
   }
 
   const csvExporter = new ExportToCsv(csvOptions)
@@ -294,7 +319,7 @@ const Products = () => {
   const handleExportData = () => {
     // rearrange product information to match import list
     const exportProducts = []
-    products.map(product => {
+    products.map((product) => {
       let the_product = {}
       the_product["name"] = product.name
       the_product["price"] = product.price
@@ -321,8 +346,8 @@ const Products = () => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/productQRPDF?sku=${row.original.sku}`, {
         headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
+          "X-WP-Nonce": appLocalizer.nonce,
+        },
       })
       .then(function (response) {
         if (response.data) {
@@ -335,7 +360,7 @@ const Products = () => {
           setButtonLoading(false)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
         setButtonLoading(false)
       })
@@ -346,8 +371,8 @@ const Products = () => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/allProductsQRPDF`, {
         headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
+          "X-WP-Nonce": appLocalizer.nonce,
+        },
       })
       .then(function (response) {
         if (response.data) {
@@ -360,7 +385,7 @@ const Products = () => {
           setButtonLoading(false)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
         setButtonLoading(false)
       })
@@ -455,8 +480,8 @@ const Products = () => {
                           <DeleteIcon />
                         </IconButton>
                       </Box>
-                    )
-                  }
+                    ),
+                  },
                 }}
                 editingMode={"modal"}
                 enableEditing
@@ -499,10 +524,11 @@ const Products = () => {
             ) : (
               <Inventory setInventoryMode={setInventoryMode} setReload={setReload} reload={reload} />
             )}
-            {importModalOpen && <ImportProducts setModalClose={setImportModalOpen} categories={categories} />}
+            {importModalOpen && <ImportProducts setModalClose={setImportModalOpen} categories={categories} setReload={setReload} reload={reload} />}
             {deliveryModalOpen && <NewDelivery setModalClose={setDeliveryModalOpen} prod={products} reload={reload} setReload={setReload} />}
             {selectSelfCheckoutProducts && <SelfCheckoutProducts setModalClose={setSelectSelfCheckoutProducts} prods={products} />}
             {ownerModalOpen && <ProductOwnerModal setModalClose={setOwnerModalOpen} product={ownerModalProduct} reload={reload} setReload={setReload} />}
+            <EditDescription open={descriptionModalOpen} id={selectedProductDescriptionId} description={selectedProductDescription} title={selectedProductEditTitle} setModalClose={setDescriptionModalOpen} setReload={setReload} reload={reload} />
           </>
         )}
       </div>

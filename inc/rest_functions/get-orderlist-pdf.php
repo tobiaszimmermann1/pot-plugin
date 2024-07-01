@@ -39,6 +39,7 @@
       if ( !in_array($product_lieferant, $lieferanten) ) {
         array_push($lieferanten,$product_lieferant);
       }
+      sort($lieferanten);
 
       // products and order_items
       $item_array = array();
@@ -79,6 +80,10 @@
         $product_gebinde = esc_attr(get_post_meta( $item->get_product_id(), '_gebinde',true ));
       }
       array_push($item_array,$product_gebinde);
+      
+      // price
+      $item_price = number_format($item->get_subtotal() / $item->get_quantity(), 2); 
+      array_push($item_array,$item_price);
 
       // push info to product array if it is not already
       if ( !array_key_exists($product_id, $produkte) ) {
@@ -89,6 +94,7 @@
       array_push($order_items, $item_array);
     }
   }
+  usort($produkte, function($a, $b) { return strcmp($a[3], $b[3]);});
 
   // structure the products data
   $products_by_lieferant = array();
@@ -158,6 +164,7 @@
         <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Produkt</td>
         <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Einheit</td>
         <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Gebinde</td>
+        <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">Preis</td>
     ';
 
     $body .= '
@@ -185,6 +192,7 @@
               <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[3].'</td>
               <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[2].'</td>
               <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[5].'</td>
+              <td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$product[6].'</td>
               ';
             $body .= '<td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$total_quantity_ordered_by_all_users.'</td>';
             $body .= '

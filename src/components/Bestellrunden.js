@@ -28,7 +28,6 @@ import UpdateIcon from "@mui/icons-material/Update"
 import EmailIcon from "@mui/icons-material/Email"
 import Divider from "@mui/material/Divider"
 import NotificationModal from "./bestellrunden/Notification"
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
 import Tooltip from "@mui/material/Tooltip"
 import CompleteModal from "./bestellrunden/CompleteModal"
 
@@ -281,6 +280,28 @@ const Bestellrunden = () => {
       .catch(error => console.log(error))
   }
 
+  function handleDuplicateRow(row) {
+    console.log(row)
+
+    axios
+      .post(
+        `${appLocalizer.apiUrl}/foodcoop/v1/postDuplicateBestellrunde`,
+        {
+          id: row.original.id
+        },
+        {
+          headers: {
+            "X-WP-Nonce": appLocalizer.nonce
+          }
+        }
+      )
+      .then(function (response) {
+        setReload(reload + 1)
+        console.log(response.data)
+      })
+      .catch(error => console.log(error))
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setStatusMessage({
@@ -317,6 +338,10 @@ const Bestellrunden = () => {
                 <Divider orientation="vertical" flexItem />
                 <IconButton color="#cccccc" size="small" onClick={() => handleDeleteRow(row)}>
                   <DeleteIcon />
+                </IconButton>
+                <Divider orientation="vertical" flexItem />
+                <IconButton color="#cccccc" size="small" onClick={() => handleDuplicateRow(row)}>
+                  <ContentCopyIcon />
                 </IconButton>
                 <Divider orientation="vertical" flexItem />
                 <Button
