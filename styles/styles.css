@@ -596,7 +596,7 @@ html {
 
 .fc_transition_show {
   transform: translateY(0);
-  max-height: 5000px;
+  max-height: none;
   opacity: 1;
   transition: all 0.2s;
 }
@@ -1004,6 +1004,15 @@ html {
 
 .woocommerce div .MuiPaper-root div {
   width: auto !important;
+}
+
+.fc_finish {
+  margin-left: 5px;
+}
+
+.fc_finish:hover {
+  cursor: pointer;
+  color: #00796b;
 }
 
 @media only screen and (max-width: 800px) {

@@ -859,9 +859,21 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * POST mark bestellrunde completed
+     * params: id
+     */
+    register_rest_route( 'foodcoop/v1', 'postCompleteBestellrunde', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postCompleteBestellrunde'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
 
     
-
+    
   }
 
   
@@ -2545,6 +2557,7 @@ class FoodcoopRestRoutes {
       'orderby' => 'date',
       'order' => 'DESC',
       'return' => 'ids',
+      'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
       'customer' => intval($customer),
     ));
     $order_ids = $query->get_orders();
@@ -2605,7 +2618,8 @@ class FoodcoopRestRoutes {
       'limit' => 20,
       'orderby' => 'date',
       'order' => 'DESC',
-      'return' => 'ids',
+      'return' => 'ids',      
+      'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
     ));
     $query->set( 'customer', intval($customer->ID) );
     $order_ids = $query->get_orders();
@@ -3896,11 +3910,45 @@ class FoodcoopRestRoutes {
     } else {
       return http_response_code(500);
     }
-  }
-
+  }  
 
   
+  /**
+  * postCompleteBestellrunde
+  */
+ function postCompleteBestellrunde($data) {
+   update_post_meta( intval($data['id']), 'bestellrunde_complete', 1 );
 
+   add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'custom_order_query', 10, 2 );
+   function custom_order_query($query, $query_vars){
+       if ( ! empty( $query_vars['bestellrunde_id'] ) ) {
+           $query['meta_query'][] = array(
+               'key' => 'bestellrunde_id',
+               'value' => esc_attr( $query_vars['bestellrunde_id'] ),
+               'compare' => '='
+           );
+       }
+       return $query;
+   }
+
+   $args = array(
+     'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
+     'meta_key'     => 'bestellrunde_id',
+     'meta_value'  =>  $data['id'],
+     'meta_compare' => '=', 
+     'return'        => 'ids',
+     'limit'   => -1
+   );
+   $orders = wc_get_orders( $args );
+
+   foreach($orders as $order_id) {
+    $order = wc_get_order($order_id);
+    $order->set_status('wc-completed');
+    $order->save();
+   }
+
+   return json_encode($orders);
+ }
 
 
   

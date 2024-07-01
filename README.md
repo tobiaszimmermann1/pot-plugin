@@ -28,6 +28,13 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.5
+
+- Fixed a bug where foodcoop balance displayed a wrong value during ordering.
+- For payment gateway foodcoop balance: if balance is too low, the place order button is disabled (prevents the creation of failed orders)
+- Added an option to manually mark a Bestellrunde as completed (changes the status of all orders to completed as well)
+  //- Added an option to block users who have not yet payed the yearly fee from ordering, with the option to pay the fee directly with the push of a button using their balance
+
 ### 1.7.4
 
 - Introduction of POS Mode for Self Checkout: create orders for users or guests

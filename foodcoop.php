@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.7.4
+Version: 1.7.5
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -251,7 +251,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -259,16 +259,16 @@ function fc_admin_load_scripts() {
     'pluginUrl' => plugin_dir_url(__FILE__),
     'nonce' => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version' => "1.7.4"
+    'version' => "1.7.5"
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.4' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.5' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.4', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -281,7 +281,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.4' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.5' );
 }
 
 add_action( 'init', 'fc_init');
@@ -949,3 +949,54 @@ add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_
 
 
 
+
+/**
+ * Payment Gateway helper
+ * Disable Place order button, if balance is too low
+ */
+
+add_filter('woocommerce_order_button_html', 'custom_order_button_text' );
+function custom_order_button_text( $order_button_text ) {
+    // Get the chosen payment gateway (dynamically)
+    $chosen_payment_method = WC()->session->get('chosen_payment_method');
+    $order_button_text = __('Place order', 'woocommerce');
+    $button = '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+
+    if( $chosen_payment_method == 'foodcoop_guthaben'){
+      global $wpdb;
+      global $woocommerce;
+      $order_total = $woocommerce->cart->total;
+      $table = $wpdb->prefix.'foodcoop_wallet';
+      $user_id = get_current_user_id();
+      $results = $wpdb->get_results(
+                  $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+               );
+      foreach ( $results as $result ) {
+         $current_balance = number_format($result->balance, 2, '.', '');
+      }
+
+      if ($current_balance <= $order_total) {
+        $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+      } 
+
+    }
+
+    // jQuery code: Make dynamic text button "on change" event ?>
+    <script type="text/javascript">
+    (function($){
+      $('form.checkout').on( 'change', 'input[name^="payment_method"]', function() {
+        var t = { updateTimer: !1,  dirtyInput: !1,
+          reset_update_checkout_timer: function() {
+            clearTimeout(t.updateTimer)
+          },  trigger_update_checkout: function() {
+            t.reset_update_checkout_timer(), t.dirtyInput = !1,
+            $(document.body).trigger("update_checkout")
+          }
+        };
+        t.trigger_update_checkout();
+      });
+    })(jQuery);
+    </script><?php
+
+    return $button;
+}

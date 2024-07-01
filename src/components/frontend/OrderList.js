@@ -51,7 +51,6 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
           setAllProducts(res[3])
           setBestellrundenProducts(res[2])
           setCategories(res[4])

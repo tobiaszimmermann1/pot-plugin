@@ -255,7 +255,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
       let orderItems = []
 
       orders.map(order => {
-        console.log(order)
         // add user to array, if it is not already
         !users.includes(order.customer_name) && users.push(order.customer_name)
         // map line_items of order
@@ -342,7 +341,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
           dataMatrix[lieferantString] = rows
         }
       })
-      console.log(dataMatrix)
       setExportData(dataMatrix)
     }
   }, [orders, id])
