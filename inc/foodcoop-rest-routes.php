@@ -1970,12 +1970,11 @@ class FoodcoopRestRoutes {
 
           // if there is already an existing attachment
           if ($existing_attachment_id > 0) {
-            $p->set_image_id( $existing_attachment_id );
-
+            if (!is_wp_error($existing_attachment_id)) $p->set_image_id( $existing_attachment_id );
           } else {
             // sideload new attachment
             $image = media_sideload_image( $product[9], $id, $title, 'id' );
-            $p->set_image_id( $image );
+            if (!is_wp_error($image)) $p->set_image_id( $image );
           }
         }  else {
           $p->set_image_id( '' );
@@ -2031,12 +2030,12 @@ class FoodcoopRestRoutes {
 
           // if there is already an existing attachment
           if ($existing_attachment_id > 0) {
-            $new_product->set_image_id( $existing_attachment_id );
+            if (!is_wp_error($existing_attachment_id)) $new_product->set_image_id( $existing_attachment_id );
 
           } else {
             // sideload new attachment
             $image = media_sideload_image( $product[9], $post_id, $title, 'id' );
-            $new_product->set_image_id( $image );
+            if (!is_wp_error($image)) $new_product->set_image_id( $image );
           }
         } 
 
