@@ -1,6 +1,5 @@
 .lock
 .vscode
-.gitignore
 vendor
 node_modules
 build
