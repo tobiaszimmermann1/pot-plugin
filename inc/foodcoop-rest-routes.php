@@ -76,6 +76,19 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST product update by owner
+     * params: id, values
+     */
+    register_rest_route( 'foodcoop/v1', 'postProductUpdateByOwner', array(
+      'methods' => 'POST',
+      'callback' => array($this, 'postProductUpdateByOwner'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+    
+
+    /**
      * POST product delete
      * params: id
      */
@@ -391,6 +404,17 @@ class FoodcoopRestRoutes {
       'callback' => array($this, 'postUpdateUser'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET MY Transactions
+     */
+    register_rest_route( 'foodcoop/v1', 'getMyTransactions', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getMyTransactions'), 
+      'permission_callback' => function() {
+        return true;
       }
     ));
 
@@ -765,6 +789,19 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST save delivery by owner
+     * params: amount, user_id
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveDeliveryByOwner', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveDeliveryByOwner'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+    
+
+    /**
      * GET Product List for Overview
      */
     register_rest_route( 'foodcoop/v1', 'getProductListOverview', array(
@@ -775,6 +812,68 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * GET available payment Gateways
+     */
+    register_rest_route( 'foodcoop/v1', 'getPaymentGateways', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getPaymentGateways'), 
+      'permission_callback' => function() {
+        return true;
+      }
+    ));
+
+    /**
+     * POST create POS order
+     * params: cart, user, payment_gateway
+     */
+    register_rest_route( 'foodcoop/v1', 'postCreatePOSorder', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postCreatePOSorder'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST update product owner
+     * params: user_id, product_id
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveProductOwner', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveProductOwner'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * GET product owner
+     * params: product_id
+     */
+    register_rest_route( 'foodcoop/v1', 'getProductOwner', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getProductOwner'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST mark bestellrunde completed
+     * params: id
+     */
+    register_rest_route( 'foodcoop/v1', 'postCompleteBestellrunde', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postCompleteBestellrunde'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+
+    
+    
   }
 
   
@@ -834,7 +933,9 @@ class FoodcoopRestRoutes {
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
         "description" => $product->get_description(),
         "stock" => $product->get_stock_quantity(),
-        "stock_status" => $product->get_stock_status()
+        "stock_status" => $product->get_stock_status(),
+        "tax" => $product->get_tax_class(),
+        "owner" => $product->get_meta('fc_owner')
       );
     
       // product meta data
@@ -850,7 +951,9 @@ class FoodcoopRestRoutes {
       // product sku (for self-checkout)
       $the_product['sku'] = $product->get_sku();
 
-      if ($the_product['sku'] != "fcplugin_instant_topup_product") array_push($products, $the_product);
+      if ($the_product['sku'] != "fcplugin_instant_topup_product" && $the_product['sku'] != 'fcplugin_pos_product') {
+        array_push($products, $the_product);
+      }
     }
          
     return json_encode(array($products, $categories));
@@ -867,7 +970,7 @@ class FoodcoopRestRoutes {
   /**
    * getBankingOptions
    */
-  function getBankingOptions($data) {
+  function getBankingOptions() {
     $fc_bank = get_option('fc_bank');
     $woocommerce_store_address = get_option('woocommerce_store_address');
     $woocommerce_store_city = get_option('woocommerce_store_city');
@@ -875,13 +978,28 @@ class FoodcoopRestRoutes {
     $blogname = get_option('blogname');
     $instantTopup = get_option('fc_instant_topup');
 
-    $id = $data['id'];
+    $id = get_current_user_id();
     $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
     $address = get_user_meta($id, 'billing_address_1', true);
     $postcode = get_user_meta($id, 'billing_postcode', true);
     $city = get_user_meta($id, 'billing_city', true);
 
-    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup));
+    // get balance of user
+    global $wpdb;
+    $balance = '0.00';
+
+    if ($id) {
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $id)
+      );
+      foreach ( $results as $result ) {
+        $balance = $result->balance;
+      }
+    }
+
+    $currency = get_woocommerce_currency_symbol();
+
+    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup, $balance, $currency));
   }
 
   /**
@@ -905,6 +1023,9 @@ class FoodcoopRestRoutes {
 
     $fee = $data['fee'];
     if($fee) update_option('fc_fee', $fee);
+
+    $margin = $data['margin'];
+    if($margin) update_option('fc_margin', $margin);
 
     $bank = $data['bank'];
     if($bank) update_option('fc_bank', $bank);
@@ -938,6 +1059,9 @@ class FoodcoopRestRoutes {
     
     $publicProducts = $data['publicProducts'];
     $publicProducts == true  ? update_option('fc_public_products', '1') : update_option('fc_public_products', '0');
+
+    $enable_payment_by_bill = $data["enablePaymentByBill"];
+    $enable_payment_by_bill == true  ? update_option('fc_enable_payment_by_bill', '1') : update_option('fc_enable_payment_by_bill', '0');
     
     $adminEmail = $data['adminEmail'];
     if($adminEmail) update_option('admin_email', $adminEmail);
@@ -973,6 +1097,20 @@ class FoodcoopRestRoutes {
     $enableSelfCheckout = $data['enableSelfCheckout'];
     update_option('fc_self_checkout', $enableSelfCheckout);
 
+    $taxes = $data['taxes'];
+    if($taxes) {
+      update_option('fc_taxes', '1');
+      update_option('woocommerce_calc_taxes','yes');
+      update_option('woocommerce_prices_include_tax','no');
+      update_option('woocommerce_tax_display_shop','excl');
+      update_option('woocommerce_tax_display_cart','excl');
+    } else {
+      update_option('fc_taxes', '0');
+      update_option('woocommerce_calc_taxes','no');
+      update_option('woocommerce_prices_include_tax','no');
+      update_option('woocommerce_tax_display_shop','excl');
+      update_option('woocommerce_tax_display_cart','excl');
+    }
 
     return http_response_code(200);
   }
@@ -994,6 +1132,80 @@ class FoodcoopRestRoutes {
     $product->save();
     return json_encode($data['updatedValues']['name']);
 
+  }
+
+  /**
+   * postProductUpdateByOwner
+   */
+  function postProductUpdateByOwner($data) {
+
+    if (get_current_user_id() == $data['user_id']) {
+      $product = wc_get_product($data['id']);
+      $product->set_name($data['updatedValues']['name']);
+      $product->set_regular_price($data['updatedValues']['price']);
+      $product->update_meta_data('_lieferant', $data['updatedValues']['supplier']);
+      $product->update_meta_data('_produzent', $data['updatedValues']['producer']);
+      $product->update_meta_data('_herkunft', $data['updatedValues']['origin']);
+      $product->update_meta_data('_gebinde', $data['updatedValues']['lot']);
+      $product->update_meta_data('_einheit', $data['updatedValues']['unit']);
+      $product->update_meta_data('_sku', $data['updatedValues']['sku']);
+      $product->set_description($data['updatedValues']['description']);
+      $product->set_short_description($data['updatedValues']['short_description']);
+      $product->set_stock_quantity(floatval($data['updatedValues']['stock']));
+
+      // update category
+      $product_categories = get_terms( array(
+        'taxonomy' => 'product_cat',
+        'hide_empty' => false
+      ));    
+      $categories = array();
+      foreach( $product_categories as $category ) {
+        $categories[$category->name] = $category->term_id;
+      }
+      $newCategory = $categories[$data['updatedValues']['category_id']];
+      $product->set_category_ids(array($newCategory));
+
+      // save and return
+      $product->save();
+
+      // inform the admin about the change
+      $headers[] = 'From: '. get_option('admin_email');
+      $headers[] = 'Reply-To: ' . get_option('admin_email');
+      $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+      $subj = __('Neue Änderung durch Produktverwaltung an Produkt', 'fcplugin') . " " . $data['updatedValues']['name'] . "!";
+
+      $msg = '
+        <table border="0" cellpadding="0" cellspacing="0" class="list_block block-4" id="list-r1c0m3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+            <td class="pad" style="padding-bottom:10px;padding-left:35px;padding-right:35px;padding-top:10px;">
+            <div class="levelOne" style="margin-left: 0;">
+              <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
+                <li style="margin-bottom: 0; text-align: left;">Name: '.$data['updatedValues']['name'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Preis: '.$data['updatedValues']['price'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Lieferant: '.$data['updatedValues']['supplier'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Produzent: '.$data['updatedValues']['producer'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Herkunft: '.$data['updatedValues']['origin'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Gebinde: '.$data['updatedValues']['lot'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Einheit: '.$data['updatedValues']['unit'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Artikelnummer: '.$data['updatedValues']['sku'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Beschreibung:<br />'.$data['updatedValues']['description'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Details: '.$data['updatedValues']['short_description'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Lagerbestand: '.$data['updatedValues']['stock'].'</li>
+                <li style="margin-bottom: 0; text-align: left;">Kategorie: '.$data['updatedValues']['category_id'].'</li>
+              </ul>
+            </div>
+            </td>
+          </tr>
+        </table>
+      ';
+
+      $send = wp_mail( get_option('admin_email'), $subj, $msg, $headers, '' );
+
+      return http_response_code(200);
+    } else {
+      return http_response_code(401);
+    }
   }
 
   /**
@@ -1085,8 +1297,6 @@ class FoodcoopRestRoutes {
       set_post_thumbnail( $id, $attach_id );
 
     }
-
-
 
     return json_encode($id);
   }
@@ -1416,7 +1626,9 @@ class FoodcoopRestRoutes {
       // product category (only the first one!)
       $the_product['category_name'] = $categories[$product->get_category_ids()[0]];
 
-      if ($product->get_sku() != 'fcplugin_instant_topup_product') array_push($products, $the_product);
+      if ($product->get_sku() != 'fcplugin_instant_topup_product' && $product->get_sku() != 'fcplugin_pos_product') {
+        array_push($products, $the_product);
+      }
     }
          
 
@@ -1533,6 +1745,7 @@ class FoodcoopRestRoutes {
     $new_product_price = number_format($data['price'], 2, '.', '');
     $product = $data['product'];
     $mutation_type = $data['mutation_type'];
+    $created_id = $data['created_by'];
 
     if ($mutation_type == "notDelivered") {
       foreach($orders as $o) {
@@ -1588,7 +1801,7 @@ class FoodcoopRestRoutes {
           }
         }
       }
-      return json_encode( 'success' );           
+      return json_encode( array($refund_amount, $res, $order_id) );           
     } 
 
 
@@ -1663,9 +1876,8 @@ class FoodcoopRestRoutes {
                   date_default_timezone_set('Europe/Zurich');
                   $date = date("Y-m-d H:i:s");
                   $details = 'Mutation: Produktpreisanpassung ('.$product_name.')';
-                  $created_by = get_current_user_id();
   
-                  $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+                  $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $created_id, 'balance' => $new_balance);
   
                   $wpdb->insert($table, $data);
               }
@@ -1683,10 +1895,13 @@ class FoodcoopRestRoutes {
    * postImportProducts
    */
   function postImportProducts($data) {
+    global $wpdb;
+
     // update product featured image
     require_once(ABSPATH . 'wp-admin/includes/media.php');
     require_once(ABSPATH . 'wp-admin/includes/file.php');
     require_once(ABSPATH . 'wp-admin/includes/image.php');
+    require_once(ABSPATH . 'wp-admin/includes/post.php');
 
     $products = json_decode($data['products']);
 
@@ -1703,7 +1918,7 @@ class FoodcoopRestRoutes {
     // count changes
     $changed_products = 0;
     $new_products = 0;
-    $deleted_products = -1;
+    $deleted_products = -2;
 
     // product id's to delete are not included in updated_product_ids array
     $all_products_before_import = wc_get_products( array( 'return' => 'ids', 'limit' => -1 ) );
@@ -1726,57 +1941,47 @@ class FoodcoopRestRoutes {
         $title = str_replace("<","",$title);
         $title = str_replace(">","",$title);
 
-        $data = array(
-          'ID'            => $id,
-          'post_title'    => sanitize_text_field($title),
-          'meta_input'    => array(
-                  '_einheit'    => sanitize_text_field($product[2]),
-                  '_gebinde'    => sanitize_text_field($product[3]),
-                  '_lieferant'  => sanitize_text_field($product[12]),
-                  '_herkunft'   => sanitize_text_field($product[5]),
-                  '_produzent'   => sanitize_text_field($product[4]),
-                )
-        );
-        wp_update_post( $data );
-
-        // update product price
         $p = wc_get_product($id);
+
+        $p->set_name($title);
         $p->set_regular_price(floatval($product[1]));
-
-        // update product short_description
         $p->set_short_description( $product[8] );
-
-        // update product description
-        $p->set_description( $product[10] );
-
-        // update product sku
+        $p->set_description( $product[10] );  
         $p->set_sku(sanitize_text_field($product[11]));
+        $p->set_tax_class(sanitize_text_field($product[13]));
+        $p->set_category_ids( array( intval($categories[$product[6]]) ) );
+        $p->update_meta_data( '_einheit', sanitize_text_field($product[2]) );
+        $p->update_meta_data( '_gebinde', sanitize_text_field($product[3]) );
+        $p->update_meta_data( '_lieferant', sanitize_text_field($product[12]) );
+        $p->update_meta_data( '_herkunft', sanitize_text_field($product[5]) );
+        $p->update_meta_data( '_produzent', sanitize_text_field($product[4]) );
 
+        // if an image link is specified, check if it is the existing media library item.
         if ($product[9] != "") {
-          // check if current image is the same as imported one
-          $current_attachment = wp_get_attachment_url( get_post_thumbnail_id( $id ), 'thumbnail');
-          if ($current_attachment) {
-            if ($current_attachment != $product[9]) {
-              // delete current featured image
-              $attachmentid = get_post_thumbnail_id( $id );
-              wp_delete_attachment( $attachmentid, true );
 
-              $image = media_sideload_image( $product[9], $id, $title, 'id' );
-              set_post_thumbnail( $id, $image );
-            }
+          // check if image link is already in the media library
+          $img_title = basename( $product[9]);
+
+          $search_attachments = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."postmeta` WHERE `meta_value` LIKE '%/$img_title'");
+          $existing_attachment_id = 0;
+          foreach ( $search_attachments as $att ) {
+            $existing_attachment_id = intval($att->post_id);
           }
-        } else {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $id );
-          wp_delete_attachment( $attachmentid, true );
-          set_post_thumbnail( $id, '' );
+
+          // if there is already an existing attachment
+          if ($existing_attachment_id > 0) {
+            if (!is_wp_error($existing_attachment_id)) $p->set_image_id( $existing_attachment_id );
+          } else {
+            // sideload new attachment
+            $image = media_sideload_image( $product[9], $id, $title, 'id' );
+            if (!is_wp_error($image)) $p->set_image_id( $image );
+          }
+        }  else {
+          $p->set_image_id( '' );
         }
 
         // save the product
         $p->save();
-
-        // update product category
-        wp_set_object_terms( $id, intval($categories[$product[6]]), 'product_cat' );
 
         $changed_products++;
       } 
@@ -1789,56 +1994,52 @@ class FoodcoopRestRoutes {
         $title = str_replace("<","",$title);
         $title = str_replace(">","",$title);
 
-        $data = array(
-          'post_type'           => 'product',
-          'post_status'         => 'publish',
-          'post_title'          => sanitize_text_field($title),
-          'meta_input'          => array(
-                                      '_einheit'    => sanitize_text_field($product[2]),
-                                      '_gebinde'    => sanitize_text_field($product[3]),
-                                      '_lieferant'  => sanitize_text_field($product[12]),
-                                      '_herkunft'   => sanitize_text_field($product[5]),
-                                      '_produzent'   => sanitize_text_field($product[4]),
-                                    ),
-          'post_excerpt' => $product[8],
-          'post_content' => $product[10],
-        );
-        $post_id = wp_insert_post( $data );
 
-        // update product price
-        update_post_meta($post_id, '_price', (float) $product[1]);
-        update_post_meta($post_id, '_regular_price', (float) $product[1]);
-        update_post_meta($post_id, '_featured', 'no');
-        update_post_meta($post_id, '_virtual', 'no');
-        update_post_meta($post_id, '_visibility', 'visible');
-        update_post_meta($post_id, '_stock_status', 'instock');
-        update_post_meta($post_id, '_downloadable', 'no');
-        update_post_meta($post_id, '_downloadable', 'no');
-        update_post_meta($post_id, '_sku', sanitize_text_field($product[11]));
+        $new_product = new WC_Product_Simple();
+        $new_product->set_name($title);
+        $new_product->set_regular_price(floatval($product[1]));
+        $new_product->set_short_description( $product[8] );
+        $new_product->set_description( $product[10] );  
+        $new_product->set_sku(sanitize_text_field($product[11]));
+        $new_product->set_tax_class(sanitize_text_field($product[13]));
+        $new_product->set_category_ids( array( intval($categories[$product[6]]) ) );
+        $new_product->update_meta_data( '_einheit', sanitize_text_field($product[2]) );
+        $new_product->update_meta_data( '_gebinde', sanitize_text_field($product[3]) );
+        $new_product->update_meta_data( '_lieferant', sanitize_text_field($product[12]) );
+        $new_product->update_meta_data( '_herkunft', sanitize_text_field($product[5]) );
+        $new_product->update_meta_data( '_produzent', sanitize_text_field($product[4]) );
+        $new_product->save_meta_data();
 
-        // update product category
-        wp_set_object_terms( $post_id, intval($categories[$product[6]]), 'product_cat' );
-        wp_set_object_terms( $post_id, 'simple', 'product_type' );
 
         // update product featured image
         require_once(ABSPATH . 'wp-admin/includes/media.php');
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         require_once(ABSPATH . 'wp-admin/includes/image.php');
 
+        // if an image link is specified, check if it is the existing media library item.
         if ($product[9] != "") {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $post_id );
-          wp_delete_attachment( $attachmentid, true );
 
-          $image = media_sideload_image( $product[9], $post_id, $title, 'id' );
-          set_post_thumbnail( $post_id, $image );
-        } else {
-          // delete current featured image
-          $attachmentid = get_post_thumbnail_id( $id );
-          wp_delete_attachment( $attachmentid, true );
-          set_post_thumbnail( $post_id, '' );
-        }
+          // check if image link is already in the media library
+          $img_title = basename( $product[9]);
 
+          $search_attachments = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."postmeta` WHERE `meta_value` LIKE '%/$img_title'");
+          $existing_attachment_id = 0;
+          foreach ( $search_attachments as $att ) {
+            $existing_attachment_id = intval($att->post_id);
+          }
+
+          // if there is already an existing attachment
+          if ($existing_attachment_id > 0) {
+            if (!is_wp_error($existing_attachment_id)) $new_product->set_image_id( $existing_attachment_id );
+
+          } else {
+            // sideload new attachment
+            $image = media_sideload_image( $product[9], $post_id, $title, 'id' );
+            if (!is_wp_error($image)) $new_product->set_image_id( $image );
+          }
+        } 
+
+        $new_product->save();
         $new_products++;
       }
     }
@@ -2106,6 +2307,27 @@ class FoodcoopRestRoutes {
     } 
   }
 
+  
+  /**
+   * getMyTransactions
+   */
+  function getMyTransactions() {
+    global $wpdb;
+    $id = get_current_user_id();
+    if ($id) {
+      $transactions = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC", $id)
+      );
+    }
+    
+    $transactions_fixed = array();
+    foreach($transactions as $transaction) {
+      $the_transaction = $transaction;
+      array_push($transactions_fixed, $the_transaction);
+    }
+    
+    return json_encode($transactions_fixed);
+  }
 
 
   /**
@@ -2120,6 +2342,17 @@ class FoodcoopRestRoutes {
     $transactions_fixed = array();
     foreach($transactions as $transaction) {
       $the_transaction = $transaction;
+
+      $id = intval($the_transaction->created_by);
+      if (is_int($id)) {
+        $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
+        $the_transaction->created_by = $name;
+      } 
+
+      $user_id = intval($the_transaction->user_id);
+      $user_name = get_user_meta($user_id, 'billing_first_name', true)." ".get_user_meta($user_id, 'billing_last_name', true);
+      $the_transaction->user_name = $user_name;
+
       array_push($transactions_fixed, $the_transaction);
     }
     return json_encode($transactions_fixed);
@@ -2141,8 +2374,10 @@ class FoodcoopRestRoutes {
       $the_transaction = $transaction;
 
       $id = intval($the_transaction->created_by);
-      $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
-      $the_transaction->created_by = $name;
+      if (is_int($id)) {
+        $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
+        $the_transaction->created_by = $name;
+      } 
 
       $user_id = intval($the_transaction->user_id);
       $user_name = get_user_meta($user_id, 'billing_first_name', true)." ".get_user_meta($user_id, 'billing_last_name', true);
@@ -2165,7 +2400,7 @@ class FoodcoopRestRoutes {
     $user_id = $data['user'];
     $date = $data['date'];
     $details = $data['details'];
-    $created_by = get_user_meta($data['created_by'], 'billing_first_name', true)." ".get_user_meta($data['created_by'], 'billing_last_name', true);
+    $created_by = intval($data['created_by']);
     $type = $data['type'];
 
     // amount
@@ -2196,28 +2431,6 @@ class FoodcoopRestRoutes {
     $user_info = get_userdata($user_id);
     $user_email = $user_info->user_email;
     $paid_date = date("j.m.Y - G:i",strtotime($date));
-
-    /*
-    $message = 'Hallo '.$update_username.'
-                Neue Foodcoop Guthaben Transaktion.
-                Benutzer: '.$update_username.' 
-                Datum: '.$paid_date.' 
-                Betrag: CHF '.$amount.'
-                Details: '.$details.' 
-                
-                Melde dich bei uns sofern diese Buchung nicht korrekt ist.
-                ';
-
-    //php mailer variables
-    $to = get_option('admin_email');
-    $subject = "Neue Foodcoop Transaktion";
-    $options = get_option( 'foodcoop_plugin_options' );
-    $admin_email = $options['email'];
-    $headers = array('From: '.bloginfo('name').' <'.$admin_email.'>');
-
-    //$admin = wp_mail($to, $subject, $message, $headers);
-    $user = wp_mail($user_email, $subject, $message, $headers);
-    */
 
     $wpdb->insert($table, $data);
     $transaction_id = $wpdb->insert_id;
@@ -2323,6 +2536,7 @@ class FoodcoopRestRoutes {
       'orderby' => 'date',
       'order' => 'DESC',
       'return' => 'ids',
+      'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
       'customer' => intval($customer),
     ));
     $order_ids = $query->get_orders();
@@ -2383,7 +2597,8 @@ class FoodcoopRestRoutes {
       'limit' => 20,
       'orderby' => 'date',
       'order' => 'DESC',
-      'return' => 'ids',
+      'return' => 'ids',      
+      'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
     ));
     $query->set( 'customer', intval($customer->ID) );
     $order_ids = $query->get_orders();
@@ -2422,6 +2637,11 @@ class FoodcoopRestRoutes {
         "description" => $product->get_description(),
         "stock" => $product->get_stock_quantity()
       );
+
+      // prodcut tax rate
+      $taxclass = $product->get_tax_class();
+      $taxrates = WC_Tax::get_rates_for_tax_class( $taxclass );
+      $the_product['tax'] = floatval(array_merge($taxrates)[0]->tax_rate);
     
       // product meta data
       $the_meta = $product->get_meta_data();
@@ -2492,7 +2712,7 @@ class FoodcoopRestRoutes {
 
     $products = array();
     foreach ($p as $product) {
-      if ($product->get_sku() != "fcplugin_instant_topup_product") {
+      if ($product->get_sku() != "fcplugin_instant_topup_product" && $product->get_sku() != 'fcplugin_pos_product') {
         // product name
         $the_product = array(
           "id" => $product->get_id(),
@@ -2500,7 +2720,8 @@ class FoodcoopRestRoutes {
           "price" => $product->get_price(),
           "category_id" => $product->get_category_ids()[0],
           "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
-          "description" => $product->get_description()
+          "description" => $product->get_description(),
+          "tax" => $product->get_tax_class()
         );
       
         // product meta data
@@ -2658,18 +2879,22 @@ class FoodcoopRestRoutes {
       $product = wc_get_product($product_id);
 
       if ($product) {
-        $product_data = array(
-          'name' => $product->get_name(),
-          'price' => $product->get_price(),
-          'unit' => $product->get_meta('_einheit'),
-          'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
-          'amount' => 1, 
-          'sku' => $sku,
-          'product_id' => $product->get_id()
-        );
-    
-        return json_encode($product_data);
+        $quantity = $product->get_stock_quantity();
 
+        if ($quantity > 0) {
+          $product_data = array(
+            'name' => $product->get_name(),
+            'price' => $product->get_price(),
+            'unit' => $product->get_meta('_einheit'),
+            'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
+            'amount' => 1, 
+            'sku' => $sku,
+            'product_id' => $product->get_id()
+          );
+          return json_encode($product_data);
+        } else {
+          return json_encode(false);
+        }
       } else {
         return json_encode(false);
       }
@@ -2715,7 +2940,12 @@ class FoodcoopRestRoutes {
 
     $result = "";
     foreach($cart as $item) {
-      $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, NULL, array('bestellrunde'=>$item->bestellrunde) );
+      if ($item->order_type == 'self_checkout') {
+        $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, NULL, array('order_type' => $item->order_type) );
+      } 
+      if ($item->order_type == 'bestellrunde') {
+        $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, NULL, array('bestellrunde' => $item->bestellrunde, 'order_type' => $item->order_type) );
+      }
     }
 
     if ($result) {
@@ -2760,7 +2990,7 @@ class FoodcoopRestRoutes {
 
     $instant_topup_product = wc_get_product_id_by_sku( "fcplugin_instant_topup_product" );
 
-    $result = WC()->cart->add_to_cart( $instant_topup_product, $amount );
+    $result = WC()->cart->add_to_cart( $instant_topup_product, $amount, NULL, NULL, array('order_type' => 'instant_topup')  );
 
     if ($result) {
       return json_encode(wc_get_checkout_url());
@@ -2854,7 +3084,7 @@ class FoodcoopRestRoutes {
     foreach($orders as $order) {
       $email = $order->customer_email;
 
-      $message_to_send .= $message;      
+      $message_to_send = $message;      
 
       $headers[] = 'From: '. get_option('admin_email');
       $headers[] = 'Reply-To: ' . get_option('admin_email');
@@ -3305,7 +3535,90 @@ class FoodcoopRestRoutes {
     
     return ($number);
     
+  } 
+
+
+
+
+  /**
+  * postSaveDeliveryByOwner
+  */
+  function postSaveDeliveryByOwner($data) {
+    global $wpdb;
+    $product_id = $data['product_id'];
+    $user_id = intval($data['user_id']);
+    $amount = $data['amount'];
+
+    // calculate new product stock
+    $product = wc_get_product($product_id);
+    $old_stock = $product->get_stock_quantity();
+    $new_stock = $old_stock + floatval($amount);
+
+    // calculate balance to pay to member
+    $price = $product->get_price();
+    $balance = floatval($price * $amount); 
+    $balance = number_format($balance, 2, '.', '');
+
+    if (get_current_user_id() == $user_id) {
+      // update product stock
+      $product->set_stock_quantity(floatval($new_stock));
+      $product->save();
+
+      // update user's wallet balance
+      $table = $wpdb->prefix.'foodcoop_wallet';
+
+      // get current balance
+      $current_balance = 0.00;
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+      );
+      foreach ( $results as $result ) {
+        $current_balance = $result->balance;
+      }
+
+      date_default_timezone_set('Europe/Zurich');
+      $date = date("Y-m-d H:i:s");
+      $details = 'Neue Lieferung von Produkt '.$product->get_name().'('.$amount.'x)';
+      $created_by = get_current_user_id();
+      $new_balance = $current_balance + $balance;
+      $new_balance = number_format($new_balance, 2, '.', '');
+
+      $data = array('user_id' => $user_id, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+      $wpdb->insert($table, $data);
+
+      // inform the admin about the change
+      $headers[] = 'From: '. get_option('admin_email');
+      $headers[] = 'Reply-To: ' . get_option('admin_email');
+      $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+      $subj = __('Neue Lieferung durch Produktverwaltung von Produkt', 'fcplugin') . " " . $product->get_name() . "!";
+
+      $msg = '
+        <table border="0" cellpadding="0" cellspacing="0" class="list_block block-4" id="list-r1c0m3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+            <td class="pad" style="padding-bottom:10px;padding-left:35px;padding-right:35px;padding-top:10px;">
+            <div class="levelOne" style="margin-left: 0;">
+              <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
+                <li style="margin-bottom: 0; text-align: left;">Alter Bestand: '.$old_stock.'</li>
+                <li style="margin-bottom: 0; text-align: left;">Angelieferte Menge: '.$amount.'</li>
+                <li style="margin-bottom: 0; text-align: left;">Neuer Bestand: '.$new_stock.'</li>
+                <li style="margin-bottom: 0; text-align: left;">Guthaben ausbezahlt an Produktmanager (Mitglied '.$user_id.'): '.$balance.'</li>
+              </ul>
+            </div>
+            </td>
+          </tr>
+        </table>
+      ';
+
+      $send = wp_mail( get_option('admin_email'), $subj, $msg, $headers, '' );
+
+      return http_response_code(200);
+    } else {
+      return http_response_code(401);
+    } 
   }  
+
+  
   
   
   
@@ -3346,7 +3659,7 @@ class FoodcoopRestRoutes {
 
     $products = array();
     foreach ($p as $product) {
-      if ($product->get_sku() != "fcplugin_instant_topup_product") {
+      if ($product->get_sku() != "fcplugin_instant_topup_product" && $product->get_sku() != 'fcplugin_pos_product') {
 
         $pimg = wp_get_attachment_url( $product->get_image_id(), 'thumbnail');
         if (!$pimg) {
@@ -3390,9 +3703,272 @@ class FoodcoopRestRoutes {
     $currency = get_woocommerce_currency_symbol();
 
     return json_encode(array($products, $categories, $currency));
+  }  
+  
+  
+  
+  /**
+  * getPaymentGateways
+  */
+  function getPaymentGateways() {  
+    
+    $available_payment_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+
+    $active_gateways = array();
+  
+    foreach($available_payment_gateways as $gateway) {
+      $this_gateway = array();
+      $this_gateway['name'] = $gateway->method_title;
+      $this_gateway['id'] = $gateway->id;
+      $this_gateway['icon'] = $gateway->icon;
+      array_push($active_gateways, $this_gateway);
+    }
+    
+    if ( $available_payment_gateways ) {
+      return json_encode($active_gateways);
+    } else {
+      return http_response_code(500);
+    }
+  
+  }
+  
+  
+  
+  /**
+  * postCreatePOSorder
+  */
+  function postCreatePOSorder($data) {  
+    global $woocommerce;
+    global $wpdb;
+
+    $pos_user = intval($data['pos_user']);
+    $type = $data['type'];
+    $cart = json_decode($data['cart']);
+    $user = json_decode($data['user']);
+    $payment_gateway = json_decode($data['payment_gateway']);
+
+    // get user id
+    $user_id = null;
+    $type == 'memberOrder' && $user_id = $user->id;
+    $type == 'guestOrder' && $user_id = $user->ID;
+
+    // create wc order
+    $order = wc_create_order();
+    $order->update_meta_data( 'order_type', 'pos' );
+
+    // add products to order 
+    foreach($cart as $cart_item) {
+      // check if it is the pos_product
+      if ($cart_item->sku == 'fcplugin_pos_product') {
+        $pid = wc_get_product_id_by_sku( "fcplugin_pos_product" );
+        $order->add_product( wc_get_product( $pid ), $cart_item->amount, array(
+          'name'         => $cart_item->name,
+          'subtotal'     => floatval($cart_item->price) * floatval($cart_item->amount),
+          'total'        => floatval($cart_item->price) * floatval($cart_item->amount)
+        ));
+      } else {
+        $order->add_product( wc_get_product( $cart_item->product_id ), $cart_item->amount );
+      }
+    }
+
+    // calculate order totals
+    $order->calculate_totals();
+
+    // if it is a guest order, add a fee as a non-member margin
+    if ($type == 'guestOrder') {
+      $order_total = $order->get_total();
+      $fee_amount = $order_total / 100 * floatval(get_option('fc_margin'));
+
+      $fee = new WC_Order_item_Fee();
+      $fee->set_name(__('Nicht-Mitglieder Marge', 'fcplugin'));
+      $fee->set_amount($fee_amount);
+      $fee->set_total($fee_amount);
+      $order->add_item( $fee );
+      $order->calculate_totals();
+    }
+
+    // if it is a member order, add member information
+    if ($type == 'memberOrder') { 
+      $order->set_customer_id($user_id);
+
+      // set address
+      $address = array(
+        'first_name' => get_user_meta($user_id, 'billing_first_name', true),
+        'last_name'  => get_user_meta($user_id, 'billing_last_name', true),
+        'email'      => get_user_meta($user_id, 'billing_email', true),
+        'phone'      => get_user_meta($user_id, 'billing_phone', true),
+        'address_1'  => get_user_meta($user_id, 'billing_address_1', true),
+        'city'       => get_user_meta($user_id, 'billing_city', true),
+        'state'      => '',
+        'postcode'   => get_user_meta($user_id, 'billing_postcode', true),
+        'country'    => get_user_meta($user_id, 'billing_country', true)
+      );
+      $order->set_address( $address, 'billing' );    
+    }
+
+    // if it is a guest order, set name to guest
+    if ($type == 'guestOrder') { 
+      $address = array(
+        'first_name' => 'Guest',
+      );
+      $order->set_address( $address, 'billing' );    
+    }
+
+    // set payment gateway for order and process payment if it is foodcoop_guthaben
+    $order->set_payment_method( $payment_gateway->id );
+    $order->set_payment_method_title( $payment_gateway->name );
+
+    if ($payment_gateway->id == 'foodcoop_guthaben') {
+      $new_balance = floatval($user->balance) - $order->get_total();
+      $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order->get_total() . '; Neues Guthaben: CHF' . $new_balance;
+      $order->update_status( 'processing', $order_note );
+
+      // Add Wallet Transaction
+      $table = $wpdb->prefix.'foodcoop_wallet';
+
+      date_default_timezone_set('Europe/Zurich');
+      $date = date("Y-m-d H:i:s");
+      $details = 'Bestellung #'.$order->id.' (POS Bestellung)';
+      $amount = -1 * $order->get_total();
+      $new_balance = floatval($user->balance) - $order->get_total();
+      $new_balance = number_format($new_balance, 2, '.', '');
+      $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order->get_total() . '; Neues Guthaben: CHF' . $new_balance;
+      $order->update_status( 'processing', $order_note );
+
+      $data = array('user_id' => $user_id, 'amount' => $amount, 'date' => $date, 'details' => $details, 'created_by' => $pos_user, 'balance' => $new_balance, 'type' => 'order');
+      $wpdb->insert($table, $data);
+    }
+
+
+    // set order status to complete and save
+    $order->update_status( 'wc-completed' );
+    $order->save();
+    
+    if ( $order ) {
+      return json_encode($order);
+    } else {
+      return http_response_code(500);
+    }
+  
   }
 
 
 
+  /**
+   * postSaveProductOwner
+   */
+  function postSaveProductOwner($data) {
+    $user_id = $data['user_id'];
+    $product_id = $data['product_id'];
 
+    $product = wc_get_product($product_id);
+
+    $product->update_meta_data('fc_owner', $user_id);
+    $product->save();
+    
+    
+    if ( $product ) {
+      return json_encode($product);
+    } else {
+      return http_response_code(500);
+    }
+  }
+
+
+  /**
+   * getProductOwner
+   */
+  function getProductOwner($data) {
+    $product_id = $data['product_id'];
+
+    $product = wc_get_product($product_id);
+    $product && $user_id = $product->get_meta('fc_owner');
+    
+    if ( $user_id ) {
+      return json_encode($user_id);
+    } else {
+      return http_response_code(500);
+    }
+  }  
+
+  /**
+  * postProductDescriptionUpdate
+  */
+  function postProductDescriptionUpdate($data) {
+    $product = wc_get_product(intval($data['id']));
+    $product->set_description($data['description']);
+    $product->save();
+    return json_encode($data['id']);
+  }
+
+
+  /**
+   * postDuplicateBestellrunde
+   */
+  function postDuplicateBestellrunde($data) {
+
+    $bestellrunde_to_duplicate = get_post(intval($data['id']));
+    $old_id = $bestellrunde_to_duplicate->ID;
+    
+    // unset id, rename, then duplicate
+    unset($bestellrunde_to_duplicate->ID);
+    $img_id = get_post_thumbnail_id($old_id);
+
+    $id = wp_insert_post($bestellrunde_to_duplicate);
+    set_post_thumbnail($id, $img_id);
+    update_post_meta( $id, 'bestellrunde_start', get_post_meta($old_id, 'bestellrunde_start', true ), true);
+    update_post_meta( $id, 'bestellrunde_ende', get_post_meta($old_id, 'bestellrunde_ende', true ), true);
+    update_post_meta( $id, 'bestellrunde_verteiltag', get_post_meta($old_id, 'bestellrunde_verteiltag', true ), true);
+    update_post_meta( $id, 'bestellrunde_name', 'Kopie von '. get_post_meta($old_id, 'bestellrunde_name', true ), true);
+    update_post_meta( $id, 'bestellrunde_products', get_post_meta($old_id, 'bestellrunde_products', true ), true);
+
+    if ($id) {
+      return http_response_code(200);
+    } else {
+      return http_response_code(500);
+    }
+
+  }
+
+
+  
+  /**
+  * postCompleteBestellrunde
+  */
+ function postCompleteBestellrunde($data) {
+   update_post_meta( intval($data['id']), 'bestellrunde_complete', 1 );
+
+   add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'custom_order_query', 10, 2 );
+   function custom_order_query($query, $query_vars){
+       if ( ! empty( $query_vars['bestellrunde_id'] ) ) {
+           $query['meta_query'][] = array(
+               'key' => 'bestellrunde_id',
+               'value' => esc_attr( $query_vars['bestellrunde_id'] ),
+               'compare' => '='
+           );
+       }
+       return $query;
+   }
+
+   $args = array(
+     'status'        => array('completed', 'processing', 'on-hold', 'refunded'),
+     'meta_key'     => 'bestellrunde_id',
+     'meta_value'  =>  $data['id'],
+     'meta_compare' => '=', 
+     'return'        => 'ids',
+     'limit'   => -1
+   );
+   $orders = wc_get_orders( $args );
+
+   foreach($orders as $order_id) {
+    $order = wc_get_order($order_id);
+    $order->set_status('wc-completed');
+    $order->save();
+   }
+
+   return json_encode($orders);
+ }
+
+
+  
 }

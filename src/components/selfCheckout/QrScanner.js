@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { QrReader } from "react-qr-reader"
+import { Stack } from "@mui/material"
 import axios from "axios"
 const __ = wp.i18n.__
 
@@ -36,10 +37,11 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
             if (response.data) {
               const res = JSON.parse(response.data)
               if (!res) {
-                setProductError("Produkt wurde nicht gefunden")
+                setProductError("Produkt wurde nicht gefunden oder ist nicht an Lager.")
               } else {
                 let newCart = cart
                 res.id = newCart.length
+                res.order_type = "self_checkout"
                 newCart.push(res)
                 setCart(newCart)
                 if (newCart.length > 0) {
@@ -60,7 +62,8 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
   }
 
   return (
-    <>
+    <Stack spacing={3} sx={{ width: "100%", padding: "20px" }}>
+      <h2>{__("QR Code scannen", "fcplugin")}</h2>{" "}
       <QrReader
         videoContainerStyle={containerStyle}
         constraints={{ facingMode: "environment" }}
@@ -71,7 +74,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
         }}
         style={{ width: "100%" }}
       />
-    </>
+    </Stack>
   )
 }
 

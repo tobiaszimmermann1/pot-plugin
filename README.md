@@ -28,6 +28,40 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.5
+
+- Fixed a bug where foodcoop balance displayed a wrong value during ordering.
+- For payment gateway foodcoop balance: if balance is too low, the place order button is disabled (prevents the creation of failed orders)
+- Added an option to manually mark a Bestellrunde as completed (changes the status of all orders to completed as well)
+  //- Added an option to block users who have not yet payed the yearly fee from ordering, with the option to pay the fee directly with the push of a button using their balance
+
+### 1.7.4
+
+- Introduction of new feature: **POS Mode for Self Checkout**: create orders for users or guests
+- Introduction of new feature: **Product ownership** Users can be owners of products and will be able
+- Added a setting to activate / deactivate **sales tax**: Sales taxes will be shown in backend and frontend and added to cart and order totalsto edit a the product's information and stock level in their dashboard
+- Improved ordering list ui
+- Redesigned Foodcoop Dashboard in My Account with tabs for balance, transactions and products
+- Added a validation for product imports that checks for identical sku's and shows a warning
+- Added support for Woocommerce Checkout Block (mordern checkout ui)
+- Made all functions compatible with WooCommerce HPOS and declared HPOS compatibility
+- Added a setting to enable all payment methods for orders that are part of a bestellrunde
+- Fixed product image uploads when importing products: correct handling of wordpress media library. If an image is already in the library, it will be linked to the product instead of reuploaded (search by image name)
+- Added an option to edit product descriptions directly from the product list using a simplified wysiwyg editor
+- Added an option to duplicate an ordering round
+- fixed admin bar for foodcoop_manager role (removed all items from it)
+- fixed a bug where previous order was not correctly filtered when placing regular woocommerce orders and there is a pending collective order
+- fixed a bug that prevented entering of decimal numbers in self checkout amount field
+- fixed a bug that blocked importing of products after end of an ordering round
+- fixed a bug where user id was no saved for added transactions
+- fixed a bug in Self Checkout where cart margin was applied wrongly
+- various other small fixes
+
+### 1.7.3
+
+- Bugfix: Payment Gateway fixed for WooCommerce HPOS compatibility
+- Bugfix: Safari interpreted ISO date format with space wrong in certain circumstances (older versions of the browser)
+
 ### 1.7.2
 
 - Bugfix: Stock status of products with 0 stock did not change to instock when inventory was disabled

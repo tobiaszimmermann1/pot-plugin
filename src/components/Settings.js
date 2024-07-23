@@ -23,6 +23,7 @@ const __ = wp.i18n.__
 const Settings = () => {
   const [options, setOptions] = useState(null)
   const [fee, setFee] = useState()
+  const [margin, setMargin] = useState()
   const [bank, setBank] = useState()
   const [transfer, setTransfer] = useState()
   const [address, setAddress] = useState()
@@ -30,7 +31,7 @@ const Settings = () => {
   const [city, setCity] = useState()
   const [blogname, setBlogname] = useState()
   const [pages, setPages] = useState(null)
-  const [orderPage, setOrderPage] = useState()
+  const [orderPage, setOrderPage] = useState("none")
   const [publicPrices, setPublicPrices] = useState()
   const [publicMembers, setPublicMembers] = useState()
   const [instantTopup, setInstantTopup] = useState()
@@ -39,6 +40,8 @@ const Settings = () => {
   const [submitting, setSubmitting] = useState(false)
   const [enableStock, setEnableStock] = useState(false)
   const [enableSelfCheckout, setEnableSelfCheckout] = useState(false)
+  const [enableTaxes, setEnableTaxes] = useState(false)
+  const [enablePaymentByBill, setEnablePaymentByBill] = useState(false)
 
   useEffect(() => {
     axios
@@ -81,6 +84,7 @@ const Settings = () => {
     if (options) {
       console.log(options)
       setFee(options.fc_fee)
+      setMargin(options.fc_margin)
       setBank(options.fc_bank)
       setTransfer(options.fc_transfer)
       setAddress(options.woocommerce_store_address)
@@ -95,6 +99,8 @@ const Settings = () => {
       setAdminEmail(options.admin_email)
       options.woocommerce_manage_stock === "yes" ? setEnableStock(true) : setEnableStock(false)
       options.fc_self_checkout === "1" ? setEnableSelfCheckout("1") : setEnableSelfCheckout("0")
+      options.fc_taxes === "1" ? setEnableTaxes(true) : setEnableTaxes(false)
+      options.fc_enable_payment_by_bill === "1" ? setEnablePaymentByBill(true) : setEnablePaymentByBill(false)
     }
   }, [options])
 
@@ -119,7 +125,10 @@ const Settings = () => {
           publicProducts: publicProducts,
           adminEmail: adminEmail,
           enableStock: enableStock,
-          enableSelfCheckout: enableSelfCheckout
+          enableSelfCheckout: enableSelfCheckout,
+          margin: margin,
+          taxes: enableTaxes,
+          enablePaymentByBill: enablePaymentByBill
         },
         {
           headers: {
@@ -191,6 +200,25 @@ const Settings = () => {
               </FormControl>
             </Grid>
             <Grid item xs={4}>
+              {__("Marge für Nicht-Mitglieder", "fcplugin")}
+              <br />
+              <small>{__("Marge für Gast-Einkäufe. Die Marge wird an der Kasse als Gebühr hinzugefügt.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <FormControl fullWidth>
+                <TextField
+                  variant="outlined"
+                  id="fc_margin"
+                  label="%"
+                  type="number"
+                  value={margin ? margin : options.fc_margin}
+                  onChange={event => {
+                    setMargin(event.target.value)
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
               {__("Bankverbindung IBAN", "fcplugin")}
             </Grid>
             <Grid item xs={8}>
@@ -202,25 +230,6 @@ const Settings = () => {
                   value={bank ? bank : options.fc_bank}
                   onChange={event => {
                     setBank(event.target.value)
-                  }}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              {__("Instruktionen für die Banküberweisung", "fcplugin")}
-            </Grid>
-            <Grid item xs={8}>
-              <FormControl fullWidth>
-                <TextField
-                  variant="outlined"
-                  id="fc_transfer"
-                  label="Instruktionen Überweisung"
-                  type="text"
-                  multiline
-                  rows={4}
-                  value={transfer ? transfer : options.fc_transfer}
-                  onChange={event => {
-                    setTransfer(event.target.value)
                   }}
                 />
               </FormControl>
@@ -294,6 +303,31 @@ const Settings = () => {
             </Grid>
 
             <Grid item xs={4}>
+              {__("Mehrwertsteuer", "fcplugin")}
+              <br />
+              <small>{__("Aktiviert, bzw. deaktiviert die Mehrwertsteuer.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enableTaxes}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnableTaxes(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+              <Alert severity="warning" sx={{ marginTop: "10px" }}>
+                {__("Die Steuersätze müssen separat konfiguriert werden!", "fcplugin")}{" "}
+                <a href={`${appLocalizer.homeUrl}/wp-admin/admin.php?page=wc-settings&tab=tax`} target="_blank">
+                  {__("Zur Konfiguration der Steuersätze", "fcplugin")}
+                </a>
+              </Alert>
+            </Grid>
+
+            <Grid item xs={4}>
               {__("Self Checkout", "fcplugin")}
               <br />
               <small>{__("Aktiviert, bzw. deaktiviert den Self-Checkout.", "fcplugin")}</small>
@@ -309,6 +343,25 @@ const Settings = () => {
               >
                 <ToggleButton value={"1"}> {__("Aktiviert", "fcplugin")} </ToggleButton>
                 <ToggleButton value={"0"}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+
+            <Grid item xs={4}>
+              {__("Bezahlung auf Rechnung zulassen?", "fcplugin")}
+              <br />
+              <small>{__("Wenn aktiviert, lässt das Plugin bei Sammelbestellungen alle aktivierten Zahlungsmethoden zu.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enablePaymentByBill}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnablePaymentByBill(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
 
@@ -343,6 +396,9 @@ const Settings = () => {
                   <FormControl fullWidth>
                     <InputLabel id="fc_order_page">Bestellseite</InputLabel>
                     <Select labelId="fc_order_page" id="fc_order_page-select" value={orderPage} label="Bestellseite" onChange={e => setOrderPage(e.target.value)}>
+                      <MenuItem key={"none"} value={"none"}>
+                        keine
+                      </MenuItem>
                       {pages.map(page => (
                         <MenuItem key={page.id} value={page.id}>
                           {page.title}

@@ -28,6 +28,8 @@ import UpdateIcon from "@mui/icons-material/Update"
 import EmailIcon from "@mui/icons-material/Email"
 import Divider from "@mui/material/Divider"
 import NotificationModal from "./bestellrunden/Notification"
+import Tooltip from "@mui/material/Tooltip"
+import CompleteModal from "./bestellrunden/CompleteModal"
 
 const Bestellrunden = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -38,6 +40,9 @@ const Bestellrunden = () => {
   const [bestellrunden, setBestellrunden] = useState()
   const [selectedBestellrunde, setSelectedBestellrunde] = useState()
   const [loading, setLoading] = useState(true)
+  const [completeModalOpen, setCompleteModalOpen] = useState(false)
+  const [completeBestellrundeId, setCompleteBestellrundeId] = useState(null)
+  const [reload, setReload] = useState(0)
   const [statusMessage, setStatusMessage] = useState({
     message: null,
     type: null,
@@ -61,6 +66,7 @@ const Bestellrunden = () => {
             bestellrundeToDo.id = b.id
             bestellrundeToDo.bestellrunde_name = b.bestellrunde_name
             bestellrundeToDo.bestellrunde_bild = b.bestellrunde_bild
+            bestellrundeToDo.bestellrunde_complete = b.bestellrunde_complete
 
             if (!bestellrundeToDo.bestellrunde_name) {
               bestellrundeToDo.bestellrunde_name = __("Bestellrunde", "fcplugin") + " " + bestellrundeToDo.id
@@ -76,10 +82,10 @@ const Bestellrunden = () => {
         }
       })
       .catch(error => console.log(error))
-  }, [])
+  }, [reload])
 
   /**
-   * Product Table
+   * Table
    */
 
   const columns = useMemo(
@@ -91,17 +97,52 @@ const Bestellrunden = () => {
         size: 50
       },
       {
+        accessorKey: "bestellrunde_complete",
         header: __("Status", "fcplugin"),
         enableEditing: false,
         size: 50,
-        Cell: ({ row }) => {
+        Cell: ({ cell, row }) => {
           //           if (isBefore(parse(new Date(row.original.bestellrunde_start)), parse(new Date())) && isBefore(parse(new Date()), isBefore(parse(new Date(row.original.bestellrunde_start))))) {
 
           if (isFuture(new Date(row.original.bestellrunde_verteiltag)) && isPast(new Date(row.original.bestellrunde_start))) {
-            return <PendingIcon color="warning" />
+            return cell.getValue() === "1" ? (
+              <CheckCircleIcon color="primary" />
+            ) : (
+              <>
+                <PendingIcon color="warning" />
+                <Tooltip placement="top" title={__("Bestellrunde abschliessen", "fcplugin")}>
+                  <CheckCircleIcon
+                    color="secondary"
+                    className="fc_finish"
+                    onClick={() => {
+                      setCompleteModalOpen(true)
+                      setCompleteBestellrundeId(row.original.id)
+                    }}
+                  />
+                </Tooltip>
+                {cell.getValue()}
+              </>
+            )
           } else {
             if (isPast(new Date(row.original.bestellrunde_ende))) {
-              return <CheckCircleIcon color="success" />
+              return cell.getValue() === "1" ? (
+                <CheckCircleIcon color="primary" />
+              ) : (
+                <>
+                  <PendingIcon color="warning" />
+                  <Tooltip placement="top" title={__("Bestellrunde abschliessen", "fcplugin")}>
+                    <CheckCircleIcon
+                      color="secondary"
+                      className="fc_finish"
+                      onClick={() => {
+                        setCompleteModalOpen(true)
+                        setCompleteBestellrundeId(row.original.id)
+                      }}
+                    />
+                  </Tooltip>
+                  {cell.getValue()}
+                </>
+              )
             } else {
               return (
                 <>
@@ -239,6 +280,28 @@ const Bestellrunden = () => {
       .catch(error => console.log(error))
   }
 
+  function handleDuplicateRow(row) {
+    console.log(row)
+
+    axios
+      .post(
+        `${appLocalizer.apiUrl}/foodcoop/v1/postDuplicateBestellrunde`,
+        {
+          id: row.original.id
+        },
+        {
+          headers: {
+            "X-WP-Nonce": appLocalizer.nonce
+          }
+        }
+      )
+      .then(function (response) {
+        setReload(reload + 1)
+        console.log(response.data)
+      })
+      .catch(error => console.log(error))
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setStatusMessage({
@@ -275,6 +338,10 @@ const Bestellrunden = () => {
                 <Divider orientation="vertical" flexItem />
                 <IconButton color="#cccccc" size="small" onClick={() => handleDeleteRow(row)}>
                   <DeleteIcon />
+                </IconButton>
+                <Divider orientation="vertical" flexItem />
+                <IconButton color="#cccccc" size="small" onClick={() => handleDuplicateRow(row)}>
+                  <ContentCopyIcon />
                 </IconButton>
                 <Divider orientation="vertical" flexItem />
                 <Button
@@ -347,6 +414,7 @@ const Bestellrunden = () => {
       <NotificationModal open={notificationModalOpen} id={selectedBestellrunde} setModalClose={setNotificationModalOpen} />
       {productsModalOpen && <ProductsOfBestellrundeModal id={selectedBestellrunde} setModalClose={setProductsModalOpen} />}
       {mutationsModalOpen && <Mutations id={selectedBestellrunde} setModalClose={setMutationsModalOpen} />}
+      {completeModalOpen && <CompleteModal id={completeBestellrundeId} setModalClose={setCompleteModalOpen} setReload={setReload} reload={reload} />}
     </>
   )
 }

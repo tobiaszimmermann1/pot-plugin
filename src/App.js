@@ -25,23 +25,23 @@ const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#00796b"
+      main: "#00796b",
     },
     secondary: {
-      main: "#CFD8DC"
+      main: "#CFD8DC",
     },
     background: {
       default: "#fbfbfb",
-      paper: "#ffffff"
+      paper: "#ffffff",
     },
     success: {
-      main: "#00c853"
-    }
-  }
+      main: "#00c853",
+    },
+  },
 })
 
 function App() {
-  const [activeTab, setActiveTab] = useState("dashboard")
+  const [activeTab, setActiveTab] = useState("orderingRounds")
   const [name, setName] = useState()
   const [permissions, setPermissions] = useState([])
   const [role, setRole] = useState([])
@@ -62,8 +62,8 @@ function App() {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUser?id=${appLocalizer.currentUser.ID}`, {
         headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
+          "X-WP-Nonce": appLocalizer.nonce,
+        },
       })
       .then(function (response) {
         if (response.data) {
@@ -73,7 +73,7 @@ function App() {
           setLoading(false)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [])
 
   const pluginMenu = useRef()

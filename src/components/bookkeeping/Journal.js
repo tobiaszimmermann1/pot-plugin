@@ -70,7 +70,7 @@ const Journal = () => {
         let theTransaction = {}
         theTransaction["type"] = __("Guthaben Transaktion", "fcplugin")
         theTransaction["id"] = transaction.id
-        theTransaction["date"] = format(new Date(transaction.date), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+        theTransaction["date"] = format(new Date(transaction.date.replace(" ", "T")), "yyyy-MM-dd'T'HH:mm:ss'Z'")
         theTransaction["details"] = __("Mitglied", "fcplugin") + ": " + transaction.user_id + " (" + transaction.user_name + ") - " + transaction.details
         transaction.amount >= 0 ? (theTransaction["plus"] = transaction.amount) : (theTransaction["minus"] = -1 * transaction.amount)
         journalData.push(theTransaction)
@@ -80,7 +80,7 @@ const Journal = () => {
         let theExpense = {}
         theExpense["type"] = __("Ausgabe", "fcplugin")
         theExpense["id"] = expense.id
-        theExpense["date"] = format(new Date(expense.date), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+        theExpense["date"] = format(new Date(expense.date.replace(" ", "T")), "yyyy-MM-dd'T'HH:mm:ss'Z'")
         theExpense["details"] = expense.type + " (" + expense.note + ") " + __("erstellt von Mitglied", "fcplugin") + ": " + expense.created_by
         expense.amount <= 0 ? (theExpense["plus"] = -1 * expense.amount) : (theExpense["minus"] = expense.amount)
 
@@ -112,7 +112,7 @@ const Journal = () => {
       {
         accessorKey: "date",
         header: __("Datum", "fcplugin"),
-        Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy")
+        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy - HH:mm")
       },
       {
         accessorKey: "plus",

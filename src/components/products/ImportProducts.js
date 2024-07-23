@@ -12,20 +12,20 @@ const styles = {
   csvReader: {
     display: "flex",
     flexDirection: "row",
-    marginBottom: 10
+    marginBottom: 10,
   },
   acceptedFile: {
     height: 35,
-    width: "100%"
+    width: "100%",
   },
   progressBarBackgroundColor: {
     marginTop: "10px",
     marginBottom: "10px",
-    backgroundColor: "gray"
-  }
+    backgroundColor: "gray",
+  },
 }
 
-function ImportProducts({ setModalClose, categories }) {
+function ImportProducts({ setModalClose, categories, reload, setReload }) {
   const [submitting, setSubmitting] = useState(false)
   const { CSVReader } = useCSVReader()
   const [validationError, setValidationError] = useState(null)
@@ -41,13 +41,13 @@ function ImportProducts({ setModalClose, categories }) {
         let reArrangedBestellrunden = []
         if (response.data) {
           const res = JSON.parse(response.data)
-          res.map(b => {
+          res.map((b) => {
             let bestellrundeToDo = {}
             bestellrundeToDo.author = b.name
-            bestellrundeToDo.bestellrunde_start = format(new Date(b.bestellrunde_start), "yyyy-MM-dd")
-            bestellrundeToDo.bestellrunde_ende = format(new Date(b.bestellrunde_ende), "yyyy-MM-dd")
-            bestellrundeToDo.bestellrunde_verteiltag = format(new Date(b.bestellrunde_verteiltag), "yyyy-MM-dd")
-            bestellrundeToDo.date_created = format(new Date(b.date_created), "yyyy-MM-dd")
+            bestellrundeToDo.bestellrunde_start = format(new Date(b.bestellrunde_start.replace(" ", "T")), "yyyy-MM-dd")
+            bestellrundeToDo.bestellrunde_ende = format(new Date(b.bestellrunde_ende.replace(" ", "T")), "yyyy-MM-dd")
+            bestellrundeToDo.bestellrunde_verteiltag = format(new Date(b.bestellrunde_verteiltag.replace(" ", "T")), "yyyy-MM-dd")
+            bestellrundeToDo.date_created = format(new Date(b.date_created.replace(" ", "T")), "yyyy-MM-dd")
             bestellrundeToDo.id = b.id
             reArrangedBestellrunden.push(bestellrundeToDo)
           })
@@ -55,14 +55,14 @@ function ImportProducts({ setModalClose, categories }) {
           setBestellrunden(reArrangedBestellrunden)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
   }, [])
 
   useEffect(() => {
     if (bestellrunden) {
       let active = false
-      bestellrunden.map(bestellrunde => {
-        if (new Date(bestellrunde.bestellrunde_start).getTime() <= new Date().getTime() && new Date(bestellrunde.bestellrunde_verteiltag).getTime() >= new Date().getTime()) {
+      bestellrunden.map((bestellrunde) => {
+        if (new Date(bestellrunde.bestellrunde_start).getTime() <= new Date().getTime() && new Date(bestellrunde.bestellrunde_ende).getTime() >= new Date().getTime()) {
           active = true
         }
       })
@@ -76,12 +76,12 @@ function ImportProducts({ setModalClose, categories }) {
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postImportProducts`,
         {
-          products: JSON.stringify(validatedData)
+          products: JSON.stringify(validatedData),
         },
         {
           headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
+            "X-WP-Nonce": appLocalizer.nonce,
+          },
         }
       )
       .then(function (response) {
@@ -90,8 +90,9 @@ function ImportProducts({ setModalClose, categories }) {
           setValidationSuccess(msg)
         }
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error))
       .finally(() => {
+        setReload(reload + 1)
         setSubmitting(false)
       })
   }
@@ -103,16 +104,16 @@ function ImportProducts({ setModalClose, categories }) {
         <DialogContent
           sx={{
             paddingTop: "10px",
-            minHeight: "300px"
+            minHeight: "300px",
           }}
         >
           <CSVReader
             config={{ delimiter: ";" }}
-            onError={error => {
+            onError={(error) => {
               setValidationError(error.message)
             }}
             onRemoveFile={() => {}}
-            onUploadAccepted={results => {
+            onUploadAccepted={(results) => {
               console.log(results.data)
               /**
                * Validate uploaded products csv file
@@ -122,7 +123,7 @@ function ImportProducts({ setModalClose, categories }) {
               /**
                * 1. Validate Number of Columns
                */
-              if (results.data[0].length !== 13) {
+              if (results.data[0].length !== 14) {
                 setValidationError(__("Die Datei hat nicht exakt 13 Spalten.", "fcplugin"))
                 validated = false
               }
@@ -182,18 +183,22 @@ function ImportProducts({ setModalClose, categories }) {
                 setValidationError(__("Spalte 13 muss 'supplier' heissen.", "fcplugin"))
                 validated = false
               }
+              if (results.data[0][13] !== "tax") {
+                setValidationError(__("Spalte 14 muss 'tax' heissen.", "fcplugin"))
+                validated = false
+              }
 
               /**
                * 3. Validate that there are no empty cells
                */
               let r = 1
               let errors = ""
-              results.data.map(row => {
+              results.data.map((row) => {
                 if (r !== results.data.length) {
                   let c = 1
-                  row.map(cell => {
+                  row.map((cell) => {
                     if (cell === "") {
-                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11 && c !== 12) {
+                      if (c !== 8 && c !== 9 && c !== 10 && c !== 11 && c !== 12 && c !== 14) {
                         errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
                         validated = false
                       }
@@ -204,7 +209,7 @@ function ImportProducts({ setModalClose, categories }) {
                 }
               })
               if (errors !== "") {
-                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image', 'description' und 'sku').", "fcplugin") + errors)
+                setValidationError(__("Zellen dürfen nicht leer sein (ausser 'id' bei neuen Produkten,'short_description', 'image', 'description', 'sku' und 'tax').", "fcplugin") + errors)
                 validated = false
               }
 
@@ -213,7 +218,7 @@ function ImportProducts({ setModalClose, categories }) {
                */
               r = 1
               errors = ""
-              results.data.map(row => {
+              results.data.map((row) => {
                 if (r !== results.data.length && r !== 1) {
                   if (isNaN(row[1])) {
                     errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: 2] `
@@ -241,7 +246,7 @@ function ImportProducts({ setModalClose, categories }) {
                */
               r = 1
               errors = ""
-              results.data.map(row => {
+              results.data.map((row) => {
                 if (r !== results.data.length && r !== 1) {
                   if (!categories.includes(row[6])) {
                     errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: 7] `
@@ -256,11 +261,35 @@ function ImportProducts({ setModalClose, categories }) {
                 validated = false
               }
 
+              /**
+               * 6. Validate skus: no identical skus allowed
+               */
+              r = 1
+              errors = ""
+              let skus = []
+              results.data.map((row) => {
+                if (r !== results.data.length && r !== 1) {
+                  if (row[11] !== "") skus.push(row[11])
+                }
+                r++
+              })
+              errors += [...new Set(skus.filter((item, index) => skus.indexOf(item) !== index))]
+              console.log(errors)
+
+              if (errors.length !== 0) {
+                setValidationError(__("Doppelte Artikelnummern (sku) gefunden. Alle Artikelnummern müssen einzigartig sein:", "fcplugin") + ` ${errors} `)
+                validated = false
+              }
+
+              /**
+               * Validation completed
+               */
+
               if (validated === true) {
                 setValidationSuccess(__("Datei wurde geprüft und ist bereit zum Import", "fcplugin"))
                 let checkedData = []
                 r = 1
-                results.data.map(row => {
+                results.data.map((row) => {
                   if (r !== results.data.length && r !== 1) {
                     checkedData.push(row)
                   }
@@ -297,7 +326,7 @@ function ImportProducts({ setModalClose, categories }) {
                     <Button
                       variant="contained"
                       {...getRemoveFileProps()}
-                      onClick={event => {
+                      onClick={(event) => {
                         getRemoveFileProps().onClick(event)
                         setValidationError(null)
                         setValidationSuccess(null)

@@ -39,6 +39,7 @@
       if ( !in_array($product_lieferant, $lieferanten) ) {
         array_push($lieferanten,$product_lieferant);
       }
+      sort($lieferanten);
 
       // products and order_items
       $item_array = array();
@@ -81,6 +82,7 @@
       array_push($order_items, $item_array);
     }
   }
+  usort($produkte, function($a, $b) { return strcmp($a[3], $b[3]);});
 
   // structure the products data
   $products_by_lieferant = array();

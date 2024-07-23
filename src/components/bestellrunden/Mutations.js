@@ -84,7 +84,8 @@ function Mutations({ id, setModalClose }) {
           product: selectedProduct.id,
           orders: ordersToMutate,
           mutation_type: mutationType,
-          price: priceAdjust
+          price: priceAdjust,
+          created_by: appLocalizer.currentUser.ID
         },
         {
           headers: {
@@ -95,6 +96,7 @@ function Mutations({ id, setModalClose }) {
       .then(function (response) {
         if (response) {
           setSuccess(true)
+          console.log(response.data)
         }
       })
       .catch(error => console.log(error))

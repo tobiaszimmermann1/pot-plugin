@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
-import { Box, CircularProgress } from "@mui/material"
+import { Box, LinearProgress } from "@mui/material"
 import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
 
@@ -65,6 +65,7 @@ const OrderListInActive = () => {
         productToDo.short_description = p.short_description
         productToDo.image = p.image
         productToDo.description = p.description
+        productToDo.tax = p.tax
 
         productToDo.price = p.price
         // public prices?
@@ -117,9 +118,9 @@ const OrderListInActive = () => {
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-      <CircularProgress />
-    </div>
+    <Box sx={{ width: "100%" }}>
+      <LinearProgress />
+    </Box>
   )
 }
 

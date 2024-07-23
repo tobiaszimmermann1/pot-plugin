@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.7.2
+Version: 1.7.5
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -64,6 +64,16 @@ function activate_foodcoop_plugin() {
   flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'activate_foodcoop_plugin' );
+
+
+/**
+ * Declare WooCommerce HPOS compatibility
+ */
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 
 
 
@@ -124,6 +134,24 @@ function fc_remove_menu_pages() {
    remove_menu_page('woocommerce-marketing');
   }
 }
+
+// Hide admin bar for foodcoop_manager
+function fc_remove_from_admin_bar($wp_admin_bar) {
+
+  $user = wp_get_current_user();
+  if (in_array('foodcoop_manager', $user->roles)) {
+    $wp_admin_bar->remove_node('updates');
+    $wp_admin_bar->remove_node('comments');
+    $wp_admin_bar->remove_node('new-content');
+    $wp_admin_bar->remove_node('wp-logo');
+    $wp_admin_bar->remove_node('site-name');
+    $wp_admin_bar->remove_node('my-account');
+    $wp_admin_bar->remove_node('search');
+    $wp_admin_bar->remove_node('customize');
+  }
+}
+add_action('admin_bar_menu', 'fc_remove_from_admin_bar', 999);
+
 
 
 
@@ -223,7 +251,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.2', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -231,16 +259,16 @@ function fc_admin_load_scripts() {
     'pluginUrl' => plugin_dir_url(__FILE__),
     'nonce' => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version' => "1.7.2"
+    'version' => "1.7.5"
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.2' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.5' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.2', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -253,7 +281,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.2' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.5' );
 }
 
 add_action( 'init', 'fc_init');
@@ -533,16 +561,17 @@ add_action( 'init', 'fcplugin_disable_new_user_notifications' );
 
 
 
-/**
+/*
  * Steps indicator 2/2 at checkout
- */
+ 
 
  add_action( 'woocommerce_before_checkout_form', 'skyverge_add_checkout_content', 12 );
  function skyverge_add_checkout_content() {
   echo '<h2 class="fc_order_list_header_steps">';
-  echo __("Schritt 2 / 2: Rechnungsadresse aktualisieren und Bestellung abschliessen.", "fcplugin");
+  echo __("Schritt 2 / 2: Rechnungsadresse aktualisieren und Einkauf abschliessen.", "fcplugin");
   echo '</h2>';
  }
+ */
 
 
  /**
@@ -662,24 +691,6 @@ add_shortcode('foodcoop_addtocart', function() {
 
 
 /**
- * Cart item metadata
- * add 'bestellrunde' to cart items
- */
-
-function fcplugin_get_item_data( $item_data, $cart_item_data ) {
-  if( isset( $cart_item_data['bestellrunde'] ) ) {
-    $item_data[] = array(
-      'key' => __( 'bestellrunde', 'fcplugin' ),
-      'value' => wc_clean( $cart_item_data['bestellrunde'] )
-    );
-  }
-  return $item_data;
- }
- add_filter( 'woocommerce_get_item_data', 'fcplugin_get_item_data', 10, 2 );
-
-
-
-/**
 * Instant Top Up Product
 * Check if it exists via wpcron. If yes, do nothing. If no, create it
 */
@@ -772,7 +783,10 @@ add_action( 'woocommerce_pre_payment_complete', 'fcplugin_instant_topup_add_amou
 
 add_filter('woocommerce_available_payment_gateways', 'fcplugin_conditional_payment_gateways', 10, 1);
 function fcplugin_conditional_payment_gateways( $available_gateways ) {
-  if(is_admin()) return $available_gateways;
+  if(is_admin())  return $available_gateways;
+
+  if ( ! WC()->cart ) 
+        return $available_gateways;
 
   // If cart is empty - bail and return false
   if (empty (WC()->cart->get_cart())) {  
@@ -794,9 +808,12 @@ function fcplugin_conditional_payment_gateways( $available_gateways ) {
     }
     
     if ($order_is_part_of_bestellrunde) {
-      $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
-      $available_gateways = array();
-      $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+
+      if (!get_option("fc_enable_payment_by_bill")) {
+        $foodcoop_guthaben_gateway = $available_gateways['foodcoop_guthaben'];
+        $available_gateways = array();
+        $available_gateways['foodcoop_guthaben'] = $foodcoop_guthaben_gateway;
+      }
     }
     
     if ($order_contains_instant_topup) {
@@ -806,6 +823,46 @@ function fcplugin_conditional_payment_gateways( $available_gateways ) {
     return $available_gateways;
   }
 }
+
+
+
+
+
+/**
+* POS Product
+* Check if it exists via wpcron. If yes, do nothing. If no, create it
+*/
+
+add_filter( 'cron_schedules', 'fcplugin_pos_hook_interval' );
+function fcplugin_pos_hook_interval( $schedules ) { 
+    $schedules['minutely'] = array(
+        'interval' => 60,
+        'display'  => esc_html__( 'Every Minute' ), );
+    return $schedules;
+}
+
+add_action( 'fcplugin_pos_hook', 'fcplugin_pos_function' );
+
+if ( !wp_next_scheduled( 'fcplugin_pos_hook' )) {
+  wp_schedule_event( time(), 'minutely', 'fcplugin_pos_hook' );
+}
+
+function fcplugin_pos_function() {
+  $sku = "fcplugin_pos_product";
+  $pos_product = wc_get_product_id_by_sku( $sku );
+
+  if (!$pos_product) {
+    $product = new WC_Product_Simple();
+    $product->set_name( 'Foodcoop POS Product' );
+    $product->set_slug( 'pos_product' );
+    $product->set_sku($sku);
+    $product->set_regular_price( 0 );
+    $product->save();
+ }
+}
+
+
+
 
 
 
@@ -845,5 +902,101 @@ function fcplugin_conditional_payment_gateways( $available_gateways ) {
 
 
 
+/**
+ * Declare support for WooCommerce Checkout Blocks
+ */
+function delcalre_cart_checkout_blocks_compatibility() {
+  if (class_exists('\Auttomattic\WooCommerce\Utilities\FeaturesUtil')) {
+    \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+  }
+}
+add_action( 'before_woocommerce_init', 'delcalre_cart_checkout_blocks_compatibility');
+
+add_action( 'woocommerce_blocks_loaded', 'fc_register_fc_payment_method_type' );
+function fc_register_fc_payment_method_type() {
+  if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
+    return;
+  }
+
+  require_once plugin_dir_path( __FILE__ ) . 'inc/foodcoop-payment-class-block.php';
+  
+  add_action( 'woocommerce_blocks_payment_method_type_registration', function(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
+    $payment_method_registry->register(new WC_Foodcoop_Guthaben_Blocks);
+  } );
+}
 
 
+
+
+/**
+ * Handle a custom 'bestellrunde_id' query var to get orders with the 'bestellrunde_id' meta.
+ * @param array $query - Args for WP_Query.
+ * @param array $query_vars - Query vars from WC_Order_Query.
+ * @return array modified $query
+ */
+function handle_custom_query_var( $query, $query_vars ) {
+	if ( ! empty( $query_vars['bestellrunde_id'] ) ) {
+		$query['meta_query'][] = array(
+			'key' => 'bestellrunde_id',
+			'value' => esc_attr( $query_vars['bestellrunde_id'] ),
+		);
+	}
+
+	return $query;
+}
+add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2 );
+
+
+
+
+
+/**
+ * Payment Gateway helper
+ * Disable Place order button, if balance is too low
+ */
+
+add_filter('woocommerce_order_button_html', 'custom_order_button_text' );
+function custom_order_button_text( $order_button_text ) {
+    // Get the chosen payment gateway (dynamically)
+    $chosen_payment_method = WC()->session->get('chosen_payment_method');
+    $order_button_text = __('Place order', 'woocommerce');
+    $button = '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+
+    if( $chosen_payment_method == 'foodcoop_guthaben'){
+      global $wpdb;
+      global $woocommerce;
+      $order_total = $woocommerce->cart->total;
+      $table = $wpdb->prefix.'foodcoop_wallet';
+      $user_id = get_current_user_id();
+      $results = $wpdb->get_results(
+                  $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+               );
+      foreach ( $results as $result ) {
+         $current_balance = number_format($result->balance, 2, '.', '');
+      }
+
+      if ($current_balance <= $order_total) {
+        $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+      } 
+
+    }
+
+    // jQuery code: Make dynamic text button "on change" event ?>
+    <script type="text/javascript">
+    (function($){
+      $('form.checkout').on( 'change', 'input[name^="payment_method"]', function() {
+        var t = { updateTimer: !1,  dirtyInput: !1,
+          reset_update_checkout_timer: function() {
+            clearTimeout(t.updateTimer)
+          },  trigger_update_checkout: function() {
+            t.reset_update_checkout_timer(), t.dirtyInput = !1,
+            $(document.body).trigger("update_checkout")
+          }
+        };
+        t.trigger_update_checkout();
+      });
+    })(jQuery);
+    </script><?php
+
+    return $button;
+}

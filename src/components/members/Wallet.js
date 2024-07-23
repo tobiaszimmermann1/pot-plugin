@@ -7,7 +7,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import { ExportToCsv } from "export-to-csv"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
-import { format } from "date-fns"
+import { format, parse } from "date-fns"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import AddIcon from "@mui/icons-material/Add"
@@ -166,7 +166,7 @@ function Wallet({ setModalClose, walletID, walletName }) {
       {
         accessorKey: "date",
         header: __("Datum", "fcplugin"),
-        Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy")
+        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy - HH:mm")
       },
       {
         accessorKey: "amount",

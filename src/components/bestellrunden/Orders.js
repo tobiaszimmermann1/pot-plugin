@@ -7,7 +7,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"
 import GridOnIcon from "@mui/icons-material/GridOn"
 import { Box, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
-import { format } from "date-fns"
+import { format, parse } from "date-fns"
 import { useExcelDownloder } from "react-xls"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
@@ -40,7 +40,7 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
         accessorKey: "date_created",
         header: __("Datum", "fcplugin"),
         size: 80,
-        Cell: ({ cell }) => format(new Date(cell.getValue()), "dd.MM.yyyy")
+        Cell: ({ cell }) => format(parse(cell.getValue(), "yyyy-mm-dd", new Date()), "dd.mm.yyyy")
       },
       {
         accessorKey: "customer_name",
@@ -255,7 +255,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
       let orderItems = []
 
       orders.map(order => {
-        console.log(order)
         // add user to array, if it is not already
         !users.includes(order.customer_name) && users.push(order.customer_name)
         // map line_items of order
@@ -342,7 +341,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
           dataMatrix[lieferantString] = rows
         }
       })
-      console.log(dataMatrix)
       setExportData(dataMatrix)
     }
   }, [orders, id])
