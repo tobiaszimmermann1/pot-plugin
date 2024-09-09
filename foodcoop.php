@@ -1020,10 +1020,10 @@ function custom_order_button_text( $order_button_text ) {
 
 add_filter('woocommerce_order_button_html', 'fc_enable_user_block' );
 function fc_enable_user_block( $button ) {
-  $blocked = true;
   $fc_enable_user_block = get_option('fc_enable_user_block');
 
   if ($fc_enable_user_block == '1') {
+    $blocked = true;
     global $wpdb;
     $user_id = get_current_user_id();
     if ($user_id) {
@@ -1037,14 +1037,15 @@ function fc_enable_user_block( $button ) {
         if ($current_year == $transaction_year) $blocked = false;
       }
     }
-  }
 
-  if( $blocked ) {
-    $style = 'style="background:Silver !important; color:white !important; cursor: not-allowed !important;"';
-    $button_text = apply_filters( 'woocommerce_order_button_text', __( 'Place order', 'woocommerce' ) );
-    $explanation = '<strong style="margin-top:10px;display:block;">'.__('Achtung: Du kannst aktuell nicht bestellen. Bitte bezahle zuerst deinen Mitgliederbeitrag.', 'fcplugin').'</strong>';
-    $button = '<a class="button" '.$style.'>' . $button_text . '</a><br>'.$explanation;
+    if( $blocked ) {
+      $style = 'style="background:Silver !important; color:white !important; cursor: not-allowed !important;"';
+      $button_text = apply_filters( 'woocommerce_order_button_text', __( 'Place order', 'woocommerce' ) );
+      $explanation = '<strong style="margin-top:10px;display:block;">'.__('Achtung: Du kannst aktuell nicht bestellen. Bitte bezahle zuerst deinen Mitgliederbeitrag.', 'fcplugin').'</strong>';
+      $button = '<a class="button" '.$style.'>' . $button_text . '</a><br>'.$explanation;
+    }
   }
+  
   return $button;
 }
 
