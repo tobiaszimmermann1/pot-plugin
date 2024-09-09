@@ -42,6 +42,8 @@ const Settings = () => {
   const [enableSelfCheckout, setEnableSelfCheckout] = useState(false)
   const [enableTaxes, setEnableTaxes] = useState(false)
   const [enablePaymentByBill, setEnablePaymentByBill] = useState(false)
+  const [enableUserBlock, setEnableUserBlock] = useState(false)
+  const [enableRoundsStorewide, setEnableRoundsStorewide] = useState(false)
 
   useEffect(() => {
     axios
@@ -101,6 +103,8 @@ const Settings = () => {
       options.fc_self_checkout === "1" ? setEnableSelfCheckout("1") : setEnableSelfCheckout("0")
       options.fc_taxes === "1" ? setEnableTaxes(true) : setEnableTaxes(false)
       options.fc_enable_payment_by_bill === "1" ? setEnablePaymentByBill(true) : setEnablePaymentByBill(false)
+      options.fc_enable_user_block === "1" ? setEnableUserBlock(true) : setEnableUserBlock(false)
+      options.fc_enable_rounds_storewide === "1" ? setEnableRoundsStorewide(true) : setEnableRoundsStorewide(false)
     }
   }, [options])
 
@@ -128,7 +132,9 @@ const Settings = () => {
           enableSelfCheckout: enableSelfCheckout,
           margin: margin,
           taxes: enableTaxes,
-          enablePaymentByBill: enablePaymentByBill
+          enablePaymentByBill: enablePaymentByBill,
+          enableUserBlock: enableUserBlock,
+          enableRoundsStorewide: enableRoundsStorewide
         },
         {
           headers: {
@@ -151,7 +157,7 @@ const Settings = () => {
               <h2>{__("Foodcoop Einstellungen", "fcplugin")}</h2>
             </Grid>
             <Grid item xs={4}>
-              {__("Name der Foodcoop", "fcplugin")}
+              <strong>{__("Name der Foodcoop", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <FormControl fullWidth>
@@ -167,7 +173,7 @@ const Settings = () => {
               </FormControl>
             </Grid>
             <Grid item xs={4}>
-              {__("Administrator Email", "fcplugin")}
+              <strong>{__("Administrator Email", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <FormControl fullWidth>
@@ -183,7 +189,7 @@ const Settings = () => {
               </FormControl>
             </Grid>
             <Grid item xs={4}>
-              {__("Jahresbeitrag", "fcplugin")}
+              <strong>{__("Jahresbeitrag", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <FormControl fullWidth>
@@ -199,8 +205,27 @@ const Settings = () => {
                 />
               </FormControl>
             </Grid>
+
             <Grid item xs={4}>
-              {__("Marge für Nicht-Mitglieder", "fcplugin")}
+              <strong>{__("Bestellung nur für berechtigte Mitglieder", "fcplugin")}</strong>
+              <br />
+              <small>{__("Blockiert Bestellungen für alle Nicht-Mitglieder und Mitglieder, die den Jahresbeitrag noch nicht bezahlt haben.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enableUserBlock}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnableUserBlock(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+            <Grid item xs={4}>
+              <strong>{__("Marge für Nicht-Mitglieder", "fcplugin")}</strong>
               <br />
               <small>{__("Marge für Gast-Einkäufe. Die Marge wird an der Kasse als Gebühr hinzugefügt.", "fcplugin")}</small>
             </Grid>
@@ -219,7 +244,7 @@ const Settings = () => {
               </FormControl>
             </Grid>
             <Grid item xs={4}>
-              {__("Bankverbindung IBAN", "fcplugin")}
+              <strong>{__("Bankverbindung IBAN", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <FormControl fullWidth>
@@ -235,7 +260,7 @@ const Settings = () => {
               </FormControl>
             </Grid>
             <Grid item xs={4}>
-              {__("Adresse des Verteillokals", "fcplugin")}
+              <strong>{__("Adresse des Verteillokals", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <Grid container direction="row" alignItems="space-between" justifyContent="space-between" rowGap={4}>
@@ -280,8 +305,28 @@ const Settings = () => {
                 </Grid>
               </Grid>
             </Grid>
+
             <Grid item xs={4}>
-              {__("Lagerverwaltung", "fcplugin")}
+              <strong>{__("Bestellrunden im gesamten Shop erzwingen", "fcplugin")}</strong>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={enableRoundsStorewide}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setEnableRoundsStorewide(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+              <Alert severity="warning" sx={{ marginTop: "10px" }}>
+                <strong>{__("Achtung!", "fcplugin")}</strong> {__("Ist diese Einstellung aktiviert, sind im gesamten Shop nur noch Bestellungen möglich, die Bestellrunden zugeordnet werden können.", "fcplugin")}{" "}
+              </Alert>
+            </Grid>
+            <Grid item xs={4}>
+              <strong>{__("Lagerverwaltung", "fcplugin")}</strong>
               <br />
               <small>{__("Aktiviert, bzw. deaktiviert die Lagerverwaltung generell und auf Produktebene für alle Produkte.", "fcplugin")}</small>
             </Grid>
@@ -303,7 +348,7 @@ const Settings = () => {
             </Grid>
 
             <Grid item xs={4}>
-              {__("Mehrwertsteuer", "fcplugin")}
+              <strong>{__("Mehrwertsteuer", "fcplugin")}</strong>
               <br />
               <small>{__("Aktiviert, bzw. deaktiviert die Mehrwertsteuer.", "fcplugin")}</small>
             </Grid>
@@ -328,7 +373,7 @@ const Settings = () => {
             </Grid>
 
             <Grid item xs={4}>
-              {__("Self Checkout", "fcplugin")}
+              <strong>{__("Self Checkout", "fcplugin")}</strong>
               <br />
               <small>{__("Aktiviert, bzw. deaktiviert den Self-Checkout.", "fcplugin")}</small>
             </Grid>
@@ -347,7 +392,7 @@ const Settings = () => {
             </Grid>
 
             <Grid item xs={4}>
-              {__("Bezahlung auf Rechnung zulassen?", "fcplugin")}
+              <strong>{__("Bezahlung auf Rechnung zulassen?", "fcplugin")}</strong>
               <br />
               <small>{__("Wenn aktiviert, lässt das Plugin bei Sammelbestellungen alle aktivierten Zahlungsmethoden zu.", "fcplugin")}</small>
             </Grid>
@@ -366,7 +411,7 @@ const Settings = () => {
             </Grid>
 
             <Grid item xs={4}>
-              {__("Instant Topup aktivieren?", "fcplugin")}
+              <strong>{__("Instant Topup aktivieren?", "fcplugin")}</strong>
               <br />
               <small>{__("Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).", "fcplugin")}</small>
             </Grid>
@@ -390,14 +435,14 @@ const Settings = () => {
             {pages && (
               <>
                 <Grid item xs={4}>
-                  {__("Bestellseite", "fcplugin")}
+                  <strong>{__("Bestellseite", "fcplugin")}</strong>
                 </Grid>
                 <Grid item xs={8}>
                   <FormControl fullWidth>
-                    <InputLabel id="fc_order_page">Bestellseite</InputLabel>
+                    <InputLabel id="fc_order_page">{__("Bestellseite", "fcplugin")}</InputLabel>
                     <Select labelId="fc_order_page" id="fc_order_page-select" value={orderPage} label="Bestellseite" onChange={e => setOrderPage(e.target.value)}>
                       <MenuItem key={"none"} value={"none"}>
-                        keine
+                        {__("keine", "fcplugin")}
                       </MenuItem>
                       {pages.map(page => (
                         <MenuItem key={page.id} value={page.id}>
@@ -412,19 +457,19 @@ const Settings = () => {
               </>
             )}
             <Grid item xs={4}>
-              {__("Preise öffentlich anzeigen?", "fcplugin")}
+              <strong>{__("Preise öffentlich anzeigen?", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <Switch checked={publicPrices} onChange={event => setPublicPrices(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
             <Grid item xs={4}>
-              {__("Produktbilder und Produktseiten aktivieren?", "fcplugin")}
+              <strong>{__("Produktbilder und Produktseiten aktivieren?", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <Switch checked={publicProducts} onChange={event => setPublicProducts(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
             <Grid item xs={4}>
-              {__("Mitgliederliste in Mein Konto anzeigen?", "fcplugin")}
+              <strong>{__("Mitgliederliste in Mein Konto anzeigen?", "fcplugin")}</strong>
             </Grid>
             <Grid item xs={8}>
               <Switch checked={publicMembers} onChange={event => setPublicMembers(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />

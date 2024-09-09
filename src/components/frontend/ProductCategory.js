@@ -35,8 +35,8 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
         <span className="fc_order_list_title_arrow">{visibility ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}</span>
       </h2>
 
-      <div className="fc_order_list_category_wrapper">
-        <div className={visibility ? `fc_transition_show` : `fc_transition_hide`}>
+      <div className={visibility ? `fc_order_list_category_wrapper fc_category_wrapper_show` : `fc_order_list_category_wrapper fc_category_wrapper_hide`}>
+        <div>
           <div className="fc_order_list_cat_wrapper">
             <div className="fc_order_list_line">
               <span className="fc_order_list_header col_1">{__("Menge", "fcplugin")}</span>

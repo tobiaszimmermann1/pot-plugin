@@ -858,6 +858,18 @@ class FoodcoopRestRoutes {
         return current_user_can( 'edit_others_posts' );
       }
     ));
+    
+    /**
+     * POST duplicate bestellrunde
+     * params: id
+     */
+    register_rest_route( 'foodcoop/v1', 'postDuplicateBestellrunde', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postDuplicateBestellrunde'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
 
     /**
      * POST mark bestellrunde completed
@@ -1062,6 +1074,12 @@ class FoodcoopRestRoutes {
 
     $enable_payment_by_bill = $data["enablePaymentByBill"];
     $enable_payment_by_bill == true  ? update_option('fc_enable_payment_by_bill', '1') : update_option('fc_enable_payment_by_bill', '0');
+
+    $enable_rounds_storewide = $data["enableRoundsStorewide"];
+    $enable_rounds_storewide == true  ? update_option('fc_enable_rounds_storewide', '1') : update_option('fc_enable_rounds_storewide', '0');
+
+    $enable_user_block = $data["enableUserBlock"];
+    $enable_user_block == true  ? update_option('fc_enable_user_block', '1') : update_option('fc_enable_user_block', '0');
     
     $adminEmail = $data['adminEmail'];
     if($adminEmail) update_option('admin_email', $adminEmail);

@@ -185,30 +185,30 @@ function BillingOverview() {
                   <TableCell component="th" sx={{ width: "33.3%", borderRight: "1px solid #f0f0f0", backgroundColor: "#f8eedb" }}>
                     {__("POT Modell 1: Sammelbestellungen", "fcplugin")}
                     <br />
-                    <i>{__("CHF 0.00 pro Mitglied pro Monat", "fcplugin")}</i>
+                    <i>{__("CHF 12.00 pro Mitglied pro Monat", "fcplugin")}</i>
                   </TableCell>
                   <TableCell component="th" sx={{ width: "33.3%", borderRight: "1px solid #f0f0f0", backgroundColor: "#f2ded8" }}>
                     {__("POT Modell 2: Depot", "fcplugin")}
                     <br />
-                    <i>{__("CHF 0.00 pro Mitglied pro Monat", "fcplugin")}</i>
+                    <i>{__("CHF 12.00 pro Mitglied pro Monat", "fcplugin")}</i>
                   </TableCell>
                   <TableCell component="th" sx={{ width: "33.3%", borderRight: "1px solid #f0f0f0", backgroundColor: "#f3eaf1" }}>
                     {__("POT Modell 3: Mitgliederladen", "fcplugin")}
                     <br />
-                    <i>{__("CHF 0.00 pro Mitglied pro Monat", "fcplugin")}</i>
+                    <i>{__("CHF 12.00 pro Mitglied pro Monat", "fcplugin")}</i>
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
                   <TableCell component="td" sx={{ borderRight: "1px solid #f0f0f0" }}>
-                    CHF {parseFloat(yearlyData.users.length * 0 * 12).toFixed(2)}
+                    CHF {parseFloat(yearlyData.users.length * 12).toFixed(2)}
                   </TableCell>
                   <TableCell component="td" sx={{ borderRight: "1px solid #f0f0f0" }}>
-                    CHF {parseFloat(yearlyData.users.length * 0 * 12).toFixed(2)}
+                    CHF {parseFloat(yearlyData.users.length * 12).toFixed(2)}
                   </TableCell>
                   <TableCell component="td" sx={{ borderRight: "1px solid #f0f0f0" }}>
-                    CHF {parseFloat(yearlyData.users.length * 0 * 12).toFixed(2)}
+                    CHF {parseFloat(yearlyData.users.length * 12).toFixed(2)}
                   </TableCell>
                 </TableRow>
               </TableBody>
