@@ -24,16 +24,21 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Contact, Requests & Issues
 
-- tobias.zimmermann@neues-food-depot.ch
+- tobias@pingvin.digital
 
 ## Changelog
 
 ### 1.7.5
 
+- Added an option to activate Bestellrunden shopwide. With this option set to active, all orders must be associated with a bestellrunde.
+- With the option of Bestellrunden shopwide active, added UI elements to shop pages and single product page to select Bestellrunde, if there are active ones. If there are no active Bestellrunden, adding products to the cart, is blocked.
+- Added an option to manually mark a Bestellrunde as completed (changes the status of all orders to completed as well)
+- Added an option to block users who have not yet payed the yearly fee from ordering, with the option to pay the fee directly with the push of a button using their balance
+- Disabled checkout button if there products in cart from multiple bestellrunden and show a message with instructions.
 - Fixed a bug where foodcoop balance displayed a wrong value during ordering.
 - For payment gateway foodcoop balance: if balance is too low, the place order button is disabled (prevents the creation of failed orders)
-- Added an option to manually mark a Bestellrunde as completed (changes the status of all orders to completed as well)
-  //- Added an option to block users who have not yet payed the yearly fee from ordering, with the option to pay the fee directly with the push of a button using their balance
+- fixed a bug that prevented categories in ordering list from not collapsing properly
+- Other small bugfixes
 
 ### 1.7.4
 

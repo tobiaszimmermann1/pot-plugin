@@ -191,7 +191,7 @@ function fc_plugin_upgrade_database() {
         )
       );
     }
-    printf('<span class="fc_plugin_update_message">'.__('Datenbank wurde für Foodcoop Manager Version > 1.6.0 aktualisiert. Vielen Dank!','fcplugin').'</span>');
+    //printf('<span class="fc_plugin_update_message">'.__('Datenbank wurde für Foodcoop Manager Version > 1.6.0 aktualisiert. Vielen Dank!','fcplugin').'</span>');
   }
 }
 add_action( 'admin_init', 'fc_plugin_upgrade_database' );
@@ -268,6 +268,9 @@ function fc_admin_load_scripts() {
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
+  if (get_option('fc_enable_rounds_storewide')) {
+    wp_enqueue_script( 'fc-script-sitewide-bestellrunden', plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.5', array( 'jquery' ), '1.0', false );
+  }
   wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
@@ -436,6 +439,14 @@ function fc_init() {
 
 
 
+/**
+ * React Router Backen
+ */
+add_action('init', 'wp55290310_rewrite_rules');
+
+function wp55290310_rewrite_rules() {
+    add_rewrite_rule('^wp-admin/(.*)?', 'wp-admin/admin.php?page=foodcoop-plugin', 'top');
+}
 
 
 
@@ -999,4 +1010,165 @@ function custom_order_button_text( $order_button_text ) {
     </script><?php
 
     return $button;
+}
+
+/**
+ * Disable Place Order Button if the following conditions are met: 
+ * - option fc_enable_user_block is '1'
+ * - user has not paid yearly fee
+ */
+
+add_filter('woocommerce_order_button_html', 'fc_enable_user_block' );
+function fc_enable_user_block( $button ) {
+  $blocked = true;
+  $fc_enable_user_block = get_option('fc_enable_user_block');
+
+  if ($fc_enable_user_block == '1') {
+    global $wpdb;
+    $user_id = get_current_user_id();
+    if ($user_id) {
+      $transaction = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s AND `type` = 'yearly_fee' ORDER BY `id` DESC LIMIT 1", $user_id)
+      );
+
+      if (count($transaction) > 0) {
+        $current_year = date('Y');
+        $transaction_year = date('Y', strtotime(date($transaction[0]->date)));
+        if ($current_year == $transaction_year) $blocked = false;
+      }
+    }
+  }
+
+  if( $blocked ) {
+    $style = 'style="background:Silver !important; color:white !important; cursor: not-allowed !important;"';
+    $button_text = apply_filters( 'woocommerce_order_button_text', __( 'Place order', 'woocommerce' ) );
+    $explanation = '<strong style="margin-top:10px;display:block;">'.__('Achtung: Du kannst aktuell nicht bestellen. Bitte bezahle zuerst deinen Mitgliederbeitrag.', 'fcplugin').'</strong>';
+    $button = '<a class="button" '.$style.'>' . $button_text . '</a><br>'.$explanation;
+  }
+  return $button;
+}
+
+/**
+ * If fc_enable_rounds_storewide = '1': Show Bestellrunde selector on all relevant pages (shop, category, single) and then filter products according to availability and add bestellrunde and order_type to cart items
+ */
+// determine if there are active bestellrunden. if yes, save them to a cookie
+add_action( 'init', 'fc_active_bestellrunden_cookie' );
+function fc_active_bestellrunden_cookie() {
+  if (get_option('fc_enable_rounds_storewide') == '1') {
+    // get Bestellrunden and filter out active ones
+    $bestellrunden = get_posts(array(
+      'numberposts' => -1,
+      'post_type'   => 'bestellrunden',
+    ));
+
+    // check if there active bestellrunden
+    $active_bestellrunden = array();
+    foreach($bestellrunden as $bestellrunde) {
+      $start = strtotime(get_post_meta( $bestellrunde->ID, 'bestellrunde_start', true ));
+      $end = strtotime(get_post_meta( $bestellrunde->ID, 'bestellrunde_ende', true ));
+      $today = strtotime(date('Y-m-d'));
+      if ($start <= $today && $today <= $end) {
+        $this_bestellrunde = array();
+        $this_bestellrunde['ID'] = $bestellrunde->ID;
+        $this_bestellrunde['bestellrunde_products'] = json_decode(get_post_meta($bestellrunde->ID, 'bestellrunde_products', true));
+        $this_bestellrunde['bestellrunde_start'] = get_post_meta( $bestellrunde->ID, 'bestellrunde_start', true );
+        $this_bestellrunde['bestellrunde_ende'] = get_post_meta( $bestellrunde->ID, 'bestellrunde_ende', true );
+        $this_bestellrunde['bestellrunde_verteiltag'] = get_post_meta( $bestellrunde->ID, 'bestellrunde_verteiltag', true );
+        $this_bestellrunde['bestellrunde_name'] = get_post_meta( $bestellrunde->ID, 'bestellrunde_name', true );
+        array_push($active_bestellrunden, $this_bestellrunde);
+      }
+    }
+
+    // set cookie if there are active bestellrunden
+    if (count($active_bestellrunden) > 0) {
+      if (isset($_COOKIE['fc_active_bestellrunden'])) {
+        $cookie_content = json_decode(stripslashes($_COOKIE['fc_active_bestellrunden']));
+        if ($cookie_content != $active_bestellrunden) setcookie('fc_active_bestellrunden', json_encode($active_bestellrunden), time() + 3600, "/");
+      } else {
+        setcookie('fc_active_bestellrunden', json_encode($active_bestellrunden), time() + 3600, "/");
+      }
+    }
+
+    // unset cookie if there are no active bestellrunden
+    if (count($active_bestellrunden) == 0) {
+      if (isset($_COOKIE['fc_active_bestellrunden'])) {
+        unset($_COOKIE['fc_active_bestellrunden']);
+        setcookie('fc_active_bestellrunden', '', time() - 3600, '/');
+      }
+    }
+  } else {
+    if (isset($_COOKIE['fc_active_bestellrunden'])) {    
+      unset($_COOKIE['fc_active_bestellrunden']);
+      setcookie('fc_active_bestellrunden', '', time() - 3600, '/');
+    }
+    if (isset($_COOKIE['fc_selected_bestellrunde'])) {    
+      unset($_COOKIE['fc_selected_bestellrunde']);
+      setcookie('fc_selected_bestellrunde', '', time() - 3600, '/');
+    }
+  }
+}
+
+// add div to shop pages and single product page for jQuery to hook into and display information on bestellrunden
+add_action( 'woocommerce_before_single_product', 'fc_add_bestellrunde_selector', 12 );
+add_action( 'woocommerce_before_shop_loop', 'fc_add_bestellrunde_selector', 12 );
+function fc_add_bestellrunde_selector() { 
+  if (get_option('fc_enable_rounds_storewide') == '1') {
+    ?>
+    <div id="fc_shopwide_bestellrunden_selector">
+      <div id="fc_shopwide_bestellrunden_selector_content"></div>
+    </div>
+    <?php
+  }
+}
+
+// check if product, that is added to cart, is in bestellrunde_products. if not, remove from cart
+add_filter( 'woocommerce_add_to_cart_validation', 'fc_add_to_cart_shopwide_bestellrunde_cart_validation', 10, 2 ); 
+function fc_add_to_cart_shopwide_bestellrunde_cart_validation( $passed_validation, $product_id ) { 
+  if (get_option('fc_enable_rounds_storewide') == '1') {
+    if (isset($_COOKIE['fc_selected_bestellrunde'])) {
+      $bestellrunde = json_decode(stripslashes($_COOKIE['fc_selected_bestellrunde']));
+      $bestellrunde_products = $bestellrunde->bestellrunde_products;
+      if (!in_array($product_id, $bestellrunde_products)) {
+        wc_add_notice( __( 'Produkt kann in der gewählten Bestellrunde nicht bestellt werden.', 'fcplugin' ), 'error' );
+        $passed_validation = false;
+      }
+    }
+  }
+  return $passed_validation;
+}
+
+// add bestellrunde id and order_type to cart items on add to cart action
+add_filter( 'woocommerce_add_cart_item_data', 'fc_add_to_cart_shopwide_bestellrunde', 10, 3 );
+function fc_add_to_cart_shopwide_bestellrunde($cartItemData, $productId, $variationId ) { 
+  if (get_option('fc_enable_rounds_storewide') == '1') {
+    if (isset($_COOKIE['fc_selected_bestellrunde'])) {
+      $bestellrunde = json_decode(stripslashes($_COOKIE['fc_selected_bestellrunde']));
+      $cartItemData['bestellrunde'] = $bestellrunde->ID;
+      $cartItemData['order_type'] = 'bestellrunde';
+      return $cartItemData;
+    }
+  }
+}
+
+
+/**
+ * Block Checkout if there products from multiple bestellrunden in the cart
+ */
+
+ add_action( 'woocommerce_order_button_html', 'fc_prevent_orders_in_multiple_bestellrunden' );
+function fc_prevent_orders_in_multiple_bestellrunden($button_html) {
+  if (get_option('fc_enable_rounds_storewide') == '1') {
+    global $woocommerce;
+    $items = $woocommerce->cart->get_cart();
+    $bestellrunden = array();
+    foreach($items as $item => $values) { 
+      if (!in_array($values['bestellrunde'], $bestellrunden)) {
+        array_push($bestellrunden, $values['bestellrunde']);
+      }
+      if (count($bestellrunden) > 1) {
+        $button_html = "<div id='order-blocked'>Dieser Warenkorb kann nicht bestellt werden. Eine Bestellung darf nur Produkte aus einer einzigen Bestellrunde enthalten. Bitte entferne Produkte und bestelle nacheinander.</div>";
+      }
+    } 
+  }
+  return $button_html;
 }
