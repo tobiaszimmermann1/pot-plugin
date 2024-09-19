@@ -440,18 +440,6 @@ function fc_init() {
 
 
 /**
- * React Router Backen
- */
-add_action('init', 'wp55290310_rewrite_rules');
-
-function wp55290310_rewrite_rules() {
-    add_rewrite_rule('^wp-admin/(.*)?', 'wp-admin/admin.php?page=foodcoop-plugin', 'top');
-}
-
-
-
-
-/**
  * REST API Routes
  */
 require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-rest-routes.php');
