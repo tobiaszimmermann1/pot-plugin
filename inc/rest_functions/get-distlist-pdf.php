@@ -29,57 +29,75 @@
     $users[$username] = $user_id;
 
     foreach ( $order->get_items() as $item_id => $item ) {
-      // producers                       
-      $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
-      // fallback
-      if (!$product_lieferant) {
-          $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+
+      // check if there is already an order item with the same product name and from the same user in the order_items array. if yes, then merge instead of creating a new order item
+      $is_duplicate = false;
+      for ($i = 0; $i < count($order_items); $i++) {
+        if ($order_items[$i][0] == $username AND $order_items[$i][3] == $item->get_name()) {
+          // qty to add quantity
+          $item_total_quantity = $item->get_quantity(); 
+          $item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
+          $item_final_quantity = $item_total_quantity + $item_quantity_refunded; 
+          $new_qty = $order_items[$i][4] + $item_final_quantity;
+          $order_items[$i][4] = $new_qty;
+
+          $is_duplicate = true;
+        } 
       }
 
-      if ( !in_array($product_lieferant, $lieferanten) ) {
-        array_push($lieferanten,$product_lieferant);
+      if ($is_duplicate == false) {
+        // producers                       
+        $product_lieferant = esc_attr(wc_get_order_item_meta( $item_id, '_lieferant', true));
+        // fallback
+        if (!$product_lieferant) {
+            $product_lieferant = esc_attr(get_post_meta( $item->get_product_id(), '_lieferant',true ));
+        }
+
+        if ( !in_array($product_lieferant, $lieferanten) ) {
+          array_push($lieferanten,$product_lieferant);
+        }
+        sort($lieferanten);
+
+        // products and order_items
+        $item_array = array();
+
+        // user that has ordered the item
+        array_push($item_array, $username);
+
+        // product id
+        $product_id = intval(wc_get_order_item_meta( $item_id, '_pid', true));
+        // fallback
+        if(!$product_id) {
+          $product_id = $item->get_product_id();
+        }
+        array_push($item_array,$product_lieferant);
+
+        // einheit
+        $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
+        // fallback
+        if (!$product_einheit) {
+          $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
+        }
+        array_push($item_array,$product_einheit);
+
+        // name
+        $product_name = $item->get_name();
+        array_push($item_array,$product_name);
+        
+        // ordered quantity
+        $item_total_quantity = $item->get_quantity(); 
+        $item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
+        $item_final_quantity = $item_total_quantity + $item_quantity_refunded; 
+        array_push($item_array,$item_final_quantity);
+
+        // push info to product array if it is not already
+        if ( !array_key_exists($product_id, $produkte) ) {
+          $produkte[$product_id] = $item_array;
+        }
+
+        // push to order_item array
+        array_push($order_items, $item_array);
       }
-      sort($lieferanten);
-
-      // products and order_items
-      $item_array = array();
-
-      // user that has ordered the item
-      array_push($item_array, $username);
-
-      // product id
-      $product_id = intval(wc_get_order_item_meta( $item_id, '_pid', true));
-      // fallback
-      if(!$product_id) {
-        $product_id = $item->get_product_id();
-      }
-      array_push($item_array,$product_lieferant);
-
-      // einheit
-      $product_einheit = esc_attr(wc_get_order_item_meta( $item_id, '_einheit', true));
-      // fallback
-      if (!$product_einheit) {
-        $product_einheit = esc_attr(get_post_meta( $item->get_product_id(), '_einheit',true ));
-      }
-      array_push($item_array,$product_einheit);
-
-      // name
-      $product_name = $item->get_name();
-      array_push($item_array,$product_name);
-      
-      // ordered quantity
-      $item_total_quantity = $item->get_quantity(); 
-      $item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
-      $item_final_quantity = $item_total_quantity + $item_quantity_refunded; 
-      array_push($item_array,$item_final_quantity);
-
-      // push info to product array if it is not already
-      if ( !array_key_exists($product_id, $produkte) ) {
-        $produkte[$product_id] = $item_array;
-      }
-
-      // push to order_item array
-      array_push($order_items, $item_array);
     }
   }
   usort($produkte, function($a, $b) { return strcmp($a[3], $b[3]);});
@@ -110,6 +128,13 @@
     sort($users_for_this_lieferant); // sort users alphabetically
     $users_by_lieferant[$lieferant] = $users_for_this_lieferant;
   }
+
+  // dp duplicate orders exist?
+  $duplicate_orders = false;
+  if (count($order_items) != (array_unique($order_items))) {
+    $duplicate_orders = true;
+  }
+  
 
   // create pdf
   $mpdf = new \Mpdf\Mpdf([
@@ -175,12 +200,13 @@
 
           foreach( $users_by_lieferant[$lieferant] as $user) {
             $ordered_quantity_by_user = 0;
-
+            /* here */
             foreach($order_items as $order_item) {
-              if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[0] == $user AND $order_item[2] == $product[2]) {
-                $ordered_quantity_by_user = $order_item[4];
+              if ($order_item[1] == $lieferant AND $order_item[3] == $product[3] AND $order_item[0] == $user AND $order_item[2] == $product[2]) {               
+                  $ordered_quantity_by_user = $order_item[4];
               } 
             }
+            
             if ($ordered_quantity_by_user > 0) {
               $body .= '<td style="padding:3px 10px 3px 10px; border-bottom:1px solid #8e8e8e; border-right: 1px solid #8e8e8e; font-size:7pt;">'.$ordered_quantity_by_user.'</td>';
             } else {

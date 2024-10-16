@@ -38,6 +38,7 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Fixed a bug where foodcoop balance displayed a wrong value during ordering.
 - For payment gateway foodcoop balance: if balance is too low, the place order button is disabled (prevents the creation of failed orders)
 - fixed a bug that prevented categories in ordering list from not collapsing properly
+- fixed miscalculations in generated bestellrunden lists if a user has multiple orders in one bestellrunde
 - Other small bugfixes
 
 ### 1.7.4

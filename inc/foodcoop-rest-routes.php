@@ -1764,6 +1764,7 @@ class FoodcoopRestRoutes {
     $product = $data['product'];
     $mutation_type = $data['mutation_type'];
     $created_id = $data['created_by'];
+    if ($created_id == null) $created_id = 0;
 
     if ($mutation_type == "notDelivered") {
       foreach($orders as $o) {
@@ -1904,7 +1905,7 @@ class FoodcoopRestRoutes {
         }
         $order->calculate_totals();
       }
-      return json_encode( 'success' );  
+      return json_encode( array($price_diff, $user_id, $amount, $date, $details, $created_id, $new_balance) );  
     }
     
   }
