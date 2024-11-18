@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react"
+import React, {useEffect, useState} from "react"
 import axios from "axios"
-import { Box, LinearProgress, Switch, FormControlLabel, Typography, Divider } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import {Box, Divider, FormControlLabel, LinearProgress, Switch} from "@mui/material"
+import {styled} from "@mui/material/styles"
 import ProductOverviewDetails from "./components/frontend/ProductOverviewDetails"
+import {getProductListOverview, getSelfCheckoutProducts, getStockManagement} from "./components/products/products";
+
 const __ = wp.i18n.__
 
-const Android12Switch = styled(Switch)(({ theme }) => ({
+const Android12Switch = styled(Switch)(({theme}) => ({
   padding: 8,
   "& .MuiSwitch-track": {
     borderRadius: 22 / 2,
@@ -53,54 +55,28 @@ function ProductOverview() {
   })
 
   useEffect(() => {
-    axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    getProductListOverview().then((overview) => {
+      console.log(overview);
+      setAllProducts(overview.products);
+      setCategories(overview.productsByCategory);
+      setCats(overview.categories);
+      setCurrency(overview.currency);
+    }).catch(error => console.log(error));
 
-          setAllProducts(res[0])
+    getStockManagement().then((hasStockManagement) => {
+        setStockManagement(hasStockManagement);
+    }).catch(error => console.log(error));
 
-          let productsByCategory = {}
-          let cats = []
-          res[1].map(category => {
-            productsByCategory[category.name] = []
-            cats.push(category.name)
-          })
-
-          setCategories(productsByCategory)
-          setCats(res[1])
-          setCurrency(res[2])
-        }
-      })
-      .catch(error => console.log(error))
-  }, [])
-
-  useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"yes"' ? setStockManagement(true) : setStockManagement(false)
-        }
-      })
-      .catch(error => console.log(error))
-
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout_products`)
-      .then(function (response) {
-        if (response.data) {
-          setSelfCheckoutProducts(JSON.parse(response.data))
-        }
-      })
-      .catch(error => console.log(error))
+    getSelfCheckoutProducts().then((scp) => {
+      setSelfCheckoutProducts(scp)
+    }).catch(error => console.log(error));
   }, [])
 
   /**
    * Prepare product data for order table
    */
   useEffect(() => {
-    // go through each procduct, rearrange its information and add to productsByCategory object
+    // go through each product, rearrange its information and add to productsByCategory object
     if (allProducts && categories) {
       let productsByCategory = categories
 
