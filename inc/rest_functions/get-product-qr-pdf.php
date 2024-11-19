@@ -50,10 +50,17 @@
       </style>
       <table style="margin:0;">
         <tr>
-          <td style="width:35mm;text-align:center;font-size:8pt;"><img src="'.$qrcode.'" width="35mm" height="35mm" />'.$sku.'</td>
-          <td style="width:80mm;font-size:12pt;font-weight:bold;">
+          <td style="width:35mm;text-align:center;font-size:8pt;"><img src="'.$qrcode.'" width="35mm" /></td>
+          <td style="width:85mm;font-size:12pt;font-weight:bold;">
             <span style="font-size:16pt;">'.$product->get_name().'</span><br /><br />
-            CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'
+            CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'<br /><br />
+            <table>
+              <tr>
+                <td style="padding:5px;background-color:black;">
+                  <span style="font-size:16pt;color:white;font-weight:bold;">'.$sku.'</span>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
       </table>

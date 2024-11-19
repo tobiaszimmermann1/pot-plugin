@@ -2,3 +2,4 @@
 .gitignore
 vendor
 node_modules
+debug.log
