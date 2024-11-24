@@ -1,21 +1,17 @@
 import React from "react"
 import {useLoaderData} from "react-router-dom"
-import {getProduct, getStockManagement} from "../products/products";
+import {getProduct} from "../products/products";
 
 const __ = wp.i18n.__
 
 export async function loader({params}) {
   const {product, currency} = await getProduct(params.productId);
-  const sm = await getStockManagement();
 
-  return {product, currency, sm}
+  return {product, currency}
 }
 
 export default function ProductOverviewDetails() {
-  const {product, stockManagement, currency} = useLoaderData();
-  console.log(product)
-
-  product.details = `<strong>${product._produzent}</strong> (${product._herkunft})<br /> <i style="font-size:0.75rem;margin-top: 5px;">${__("geliefert von", "fcplugin")} ${product._lieferant}</i>`
+  const {product, currency} = useLoaderData();
 
   return (
     <>
@@ -26,13 +22,27 @@ export default function ProductOverviewDetails() {
         <div className="fc_product_details_content">
           <h1>{product.name}</h1>
           <p>
-            <span dangerouslySetInnerHTML={{__html: product.details}}/>
+            <span>
+              <strong>{product._produzent}</strong> ({product._herkunft})<br/>
+              <i style={{fontSize: "font-size:0.75rem", marginTop: "5px"}}>
+                {__("geliefert von", "fcplugin")} {product._lieferant}
+              </i>
+            </span>
           </p>
           <p>
             {product._einheit} | <span
-            dangerouslySetInnerHTML={{__html: currency}}/> {parseFloat(product.price).toFixed(2)} {stockManagement && "| " + product.stock + " " + __("lagernd", "fcplugin")} | {product.short_description}
+            dangerouslySetInnerHTML={{__html: currency}}/> {parseFloat(product.price).toFixed(2)}
+            &nbsp;| {product.stock + " " + __("lagernd", "fcplugin")}
+            &nbsp;| {__("Artikel-Nr.")}: {product.sku}
           </p>
-          <p dangerouslySetInnerHTML={{__html: product.description}}/>
+          <div>
+            {product.short_description}
+          </div>
+          {(product.short_description !== product.description) && (
+            <div style={{marginTop: "5px"}}>
+              {product.description}
+            </div>
+          )}
         </div>
       </div>
     </>
