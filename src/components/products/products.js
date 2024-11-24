@@ -13,6 +13,13 @@ export async function getProductListOverview() {
       productsByCategory[category.name] = []
     })
 
+    products.map(p => {
+      let productToDo = p;
+      productToDo.unit = p._einheit
+      productToDo.lot = p._gebinde
+      productsByCategory[p.category_name].push(productToDo)
+    })
+
     return {
       products: products,
       categories: categories,
@@ -45,46 +52,7 @@ export async function getStockManagement() {
 export async function getSelfCheckoutProducts() {
   const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout_products`)
   if (response.data) {
-    return JSON.parse(response.data)
+    // WTF
+    return JSON.parse(JSON.parse(response.data)).map(Number)
   }
-}
-
-export function categorizeProducts(originalProducts, selfCheckoutProducts, filter, cats) {
-  let newProducts = {}
-
-  // FILTER: selfCheckout false && inStock false
-  if (!filter.selfCheckout && !filter.inStock) {
-    cats.map(cat => {
-      newProducts[cat.name] = originalProducts[cat.name]
-    })
-  }
-
-  // FILTER: selfCheckout false && inStock true
-  else if (!filter.selfCheckout && filter.inStock) {
-    cats.map(cat => {
-      newProducts[cat.name] = originalProducts[cat.name].filter(el => {
-        return parseInt(el.stock) > 0
-      })
-    })
-  }
-
-  // FILTER: selfCheckout true && inStock false
-  else if (filter.selfCheckout && selfCheckoutProducts && !filter.inStock) {
-    cats.map(cat => {
-      newProducts[cat.name] = originalProducts[cat.name].filter(el => {
-        return selfCheckoutProducts.includes(el.id)
-      })
-    })
-  }
-
-  // FILTER: selfCheckout true && inStock true
-  else if (filter.selfCheckout && selfCheckoutProducts && filter.inStock) {
-    cats.map(cat => {
-      newProducts[cat.name] = originalProducts[cat.name].filter(el => {
-        return selfCheckoutProducts.includes(el.id) && parseInt(el.stock) > 0
-      })
-    })
-  }
-
-  return newProducts
 }
