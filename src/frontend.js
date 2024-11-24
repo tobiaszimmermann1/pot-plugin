@@ -11,7 +11,7 @@ import SelfCheckout from "./SelfCheckout"
 import SuppliersList from "./components/frontend/SuppliersList"
 import ProducersList from "./components/frontend/ProducersList"
 import ProductOverview, {loader as productLoader} from "./ProductOverview"
-import ProductOverviewDetails, { loader as productDetailLoader} from "./components/frontend/ProductOverviewDetails";
+import ProductDetails, { loader as productDetailLoader} from "./components/frontend/ProductDetails";
 
 const productRouter = createHashRouter([{
     path: "/",
@@ -23,7 +23,7 @@ const productRouter = createHashRouter([{
       },
       {
         path: "/product/:productId",
-        element: <ProductOverviewDetails/>,
+        element: <ProductDetails/>,
         loader: productDetailLoader,
       }
     ]

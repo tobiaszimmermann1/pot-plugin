@@ -10,7 +10,7 @@ export async function loader({params}) {
   return {product, currency}
 }
 
-export default function ProductOverviewDetails() {
+export default function ProductDetails() {
   const {product, currency} = useLoaderData();
 
   return (
