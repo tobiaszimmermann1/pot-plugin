@@ -52,7 +52,7 @@ export async function loader(){
 }
 
 export default function ProductOverview() {
-  const {productOverview, sm, scp} = useLoaderData();
+  const data = useLoaderData();
 
   const [products, setProducts] = useState(null)
   const [originalProducts, setOriginalProducts] = useState(null)
@@ -71,14 +71,14 @@ export default function ProductOverview() {
   })
 
   useEffect(() => {
-    setAllProducts(productOverview.products);
-    setCategories(productOverview.productsByCategory);
-    setCategories(productOverview.productsByCategory);
-    setCats(productOverview.categories);
-    setCurrency(productOverview.currency);
+    setAllProducts(data.productOverview.products);
+    setCategories(data.productOverview.productsByCategory);
+    setCategories(data.productOverview.productsByCategory);
+    setCats(data.productOverview.categories);
+    setCurrency(data.productOverview.currency);
 
-    setStockManagement(sm);
-    setSelfCheckoutProducts(scp);
+    setStockManagement(data.stockManagement);
+    setSelfCheckoutProducts(data.selfCheckoutProducts);
   }, [])
 
   /**
@@ -141,14 +141,7 @@ export default function ProductOverview() {
                 {__("Kategorien", "fcplugin")}
               </span>
               <span style={{ margin: "0 10px" }}>&#8594;</span>{" "}
-              <span
-                className="fc_filters_link"
-                onClick={() => {
-                  setSelectedProduct(null)
-                }}
-              >
-                {selectedCat?.name}
-              </span>
+              <span className="fc_filters_link">{selectedCat?.name}</span>
             </>
           ) : (
             __("Kategorie wählen", "fcplugin")
