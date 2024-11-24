@@ -22,6 +22,17 @@ export async function getProductListOverview() {
   }
 }
 
+export async function getProduct(id) {
+  const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
+  if (response.data) {
+    const res = JSON.parse(response.data)
+    let product = res[0].find(product => product.id == id)
+
+    const currency = res[2]
+    return {product, currency}
+  }
+}
+
 export async function getStockManagement() {
   const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
   if (response.data) {
@@ -38,3 +49,42 @@ export async function getSelfCheckoutProducts() {
   }
 }
 
+export function categorizeProducts(originalProducts, selfCheckoutProducts, filter, cats) {
+  let newProducts = {}
+
+  // FILTER: selfCheckout false && inStock false
+  if (!filter.selfCheckout && !filter.inStock) {
+    cats.map(cat => {
+      newProducts[cat.name] = originalProducts[cat.name]
+    })
+  }
+
+  // FILTER: selfCheckout false && inStock true
+  else if (!filter.selfCheckout && filter.inStock) {
+    cats.map(cat => {
+      newProducts[cat.name] = originalProducts[cat.name].filter(el => {
+        return parseInt(el.stock) > 0
+      })
+    })
+  }
+
+  // FILTER: selfCheckout true && inStock false
+  else if (filter.selfCheckout && selfCheckoutProducts && !filter.inStock) {
+    cats.map(cat => {
+      newProducts[cat.name] = originalProducts[cat.name].filter(el => {
+        return selfCheckoutProducts.includes(el.id)
+      })
+    })
+  }
+
+  // FILTER: selfCheckout true && inStock true
+  else if (filter.selfCheckout && selfCheckoutProducts && filter.inStock) {
+    cats.map(cat => {
+      newProducts[cat.name] = originalProducts[cat.name].filter(el => {
+        return selfCheckoutProducts.includes(el.id) && parseInt(el.stock) > 0
+      })
+    })
+  }
+
+  return newProducts
+}

@@ -1,9 +1,16 @@
 import React, {useEffect, useState} from "react"
-import axios from "axios"
+import {
+  Link,
+  useLoaderData
+} from "react-router-dom";
 import {Box, Divider, FormControlLabel, LinearProgress, Switch} from "@mui/material"
 import {styled} from "@mui/material/styles"
-import ProductOverviewDetails from "./components/frontend/ProductOverviewDetails"
-import {getProductListOverview, getSelfCheckoutProducts, getStockManagement} from "./components/products/products";
+import {
+  categorizeProducts,
+  getProductListOverview,
+  getSelfCheckoutProducts,
+  getStockManagement
+} from "./components/products/products";
 
 const __ = wp.i18n.__
 
@@ -36,12 +43,21 @@ const Android12Switch = styled(Switch)(({theme}) => ({
   }
 }))
 
-function ProductOverview() {
+export async function loader(){
+  const productOverview = await getProductListOverview();
+  const stockManagement = await getStockManagement();
+  const selfCheckoutProducts = await getSelfCheckoutProducts();
+
+  return {productOverview, stockManagement, selfCheckoutProducts}
+}
+
+export default function ProductOverview() {
+  const {productOverview, sm, scp} = useLoaderData();
+
   const [products, setProducts] = useState(null)
   const [originalProducts, setOriginalProducts] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedCat, setSelectedCat] = useState(null)
-  const [selectedProduct, setSelectedProduct] = useState(null)
   const [stockManagement, setStockManagement] = useState(true)
   const [selfCheckoutProducts, setSelfCheckoutProducts] = useState([])
 
@@ -55,21 +71,14 @@ function ProductOverview() {
   })
 
   useEffect(() => {
-    getProductListOverview().then((overview) => {
-      console.log(overview);
-      setAllProducts(overview.products);
-      setCategories(overview.productsByCategory);
-      setCats(overview.categories);
-      setCurrency(overview.currency);
-    }).catch(error => console.log(error));
+    setAllProducts(productOverview.products);
+    setCategories(productOverview.productsByCategory);
+    setCategories(productOverview.productsByCategory);
+    setCats(productOverview.categories);
+    setCurrency(productOverview.currency);
 
-    getStockManagement().then((hasStockManagement) => {
-        setStockManagement(hasStockManagement);
-    }).catch(error => console.log(error));
-
-    getSelfCheckoutProducts().then((scp) => {
-      setSelfCheckoutProducts(scp)
-    }).catch(error => console.log(error));
+    setStockManagement(sm);
+    setSelfCheckoutProducts(scp);
   }, [])
 
   /**
@@ -81,19 +90,12 @@ function ProductOverview() {
       let productsByCategory = categories
 
       allProducts.map(p => {
-        let productToDo = {}
+        let productToDo = p;
         productToDo.amount = 0
-        productToDo.name = p.name
         productToDo.unit = p._einheit
         productToDo.lot = p._gebinde
         productToDo.details = `<strong>${p._produzent}</strong> (${p._herkunft})<br /> <i style="font-size:0.75rem;margin-top: 5px;">${__("geliefert von", "fcplugin")} ${p._lieferant}</i>`
         productToDo.category = p.category_name
-        productToDo.id = p.id
-        productToDo.short_description = p.short_description
-        productToDo.image = p.image
-        productToDo.description = p.description
-        productToDo.price = p.price
-        productToDo.stock = p.stock
         productToDo.stockStatus = p.stock_status
         productsByCategory[p.category_name].push(productToDo)
       })
@@ -111,7 +113,6 @@ function ProductOverview() {
 
   function handleChange(event) {
     setSelectedCat(null)
-    setSelectedProduct(null)
 
     setFilter({
       ...filter,
@@ -121,65 +122,20 @@ function ProductOverview() {
 
   useEffect(() => {
     if (originalProducts) {
-      // FILTER: selfCheckout true && inStock true
-      if (filter.selfCheckout && selfCheckoutProducts && filter.inStock) {
-        let newProducts = []
-        cats.map(cat => {
-          let newCat = originalProducts[cat.name].filter(el => {
-            return selfCheckoutProducts.includes(el.id) && parseInt(el.stock) > 0
-          })
-          newProducts[cat.name] = newCat
-        })
-        setProducts(newProducts)
-      }
-
-      // FILTER: selfCheckout true && inStock false
-      if (filter.selfCheckout && selfCheckoutProducts && !filter.inStock) {
-        let newProducts = []
-        cats.map(cat => {
-          let newCat = originalProducts[cat.name].filter(el => {
-            return selfCheckoutProducts.includes(el.id)
-          })
-          newProducts[cat.name] = newCat
-        })
-        setProducts(newProducts)
-      }
-
-      // FILTER: selfCheckout false && inStock true
-      if (!filter.selfCheckout && filter.inStock) {
-        let newProducts = []
-        cats.map(cat => {
-          let newCat = originalProducts[cat.name].filter(el => {
-            return parseInt(el.stock) > 0
-          })
-          newProducts[cat.name] = newCat
-        })
-        setProducts(newProducts)
-      }
-
-      // FILTER: selfCheckout false && inStock false
-      if (!filter.selfCheckout && !filter.inStock) {
-        let newProducts = []
-        cats.map(cat => {
-          let newCat = originalProducts[cat.name]
-          newProducts[cat.name] = newCat
-        })
-        setProducts(newProducts)
-      }
+      setProducts(categorizeProducts(originalProducts, selfCheckoutProducts, filter, cats))
     }
   }, [filter])
 
   return !loading ? (
     <>
       <div className="fc_filters_breadcrumb">
-        <p>
+        <div>
           {selectedCat ? (
             <>
               <span
                 className="fc_filters_link"
                 onClick={() => {
                   setSelectedCat(null)
-                  setSelectedProduct(null)
                 }}
               >
                 {__("Kategorien", "fcplugin")}
@@ -193,19 +149,14 @@ function ProductOverview() {
               >
                 {selectedCat?.name}
               </span>
-              {selectedProduct && (
-                <>
-                  <span style={{ margin: "0 10px" }}>&#8594;</span> {selectedProduct?.name}
-                </>
-              )}
             </>
           ) : (
             __("Kategorie wählen", "fcplugin")
           )}
-        </p>
+        </div>
       </div>
 
-      {!selectedCat && !selectedProduct && (
+      {!selectedCat && (
         <div className="fc_filters_wrapper">
           <FormControlLabel control={<Android12Switch checked={filter.selfCheckout} onChange={handleChange} name="selfCheckout" />} label={__("Nur Produkte, die im Self Checkout verfügbar sind anzeigen.")} />
           <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
@@ -215,33 +166,27 @@ function ProductOverview() {
 
       <div className="fc_category_wrapper">
         {selectedCat ? (
-          selectedProduct ? (
-            <ProductOverviewDetails product={selectedProduct} stockManagement={filter.inStock} currency={currency} />
-          ) : (
             <>
-              {products[selectedCat.name].map(product => (
-                <React.Fragment key={product.id}>
-                  <div className="fc_product_box">
-                    <div className="fc_product_img" style={{ backgroundImage: `url('${product.image}')`, backgroundRepeat: "no-repeat", backgroundPosition: "center center", backgroundSize: "cover" }} />
-                    <div className="fc_product_content">
-                      <h2>{product.name}</h2>
-                      <p>
-                        <span dangerouslySetInnerHTML={{ __html: product.details }} />
-                      </p>
-                      <p>
-                        {product.unit} | <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(product.price).toFixed(2)} {"| "} | {product.short_description}
-                      </p>
-                      <p>
-                        <div className="fc_product_more" onClick={() => setSelectedProduct(product)}>
-                          {__("Mehr erfahren", "fcplugin")} &#8594;
-                        </div>
-                      </p>
-                    </div>
+            {products[selectedCat.name].map(product => (
+              <React.Fragment key={product.id}>
+                <div className="fc_product_box">
+                  <div className="fc_product_img" style={{ backgroundImage: `url('${product.image}')`, backgroundRepeat: "no-repeat", backgroundPosition: "center center", backgroundSize: "cover" }} />
+                  <div className="fc_product_content">
+                    <h2>{product.name}</h2>
+                    <p>
+                      <span dangerouslySetInnerHTML={{ __html: product.details }} />
+                    </p>
+                    <p>
+                      {product.unit} | <span dangerouslySetInnerHTML={{ __html: currency }} /> {parseFloat(product.price).toFixed(2)} {"| "} | {product.short_description}
+                    </p>
+                    <p>
+                      <Link className="fc_product_more" to={`product/${product.id}`}>{__("Mehr erfahren", "fcplugin")} &#8594;</Link>
+                    </p>
                   </div>
-                </React.Fragment>
-              ))}
-            </>
-          )
+                </div>
+              </React.Fragment>
+            ))}
+          </>
         ) : (
           <>
             {cats.map(
@@ -273,5 +218,3 @@ function ProductOverview() {
     </Box>
   )
 }
-
-export default ProductOverview
