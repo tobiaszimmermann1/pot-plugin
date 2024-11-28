@@ -1,43 +1,51 @@
 import axios from "axios";
 
+let productListOverviewCache = null;
+
 export async function getProductListOverview() {
-  const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-  if (response.data) {
-    const res = JSON.parse(response.data)
-
-    const products = res[0]
-    const categories = res[1]
-    const currency = res[2]
-    let productsByCategory = {}
-    res[1].map(category => {
-      productsByCategory[category.name] = []
-    })
-
-    products.map(p => {
-      let productToDo = p;
-      productToDo.unit = p._einheit
-      productToDo.lot = p._gebinde
-      productsByCategory[p.category_name].push(productToDo)
-    })
-
-    return {
-      products: products,
-      categories: categories,
-      currency: currency,
-      productsByCategory: productsByCategory
-    };
+  if (productListOverviewCache === null) {
+    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
+    if (response.data) {
+      productListOverviewCache = JSON.parse(response.data)
+    }
   }
+
+  const res = productListOverviewCache;
+  const products = res[0]
+  const categories = res[1]
+  const currency = res[2]
+  let productsByCategory = {}
+  res[1].map(category => {
+    productsByCategory[category.name] = []
+  })
+
+  products.map(p => {
+    let productToDo = p;
+    productToDo.unit = p._einheit
+    productToDo.lot = p._gebinde
+    productsByCategory[p.category_name].push(productToDo)
+  })
+
+  return {
+    products: products,
+    categories: categories,
+    currency: currency,
+    productsByCategory: productsByCategory
+  };
 }
 
 export async function getProduct(id) {
-  const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-  if (response.data) {
-    const res = JSON.parse(response.data)
-    let product = res[0].find(product => product.id == id)
-
-    const currency = res[2]
-    return {product, currency}
+  if (productListOverviewCache === null) {
+    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
+    if (response.data) {
+      productListOverviewCache = JSON.parse(response.data)
+    }
   }
+  const res = productListOverviewCache;
+  let product = res[0].find(product => product.id == id)
+
+  const currency = res[2]
+  return {product, currency}
 }
 
 export async function getStockManagement() {
