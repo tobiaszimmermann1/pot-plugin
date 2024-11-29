@@ -3681,7 +3681,8 @@ class FoodcoopRestRoutes {
 
     $products = array();
     foreach ($p as $product) {
-      if ($product->get_sku() != "fcplugin_instant_topup_product" && $product->get_sku() != 'fcplugin_pos_product') {
+      $sku = $product->get_sku();
+      if ($sku != "fcplugin_instant_topup_product" && $sku != 'fcplugin_pos_product') {
 
         $pimg = wp_get_attachment_url( $product->get_image_id(), 'thumbnail');
         if (!$pimg) {
@@ -3697,7 +3698,8 @@ class FoodcoopRestRoutes {
           "image" => $pimg,
           "description" => $product->get_description(),
           "stock" => $product->get_stock_quantity(),
-          "stock_status" => $product->get_stock_status()
+          "stock_status" => $product->get_stock_status(),
+          "sku" => $sku,
         );
       
         // product meta data
