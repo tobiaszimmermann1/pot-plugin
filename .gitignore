@@ -2,3 +2,6 @@
 .gitignore
 vendor
 node_modules
+.idea/
+
+build/
