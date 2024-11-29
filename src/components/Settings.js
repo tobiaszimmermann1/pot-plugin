@@ -44,6 +44,14 @@ const Settings = () => {
   const [enablePaymentByBill, setEnablePaymentByBill] = useState(false)
   const [enableUserBlock, setEnableUserBlock] = useState(false)
   const [enableRoundsStorewide, setEnableRoundsStorewide] = useState(false)
+  const [privacyMailchimp, setPrivacyMailchimp] = useState(false)
+  const [privacyRecaptcha, setPrivacyRecaptcha] = useState(false)
+  const [privacyFontawesome, setPrivacyFontawesome] = useState(false)
+  const [privacyTwint, setPrivacyTwint] = useState(false)
+
+  useEffect(() => {
+    console.log(privacyTwint)
+  }, [privacyTwint])
 
   useEffect(() => {
     axios
@@ -61,30 +69,7 @@ const Settings = () => {
   }, [])
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getPages`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        },
-        params: {
-          per_page: 100
-        }
-      })
-      .then(function (response) {
-        let pages = []
-        JSON.parse(response.data).map(page => {
-          pages.push({ id: page.id, title: page.title })
-        })
-        setPages(pages)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }, [])
-
-  useEffect(() => {
     if (options) {
-      console.log(options)
       setFee(options.fc_fee)
       setMargin(options.fc_margin)
       setBank(options.fc_bank)
@@ -105,6 +90,13 @@ const Settings = () => {
       options.fc_enable_payment_by_bill === "1" ? setEnablePaymentByBill(true) : setEnablePaymentByBill(false)
       options.fc_enable_user_block === "1" ? setEnableUserBlock(true) : setEnableUserBlock(false)
       options.fc_enable_rounds_storewide === "1" ? setEnableRoundsStorewide(true) : setEnableRoundsStorewide(false)
+      if (options.fc_privacy) {
+        let privacy = JSON.parse(options.fc_privacy)
+        setPrivacyMailchimp(privacy.privacyMailchimp)
+        setPrivacyRecaptcha(privacy.privacyRecaptcha)
+        setPrivacyFontawesome(privacy.privacyFontawesome)
+        setPrivacyTwint(privacy.privacyTwint)
+      }
     }
   }, [options])
 
@@ -134,7 +126,13 @@ const Settings = () => {
           taxes: enableTaxes,
           enablePaymentByBill: enablePaymentByBill,
           enableUserBlock: enableUserBlock,
-          enableRoundsStorewide: enableRoundsStorewide
+          enableRoundsStorewide: enableRoundsStorewide,
+          privacy: {
+            privacyMailchimp: privacyMailchimp,
+            privacyRecaptcha: privacyRecaptcha,
+            privacyFontawesome: privacyFontawesome,
+            privacyTwint: privacyTwint
+          }
         },
         {
           headers: {
@@ -148,13 +146,13 @@ const Settings = () => {
       })
   }
 
-  return options && pages ? (
+  return options ? (
     <>
       <Card sx={{ display: "flex", padding: "1rem", paddingTop: 0, flexWrap: "wrap", backgroundColor: "white", fontSize: "1rem", borderRadius: 0 }} elevation={2}>
         <CardContent>
           <Grid container spacing={2} rowGap={2} alignItems="flex-start">
             <Grid item xs={12}>
-              <h2>{__("Foodcoop Einstellungen", "fcplugin")}</h2>
+              <h2>{__("Foodcoop", "fcplugin")}</h2>
             </Grid>
             <Grid item xs={4}>
               <strong>{__("Name der Foodcoop", "fcplugin")}</strong>
@@ -430,32 +428,8 @@ const Settings = () => {
         <CardContent>
           <Grid container spacing={2} rowGap={2} alignItems="baseline">
             <Grid item xs={12}>
-              <h2>{__("Anzeige Einstellungen", "fcplugin")}</h2>
+              <h2>{__("Anzeige", "fcplugin")}</h2>
             </Grid>
-            {pages && (
-              <>
-                <Grid item xs={4}>
-                  <strong>{__("Bestellseite", "fcplugin")}</strong>
-                </Grid>
-                <Grid item xs={8}>
-                  <FormControl fullWidth>
-                    <InputLabel id="fc_order_page">{__("Bestellseite", "fcplugin")}</InputLabel>
-                    <Select labelId="fc_order_page" id="fc_order_page-select" value={orderPage} label="Bestellseite" onChange={e => setOrderPage(e.target.value)}>
-                      <MenuItem key={"none"} value={"none"}>
-                        {__("keine", "fcplugin")}
-                      </MenuItem>
-                      {pages.map(page => (
-                        <MenuItem key={page.id} value={page.id}>
-                          {page.title}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <br /> <br />
-                  <i>{__("Die Bestell-Liste kann auch mit dem Shortcode [foodcoop_list] eingefügt werden.", "fcplugin")}</i>
-                </Grid>
-              </>
-            )}
             <Grid item xs={4}>
               <strong>{__("Preise öffentlich anzeigen?", "fcplugin")}</strong>
             </Grid>
@@ -473,6 +447,47 @@ const Settings = () => {
             </Grid>
             <Grid item xs={8}>
               <Switch checked={publicMembers} onChange={event => setPublicMembers(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+            </Grid>
+          </Grid>
+        </CardContent>
+        <CardActions>
+          <LoadingButton variant="contained" size="large" onClick={handleSave} loading={submitting} loadingPosition="start" startIcon={<SaveIcon />} disabled={submitting}>
+            {__("Einstellungen Speichern", "fcplugin")}
+          </LoadingButton>
+        </CardActions>
+      </Card>
+      <Card elevation={2} sx={{ display: "flex", flexDirection: "column", padding: "1rem", paddingTop: 0, flexWrap: "wrap", backgroundColor: "white", fontSize: "1rem", borderRadius: 0, marginTop: 2 }}>
+        <CardContent>
+          <Grid container spacing={2} rowGap={2} alignItems="baseline">
+            <Grid item xs={12}>
+              <h2>{__("Datenschutz", "fcplugin")}</h2>
+            </Grid>
+            <Grid item xs={12}>
+              <p>{__("Wähle welche externe Dienste genutzt werden und zeige die Datenschutzerklärung an beliebiger Stelle mit dem Shortcode [foodcoop_privacy] an.", "fcplugin")}</p>
+            </Grid>
+            <Grid item xs={4}>
+              <strong>{__("Mailchimp", "fcplugin")}</strong>
+            </Grid>
+            <Grid item xs={8}>
+              <Switch checked={privacyMailchimp} onChange={event => setPrivacyMailchimp(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+            </Grid>
+            <Grid item xs={4}>
+              <strong>{__("Google reCaptcha", "fcplugin")}</strong>
+            </Grid>
+            <Grid item xs={8}>
+              <Switch checked={privacyRecaptcha} onChange={event => setPrivacyRecaptcha(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+            </Grid>
+            <Grid item xs={4}>
+              <strong>{__("FontAwesome", "fcplugin")}</strong>
+            </Grid>
+            <Grid item xs={8}>
+              <Switch checked={privacyFontawesome} onChange={event => setPrivacyFontawesome(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+            </Grid>{" "}
+            <Grid item xs={4}>
+              <strong>{__("Twint", "fcplugin")}</strong>
+            </Grid>
+            <Grid item xs={8}>
+              <Switch checked={privacyTwint} onChange={event => setPrivacyTwint(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
             </Grid>
           </Grid>
         </CardContent>

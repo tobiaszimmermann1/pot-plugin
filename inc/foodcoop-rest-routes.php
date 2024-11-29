@@ -1078,6 +1078,9 @@ class FoodcoopRestRoutes {
     $enable_rounds_storewide = $data["enableRoundsStorewide"];
     $enable_rounds_storewide == true  ? update_option('fc_enable_rounds_storewide', '1') : update_option('fc_enable_rounds_storewide', '0');
 
+    $privacy = $data["privacy"];
+    update_option('fc_privacy', json_encode($privacy));
+
     $enable_user_block = $data["enableUserBlock"];
     $enable_user_block == true  ? update_option('fc_enable_user_block', '1') : update_option('fc_enable_user_block', '0');
     

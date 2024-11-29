@@ -1161,3 +1161,16 @@ function fc_prevent_orders_in_multiple_bestellrunden($button_html) {
   }
   return $button_html;
 }
+
+
+
+
+/**
+ * Data Privacy Statement generator [foodcoop_privacy] 
+ */
+
+ add_shortcode('foodcoop_privacy', function() {
+  ob_start();
+  require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-privacy-statement.php');
+  return ob_get_clean();
+});
