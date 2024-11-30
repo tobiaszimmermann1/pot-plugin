@@ -31,6 +31,7 @@ function MyBalance() {
   const [toCity, setToCity] = useState("")
   const [balance, setBalance] = useState("0.00")
   const [currency, setCurrency] = useState("")
+  const [userId, setUserId] = useState(0)
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
@@ -55,6 +56,7 @@ function MyBalance() {
         setInstantTopUp(res[9])
         setBalance(res[10])
         setCurrency(res[11])
+        setUserId(res[12])
         setLoading(false)
       })
       .catch(function (error) {
@@ -68,6 +70,7 @@ function MyBalance() {
       const data = {
         currency: "CHF",
         amount: parseFloat(amount),
+        message: `TopUp ${name} (${userId})`,
         creditor: {
           name: blogname,
           address: storeAddress,
