@@ -121,7 +121,7 @@ export default function ProductOverviewCategory() {
                 </p>
                 <p>
                   {product.unit} | <span
-                  dangerouslySetInnerHTML={{__html: currency}}/> {parseFloat(product.price).toFixed(2)} {"| "} | {product.short_description}
+                  dangerouslySetInnerHTML={{__html: currency}}/> {parseFloat(product.price).toFixed(2)} | {product.short_description}
                 </p>
                 <p>
                   <Link className="fc_product_more"
