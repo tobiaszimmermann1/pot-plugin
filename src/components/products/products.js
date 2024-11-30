@@ -28,7 +28,6 @@ export async function getProductListOverview() {
 
   // Remove categories with no products
   const filteredCategories = categories.filter(category => productsByCategory[category.name].length > 0);
-  console.log(filteredCategories)
 
   return {
     products: products,
