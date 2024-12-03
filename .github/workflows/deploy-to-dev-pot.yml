@@ -32,7 +32,6 @@ jobs:
         mv languages target
         mv scripts target
         mv styles target
-        mv vendor target
         mv *.md target
         mv *.php target
         cd target
