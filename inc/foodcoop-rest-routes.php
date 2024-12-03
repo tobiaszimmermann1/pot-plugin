@@ -1011,7 +1011,7 @@ class FoodcoopRestRoutes {
 
     $currency = get_woocommerce_currency_symbol();
 
-    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup, $balance, $currency));
+    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup, $balance, $currency, $id));
   }
 
   /**

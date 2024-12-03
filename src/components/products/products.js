@@ -26,9 +26,12 @@ export async function getProductListOverview() {
     productsByCategory[p.category_name].push(productToDo)
   })
 
+  // Remove categories with no products
+  const filteredCategories = categories.filter(category => productsByCategory[category.name].length > 0);
+
   return {
     products: products,
-    categories: categories,
+    categories: filteredCategories,
     currency: currency,
     productsByCategory: productsByCategory
   };
