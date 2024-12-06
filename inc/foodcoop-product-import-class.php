@@ -194,6 +194,11 @@ class FoodcoopProductImport {
                       ?>
                         <p> <?php echo __("Die Datei wurde geprüft und ist bereit für den Import. Du kannst hier alle Zeilen überprüfen und dann mit dem Import fortfahren.", "fcplugin"); ?> </p>
                       <?php
+                        if ($foodcoop_product_import_delete === "true") {
+                        ?>
+                          <p><strong> <?php echo __("Achtung: Alle Produkte, die nicht in der Import-Liste sind, werden gelöscht!", "fcplugin"); ?> </strong></p>
+                        <?php
+                        }
                     }
                   ?>
                 </div>
