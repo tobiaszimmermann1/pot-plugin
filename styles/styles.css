@@ -1056,6 +1056,158 @@ html {
   color: red;
 }
 
+.foodcoop_import_wrapper {
+  width: 50%;
+  min-width: 600px;
+  max-width: 800px;
+  margin: 50px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.foodcoop_import_progress_bar_wrapper {
+  width: 100%;
+}
+
+.foodcoop_import_progress_bar_steps {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+}
+
+.foodcoop_import_progress_bar_steps li {
+  border-bottom: 4px solid #ccc;
+  padding: 10px 0px;
+  position: relative;
+  width: 25%;
+  text-align: center;
+}
+
+.foodcoop_import_progress_bar_steps li::before {
+  content: "";
+  border: 4px solid #ccc;
+  border-radius: 100%;
+  width: 4px;
+  height: 4px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  margin-left: -6px;
+  margin-bottom: -8px;
+  background: #fff;
+}
+
+.foodcoop_import_progress_bar_steps li.active {
+  border-bottom-color: #00796b;
+}
+
+.foodcoop_import_progress_bar_steps li.active::before {
+  border: 4px solid #00796b;
+}
+
+.foodcoop_file_import_content_wrapper {
+  width: 100%;
+  margin-top: 25px;
+  padding: 0px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.05);
+}
+
+.foodcoop_file_import_content_wrapper form {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.foodcoop_file_import_content_header {
+  width: 100%;
+  padding: 10px 25px;
+  box-sizing: border-box;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.foodcoop_file_import_content_header ul {
+  list-style-type: disc;
+  margin-left: 25px;
+}
+
+.foodcoop_file_import_content_action {
+  width: 100%;
+  padding: 25px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.foodcoop_file_import_content_next {
+  width: 100%;
+  padding: 10px 25px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  text-align: right;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.foodcoop_error {
+  margin-top: 25px !important;
+  margin-bottom: 0 !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.foodcoop_file_import_settings-table {
+  width: 100%;
+  max-width: 800px;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.foodcoop_file_import_settings-table tr {
+  background-color: #ffffff;
+}
+
+.foodcoop_file_import_settings-table tr:nth-child(2n) {
+  background-color: #fafafa;
+}
+
+.foodcoop_file_import_settings-table td {
+  padding: 10px;
+  vertical-align: top;
+}
+
+.foodcoop_file_import_settings-table label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.foodcoop_file_import_settings-table input[type="checkbox"],
+.foodcoop_file_import_settings-table input[type="radio"],
+.foodcoop_file_import_settings-table select {
+  margin-top: 5px;
+}
+
 @media only screen and (max-width: 800px) {
   .fc_order_list_line_wrapper {
     display: flex;

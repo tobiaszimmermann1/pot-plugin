@@ -254,6 +254,39 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST productImport
+     */
+    register_rest_route( 'foodcoop/v1', 'productImport', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'productImport'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST productImportCheckFile
+     */
+    register_rest_route( 'foodcoop/v1', 'productImportCheckFile', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'productImportCheckFile'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST productImportAction
+     */
+    register_rest_route( 'foodcoop/v1', 'productImportAction', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'productImportAction'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * POST bestellrunde delete
      * params: id
      */
@@ -1539,6 +1572,30 @@ class FoodcoopRestRoutes {
   function getDataExport($data) {
     require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-data-export.php');
     return;
+  }
+
+  /**
+   * productImport
+   */
+  function productImport(WP_REST_Request $request) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/product-import.php');
+    return $response;
+  }
+
+  /**
+   * productImportCheckFile
+   */
+  function productImportCheckFile(WP_REST_Request $request) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/product-import-check.php');
+    return $response;
+  }
+
+  /**
+   * productImportAction
+   */
+  function productImportAction(WP_REST_Request $request) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/product-import-action.php');
+    return $response;
   }
 
   /**

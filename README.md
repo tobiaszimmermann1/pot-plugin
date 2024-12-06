@@ -37,6 +37,8 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Disabled checkout button if there products in cart from multiple bestellrunden and show a message with instructions.
 - Fixed a bug where foodcoop balance displayed a wrong value during ordering.
 - For payment gateway foodcoop balance: if balance is too low, the place order button is disabled (prevents the creation of failed orders)
+- Added a new shortcode `[foodcoop_privacy]` to display a privacy statement. Added privacy options o2n the settings page accordingly.
+- changed the design of qr code labels
 - fixed a bug that prevented categories in ordering list from not collapsing properly
 - fixed miscalculations in generated bestellrunden lists if a user has multiple orders in one bestellrunde
 - Other small bugfixes
