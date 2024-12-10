@@ -30,6 +30,7 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ### 1.7.5
 
+- New revamped product import from XLSX files: better overview, options and less buggy due to text formatting issues.
 - Added an option to activate Bestellrunden shopwide. With this option set to active, all orders must be associated with a bestellrunde.
 - With the option of Bestellrunden shopwide active, added UI elements to shop pages and single product page to select Bestellrunde, if there are active ones. If there are no active Bestellrunden, adding products to the cart, is blocked.
 - Added an option to manually mark a Bestellrunde as completed (changes the status of all orders to completed as well)
