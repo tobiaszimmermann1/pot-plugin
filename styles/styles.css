@@ -1208,6 +1208,22 @@ html {
   margin-top: 5px;
 }
 
+#foodcoop_product_import_progress {
+  display: none;
+  width: 300px;
+  height: 25px;
+  border-radius: 5px;
+  text-align: right;
+  margin-right: 10px;
+  font-size: 12px;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  border: 1px solid #f0f0f0;
+  box-sizing: border-box;
+  padding-right: 10px;
+}
+
 @media only screen and (max-width: 800px) {
   .fc_order_list_line_wrapper {
     display: flex;

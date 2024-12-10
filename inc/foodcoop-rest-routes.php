@@ -371,6 +371,18 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST postImportProductsProgress
+     * params: file
+     */
+    register_rest_route( 'foodcoop/v1', 'postImportProductsProgress', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postImportProductsProgress'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET users
      */
     register_rest_route( 'foodcoop/v1', 'getUsers', array(
@@ -2132,6 +2144,17 @@ class FoodcoopRestRoutes {
     }
 
     return array($changed_products,$new_products,$deleted_products); 
+  }
+
+  
+  /**
+   * postImportProductsProgress
+   */
+  function postImportProductsProgress($file) {
+    $progress = get_transient( "foodcoop_".$file['file']."_importprogress" );
+    return [
+      'progress' => $progress, 
+    ];
   }
 
   

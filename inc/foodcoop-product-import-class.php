@@ -35,11 +35,14 @@ class FoodcoopProductImport {
     if (isset($_GET['step'])) {
       $active_step = intval($_GET['step']);
 
-      // sanitize file path
-      $file_path = str_replace('\\\\', '\\', $_GET['file']);
-      $file_path = str_replace('\\\\', '\\', $file_path);
-      $file_path = str_replace('\\\\', '\\', $file_path);
-      $file_path = str_replace('\\\\', '\\', $file_path);
+      $file_path = null;
+      if ($active_step === 1 || $active_step === 2 || $active_step === 3) {
+        // sanitize file path
+        $file_path = str_replace('\\\\', '\\', $_GET['file']);
+        $file_path = str_replace('\\\\', '\\', $file_path);
+        $file_path = str_replace('\\\\', '\\', $file_path);
+        $file_path = str_replace('\\\\', '\\', $file_path);
+      }
 
       // in step 2, make sure that file path is correct
       if ($active_step === 2) {
@@ -62,6 +65,14 @@ class FoodcoopProductImport {
           $formatting_errors = $transient_data->errors;
           $rows_with_errors = $transient_data->rows_with_errors;
           $_GET['del'] === "true" ? $foodcoop_product_import_delete = "true" : $foodcoop_product_import_delete = "false";
+        }
+      }
+
+      // in step 4
+      if ($active_step === 4) {
+        if (!isset($_GET['updatedproducts']) && !isset($_GET['newproducts']) ) {
+          $error_msg = __("Fehler während dem Import.", "fcplugin");
+          $is_error = true;
         }
       }
 
@@ -236,9 +247,7 @@ class FoodcoopProductImport {
                 <div class="foodcoop_file_import_content_next">
                   <input type="hidden" id="foodcoop_product_import_delete" value="<?php echo $foodcoop_product_import_delete; ?>" />
                   <input type="hidden" id="foodcoop_product_import_file" value="<?php echo $file_path; ?>" />
-                <div class="wp-admin waiting hidden">
-                    <img src="<?php echo parse_url(admin_url())['path'].'images/spinner.gif'; ?>" alt="Loading...">
-                </div>
+                  <div id="foodcoop_product_import_progress"></div>
                   <input type="hidden" id="foodcoop_file_import_file" value="<?php echo $_GET['file']; ?>" />
                   <?php count($formatting_errors) > 0 ? $disabled = false : $disabled = true; ?>
                   <?php if (!$disabled) {
@@ -254,15 +263,37 @@ class FoodcoopProductImport {
               </form>
             <?php 
           }
-
-
           ?>
 
-
-  
           <!-- 
             / Step Content
           -->
+
+          <?php
+          if ($active_step === 4 && $is_error === false) { 
+            $totalproducts = $_GET['updatedproducts'] + $_GET['newproducts'];
+            $updatedproducts = $_GET['updatedproducts'];
+            $newproducts = $_GET['newproducts'];
+            ?>
+
+            <form id="foodcoop_product_import_step1">
+            
+              <div class="foodcoop_file_import_content_header">
+                <h1> <?php echo $totalproducts." ".__("Produkte wurden importiert", "fcplugin"); ?> </h1>
+                <ul>
+                  <li> <?php echo $newproducts." ".__("Produkte wurden neu erstellt", "fcplugin"); ?> </li>
+                  <li> <?php echo $updatedproducts." ".__("Produkte wurden aktualisiert", "fcplugin"); ?> </li>  
+                </ul>
+              </div>
+
+              <div class="foodcoop_file_import_content_next">
+                <a href="<?php echo parse_url(admin_url())['path'].'admin.php?page=foodcoop-plugin'; ?>" class="button button-primary"><?php echo __("Zurück zum POT Plugin", "fcplugin"); ?></a>
+              </div>
+
+            </form>
+          <?php 
+          }
+          ?> 
 
         </div>
       </div>

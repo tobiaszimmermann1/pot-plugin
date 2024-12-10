@@ -34,9 +34,7 @@ jQuery("document").ready(function () {
           return response.json()
         })
         .then(data => {
-          console.log("Parsed data:", data)
           if (data.success === true) {
-            //console.log(data.file)
             window.location.href = `${importLocalizer.adminUrl}&step=2&file=${data.file_path}`
           }
         })
@@ -80,7 +78,6 @@ jQuery("document").ready(function () {
           return response.json()
         })
         .then(data => {
-          console.log("Parsed data:", data)
           if (data.success === true) {
             //jQuery("#foodcoop_file_import_data").val(JSON.stringify(data))
             window.location.href = `${importLocalizer.adminUrl}&step=3&file=${file}&del=${delete_products}`
@@ -100,6 +97,34 @@ jQuery("document").ready(function () {
    * STEP 3
    */
 
+  let progressInterval = null
+
+  function fetchProgress(file) {
+    const formData = new FormData()
+    formData.append("file", file)
+
+    fetch(`${importLocalizer.apiUrl}/foodcoop/v1/postImportProductsProgress`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "X-WP-Nonce": importLocalizer.nonce
+      },
+      credentials: "same-origin"
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        const progress = parseInt(data.progress) || 0
+        jQuery("#foodcoop_product_import_progress").css("display", "flex")
+        jQuery("#foodcoop_product_import_progress").html(progress + "%")
+        jQuery("#foodcoop_product_import_progress").css("background", `linear-gradient(to right, #f0f0f0 ${progress}%, transparent ${progress}%`)
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+        }
+      })
+  }
+
   document.body.addEventListener("click", function (e) {
     if (e.target && e.target.id === "foodcoop_product_import_step3-submit") {
       e.preventDefault()
@@ -109,6 +134,9 @@ jQuery("document").ready(function () {
 
       const file = jQuery("#foodcoop_product_import_step3 #foodcoop_product_import_file").val()
       const delete_products = jQuery("#foodcoop_product_import_step3 #foodcoop_product_import_delete").val()
+
+      // Fetch progress every second
+      progressInterval = setInterval(() => fetchProgress(file), 1000)
 
       const formData = new FormData()
       formData.append("file", file)
@@ -126,10 +154,9 @@ jQuery("document").ready(function () {
           return response.json()
         })
         .then(data => {
-          console.log("Parsed data:", data)
           if (data.success === true) {
             //jQuery("#foodcoop_file_import_data").val(JSON.stringify(data))
-            //window.location.href = `${importLocalizer.adminUrl}&step=3&file=${file}`
+            window.location.href = `${importLocalizer.adminUrl}&step=4&updatedproducts=${data.data.updatedproducts}&newproducts=${data.data.newproducts}`
           }
         })
         .catch(error => {

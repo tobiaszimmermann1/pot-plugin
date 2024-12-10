@@ -85,7 +85,7 @@ try {
         array_push($formatting_errors, array($i, "Zelle in Spalte 4 muss eine Zahl sein."));
         $row_has_error = true;
       }
-      if (!isIntFloatOrNumeric($rowData[7])) { 
+      if (!isIntFloatOrNumeric($rowData[7]) && !empty($rowData[7])) { 
         array_push($formatting_errors, array($i, "Zelle in Spalte 8 muss eine Zahl sein."));
         $row_has_error = true;
       }
