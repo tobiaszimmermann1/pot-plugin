@@ -12,6 +12,14 @@ $import_products = $transient->data;
 
 $all_imported_product_ids = array();
 
+// get all products with loonity id's into an array
+$all_pot_ids = array();
+$woo_products = wc_get_products(array('limit' => -1));
+foreach ($woo_products as $woo_product) {
+  $pot_id = $woo_product->get_meta('_loonity_id');
+  if (!empty($pot_id)) $all_pot_ids[$pot_id] = $woo_product->get_id();
+}
+
 
 // for testing
 $new_prods = 0;
@@ -20,16 +28,21 @@ $updated_prods = 0;
 $i = 1;
 foreach ($import_products as $import_product) {
   if ($i > 1) {
-
-    // if product has id specified, check if it exists in db
-    $product_exists = wc_get_product(intval($import_product[7])) instanceof WC_Product;
-
-    // get product object or create new product and then get object
     $product = null;
     $product_id = null;
 
+    // if product has id specified, check if it exists in db
+    $product_exists = wc_get_product(intval($import_product[7])) instanceof WC_Product;    
+    if ($product_exists) $product_id = intval($import_product[7]);
+
+    // if product has no id, but a pot_id specified
+    if (!$product_exists && !empty($import_product[14])) {
+      $product_exists = wc_get_product($all_pot_ids[intval($import_product[14])]) instanceof WC_Product;
+      $product_id = intval($all_pot_ids[intval($import_product[14])]);
+    }
+
+    // get product object or create new product and then get object
     if ($product_exists) {
-      $product_id = intval($import_product[7]);
       $product = wc_get_product($product_id);
       $updated_prods++;
     } else {
@@ -51,6 +64,7 @@ foreach ($import_products as $import_product) {
     $product->update_meta_data( '_lieferant', sanitize_text_field($import_product[12]) );
     $product->update_meta_data( '_herkunft', sanitize_text_field($import_product[5]) );
     $product->update_meta_data( '_produzent', sanitize_text_field($import_product[4]) );
+    $product->update_meta_data( '_loonity_id', sanitize_text_field($import_product[14]) );
     $product->save_meta_data();
 
     // handle category

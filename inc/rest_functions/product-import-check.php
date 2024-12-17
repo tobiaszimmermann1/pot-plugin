@@ -14,6 +14,7 @@ $formatting_errors = array();
 $rows_with_errors = array();
 $all_skus = array();
 $all_ids = array();
+$all_pot_ids = array();
 
 function isIntFloatOrNumeric($value) {
   return is_int($value) || is_float($value) || (is_string($value) && is_numeric($value));
@@ -27,13 +28,19 @@ try {
   foreach ($sheet->getRowIterator() as $row) {
     $rowData = array();
     foreach ($row->getCellIterator() as $cell) {
-      $rowData[] = $cell->getValue();
+      $value = $cell->getValue();
+      if ($value instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
+          $value = $value->getPlainText();
+      }
+      $rowData[] = $value;
     }
+    error_log(print_r($rowData,true));
+
 
     // check if header row has correct names
     if ($i === 1) {
       $header_formatting_error = true;
-      if (["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description", "sku", "supplier", "tax"] === $rowData) $header_formatting_error = false;
+      if (["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description", "sku", "supplier", "tax", "pot_id"] === $rowData) $header_formatting_error = false;
       if ($header_formatting_error) array_push($formatting_errors, array($i, "Kopfzeile beinhaltet falsche Bezeichnungen"));
       array_push($product_array, $rowData);
     } 
@@ -76,7 +83,7 @@ try {
         $row_has_error = true;
       }
 
-      // validate for numbers for price, lot, id
+      // validate for numbers for price, lot, id, pot_id
       if (!isIntFloatOrNumeric($rowData[1])) { 
         array_push($formatting_errors, array($i, "Zelle in Spalte 2 muss eine Zahl sein."));
         $row_has_error = true;
@@ -86,6 +93,10 @@ try {
         $row_has_error = true;
       }
       if (!isIntFloatOrNumeric($rowData[7]) && !empty($rowData[7])) { 
+        array_push($formatting_errors, array($i, "Zelle in Spalte 8 muss eine Zahl sein."));
+        $row_has_error = true;
+      }
+      if (!isIntFloatOrNumeric($rowData[14]) && !empty($rowData[14])) { 
         array_push($formatting_errors, array($i, "Zelle in Spalte 8 muss eine Zahl sein."));
         $row_has_error = true;
       }
@@ -105,6 +116,14 @@ try {
         $row_has_error = true;
       }
       array_push($all_ids, $id);
+
+      // check for duplicate pot_id's
+      $pot_id = $rowData[14];
+      if (in_array($pot_id, $all_pot_ids) && !empty($pot_id)) {
+        array_push($formatting_errors, array($i, "Doppelte POT_ID"));
+        $row_has_error = true;
+      }
+      array_push($all_pot_ids, $pot_id);
 
       if ($row_has_error === true) array_push($rows_with_errors, $i);
 

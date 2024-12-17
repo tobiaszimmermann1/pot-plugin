@@ -125,9 +125,9 @@ class FoodcoopProductImport {
                 <ul>
                   <li> <?php echo __("Akzeptierte Formate: XLSX", "fcplugin"); ?> </li>
                   <li> <?php echo __("Wie muss die Import Liste aussehen?", "fcplugin"); ?> <a href="https://plugin.pot.ch/dokumentation/administration/produkte/" target="_blank"><?php echo __("Anleitung", "fcplugin"); ?> </a> </li>  
-                  <li> <?php echo __("Produkte-Matching zwischen vorhandenen Produkten und der Import-Liste erfolgt aufgrund der Spalte ", "fcplugin"); ?><code>'id'</code> </li>
+                  <li> <?php echo __("Produkte-Matching zwischen vorhandenen Produkten und der Import-Liste erfolgt aufgrund der Spalten", "fcplugin"); ?> <code>'id'</code> <?php echo __("oder", "fcplugin"); ?> <code>'pot_id'</code> </li>
                   <li> <?php echo __("Kategorien, die noch nicht erfasst sind, werden erstellt", "fcplugin"); ?> </li>
-                  <li> <?php echo __("Zellen dürfen nicht leer sein, ausser:", "fcplugin"); ?> <code>'id'</code> <code>'short_description'</code> <code>'image'</code> <code>'description'</code> <code>'sku'</code> <code>'tax'</code> </li>
+                  <li> <?php echo __("Zellen dürfen nicht leer sein, ausser:", "fcplugin"); ?><br /> <code>'id'</code> <code>'short_description'</code> <code>'image'</code> <code>'description'</code> <code>'sku'</code> <code>'tax'</code> <code>'pot_id'</code> </li>
                 </ul>
               </div>
 
@@ -216,6 +216,7 @@ class FoodcoopProductImport {
 
                 <?php 
                 if (count($data) > 0) {
+
                 ?>
                 <div class="foodcoop_file_import_content_action">
                   <table class="foodcoop_file_import_settings-table">
