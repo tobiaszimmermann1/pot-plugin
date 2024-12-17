@@ -74,6 +74,7 @@ const Products = () => {
             productToDo.origin = p._herkunft
             productToDo.category = p.category_name
             productToDo.id = p.id
+            productToDo.pot_id = p.pot_id
             productToDo.short_description = p.short_description
             p.image ? (productToDo.image = p.image) : (productToDo.image = "")
             productToDo.description = p.description
@@ -128,6 +129,12 @@ const Products = () => {
       {
         accessorKey: "sku",
         header: __("Artikelnummer", "fcplugin"),
+        enableEditing: true,
+        size: 50
+      },
+      {
+        accessorKey: "pot_id",
+        header: __("POT ID", "fcplugin"),
         enableEditing: true,
         size: 50
       },
@@ -335,6 +342,7 @@ const Products = () => {
       the_product["sku"] = product.sku
       the_product["supplier"] = product.supplier
       the_product["tax"] = product.tax
+      the_product["pot_id"] = product.pot_id
       exportProducts.push(the_product)
     })
 

@@ -1008,6 +1008,9 @@ class FoodcoopRestRoutes {
       // product sku (for self-checkout)
       $the_product['sku'] = $product->get_sku();
 
+      // pot_id
+      $the_product['pot_id'] = $product->get_meta('_loonity_id');
+
       if ($the_product['sku'] != "fcplugin_instant_topup_product" && $the_product['sku'] != 'fcplugin_pos_product') {
         array_push($products, $the_product);
       }

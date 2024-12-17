@@ -34,7 +34,6 @@ try {
       }
       $rowData[] = $value;
     }
-    error_log(print_r($rowData,true));
 
 
     // check if header row has correct names
