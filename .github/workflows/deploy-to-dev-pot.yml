@@ -23,7 +23,12 @@ jobs:
         npm install
         npm run build
 
-    - name: Create Zip file
+    - name: Create vendor folder
+      run: |
+        mkdir vendor
+        composer install --no-dev --optimize-autoloader
+
+    - name: Create archive file
       run: |
         mkdir target
         mv build target
@@ -35,8 +40,17 @@ jobs:
         mv *.md target
         mv *.php target
         cd target
-        zip -r ../pot.zip *
+        tar -czf ../pot.tar.gz *
+        cd ..
         
-        
-        
-        
+    - name: Deploy to dev.pot.ch
+      uses: appleboy/scp-action@v0.1.7
+      with:
+          host: "dev.pot.ch"
+          username: ${{ secrets.DEV_POT_USER }}
+          key: ${{ secrets.SSH_KEY_POTDEV }}
+          port: 22
+          source: "pot.tar.gz"
+          target: "/var/www/html/wp-content/plugins/pot"
+          overwrite: true
+          rm: true
