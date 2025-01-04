@@ -1,0 +1,56 @@
+name: Build Extension and deploy to dev.pot.ch
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+
+    - name: Build
+      run: |
+        npm install
+        npm run build
+
+    - name: Create vendor folder
+      run: |
+        mkdir vendor
+        composer install --no-dev --optimize-autoloader
+
+    - name: Create archive file
+      run: |
+        mkdir target
+        mv build target
+        mv images target
+        mv inc target
+        mv languages target
+        mv scripts target
+        mv styles target
+        mv *.md target
+        mv *.php target
+        cd target
+        tar -czf ../pot.tar.gz *
+        cd ..
+        
+    - name: Deploy to dev.pot.ch
+      uses: appleboy/scp-action@v0.1.7
+      with:
+          host: "dev.pot.ch"
+          username: ${{ secrets.DEV_POT_USER }}
+          key: ${{ secrets.SSH_KEY_POTDEV }}
+          port: 22
+          source: "pot.tar.gz"
+          target: "/var/www/html/wp-content/plugins/pot"
+          overwrite: true
+          rm: true
