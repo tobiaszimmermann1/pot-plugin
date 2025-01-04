@@ -39,6 +39,7 @@ jobs:
         mv styles target
         mv *.md target
         mv *.php target
+        mv vendor target
         
     - name: Deploy to dev.pot.ch
       uses: appleboy/scp-action@v0.1.7
@@ -51,3 +52,4 @@ jobs:
           target: "/var/www/html/wp-content/plugins/pot"
           overwrite: true
           rm: true
+          strip_components: 1
