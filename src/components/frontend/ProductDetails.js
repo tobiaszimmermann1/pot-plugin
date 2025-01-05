@@ -49,9 +49,7 @@ export default function ProductDetails() {
             {product.short_description}
           </div>
           {(product.short_description !== product.description) && (
-            <div style={{marginTop: "5px"}}>
-              {product.description}
-            </div>
+              <div style={{marginTop: "5px"}} dangerouslySetInnerHTML={{__html: product.description}}></div>
           )}
         </div>
       </div>
