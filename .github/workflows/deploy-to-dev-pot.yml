@@ -1,0 +1,42 @@
+name: Build Extension and deploy to dev.pot.ch
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+
+    - name: Build
+      run: |
+        npm install
+        npm run build
+
+    - name: Create Zip file
+      run: |
+        mkdir target
+        mv build target
+        mv images target
+        mv inc target
+        mv languages target
+        mv scripts target
+        mv styles target
+        mv *.md target
+        mv *.php target
+        cd target
+        zip -r ../pot.zip *
+        
+        
+        
+        

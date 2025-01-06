@@ -17,6 +17,7 @@
   "minimum-stability": "dev",
   "require": {
     "mpdf/mpdf": "8.2.5",
-    "chillerlan/php-qrcode": "dev-main"
+    "chillerlan/php-qrcode": "dev-main",
+    "phpoffice/phpspreadsheet": "^2.1"
   }
 }

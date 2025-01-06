@@ -254,6 +254,39 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST productImport
+     */
+    register_rest_route( 'foodcoop/v1', 'productImport', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'productImport'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST productImportCheckFile
+     */
+    register_rest_route( 'foodcoop/v1', 'productImportCheckFile', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'productImportCheckFile'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST productImportAction
+     */
+    register_rest_route( 'foodcoop/v1', 'productImportAction', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'productImportAction'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * POST bestellrunde delete
      * params: id
      */
@@ -332,6 +365,18 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postImportProducts', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postImportProducts'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST postImportProductsProgress
+     * params: file
+     */
+    register_rest_route( 'foodcoop/v1', 'postImportProductsProgress', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postImportProductsProgress'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
       }
@@ -963,6 +1008,9 @@ class FoodcoopRestRoutes {
       // product sku (for self-checkout)
       $the_product['sku'] = $product->get_sku();
 
+      // pot_id
+      $the_product['pot_id'] = $product->get_meta('_loonity_id');
+
       if ($the_product['sku'] != "fcplugin_instant_topup_product" && $the_product['sku'] != 'fcplugin_pos_product') {
         array_push($products, $the_product);
       }
@@ -1011,7 +1059,7 @@ class FoodcoopRestRoutes {
 
     $currency = get_woocommerce_currency_symbol();
 
-    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup, $balance, $currency));
+    return json_encode(array($fc_bank, $woocommerce_store_address, $woocommerce_store_city, $woocommerce_store_postcode, $blogname, $name, $address, $postcode, $city, $instantTopup, $balance, $currency, $id));
   }
 
   /**
@@ -1539,6 +1587,30 @@ class FoodcoopRestRoutes {
   function getDataExport($data) {
     require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-data-export.php');
     return;
+  }
+
+  /**
+   * productImport
+   */
+  function productImport(WP_REST_Request $request) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/product-import.php');
+    return $response;
+  }
+
+  /**
+   * productImportCheckFile
+   */
+  function productImportCheckFile(WP_REST_Request $request) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/product-import-check.php');
+    return $response;
+  }
+
+  /**
+   * productImportAction
+   */
+  function productImportAction(WP_REST_Request $request) {
+    require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/product-import-action.php');
+    return $response;
   }
 
   /**
@@ -2075,6 +2147,17 @@ class FoodcoopRestRoutes {
     }
 
     return array($changed_products,$new_products,$deleted_products); 
+  }
+
+  
+  /**
+   * postImportProductsProgress
+   */
+  function postImportProductsProgress($file) {
+    $progress = get_transient( "foodcoop_".$file['file']."_importprogress" );
+    return [
+      'progress' => $progress, 
+    ];
   }
 
   

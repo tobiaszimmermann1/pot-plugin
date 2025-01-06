@@ -12,17 +12,17 @@ const styles = {
   csvReader: {
     display: "flex",
     flexDirection: "row",
-    marginBottom: 10,
+    marginBottom: 10
   },
   acceptedFile: {
     height: 35,
-    width: "100%",
+    width: "100%"
   },
   progressBarBackgroundColor: {
     marginTop: "10px",
     marginBottom: "10px",
-    backgroundColor: "gray",
-  },
+    backgroundColor: "gray"
+  }
 }
 
 function ImportProducts({ setModalClose, categories, reload, setReload }) {
@@ -41,7 +41,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
         let reArrangedBestellrunden = []
         if (response.data) {
           const res = JSON.parse(response.data)
-          res.map((b) => {
+          res.map(b => {
             let bestellrundeToDo = {}
             bestellrundeToDo.author = b.name
             bestellrundeToDo.bestellrunde_start = format(new Date(b.bestellrunde_start.replace(" ", "T")), "yyyy-MM-dd")
@@ -55,13 +55,13 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
           setBestellrunden(reArrangedBestellrunden)
         }
       })
-      .catch((error) => console.log(error))
+      .catch(error => console.log(error))
   }, [])
 
   useEffect(() => {
     if (bestellrunden) {
       let active = false
-      bestellrunden.map((bestellrunde) => {
+      bestellrunden.map(bestellrunde => {
         if (new Date(bestellrunde.bestellrunde_start).getTime() <= new Date().getTime() && new Date(bestellrunde.bestellrunde_ende).getTime() >= new Date().getTime()) {
           active = true
         }
@@ -76,12 +76,12 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postImportProducts`,
         {
-          products: JSON.stringify(validatedData),
+          products: JSON.stringify(validatedData)
         },
         {
           headers: {
-            "X-WP-Nonce": appLocalizer.nonce,
-          },
+            "X-WP-Nonce": appLocalizer.nonce
+          }
         }
       )
       .then(function (response) {
@@ -90,7 +90,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
           setValidationSuccess(msg)
         }
       })
-      .catch((error) => console.log(error))
+      .catch(error => console.log(error))
       .finally(() => {
         setReload(reload + 1)
         setSubmitting(false)
@@ -104,16 +104,16 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
         <DialogContent
           sx={{
             paddingTop: "10px",
-            minHeight: "300px",
+            minHeight: "300px"
           }}
         >
           <CSVReader
             config={{ delimiter: ";" }}
-            onError={(error) => {
+            onError={error => {
               setValidationError(error.message)
             }}
             onRemoveFile={() => {}}
-            onUploadAccepted={(results) => {
+            onUploadAccepted={results => {
               console.log(results.data)
               /**
                * Validate uploaded products csv file
@@ -193,10 +193,10 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
                */
               let r = 1
               let errors = ""
-              results.data.map((row) => {
+              results.data.map(row => {
                 if (r !== results.data.length) {
                   let c = 1
-                  row.map((cell) => {
+                  row.map(cell => {
                     if (cell === "") {
                       if (c !== 8 && c !== 9 && c !== 10 && c !== 11 && c !== 12 && c !== 14) {
                         errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: ${c}] `
@@ -218,7 +218,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
                */
               r = 1
               errors = ""
-              results.data.map((row) => {
+              results.data.map(row => {
                 if (r !== results.data.length && r !== 1) {
                   if (isNaN(row[1])) {
                     errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: 2] `
@@ -246,7 +246,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
                */
               r = 1
               errors = ""
-              results.data.map((row) => {
+              results.data.map(row => {
                 if (r !== results.data.length && r !== 1) {
                   if (!categories.includes(row[6])) {
                     errors += ` [${__("Zeile", "fcplugin")}: ${r}, ${__("Zelle", "fcplugin")}: 7] `
@@ -267,7 +267,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
               r = 1
               errors = ""
               let skus = []
-              results.data.map((row) => {
+              results.data.map(row => {
                 if (r !== results.data.length && r !== 1) {
                   if (row[11] !== "") skus.push(row[11])
                 }
@@ -289,7 +289,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
                 setValidationSuccess(__("Datei wurde geprüft und ist bereit zum Import", "fcplugin"))
                 let checkedData = []
                 r = 1
-                results.data.map((row) => {
+                results.data.map(row => {
                   if (r !== results.data.length && r !== 1) {
                     checkedData.push(row)
                   }
@@ -326,7 +326,7 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
                     <Button
                       variant="contained"
                       {...getRemoveFileProps()}
-                      onClick={(event) => {
+                      onClick={event => {
                         getRemoveFileProps().onClick(event)
                         setValidationError(null)
                         setValidationSuccess(null)

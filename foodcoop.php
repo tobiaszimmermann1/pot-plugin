@@ -76,6 +76,11 @@ add_action( 'before_woocommerce_init', function() {
 } );
 
 
+/**
+ * CONSTANTS
+ */
+define ('FOODCOOP_PLUGIN_URL', plugin_dir_url(__FILE__));
+
 
 /**
  * Create Database table for Foodcoop Wallet
@@ -1174,3 +1179,12 @@ function fc_prevent_orders_in_multiple_bestellrunden($button_html) {
   require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-privacy-statement.php');
   return ob_get_clean();
 });
+
+
+
+
+/**
+ * Product Import Class
+ */
+require_once( plugin_dir_path( __FILE__ ) . 'inc/foodcoop-product-import-class.php');
+$fc_product_import = new FoodcoopProductImport();

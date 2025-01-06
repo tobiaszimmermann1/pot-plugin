@@ -30,6 +30,7 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ### 1.7.5
 
+- New revamped product import from XLSX files: better overview, options and less buggy due to text formatting issues.
 - Added an option to activate Bestellrunden shopwide. With this option set to active, all orders must be associated with a bestellrunde.
 - With the option of Bestellrunden shopwide active, added UI elements to shop pages and single product page to select Bestellrunde, if there are active ones. If there are no active Bestellrunden, adding products to the cart, is blocked.
 - Added an option to manually mark a Bestellrunde as completed (changes the status of all orders to completed as well)
@@ -37,6 +38,8 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Disabled checkout button if there products in cart from multiple bestellrunden and show a message with instructions.
 - Fixed a bug where foodcoop balance displayed a wrong value during ordering.
 - For payment gateway foodcoop balance: if balance is too low, the place order button is disabled (prevents the creation of failed orders)
+- Added a new shortcode `[foodcoop_privacy]` to display a privacy statement. Added privacy options o2n the settings page accordingly.
+- changed the design of qr code labels
 - fixed a bug that prevented categories in ordering list from not collapsing properly
 - fixed miscalculations in generated bestellrunden lists if a user has multiple orders in one bestellrunde
 - Other small bugfixes

@@ -1,5 +1,5 @@
 import React from "react"
-import {useLoaderData} from "react-router-dom"
+import {Link, useLoaderData} from "react-router-dom"
 import {getProduct} from "../products/products";
 
 const __ = wp.i18n.__
@@ -12,9 +12,19 @@ export async function loader({params}) {
 
 export default function ProductDetails() {
   const {product, currency} = useLoaderData();
-
+  
   return (
     <>
+      <div className="fc_filters_breadcrumb">
+        <div>
+          <span className="fc_filters_link"><Link to={`/`}>{__("Kategorien", "fcplugin")}</Link></span>
+          <span style={{margin: "0 10px"}}>&#8594;</span>{" "}
+          <span><Link to={`/category/${product.category_name}`}>{product.category_name}</Link></span>
+          <span style={{margin: "0 10px"}}>&#8594;</span>{" "}
+          <span className="fc_filters_link">{product.name}</span>
+        </div>
+      </div>
+
       <div className="fc_product_details_wrapper">
         <div className="fc_product_details_img">
           <img src={product.image}/>
