@@ -3745,7 +3745,7 @@ class FoodcoopRestRoutes {
       $thumb_id ? $term_img = wp_get_attachment_url(  $thumb_id ) : $term_img = plugin_dir_url( __FILE__ ).'../images/category.jpg';
       array_push($categories, array(
         'id' => $category->term_id, 
-        'name' => $category->name, 
+        'name' => str_replace("/", "-", $category->name),
         'img' => $term_img
       ));
       $cats[$category->term_id] = $category->name;

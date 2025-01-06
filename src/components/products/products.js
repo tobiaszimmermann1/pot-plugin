@@ -23,7 +23,7 @@ export async function getProductListOverview() {
     let productToDo = p
     productToDo.unit = p._einheit
     productToDo.lot = p._gebinde
-    productsByCategory[p.category_name].push(productToDo)
+    productsByCategory[p.category_name.replace(/\//g, "-")].push(productToDo)
   })
 
   // Remove categories with no products
