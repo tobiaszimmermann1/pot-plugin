@@ -192,7 +192,7 @@ const Members = () => {
                 color="primary"
                 startIcon={<EditIcon />}
               >
-                {JSON.parse(cell.getValue()).join(", ")}
+                {cell.getValue().length > 2 ? JSON.parse(cell.getValue()).join(", ") : "keine"}
               </Button>
             )
           }
