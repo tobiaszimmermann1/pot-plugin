@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from "axios"
 
-let productListOverviewCache = null;
+let productListOverviewCache = null
 
 export async function getProductListOverview() {
   if (productListOverviewCache === null) {
@@ -10,7 +10,7 @@ export async function getProductListOverview() {
     }
   }
 
-  const res = productListOverviewCache;
+  const res = productListOverviewCache
   const products = res[0]
   const categories = res[1]
   const currency = res[2]
@@ -20,21 +20,21 @@ export async function getProductListOverview() {
   })
 
   products.map(p => {
-    let productToDo = p;
+    let productToDo = p
     productToDo.unit = p._einheit
     productToDo.lot = p._gebinde
-    productsByCategory[p.category_name].push(productToDo)
+    productsByCategory[p.category_name.replace(/\//g, "-")].push(productToDo)
   })
 
   // Remove categories with no products
-  const filteredCategories = categories.filter(category => productsByCategory[category.name].length > 0);
+  const filteredCategories = categories.filter(category => productsByCategory[category.name].length > 0)
 
   return {
     products: products,
     categories: filteredCategories,
     currency: currency,
     productsByCategory: productsByCategory
-  };
+  }
 }
 
 export async function getProduct(id) {
@@ -44,11 +44,11 @@ export async function getProduct(id) {
       productListOverviewCache = JSON.parse(response.data)
     }
   }
-  const res = productListOverviewCache;
+  const res = productListOverviewCache
   let product = res[0].find(product => product.id == id)
 
   const currency = res[2]
-  return {product, currency}
+  return { product, currency }
 }
 
 export async function getStockManagement() {
@@ -64,6 +64,9 @@ export async function getSelfCheckoutProducts() {
   const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout_products`)
   if (response.data) {
     // WTF
+    if (JSON.parse(JSON.parse(response.data)) === null || JSON.parse(JSON.parse(response.data)) === undefined) {
+      return []
+    }
     return JSON.parse(JSON.parse(response.data)).map(Number)
   }
 }
