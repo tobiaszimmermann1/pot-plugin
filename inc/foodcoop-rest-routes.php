@@ -1037,6 +1037,7 @@ class FoodcoopRestRoutes {
     $woocommerce_store_postcode = get_option('woocommerce_store_postcode');
     $blogname = get_option('blogname');
     $instantTopup = get_option('fc_instant_topup');
+    $update_balance_on_purchase = get_option('fc_update_balance_on_purchase');
 
     $id = get_current_user_id();
     $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
@@ -1116,6 +1117,9 @@ class FoodcoopRestRoutes {
     
     $instantTopup = $data['instantTopup'];
     $instantTopup == true  ? update_option('fc_instant_topup', '1') : update_option('fc_instant_topup', '0');
+
+    $updateBalanceOnPurchase = $data['updateBalanceOnPurchase'];
+    $updateBalanceOnPurchase == true ? update_option('fc_update_balance_on_purchase', '1'): update_option('fc_update_balance_on_purchase', '0');
     
     $publicProducts = $data['publicProducts'];
     $publicProducts == true  ? update_option('fc_public_products', '1') : update_option('fc_public_products', '0');
@@ -2985,8 +2989,9 @@ class FoodcoopRestRoutes {
 
       if ($product) {
         $quantity = $product->get_stock_quantity();
+        $stock_status = $product->get_stock_status();
 
-        if ($quantity > 0) {
+        if ($quantity > 0 || $stock_status == "instock") {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
@@ -2994,7 +2999,7 @@ class FoodcoopRestRoutes {
             'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
             'amount' => 1, 
             'sku' => $sku,
-            'product_id' => $product->get_id()
+            'product_id' => $product->get_id(),
           );
           return json_encode($product_data);
         } else {
@@ -3673,27 +3678,30 @@ class FoodcoopRestRoutes {
       $product->set_stock_quantity(floatval($new_stock));
       $product->save();
 
-      // update user's wallet balance
-      $table = $wpdb->prefix.'foodcoop_wallet';
+      if (get_option('fc_update_balance_on_purchase') != '1'){
+        // update user's wallet balance
+        $table = $wpdb->prefix.'foodcoop_wallet';
 
-      // get current balance
-      $current_balance = 0.00;
-      $results = $wpdb->get_results(
-        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
-      );
-      foreach ( $results as $result ) {
-        $current_balance = $result->balance;
+        // get current balance
+        $current_balance = 0.00;
+        $results = $wpdb->get_results(
+          $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+        );
+        foreach ( $results as $result ) {
+          $current_balance = $result->balance;
+        }
+
+        date_default_timezone_set('Europe/Zurich');
+        $date = date("Y-m-d H:i:s");
+        $details = 'Neue Lieferung von Produkt '.$product->get_name().'('.$amount.'x)';
+        $created_by = get_current_user_id();
+        $new_balance = $current_balance + $balance;
+        $new_balance = number_format($new_balance, 2, '.', '');
+
+        $data = array('user_id' => $user_id, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+        $wpdb->insert($table, $data);
       }
 
-      date_default_timezone_set('Europe/Zurich');
-      $date = date("Y-m-d H:i:s");
-      $details = 'Neue Lieferung von Produkt '.$product->get_name().'('.$amount.'x)';
-      $created_by = get_current_user_id();
-      $new_balance = $current_balance + $balance;
-      $new_balance = number_format($new_balance, 2, '.', '');
-
-      $data = array('user_id' => $user_id, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
-      $wpdb->insert($table, $data);
 
       // inform the admin about the change
       $headers[] = 'From: '. get_option('admin_email');

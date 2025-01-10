@@ -35,6 +35,7 @@ const Settings = () => {
   const [publicPrices, setPublicPrices] = useState()
   const [publicMembers, setPublicMembers] = useState()
   const [instantTopup, setInstantTopup] = useState()
+  const [updateBalanceOnPurchase, setUpdateBalanceOnPurchase] = useState(false)
   const [publicProducts, setPublicProducts] = useState()
   const [adminEmail, setAdminEmail] = useState()
   const [submitting, setSubmitting] = useState(false)
@@ -79,17 +80,18 @@ const Settings = () => {
       setCity(options.woocommerce_store_city)
       setBlogname(options.blogname)
       setOrderPage(options.fc_order_page)
-      options.fc_public_prices == "1" ? setPublicPrices(true) : setPublicPrices(false)
-      options.fc_public_members == "1" ? setPublicMembers(true) : setPublicMembers(false)
-      options.fc_public_products == "1" ? setPublicProducts(true) : setPublicProducts(false)
-      options.fc_instant_topup == "1" ? setInstantTopup(true) : setInstantTopup(false)
+      setPublicPrices(options.fc_public_prices === "1")
+      setPublicMembers(options.fc_public_members === "1")
+      setPublicProducts(options.fc_public_products === "1")
+      setInstantTopup(options.fc_instant_topup === "1")
+      setUpdateBalanceOnPurchase(options.fc_update_balance_on_purchase === "1")
       setAdminEmail(options.admin_email)
-      options.woocommerce_manage_stock === "yes" ? setEnableStock(true) : setEnableStock(false)
+      setEnableStock(options.woocommerce_manage_stock === "yes")
       options.fc_self_checkout === "1" ? setEnableSelfCheckout("1") : setEnableSelfCheckout("0")
-      options.fc_taxes === "1" ? setEnableTaxes(true) : setEnableTaxes(false)
-      options.fc_enable_payment_by_bill === "1" ? setEnablePaymentByBill(true) : setEnablePaymentByBill(false)
-      options.fc_enable_user_block === "1" ? setEnableUserBlock(true) : setEnableUserBlock(false)
-      options.fc_enable_rounds_storewide === "1" ? setEnableRoundsStorewide(true) : setEnableRoundsStorewide(false)
+      setEnableTaxes(options.fc_taxes === "1")
+      setEnablePaymentByBill(options.fc_enable_payment_by_bill === "1")
+      setEnableUserBlock(options.fc_enable_user_block === "1")
+      setEnableRoundsStorewide(options.fc_enable_rounds_storewide === "1")
       if (options.fc_privacy) {
         let privacy = JSON.parse(options.fc_privacy)
         setPrivacyMailchimp(privacy.privacyMailchimp)
@@ -118,6 +120,7 @@ const Settings = () => {
           publicPrices: publicPrices,
           publicMembers: publicMembers,
           instantTopup: instantTopup,
+          updateBalanceOnPurchase: updateBalanceOnPurchase,
           publicProducts: publicProducts,
           adminEmail: adminEmail,
           enableStock: enableStock,
@@ -414,8 +417,38 @@ const Settings = () => {
               <small>{__("Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).", "fcplugin")}</small>
             </Grid>
             <Grid item xs={8}>
-              <Switch checked={instantTopup} onChange={event => setInstantTopup(event.target.checked)} inputProps={{ "aria-label": "controlled" }} />
+              <ToggleButtonGroup
+                color="primary"
+                value={instantTopup}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setInstantTopup(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
             </Grid>
+
+            <Grid item xs={4}>
+              <strong>{__("Guthaben bei Verkauf aktualisieren?", "fcplugin")}</strong>
+              <br />
+              <small>{__("Gelieferte Produkte werden beim Verkauf gutgeschrieben, nicht bei der Lieferung.", "fcplugin")}</small>
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                color="primary"
+                value={updateBalanceOnPurchase}
+                exclusive
+                onChange={(event, newStatus) => {
+                  setUpdateBalanceOnPurchase(newStatus)
+                }}
+              >
+                <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
+                <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+
           </Grid>
         </CardContent>
         <CardActions>
