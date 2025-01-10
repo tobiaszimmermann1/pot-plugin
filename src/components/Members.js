@@ -176,7 +176,7 @@ const Members = () => {
             )
           }
 
-          if (cell.getValue() !== "" && (row.original.role === "foodcoop_manager" || row.original.role === "administrator")) {
+          if (row.original.role === "foodcoop_manager" || row.original.role === "administrator") {
             return row.original.role === "administrator" ? (
               <Button variant="text" color="primary" startIcon={<CheckIcon />}>
                 alle
