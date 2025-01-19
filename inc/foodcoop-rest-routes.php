@@ -3045,12 +3045,16 @@ class FoodcoopRestRoutes {
 
     $result = "";
     foreach($cart as $item) {
-      if ($item->order_type == 'self_checkout') {
-        $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, NULL, array('order_type' => $item->order_type) );
-      } 
-      if ($item->order_type == 'bestellrunde') {
-        $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, NULL, array('bestellrunde' => $item->bestellrunde, 'order_type' => $item->order_type) );
+
+      $cart_item_data = array();
+      if ($item->order_type === 'self_checkout') {
+        $cart_item_data['order_type'] = 'self_checkout';
       }
+      if ($item->order_type === 'bestellrunde') {
+        $cart_item_data['order_type'] = 'bestellrunde';
+        $cart_item_data['bestellrunde'] = $item->bestellrunde;
+      }
+      $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, array(), $cart_item_data );
     }
 
     if ($result) {

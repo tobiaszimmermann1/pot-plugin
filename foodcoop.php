@@ -1139,9 +1139,9 @@ function fc_add_to_cart_shopwide_bestellrunde($cartItemData, $productId, $variat
       $bestellrunde = json_decode(stripslashes($_COOKIE['fc_selected_bestellrunde']));
       $cartItemData['bestellrunde'] = $bestellrunde->ID;
       $cartItemData['order_type'] = 'bestellrunde';
-      return $cartItemData;
     }
   }
+  return $cartItemData;
 }
 
 
