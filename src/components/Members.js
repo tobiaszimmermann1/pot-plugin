@@ -176,7 +176,7 @@ const Members = () => {
             )
           }
 
-          if (cell.getValue() !== "" && (row.original.role === "foodcoop_manager" || row.original.role === "administrator")) {
+          if (row.original.role === "foodcoop_manager" || row.original.role === "administrator") {
             return row.original.role === "administrator" ? (
               <Button variant="text" color="primary" startIcon={<CheckIcon />}>
                 alle
@@ -192,7 +192,7 @@ const Members = () => {
                 color="primary"
                 startIcon={<EditIcon />}
               >
-                {JSON.parse(cell.getValue()).join(", ")}
+                {cell.getValue().length > 2 ? JSON.parse(cell.getValue()).join(", ") : "keine"}
               </Button>
             )
           }
