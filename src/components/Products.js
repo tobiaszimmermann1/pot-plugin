@@ -60,35 +60,50 @@ const Products = () => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getProducts`)
       .then(function (response) {
-        let reArrangeProductData = []
-        if (response.data) {
-          const res = JSON.parse(response.data)
-          res[0].map(p => {
-            let productToDo = {}
-            productToDo.name = p.name
-            productToDo.price = p.price
-            productToDo.unit = p._einheit
-            productToDo.lot = p._gebinde
-            productToDo.producer = p._produzent
-            productToDo.supplier = p._lieferant
-            productToDo.origin = p._herkunft
-            productToDo.category = p.category_name
-            productToDo.id = p.id
-            productToDo.pot_id = p.pot_id
-            productToDo.short_description = p.short_description
-            p.image ? (productToDo.image = p.image) : (productToDo.image = "")
-            productToDo.description = p.description
-            productToDo.sku = p.sku
-            p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
-            productToDo.tax = p.tax
-            productToDo.owner = parseInt(p.fc_owner)
-
-            reArrangeProductData.push(productToDo)
+        axios.get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
+            headers: {
+              "X-WP-Nonce": appLocalizer.nonce
+            }
           })
-          setProducts(reArrangeProductData)
-          setCategories(res[1])
-          setProductsLoading(false)
-        }
+          .then(function (userResponse) {
+            if (userResponse.data) {
+              const users = JSON.parse(userResponse.data)
+
+              let reArrangeProductData = []
+
+              if (response.data) {
+                const res = JSON.parse(response.data)
+                res[0].map(p => {
+                  let productToDo = {}
+                  productToDo.name = p.name
+                  productToDo.price = p.price
+                  productToDo.unit = p._einheit
+                  productToDo.lot = p._gebinde
+                  productToDo.producer = p._produzent
+                  productToDo.supplier = p._lieferant
+                  productToDo.origin = p._herkunft
+                  productToDo.category = p.category_name
+                  productToDo.id = p.id
+                  productToDo.pot_id = p.pot_id
+                  productToDo.short_description = p.short_description
+                  p.image ? (productToDo.image = p.image) : (productToDo.image = "")
+                  productToDo.description = p.description
+                  productToDo.sku = p.sku
+                  p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
+                  productToDo.tax = p.tax
+                  productToDo.owner = parseInt(p.fc_owner)
+                  const owner = users.find(user => user.id === productToDo.owner)
+                  productToDo.ownerName = owner ? owner.name : ""
+
+                  reArrangeProductData.push(productToDo)
+                })
+                setProducts(reArrangeProductData)
+                setCategories(res[1])
+                setProductsLoading(false)
+              }
+            }
+          })
+          .catch(error => console.log(error))
       })
       .catch(error => console.log(error))
   }, [reload])
@@ -228,6 +243,10 @@ const Products = () => {
       {
         accessorKey: "origin",
         header: __("Herkunft", "fcplugin")
+      },
+      {
+        accessorKey: "ownerName",
+        header: __("Owner", "fcplugin")
       }
     ],
     []
