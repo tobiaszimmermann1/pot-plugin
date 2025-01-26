@@ -46,7 +46,7 @@ function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, select
         })
         .then(function (response) {
           if (response.data) {
-            const res = JSON.parse(response.data)
+            const res = JSON.parse(response.data).sort((a, b) => a.name.localeCompare(b.name))
             console.log(res)
             setUsers(res)
             setSelectedMember(res[0])
