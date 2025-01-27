@@ -2991,7 +2991,7 @@ class FoodcoopRestRoutes {
         $quantity = $product->get_stock_quantity();
         $stock_status = $product->get_stock_status();
 
-        if ($quantity > 0 || $stock_status == "instock") {
+        if ($quantity > 0 || ($stock_status == "instock" && get_option('fc_update_balance_on_purchase') == '1')) {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
