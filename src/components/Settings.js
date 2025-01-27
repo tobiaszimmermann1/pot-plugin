@@ -447,6 +447,9 @@ const Settings = () => {
                 <ToggleButton value={true}> {__("Aktiviert", "fcplugin")} </ToggleButton>
                 <ToggleButton value={false}> {__("Deaktiviert", "fcplugin")} </ToggleButton>
               </ToggleButtonGroup>
+              <Alert severity="warning" sx={{ marginTop: "10px" }}>
+                <strong>{__("Achtung!", "fcplugin")}</strong> {__("Bei Änderung des Auszahlungsmodells müssen die Guthaben manuell korrigiert werden!", "fcplugin")}{" "}
+              </Alert>
             </Grid>
 
           </Grid>
