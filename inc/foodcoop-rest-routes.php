@@ -3718,9 +3718,13 @@ class FoodcoopRestRoutes {
               <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
                 <li style="margin-bottom: 0; text-align: left;">Alter Bestand: '.$old_stock.'</li>
                 <li style="margin-bottom: 0; text-align: left;">Angelieferte Menge: '.$amount.'</li>
-                <li style="margin-bottom: 0; text-align: left;">Neuer Bestand: '.$new_stock.'</li>
-                <li style="margin-bottom: 0; text-align: left;">Guthaben ausbezahlt an Produktmanager (Mitglied '.$user_id.'): '.$balance.'</li>
-              </ul>
+                <li style="margin-bottom: 0; text-align: left;">Neuer Bestand: '.$new_stock.'</li>';
+
+      if (get_option('fc_update_balance_on_purchase') != '1'){
+        $msg .= '<li style="margin-bottom: 0; text-align: left;">Guthaben ausbezahlt an Produktmanager (Mitglied '.$user_id.'): '.$balance.'</li>';
+      }
+
+      $msg .= '</ul>
             </div>
             </td>
           </tr>
