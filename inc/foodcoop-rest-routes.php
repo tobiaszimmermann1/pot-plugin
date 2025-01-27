@@ -3638,7 +3638,9 @@ class FoodcoopRestRoutes {
     foreach($products as $product) {
       $current_stock = intval(get_post_meta( $product->id, "_stock", true ));
       $new_stock = $current_stock + intval($product->amount);
-      update_post_meta( $product->id, "_stock", $new_stock );
+      $wc_product = wc_get_product($product->id);
+      $wc_product->set_stock_quantity(floatval($new_stock));
+      $wc_product->save();
       $number++;
     }
     
