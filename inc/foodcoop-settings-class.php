@@ -56,7 +56,10 @@ class FoocoopPluginSettings {
    
     add_settings_field( 'fc_instant_topup', __('Instant Topup aktivieren?', 'fcplugin'), array($this, 'fc_instant_topup_html'), 'foodcoop-settings-page', 'fc_display' );
     register_setting( 'foodcoop_plugin', 'fc_instant_topup', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
-   
+
+    add_settings_field( 'fc_update_balance_on_purchase', __('Guthaben bei Verkauf aktualisieren?', 'fcplugin'), array($this, 'fc_update_balance_on_purchase_html'), 'foodcoop-settings-page', 'fc_display' );
+    register_setting( 'foodcoop_plugin', 'fc_update_balance_on_purchase', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0') );
+
   }
 
   function sanitize_margin($input) {
@@ -125,6 +128,11 @@ class FoocoopPluginSettings {
   function fc_instant_topup_html() { ?>
     <input name="fc_instant_topup" type="checkbox" id="fc_instant_topup" value="1" <?php checked(get_option('fc_instant_topup'), '1') ?> />
     <p class="description"><?php echo esc_html__('Mitglieder können Guthaben sofort über aktivierte Woocommerce Payment Gateways aufladen. Benötigt externe Zahlungsschnittstelle(n).', 'fcplugin'); ?></p>
+  <?php }
+
+  function fc_update_balance_on_purchase_html() { ?>
+    <input name="fc_update_balance_on_purchase" type="checkbox" id="fc_update_balance_on_purchase" value="1" <?php checked(get_option('fc_update_balance_on_purchase'), '1') ?> />
+    <p class="description"><?php echo esc_html__('Gelieferte Produkte werden beim Verkauf gutgeschrieben, nicht bei der Lieferung.', 'fcplugin'); ?></p>
   <?php }
 
   function fc_order_page_html() { 
