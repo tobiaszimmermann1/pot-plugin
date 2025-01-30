@@ -420,7 +420,7 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
                   <LoadingButton onClick={handleGetCategoryList} variant="text" loading={buttonLoading} loadingPosition="start" startIcon={<PictureAsPdfIcon />}>
                     {__("Kategorielisten", "fcplugin")}
                   </LoadingButton>
-                  {/*
+
                   {exportData ? (
                     <LoadingButton variant="text" loading={buttonLoading} loadingPosition="start" startIcon={<GridOnIcon />}>
                       <ExcelDownloder data={exportData} filename={`bestellrunde-${id}-data`} type={Type.Link}>
@@ -432,7 +432,6 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
                       {__("Datenexport", "fcplugin")}
                     </LoadingButton>
                   )}
-                  */}
                 </ButtonGroup>
               </Box>
             )}
