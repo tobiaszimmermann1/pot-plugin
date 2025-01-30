@@ -979,10 +979,60 @@ function custom_order_button_text( $order_button_text ) {
          $current_balance = number_format($result->balance, 2, '.', '');
       }
 
-      if ($current_balance <= $order_total) {
-        $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
-      } 
+      // check if user has previous orders
+      $has_previous_order = false;
 
+      // get cart items to fetch bestellrunde_id
+      $active = false;
+      $bestellrunde_ids_in_cart = array();
+      foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+          $bestellrunde_id = $cart_item['bestellrunde'];
+          if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
+              array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+          }
+      }
+      
+      if (count($bestellrunde_ids_in_cart) == 1) {
+          $active = $bestellrunde_ids_in_cart[0];
+      }
+
+
+      // Get previous order value
+      if ($user_id && $active) {
+          $args = array(
+              'customer' => $user_id,
+              'meta_key' => 'bestellrunde_id',
+              'meta_value' => $active,
+              'meta_compare' => '=',
+              'status'=> array( 'wc-processing', 'wc-on-hold', 'wc-refunded'  ),
+          );   
+          $prev_orders = wc_get_orders( $args );
+          if ($prev_orders) {
+              foreach ($prev_orders as $prev_order) {
+                  $prev_order_id = $prev_order->ID;
+                  $previous_order_total_before_refunds = $prev_order->get_total();
+                  $refunded_total = $prev_order->get_total_refunded();
+
+                  $previous_order_total = $previous_order_total_before_refunds - $refunded_total;
+                  $previous_order_total = number_format($previous_order_total, 2, '.', '');
+              }
+              $has_ordered = true;
+          }
+      }
+
+      if ($has_ordered) {
+        $new_balance = $current_balance - $order_total + $previous_order_total;
+        $new_balance = number_format($new_balance, 2, '.', '');
+        if ($new_balance < 0) {
+          $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+        } 
+      } else {
+        $new_balance = $current_balance - $order_total;
+        $new_balance = number_format($new_balance, 2, '.', '');
+        if ($new_balance < 0) {
+          $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+        } 
+      }
     }
 
     // jQuery code: Make dynamic text button "on change" event ?>
