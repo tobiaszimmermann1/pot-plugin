@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.7.5
+Version: 1.7.6
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -256,7 +256,7 @@ function fc_plugin_init() {
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
   // javascript/react BACKEND
-  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script', plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.6', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script', 'appLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -264,19 +264,19 @@ function fc_admin_load_scripts() {
     'pluginUrl' => plugin_dir_url(__FILE__),
     'nonce' => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version' => "1.7.5"
+    'version' => "1.7.6"
   ));
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.5' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.6' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
   // javascript/react FRONTEND
   if (get_option('fc_enable_rounds_storewide')) {
-    wp_enqueue_script( 'fc-script-sitewide-bestellrunden', plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.5', array( 'jquery' ), '1.0', false );
+    wp_enqueue_script( 'fc-script-sitewide-bestellrunden', plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.6', array( 'jquery' ), '1.0', false );
   }
-  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.5', array( 'wp-element', 'wp-i18n' ), '1.0', false );
+  wp_enqueue_script( 'fc-script-frontend', plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.6', array( 'wp-element', 'wp-i18n' ), '1.0', false );
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', array(
     'apiUrl' => home_url('/wp-json'),
     'homeUrl' => home_url(),
@@ -289,7 +289,7 @@ function fc_wp_load_scripts() {
     'name' => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
   ));
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.5' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.6' );
 }
 
 add_action( 'init', 'fc_init');
@@ -979,10 +979,60 @@ function custom_order_button_text( $order_button_text ) {
          $current_balance = number_format($result->balance, 2, '.', '');
       }
 
-      if ($current_balance <= $order_total) {
-        $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
-      } 
+      // check if user has previous orders
+      $has_previous_order = false;
 
+      // get cart items to fetch bestellrunde_id
+      $active = false;
+      $bestellrunde_ids_in_cart = array();
+      foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+          $bestellrunde_id = $cart_item['bestellrunde'];
+          if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
+              array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+          }
+      }
+      
+      if (count($bestellrunde_ids_in_cart) == 1) {
+          $active = $bestellrunde_ids_in_cart[0];
+      }
+
+
+      // Get previous order value
+      if ($user_id && $active) {
+          $args = array(
+              'customer' => $user_id,
+              'meta_key' => 'bestellrunde_id',
+              'meta_value' => $active,
+              'meta_compare' => '=',
+              'status'=> array( 'wc-processing', 'wc-on-hold', 'wc-refunded'  ),
+          );   
+          $prev_orders = wc_get_orders( $args );
+          if ($prev_orders) {
+              foreach ($prev_orders as $prev_order) {
+                  $prev_order_id = $prev_order->ID;
+                  $previous_order_total_before_refunds = $prev_order->get_total();
+                  $refunded_total = $prev_order->get_total_refunded();
+
+                  $previous_order_total = $previous_order_total_before_refunds - $refunded_total;
+                  $previous_order_total = number_format($previous_order_total, 2, '.', '');
+              }
+              $has_ordered = true;
+          }
+      }
+
+      if ($has_ordered) {
+        $new_balance = $current_balance - $order_total + $previous_order_total;
+        $new_balance = number_format($new_balance, 2, '.', '');
+        if ($new_balance < 0) {
+          $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+        } 
+      } else {
+        $new_balance = $current_balance - $order_total;
+        $new_balance = number_format($new_balance, 2, '.', '');
+        if ($new_balance < 0) {
+          $button = '<button disabled style="background-color:#ccc;" type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="'.$order_button_text.'" data-value="'.$order_button_text.'">'.$order_button_text.'</button>';
+        } 
+      }
     }
 
     // jQuery code: Make dynamic text button "on change" event ?>

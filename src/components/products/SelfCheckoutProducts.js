@@ -59,6 +59,11 @@ function SelfCheckoutProducts({ setModalClose, prods }) {
         size: 50
       },
       {
+        accessorKey: "sku",
+        header: __("SKU", "fcplugin"),
+        size: 50
+      },
+      {
         accessorKey: "name",
         header: __("Produkt", "fcplugin")
       },
@@ -113,9 +118,7 @@ function SelfCheckoutProducts({ setModalClose, prods }) {
           }
         }
       )
-      .then(function (response) {
-        console.log(response.data)
-      })
+      .then(function (response) {})
       .catch(error => console.log(error))
       .finally(() => {
         setSubmitting(false)

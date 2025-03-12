@@ -12,48 +12,28 @@ import CloseIcon from "@mui/icons-material/Close"
 import { Alert } from "@mui/material"
 const __ = wp.i18n.__
 
-function ProductsOfBestellrundeModal({ id, setModalClose }) {
-  const [products, setProducts] = useState()
-  const [productsLoading, setProductsLoading] = useState(true)
+function WeighedProducts({ setModalClose, prods }) {
+  const [products, setProducts] = useState(prods)
   const [rowSelection, setRowSelection] = useState({})
   const [submitting, setSubmitting] = useState(false)
-  const [statusMessage, setStatusMessage] = useState({
-    message: null,
-    type: null,
-    active: false
-  })
+  const [productsLoading, setProductsLoading] = useState(true)
+
   const tableInstanceRef = useRef(null)
 
   useEffect(() => {
-    if (id) {
+    if (prods) {
       axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellrundeProducts?bestellrunde=${id}`, {
+        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_weighed_products`, {
           headers: {
             "X-WP-Nonce": appLocalizer.nonce
           }
         })
         .then(function (response) {
-          let reArrangeProductData = []
           if (response.data) {
             const res = JSON.parse(response.data)
-            res[0].map(p => {
-              let productToDo = {}
-              productToDo.name = p.name
-              productToDo.price = p.price
-              productToDo.unit = p._einheit
-              productToDo.lot = p._gebinde
-              productToDo.producer = p._lieferant
-              productToDo.origin = p._herkunft
-              productToDo.category = p.category_name
-              productToDo.id = p.id
-              productToDo.sku = p.sku
-
-              reArrangeProductData.push(productToDo)
-            })
-            setProducts(reArrangeProductData)
 
             let selectedRowsOnLoad = {}
-            JSON.parse(res[1]).map(rowId => {
+            JSON.parse(res).map(rowId => {
               selectedRowsOnLoad[rowId] = true
             })
             setRowSelection(selectedRowsOnLoad)
@@ -64,7 +44,7 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
           setProductsLoading(false)
         })
     }
-  }, [id])
+  }, [])
 
   /**
    * Product Table
@@ -107,14 +87,16 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
         header: __("Produzent", "fcplugin")
       },
       {
+        accessorKey: "supplier",
+        header: __("Lieferant", "fcplugin")
+      },
+      {
         accessorKey: "origin",
         header: __("Herkunft", "fcplugin")
       },
       {
         accessorKey: "category",
-        id: "category_id",
-        header: __("Kategorie", "fcplugin"),
-        enableEditing: false
+        header: __("Kategorie", "fcplugin")
       }
     ],
     []
@@ -126,10 +108,9 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
 
     axios
       .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveProductsBestellrunde`,
+        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveProductsWeighed`,
         {
-          products: JSON.stringify(productIds),
-          bestellrunde: id
+          products: JSON.stringify(productIds)
         },
         {
           headers: {
@@ -149,9 +130,7 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
       <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <AppBar sx={{ position: "relative", paddingTop: "32px" }}>
           <Toolbar sx={{ justifyContent: "space-between" }}>
-            <DialogTitle textAlign="left">
-              {__("Produkte in Bestellrunde", "fcplugin")} {id}
-            </DialogTitle>
+            <DialogTitle textAlign="left">{__("Gewichtete Produkte wählen", "fcplugin")}</DialogTitle>
             <DialogActions>
               <LoadingButton onClick={handleSubmit} variant="text" color="secondary" loading={submitting} loadingPosition="start" startIcon={<SaveIcon />}>
                 {__("Speichern", "fcplugin")}
@@ -178,9 +157,8 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
           }}
         >
           <Alert sx={{ marginBottom: 1 }} severity="info">
-            {__("Produkte auswählen, die in dieser Bestellrunde bestellt werden können, dann speichern.", "fcplugin")}
+            {__("Produkte auswählen, die im Self Checkout nach Gewicht verkauft werden, dann speichern.", "fcplugin")}
           </Alert>
-
           <MaterialReactTable
             muiTablePaperProps={{
               elevation: 0,
@@ -212,4 +190,4 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
   )
 }
 
-export default ProductsOfBestellrundeModal
+export default WeighedProducts

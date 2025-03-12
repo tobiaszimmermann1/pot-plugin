@@ -66,7 +66,7 @@ function MyTransactions() {
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>{__("Deine Transaktionen", "fcplugin")}</h2>
+          <strong>{__("Deine Transaktionen", "fcplugin")}</strong>
         </Grid>
       </Grid>
       <Box sx={{ marginTop: "20px" }}>
@@ -91,7 +91,7 @@ function MyTransactions() {
   ) : (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <h2>{__("Du verwaltest keine Produkte.", "fcplugin")}</h2>
+        <strong>{__("Du verwaltest keine Produkte.", "fcplugin")}</strong>
       </Grid>
     </Grid>
   )

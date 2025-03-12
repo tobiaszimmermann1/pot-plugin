@@ -38,13 +38,13 @@ function FoodcoopMemberDashboard() {
           <div className="fc_members_dashboard_header">
             <div className="pluginMenu" ref={pluginMenu}>
               <span id="dashboard" className="menuItemDashboard firstMenuItem" onClick={() => setActiveTab("balance")}>
-                <h2 style={{ fontWeight: activeTab === "balance" ? "bold" : "normal" }}>{__("Mein Guthaben", "fcplugin")}</h2>
+                <strong style={{ fontWeight: activeTab === "balance" ? "bold" : "normal" }}>{__("Mein Guthaben", "fcplugin")}</strong>
               </span>
               <span id="orderingRounds" className="menuItemDashboard" onClick={() => setActiveTab("transactions")}>
-                <h2 style={{ fontWeight: activeTab === "transactions" ? "bold" : "normal" }}>{__("Meine Transaktionen", "fcplugin")}</h2>
+                <strong style={{ fontWeight: activeTab === "transactions" ? "bold" : "normal" }}>{__("Meine Transaktionen", "fcplugin")}</strong>
               </span>
               <span id="products" className="menuItemDashboard" onClick={() => setActiveTab("products")}>
-                <h2 style={{ fontWeight: activeTab === "products" ? "bold" : "normal" }}>{__("Meine Produkte", "fcplugin")}</h2>
+                <strong style={{ fontWeight: activeTab === "products" ? "bold" : "normal" }}>{__("Meine Produkte", "fcplugin")}</strong>
               </span>
             </div>
           </div>

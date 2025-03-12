@@ -25,7 +25,7 @@ function MyBalance() {
   const [loading, setLoading] = useState(true)
   const [instantTopUpAmount, setInstantTopUpAmount] = useState(null)
   const [instantTopUp, setInstantTopUp] = useState(null)
-  const [payoutAmount, setPayoutAmount] = useState(null)
+  const [payoutAmount, setPayoutAmount] = useState("")
   const [toIban, setToIban] = useState("")
   const [toName, setToName] = useState("")
   const [toCity, setToCity] = useState("")
@@ -44,7 +44,7 @@ function MyBalance() {
       })
       .then(function (response) {
         const res = JSON.parse(response.data)
-        setAccount(res[0].replace(" ", ""))
+        res[0] && setAccount(res[0].replace(" ", ""))
         setStoreAddress(res[1])
         setStoreCity(res[2])
         setStorePostcode(res[3])
@@ -141,40 +141,42 @@ function MyBalance() {
         <>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <h2>
+              <strong>
                 {__("Dein aktuelles Guthaben beträgt", "fcplugin")}{" "}
                 <span style={{ color: parseFloat(balance) >= 0 ? "green" : "red" }}>
                   <span dangerouslySetInnerHTML={{ __html: currency }} /> {balance}
                 </span>
-              </h2>
+              </strong>
             </Grid>
           </Grid>
           <Box sx={{ backgroundColor: "white", marginTop: "20px", padding: "20px" }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <h2>{__("Guthaben per Banküberweisung aufladen", "fcplugin")}</h2>
+            {account && (
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <strong>{__("Guthaben per Banküberweisung aufladen", "fcplugin")}</strong>
+                </Grid>
+                <Grid item xs={12}>
+                  <p>
+                    {__("Generiere hier einen QR Einzahlungsschein, um Geld auf unser Vereinskonto zu überweisen", "fcplugin")} (IBAN: {account}, {blogname}, {storeAddress}, {storePostcode}, {storeCity}).
+                  </p>
+                </Grid>
+                <Grid item xs={12}>
+                  <input type="number" min="1" placeholder="Betrag in CHF" className="fc_topup_input" onChange={event => setAmount(event.target.value)} /> <br />
+                  <button type="submit" onClick={handleQR} style={{ marginTop: 10 }}>
+                    {__("Einzahlungsschein generieren", "fcplugin")}
+                  </button>
+                </Grid>
+                <Grid item xs={12}>
+                  <div id="qrSVG"></div>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <p>
-                  {__("Generiere hier einen QR Einzahlungsschein, um Geld auf unser Vereinskonto zu überweisen", "fcplugin")} (IBAN: {account}, {blogname}, {storeAddress}, {storePostcode}, {storeCity}).
-                </p>
-              </Grid>
-              <Grid item xs={12}>
-                <input type="number" min="1" placeholder="Betrag in CHF" className="fc_topup_input" onChange={event => setAmount(event.target.value)} /> <br />
-                <button type="submit" onClick={handleQR} style={{ marginTop: 10 }}>
-                  {__("Einzahlungsschein generieren", "fcplugin")}
-                </button>
-              </Grid>
-              <Grid item xs={12}>
-                <div id="qrSVG"></div>
-              </Grid>
-            </Grid>
+            )}
             {instantTopUp === "1" && (
               <>
                 <Divider sx={{ marginTop: 2, marginBottom: 2, borderColor: "#000000" }} />
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <h2>{__("Guthaben sofort aufladen", "fcplugin")}</h2>
+                    <strong>{__("Guthaben sofort aufladen", "fcplugin")}</strong>
                   </Grid>
                   <Grid item xs={12}>
                     <p>{__("Lade dein Guthaben über eine Zahlungsschnittstelle auf, um es sofort verfügbar zu haben (evtl. fallen Gebühren an).", "fcplugin")}</p>
@@ -207,7 +209,7 @@ function MyBalance() {
               <Divider sx={{ marginTop: 2, marginBottom: 2, borderColor: "#000000" }} />
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <h2>{__("Guthaben auszahlen", "fcplugin")}</h2>
+                  <strong>{__("Guthaben auszahlen", "fcplugin")}</strong>
                 </Grid>
                 <Grid item xs={12}>
                   <p>{__("Veranlasse hier eine Auszahlung von Guthaben auf dein Konto.", "fcplugin")}</p>

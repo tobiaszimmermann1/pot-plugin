@@ -693,10 +693,69 @@ html {
   color: #000;
 }
 
+.productModalClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.productModalHeader {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 50px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.productModalPotDb {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #eff4dc;
+}
+
+.productModalInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 50%;
+}
+
+.productModalInfo td,
+.productModalInfo th {
+  padding: 10px;
+}
+
+.productModalInfo p {
+  margin: 0;
+}
+
+.productModalInfo table {
+  border: 1px solid #ccc;
+}
+
+.productModalTitle {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.productModalTitle small {
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.productModalTitle strong {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 .productModalImage {
-  max-height: 400px !important;
-  object-fit: contain !important;
-  background: #ffffff !important;
+  width: 50%;
 }
 
 .fc_account_wallet_balance {
@@ -1300,10 +1359,73 @@ html {
     font-weight: bold;
   }
 
+  .productModalClose {
+    background-color: #fff;
+    top: 0px;
+    right: 0px;
+  }
+
+  .productModalClose button {
+    padding: 2px;
+  }
+
+  .productModalHeader {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .productModalPotDb {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #eff4dc;
+  }
+
+  .productModalInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .productModalInfo td,
+  .productModalInfo th {
+    padding: 10px;
+  }
+
+  .productModalInfo p {
+    margin: 0;
+  }
+
+  .productModalInfo table {
+    border: 1px solid #ccc;
+  }
+
+  .productModalTitle {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  .productModalTitle small {
+    font-size: 1rem;
+    font-weight: normal;
+  }
+
+  .productModalTitle strong {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
   .productModalImage {
-    max-height: 200px !important;
-    object-fit: contain !important;
-    background: #ffffff !important;
+    width: 100%;
   }
 
   #fc_order_bar {
