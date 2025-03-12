@@ -1004,7 +1004,8 @@ class FoodcoopRestRoutes {
         "stock" => $product->get_stock_quantity(),
         "stock_status" => $product->get_stock_status(),
         "tax" => $product->get_tax_class(),
-        "owner" => $product->get_meta('fc_owner')
+        "owner" => $product->get_meta('fc_owner'),
+        "weight" => $product->get_weight()." ".get_option("woocommerce_weight_unit")
       );
 
       // product thumbnail
@@ -3038,7 +3039,7 @@ class FoodcoopRestRoutes {
         $stock_status = $product->get_stock_status();
 
 
-        if ($quantity > 0 || ($stock_status == "instock" && get_option('fc_update_balance_on_purchase') == '1')) {
+        if ($quantity > 0 || $stock_setting == "no") {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),

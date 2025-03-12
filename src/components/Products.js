@@ -63,7 +63,8 @@ const Products = () => {
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getProducts`)
       .then(function (response) {
-        axios.get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
+        axios
+          .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
             headers: {
               "X-WP-Nonce": appLocalizer.nonce
             }
@@ -71,11 +72,11 @@ const Products = () => {
           .then(function (userResponse) {
             if (userResponse.data) {
               const users = JSON.parse(userResponse.data)
-              
+
               let reArrangeProductData = []
-                if (response.data) {
-                  const res = JSON.parse(response.data)
-                  res[0].map(p => {
+              if (response.data) {
+                const res = JSON.parse(response.data)
+                res[0].map(p => {
                   let productToDo = {}
                   productToDo.name = p.name
                   productToDo.price = p.price
@@ -97,6 +98,7 @@ const Products = () => {
                   productToDo.owner = parseInt(p.fc_owner)
                   const owner = users.find(user => user.id === productToDo.owner)
                   productToDo.ownerName = owner ? owner.name : ""
+                  productToDo.weight = p.weight
 
                   reArrangeProductData.push(productToDo)
                 })
@@ -216,6 +218,11 @@ const Products = () => {
       {
         accessorKey: "unit",
         header: __("Einheit", "fcplugin"),
+        size: 80
+      },
+      {
+        accessorKey: "weight",
+        header: __("Gewicht", "fcplugin"),
         size: 80
       },
       {

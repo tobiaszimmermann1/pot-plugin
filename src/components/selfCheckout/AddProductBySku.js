@@ -104,19 +104,26 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
     // add item to cart after the user has entered the weight
     if (userWeightValue !== 0 && weightProd) {
       const prodWeightInG = weightProd.weight * wc_weight_units[weightProd.weight_unit]
-      weightProd.amount = (userWeightValue * 1000) / prodWeightInG
-      weightProd.userWeightValue = userWeightValue
-      // prepare cart
-      let newCart = cart
-      weightProd.id = newCart.length
-      weightProd.order_type = "self_checkout"
-      newCart.push(weightProd)
-      setCart(newCart)
-      if (newCart.length > 0) {
-        localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
+      if (prodWeightInG === 0) {
+        setProductError("Produkt nicht kann nicht hinzugefügt werden. Konfigurationsfehler: Gewicht fehlt")
+        setWeightProd(null)
+        setWeightModalOpen(false)
+        setIsEnteringWeight(false)
+      } else {
+        weightProd.amount = (userWeightValue * 1000) / prodWeightInG
+        weightProd.userWeightValue = userWeightValue
+        // prepare cart
+        let newCart = cart
+        weightProd.id = newCart.length
+        weightProd.order_type = "self_checkout"
+        newCart.push(weightProd)
+        setCart(newCart)
+        if (newCart.length > 0) {
+          localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
+        }
+        setAdding(false)
+        setShowCart(true)
       }
-      setAdding(false)
-      setShowCart(true)
     }
   }, [userWeightValue])
 
