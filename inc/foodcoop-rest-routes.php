@@ -1055,6 +1055,7 @@ class FoodcoopRestRoutes {
     $woocommerce_store_postcode = get_option('woocommerce_store_postcode');
     $blogname = get_option('blogname');
     $instantTopup = get_option('fc_instant_topup');
+    $update_balance_on_purchase = get_option('fc_update_balance_on_purchase');
 
     $id = get_current_user_id();
     $name = get_user_meta($id, 'billing_first_name', true)." ".get_user_meta($id, 'billing_last_name', true);
@@ -1134,6 +1135,9 @@ class FoodcoopRestRoutes {
     
     $instantTopup = $data['instantTopup'];
     $instantTopup == true  ? update_option('fc_instant_topup', '1') : update_option('fc_instant_topup', '0');
+
+    $updateBalanceOnPurchase = $data['updateBalanceOnPurchase'];
+    $updateBalanceOnPurchase == true ? update_option('fc_update_balance_on_purchase', '1'): update_option('fc_update_balance_on_purchase', '0');
     
     $publicProducts = $data['publicProducts'];
     $publicProducts == true  ? update_option('fc_public_products', '1') : update_option('fc_public_products', '0');
@@ -3031,8 +3035,10 @@ class FoodcoopRestRoutes {
       if ($product) {
         $stock_setting = get_option('woocommerce_manage_stock');
         $quantity = $product->get_stock_quantity();
+        $stock_status = $product->get_stock_status();
 
-        if ($quantity > 0 || $stock_setting == 'no') {
+
+        if ($quantity > 0 || ($stock_status == "instock" && get_option('fc_update_balance_on_purchase') == '1')) {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
@@ -3687,7 +3693,9 @@ class FoodcoopRestRoutes {
     foreach($products as $product) {
       $current_stock = intval(get_post_meta( $product->id, "_stock", true ));
       $new_stock = $current_stock + intval($product->amount);
-      update_post_meta( $product->id, "_stock", $new_stock );
+      $wc_product = wc_get_product($product->id);
+      $wc_product->set_stock_quantity(floatval($new_stock));
+      $wc_product->save();
       $number++;
     }
     
@@ -3722,27 +3730,30 @@ class FoodcoopRestRoutes {
       $product->set_stock_quantity(floatval($new_stock));
       $product->save();
 
-      // update user's wallet balance
-      $table = $wpdb->prefix.'foodcoop_wallet';
+      if (get_option('fc_update_balance_on_purchase') != '1'){
+        // update user's wallet balance
+        $table = $wpdb->prefix.'foodcoop_wallet';
 
-      // get current balance
-      $current_balance = 0.00;
-      $results = $wpdb->get_results(
-        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
-      );
-      foreach ( $results as $result ) {
-        $current_balance = $result->balance;
+        // get current balance
+        $current_balance = 0.00;
+        $results = $wpdb->get_results(
+          $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+        );
+        foreach ( $results as $result ) {
+          $current_balance = $result->balance;
+        }
+
+        date_default_timezone_set('Europe/Zurich');
+        $date = date("Y-m-d H:i:s");
+        $details = 'Neue Lieferung von Produkt '.$product->get_name().'('.$amount.'x)';
+        $created_by = get_current_user_id();
+        $new_balance = $current_balance + $balance;
+        $new_balance = number_format($new_balance, 2, '.', '');
+
+        $data = array('user_id' => $user_id, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+        $wpdb->insert($table, $data);
       }
 
-      date_default_timezone_set('Europe/Zurich');
-      $date = date("Y-m-d H:i:s");
-      $details = 'Neue Lieferung von Produkt '.$product->get_name().'('.$amount.'x)';
-      $created_by = get_current_user_id();
-      $new_balance = $current_balance + $balance;
-      $new_balance = number_format($new_balance, 2, '.', '');
-
-      $data = array('user_id' => $user_id, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
-      $wpdb->insert($table, $data);
 
       // inform the admin about the change
       $headers[] = 'From: '. get_option('admin_email');
@@ -3759,9 +3770,13 @@ class FoodcoopRestRoutes {
               <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #000; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 180%; mso-line-height-alt: 28.8px; list-style-type: disc;">
                 <li style="margin-bottom: 0; text-align: left;">Alter Bestand: '.$old_stock.'</li>
                 <li style="margin-bottom: 0; text-align: left;">Angelieferte Menge: '.$amount.'</li>
-                <li style="margin-bottom: 0; text-align: left;">Neuer Bestand: '.$new_stock.'</li>
-                <li style="margin-bottom: 0; text-align: left;">Guthaben ausbezahlt an Produktmanager (Mitglied '.$user_id.'): '.$balance.'</li>
-              </ul>
+                <li style="margin-bottom: 0; text-align: left;">Neuer Bestand: '.$new_stock.'</li>';
+
+      if (get_option('fc_update_balance_on_purchase') != '1'){
+        $msg .= '<li style="margin-bottom: 0; text-align: left;">Guthaben ausbezahlt an Produktmanager (Mitglied '.$user_id.'): '.$balance.'</li>';
+      }
+
+      $msg .= '</ul>
             </div>
             </td>
           </tr>

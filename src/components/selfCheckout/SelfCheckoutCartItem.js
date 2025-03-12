@@ -117,7 +117,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                         <Grid item xs={12}>
                           <Chip label={productData.unit} sx={{ marginRight: 1, fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
                           <Chip label={`CHF ${parseFloat(productData.price).toFixed(2)}`} sx={{ marginRight: 1, fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
-                          <Chip label={`sku: ${productData.sku}`} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
+                          <Chip label={`Artikel-Nr.: ${productData.sku}`} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
                         </Grid>
                       ) : (
                         <Grid item xs={12} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }}>
