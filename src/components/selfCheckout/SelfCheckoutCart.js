@@ -18,7 +18,6 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
   const [removeProduct, setRemoveProduct] = useState(null)
 
   useEffect(() => {
-    console.log("cart:", cart)
     if (cart.length > 0) {
       let newTotal = 0
       cart.map(cartItem => {
@@ -39,7 +38,6 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
 
   useEffect(() => {
     if (removeProduct) {
-      console.log("rm", removeProduct)
       let newCart = cart.filter(el => {
         return el.product_id !== removeProduct.product_id
       })
@@ -58,10 +56,6 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
 
   return cart.length > 0 ? (
     <>
-      <Stack spacing={3} sx={{ width: "100%", padding: "20px 20px 10px 20px" }}>
-        <h2>{__("Warenkorb", "fcplugin")}</h2>{" "}
-      </Stack>
-
       <List dense={true} sx={{ padding: POSMode && "0 10px", border: POSMode && "1px solid #e3e3e3" }}>
         {cart.map((cartItem, index) => (
           <SelfCheckoutCartItem key={index} productData={cartItem} itemIndex={index} POSMode={POSMode} />

@@ -31,7 +31,6 @@ const OrderingRounds = () => {
           const res = JSON.parse(response.data)
           setBestellrunden(res[0])
           setActiveOrders(res[1])
-          console.log(res)
         }
       })
       .catch(error => console.log(error))

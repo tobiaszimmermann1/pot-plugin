@@ -170,7 +170,7 @@ function MyProducts() {
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>{__("Deine Produkte: Editiere Produktdaten, erfasse eine Lieferung oder ändere den Bestand.", "fcplugin")}</h2>
+          <strong>{__("Deine Produkte: Editiere Produktdaten, erfasse eine Lieferung oder ändere den Bestand.", "fcplugin")}</strong>
         </Grid>
       </Grid>
       <Box sx={{ marginTop: "20px" }}>
@@ -231,7 +231,7 @@ function MyProducts() {
   ) : (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <h2>{__("Du verwaltest keine Produkte.", "fcplugin")}</h2>
+        <strong>{__("Du verwaltest keine Produkte.", "fcplugin")}</strong>
       </Grid>
     </Grid>
   )

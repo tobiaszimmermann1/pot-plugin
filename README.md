@@ -28,6 +28,14 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.6
+
+- Added an option in Products Tab to define which products should be weighed in Self Checkout, before adding them to the cart.
+- Added UI flow for weighed products in self checkout. For weighed products a weight must be entered before adding them to the cart.
+- Improved product display in frontend with support for POT Sortimentsdatenbank. Products that have a pot_id associated to them will now display link to the database.
+- Added SKU column in various Product tables.
+- Optimization around loading images.
+
 ### 1.7.5
 
 - New revamped product import from XLSX files: better overview, options and less buggy due to text formatting issues.

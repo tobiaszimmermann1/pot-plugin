@@ -323,6 +323,18 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * POST save products sold by weight in self checkout
+     * params: products
+     */
+    register_rest_route( 'foodcoop/v1', 'postSaveProductsWeighed', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postSaveProductsWeighed'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET bestellrunde products
      * params: bestellrunde
      */
@@ -994,6 +1006,12 @@ class FoodcoopRestRoutes {
         "tax" => $product->get_tax_class(),
         "owner" => $product->get_meta('fc_owner')
       );
+
+      // product thumbnail
+      $image_id = $product->get_image_id();
+      if ( $image_id ) {
+        $the_product['thumbnail'] = wp_get_attachment_image_url( $image_id, 'thumbnail' ); 
+      }
     
       // product meta data
       $the_meta = $product->get_meta_data();
@@ -1669,6 +1687,14 @@ class FoodcoopRestRoutes {
   }
 
   /**
+   * postSaveProductsWeighed
+   */
+  function postSaveProductsWeighed($data) {
+    $update = update_option( 'fc_weighed_products', $data['products'] );
+    return($update);
+  }
+
+  /**
    * getBestellrundeProducts
    */
   function getBestellrundeProducts($data) {
@@ -1704,14 +1730,21 @@ class FoodcoopRestRoutes {
     
     $products = array();
     foreach ($p as $product) {
-      // product name
+      // product array
       $the_product = array(
         "id" => $product->get_id(),
         "name" => $product->get_name(),
         "price" => $product->get_price(),
         "image" => $product->get_image(),
+        "sku" => $product->get_sku(),
         "category_id" => $product->get_category_ids()[0]
       );
+
+      // product thumbnail
+      $image_id = $product->get_image_id();
+      if ( $image_id ) {
+        $the_product['thumbnail'] = wp_get_attachment_image_url( $image_id, 'thumbnail' ); 
+      }
     
       // product meta data
       $the_meta = $product->get_meta_data();
@@ -2747,6 +2780,12 @@ class FoodcoopRestRoutes {
         "stock" => $product->get_stock_quantity()
       );
 
+      // product thumbnail
+      $image_id = $product->get_image_id();
+      if ( $image_id ) {
+        $the_product['thumbnail'] = wp_get_attachment_image_url( $image_id, 'thumbnail' ); 
+      }
+
       // prodcut tax rate
       $taxclass = $product->get_tax_class();
       $taxrates = WC_Tax::get_rates_for_tax_class( $taxclass );
@@ -2832,6 +2871,12 @@ class FoodcoopRestRoutes {
           "description" => $product->get_description(),
           "tax" => $product->get_tax_class()
         );
+        
+        // product thumbnail
+        $image_id = $product->get_image_id();
+        if ( $image_id ) {
+          $the_product['thumbnail'] = wp_get_attachment_image_url( $image_id, 'thumbnail' ); 
+        }
       
         // product meta data
         $the_meta = $product->get_meta_data();
@@ -2982,24 +3027,29 @@ class FoodcoopRestRoutes {
     $sku = $data['sku'];
     $product_id = wc_get_product_id_by_sku($sku);
     $self_checkout_products = json_decode(get_option( 'fc_self_checkout_products' ));
+    $weighed_products = json_decode(get_option( 'fc_weighed_products' ));
 
     if (in_array($product_id, $self_checkout_products)) {
-
       $product = wc_get_product($product_id);
 
       if ($product) {
+        $stock_setting = get_option('woocommerce_manage_stock');
         $quantity = $product->get_stock_quantity();
         $stock_status = $product->get_stock_status();
+
 
         if ($quantity > 0 || ($stock_status == "instock" && get_option('fc_update_balance_on_purchase') == '1')) {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
             'unit' => $product->get_meta('_einheit'),
+            'weight' => floatval($product->get_weight()),
             'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
             'amount' => 1, 
             'sku' => $sku,
             'product_id' => $product->get_id(),
+            'is_weighed' => in_array($product_id, $weighed_products),
+            'weight_unit' => get_option('woocommerce_weight_unit')
           );
           return json_encode($product_data);
         } else {

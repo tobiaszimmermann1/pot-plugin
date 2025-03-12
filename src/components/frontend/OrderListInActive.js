@@ -66,6 +66,10 @@ const OrderListInActive = () => {
         productToDo.image = p.image
         productToDo.description = p.description
         productToDo.tax = p.tax
+        productToDo.loonity_id = p._loonity_id
+        productToDo.produzent = p._produzent
+        productToDo.lieferant = p._lieferant
+        productToDo.herkunft = p._herkunft
 
         productToDo.price = p.price
         // public prices?

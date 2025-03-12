@@ -28,7 +28,6 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   }, [productData, amount])
 
   useEffect(() => {
-    console.log(amount, typeof amount)
     let newAmount = amount
     const newCart = cart.map(cartItem => {
       if (cartItem.product_id === productData.product_id) {
@@ -72,23 +71,37 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
       <ListItem sx={{ margin: "5px 0", padding: 1 }}>
         <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
           <Grid item xs={3}>
-            <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-start" sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}>
-              <AddIcon onClick={() => setAmount(productData.amount + 1)} sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }} />
-              <Chip
-                label={productData.amount}
-                sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }}
-                onClick={() => {
-                  setInputAmount(true)
-                  setInputAmountValue(amount)
-                }}
-              />
-              <RemoveIcon
-                sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
-                onClick={() => {
-                  productData.amount > 0 && setAmount(productData.amount - 1)
-                }}
-              />
-            </Stack>
+            {!productData.is_weighed ? (
+              <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-start" sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}>
+                <AddIcon onClick={() => setAmount(productData.amount + 1)} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", cursor: "pointer" }} />
+                <Chip
+                  label={productData.amount}
+                  sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }}
+                  onClick={() => {
+                    setInputAmount(true)
+                    setInputAmountValue(amount)
+                  }}
+                />
+                <RemoveIcon
+                  sx={{ fontSize: POSMode ? "1.5rem" : "1rem", cursor: "pointer" }}
+                  onClick={() => {
+                    productData.amount > 0 && setAmount(productData.amount - 1)
+                  }}
+                />
+              </Stack>
+            ) : (
+              <Stack direction="column" gap={2} sx={{ alignItems: "flex-start" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                  <Chip label={`${productData.userWeightValue} KG`} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }} />
+                  <DeleteIcon
+                    sx={{ cursor: "pointer", "&:hover": { color: "red" } }}
+                    onClick={() => {
+                      setAmount(0)
+                    }}
+                  />
+                </div>
+              </Stack>
+            )}
           </Grid>
           <Grid item xs={7} sx={{ fontWeight: "bold", fontSize: POSMode ? "1.5rem" : "1rem" }}>
             <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start">
@@ -98,7 +111,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                     {productData.img ? <img src={productData.img} width={"50px"} height={"50px"} /> : <PhotoIcon />}
                   </Grid>
                   <Grid item xs={8}>
-                    {productData.name}
+                    {productData.name} <span style={{ fontWeight: "normal" }}>({productData.sku})</span>
                     <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start" sx={{ marginTop: "0px" }}>
                       {POSMode ? (
                         <Grid item xs={12}>
@@ -108,7 +121,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                         </Grid>
                       ) : (
                         <Grid item xs={12} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }}>
-                          {productData.unit} | Artikel-Nr.: {productData.sku}
+                          {!productData.is_weighed && productData.unit}
                         </Grid>
                       )}
                     </Grid>

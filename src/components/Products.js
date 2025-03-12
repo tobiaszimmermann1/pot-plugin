@@ -26,10 +26,12 @@ import WidgetsIcon from "@mui/icons-material/Widgets"
 import NewDelivery from "./products/NewDelivery"
 import SmartphoneIcon from "@mui/icons-material/Smartphone"
 import SelfCheckoutProducts from "./products/SelfCheckoutProducts"
+import WeighedProducts from "./products/weighedProducts"
 import PersonIcon from "@mui/icons-material/Person"
 import ProductOwnerModal from "./products/ProductOwnerModal"
 import TextSnippetIcon from "@mui/icons-material/TextSnippet"
 import EditDescription from "./products/EditDescription"
+import ScaleIcon from "@mui/icons-material/Scale"
 const __ = wp.i18n.__
 
 const Products = () => {
@@ -55,6 +57,7 @@ const Products = () => {
   const [selectedProductDescription, setSelectedProductDescription] = useState(null)
   const [selectedProductDescriptionId, setSelectedProductDescriptionId] = useState(null)
   const [selectedProductEditTitle, setSelectedProductEditTitle] = useState(null)
+  const [weighedProducts, setWeighedProducts] = useState(false)
 
   useEffect(() => {
     axios
@@ -68,12 +71,11 @@ const Products = () => {
           .then(function (userResponse) {
             if (userResponse.data) {
               const users = JSON.parse(userResponse.data)
-
+              
               let reArrangeProductData = []
-
-              if (response.data) {
-                const res = JSON.parse(response.data)
-                res[0].map(p => {
+                if (response.data) {
+                  const res = JSON.parse(response.data)
+                  res[0].map(p => {
                   let productToDo = {}
                   productToDo.name = p.name
                   productToDo.price = p.price
@@ -87,6 +89,7 @@ const Products = () => {
                   productToDo.pot_id = p.pot_id
                   productToDo.short_description = p.short_description
                   p.image ? (productToDo.image = p.image) : (productToDo.image = "")
+                  p.thumbnail ? (productToDo.thumbnail = p.thumbnail) : (productToDo.thumbnail = "")
                   productToDo.description = p.description
                   productToDo.sku = p.sku
                   p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
@@ -154,7 +157,7 @@ const Products = () => {
         size: 50
       },
       {
-        accessorKey: "image",
+        accessorKey: "thumbnail",
         header: __("", "fcplugin"),
         Cell: ({ cell }) =>
           cell.getValue() ? (
@@ -552,6 +555,9 @@ const Products = () => {
                         <Button color="primary" onClick={() => setSelectSelfCheckoutProducts(true)} startIcon={buttonLoading ? <CircularProgress size={14} /> : <SmartphoneIcon />} variant="outlined" size="small" disabled={buttonLoading}>
                           {__("Self Checkout Produkte", "fcplugin")}
                         </Button>
+                        <Button color="primary" onClick={() => setWeighedProducts(true)} startIcon={buttonLoading ? <CircularProgress size={14} /> : <ScaleIcon />} variant="outlined" size="small" disabled={buttonLoading}>
+                          {__("Gewichtete Produkte", "fcplugin")}
+                        </Button>
                       </Box>
                     )}
                   </Box>
@@ -563,6 +569,7 @@ const Products = () => {
             {importModalOpen && <ImportProducts setModalClose={setImportModalOpen} categories={categories} setReload={setReload} reload={reload} />}
             {deliveryModalOpen && <NewDelivery setModalClose={setDeliveryModalOpen} prod={products} reload={reload} setReload={setReload} />}
             {selectSelfCheckoutProducts && <SelfCheckoutProducts setModalClose={setSelectSelfCheckoutProducts} prods={products} />}
+            {weighedProducts && <WeighedProducts setModalClose={setWeighedProducts} prods={products} />}
             {ownerModalOpen && <ProductOwnerModal setModalClose={setOwnerModalOpen} product={ownerModalProduct} reload={reload} setReload={setReload} />}
             <EditDescription open={descriptionModalOpen} id={selectedProductDescriptionId} description={selectedProductDescription} title={selectedProductEditTitle} setModalClose={setDescriptionModalOpen} setReload={setReload} reload={reload} />
           </>
