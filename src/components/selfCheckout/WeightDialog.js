@@ -4,8 +4,8 @@ import Toolbar from "@mui/material/Toolbar"
 import { Alert } from "@mui/material"
 const __ = wp.i18n.__
 
-function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWeight }) {
-  const [weight, setWeight] = useState("")
+function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWeight, amount }) {
+  const [weight, setWeight] = useState(amount || "")
   const [error, setError] = useState(false)
 
   function handleInputChange(e) {
