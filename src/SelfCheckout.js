@@ -102,7 +102,6 @@ function SelfCheckout() {
     if (cart.length === 0) {
       let localStorageCart = localStorage.getItem("fc_selfcheckout_cart")
       if (localStorageCart) {
-        console.log(JSON.parse(localStorageCart))
         setCart(JSON.parse(localStorageCart))
       }
     }
@@ -136,7 +135,6 @@ function SelfCheckout() {
         .then(function (response) {
           setSubmitting(false)
           localStorage.removeItem("fc_selfcheckout_cart")
-          console.log(JSON.parse(response.data))
           location.href = JSON.parse(response.data)
           return false
         })
@@ -219,7 +217,7 @@ function SelfCheckout() {
                   {productError}
                 </Alert>
               )}
-              <DialogContent dividers={scroll === "paper"} sx={{ padding: 1 }}>
+              <DialogContent dividers={scroll === "paper"} sx={{ padding: 2, boxSizing: "content-box" }}>
                 {loading && (
                   <Box sx={{ width: "100%", marginBottom: "10px" }}>
                     <LinearProgress />

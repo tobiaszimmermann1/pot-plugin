@@ -97,7 +97,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
       <div className="fc_order_list_line_wrapper" id={product.id} style={amount > 0 ? { backgroundColor: "#f2fbe8" } : { backgroundColor: "#f9f9f9" }}>
         {additionalProductInformation && (
           <div className="fc_order_list_mobile_img" onClick={handleOpen}>
-            <span className="product_image_thumbnail" style={{ backgroundImage: `url(${product.image})` }} />
+            <span className="product_image_thumbnail" style={{ backgroundImage: `url(${product.thumbnail})` }} />
           </div>
         )}
         <div className="fc_order_list_line">
@@ -123,7 +123,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
           {additionalProductInformation ? (
             <>
               <span className="fc_order_list_col col_15" onClick={handleOpen}>
-                <span className="product_image_thumbnail" style={{ backgroundImage: `url(${product.image})` }} />
+                <span className="product_image_thumbnail" style={{ backgroundImage: `url(${product.thumbnail})` }} />
               </span>
               <span className="fc_order_list_col col_2" onClick={handleOpen}>
                 {product.name}
@@ -160,7 +160,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
           </span>
         </div>
       </div>
-      <Dialog scroll="body" fullScreen={useMediaQuery("(max-width:800px)")} open={open} onClose={handleClose} sx={{ zIndex: 15016 }}>
+      <Dialog open={open} onClose={handleClose} sx={{ zIndex: 15016 }} scroll="body" fullWidth maxWidth="xl">
         <ProductDialog product={product} handleClose={handleClose} currency={currency} stockManagement={stockManagement} />
       </Dialog>
     </>
