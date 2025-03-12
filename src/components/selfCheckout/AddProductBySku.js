@@ -32,7 +32,6 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
     let reArrangeProductData = []
     getSelfCheckoutProducts()
       .then(function (scProds) {
-        console.log(scProds)
         getProductListOverview()
           .then(function (response) {
             if (response.products) {
