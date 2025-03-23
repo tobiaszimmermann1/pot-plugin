@@ -71,10 +71,17 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
             if (!res) {
               setProductError("Produkt nicht gefunden oder nicht an Lager.")
             } else {
-              // if it is a weighed product, ask for the weight
+              // if it is a weighed product and no custom amount was already entered, ask for the weight
               if (res.is_weighed) {
                 setWeightProd(res)
-                setWeightModalOpen(true)
+
+                // Only show modal if weight is not already entered
+                if (amount === 1){
+                  setWeightModalOpen(true)
+                } else {
+                  setUserWeightValue(amount)
+                }
+
                 setIsEnteringWeight(true)
               }
               // if it is not a weighed product, add it directly to the cart with quantity = 1
