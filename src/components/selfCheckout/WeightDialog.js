@@ -19,8 +19,8 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
     }
 
     // Validate the input (only numbers, max two decimals, greater than zero)
-    const regex = /^(?!0\d)\d*(\.\d{0,2})?$/
-    if (regex.test(value) && parseFloat(value) > 0) {
+    const regex = /^\d*(\.\d{0,2})?$/
+    if (regex.test(value)) {
       setWeight(value)
       setError(false)
     } else {
