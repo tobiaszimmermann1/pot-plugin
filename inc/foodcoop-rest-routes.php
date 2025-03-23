@@ -3028,7 +3028,7 @@ class FoodcoopRestRoutes {
     $sku = $data['sku'];
     $product_id = wc_get_product_id_by_sku($sku);
     $self_checkout_products = json_decode(get_option( 'fc_self_checkout_products' ));
-    $weighed_products = json_decode(get_option( 'fc_weighed_products' ));
+    $weighed_products = json_decode(get_option( 'fc_weighed_products' )) ?: [];
 
     if (in_array($product_id, $self_checkout_products)) {
       $product = wc_get_product($product_id);
