@@ -47,7 +47,7 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
         <DialogContent dividers={scroll === "paper"} sx={{ paddingTop: 0 }}>
           <Stack spacing={3} sx={{ width: "100%" }}>
             <Alert sx={{ marginBottom: 1 }} severity="info">
-              {__("Bitte gib das Gewicht in KG ein.", "fcplugin")}
+              {__("Bitte gib das Gewicht in kg ein.", "fcplugin")}
             </Alert>
             <TextField autoFocus id="userWeight" name="userWeight" variant="outlined" value={weight} onChange={handleInputChange} error={error} sx={{ width: "100%" }} helperText={error ? __("Ungültiges Format: Nur Zahlen mit max. zwei Dezimalstellen erlaubt.", "fcplugin") : ""} />
             <Button onClick={handleSubmit} variant="contained" size="large" color="primary">

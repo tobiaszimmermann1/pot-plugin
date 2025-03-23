@@ -92,7 +92,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
             ) : (
               <Stack direction="column" gap={2} sx={{ alignItems: "flex-start" }}>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                  <Chip label={`${productData.userWeightValue} KG`} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }} />
+                  <Chip label={`${productData.userWeightValue} kg`} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }} />
                   <DeleteIcon
                     sx={{ cursor: "pointer", "&:hover": { color: "red" } }}
                     onClick={() => {
