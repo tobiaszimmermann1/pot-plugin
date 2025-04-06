@@ -3306,7 +3306,7 @@ class FoodcoopRestRoutes {
 
     foreach($product_categories as $cat) {
       $the_cat = array();
-      $thumb_id = get_woocommerce_term_meta( $cat->term_id, 'thumbnail_id', true );
+      $thumb_id = get_term_meta( $cat->term_id, 'thumbnail_id', true );
       $term_img = wp_get_attachment_url(  $thumb_id );
       $the_cat['image'] = $term_img;
       $the_cat['term_id'] = $cat->term_id;
@@ -3810,7 +3810,7 @@ class FoodcoopRestRoutes {
     $categories = array();
     $cats = array();
     foreach( $product_categories as $category ) {
-      $thumb_id = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true );
+      $thumb_id = get_term_meta( $category->term_id, 'thumbnail_id', true );
       $thumb_id ? $term_img = wp_get_attachment_url(  $thumb_id ) : $term_img = plugin_dir_url( __FILE__ ).'../images/category.jpg';
       array_push($categories, array(
         'id' => $category->term_id, 
