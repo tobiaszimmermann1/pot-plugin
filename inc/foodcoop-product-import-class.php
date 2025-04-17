@@ -16,7 +16,7 @@ class FoodcoopProductImport {
   }
 
   function enqueue_admin_js(){
-    wp_enqueue_script( 'product-import-upload', FOODCOOP_PLUGIN_URL. 'scripts/product-import/product-import-upload.js?version=1.7.5', array( 'jquery-ui-core', 'jquery-ui-tabs' ), null, false );  
+    wp_enqueue_script( 'product-import-upload', FOODCOOP_PLUGIN_URL. 'scripts/product-import/product-import-upload.js?version=1.7.6', array( 'jquery-ui-core', 'jquery-ui-tabs' ), null, false );  
     wp_localize_script( 'product-import-upload', 'importLocalizer', array(
       'apiUrl' => home_url('/wp-json'),
       'homeUrl' => home_url(),
