@@ -201,17 +201,17 @@ class OrderMeta
           $balance = floatval($item_obj->get_total());
           $balance = number_format($balance, 2, '.', '');
 
-          $details = 'Neuer Verkauf von Produkt '.$product->get_name().'('.$amount.'x)';
+          $details = 'Neuer Verkauf von Produkt '.$product->get_name().'('.$amount.'x) Bestellung #'.$order_id;
           $created_by = get_current_user_id();
           $new_balance = $current_balance + $balance;
           $new_balance = number_format($new_balance, 2, '.', '');
 
           $data = array('user_id' => $fc_owner, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+
           $wpdb->insert($table, $data);
         }
-
-        update_post_meta( $order_id, '_payout_done', true );
       }
+      update_post_meta( $order_id, '_payout_done', true );
     }
   }
 }
