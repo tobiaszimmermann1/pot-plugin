@@ -159,6 +159,17 @@ class FoodcoopRestRoutes {
     ));
 
     /**
+     * GET orders with missing payouts
+     */
+    register_rest_route( 'foodcoop/v1', 'getOrderItemsWithMissingPayout', array(
+      'methods' => WP_REST_SERVER::READABLE,
+      'callback' => array($this, 'getOrderItemsWithMissingPayout'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
      * GET productQRPDF
      * params: product sku
      */
@@ -887,6 +898,18 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCreatePOSorder', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postCreatePOSorder'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
+    /**
+     * POST fix missing payout (if something went wrong)
+     * params: product_id, product_name, date, owner, amount, 
+     */
+    register_rest_route( 'foodcoop/v1', 'fixMissingPayout', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postFixMissingPayout'), 
       'permission_callback' => function() {
         return current_user_can( 'edit_others_posts' );
       }
@@ -4028,6 +4051,164 @@ class FoodcoopRestRoutes {
   
   }
 
+  /**
+   * getOrderItemsWithMissingPayout
+   * 
+   * This function checks if there are any order items that have not been paid out to the product owner.
+   * It retrieves all orders after the specified date and checks if there's a corresponding entry in the foodcoop_wallet table.
+   */
+  function getOrderItemsWithMissingPayout($data){
+
+    $start_date_obj = DateTime::createFromFormat('d.m.Y', $data['start_date']);
+    $start_date = $start_date_obj->format('Y-m-d');
+
+    global $wpdb;
+    if (get_option('fc_update_balance_on_purchase') == '1'){
+
+      // Get all order items that appear in the woocommerce order table and are missing or different in the foodcoop_wallet table, grouped by product name and date
+      $query = "SELECT fc.order_date AS fc_order_date, wc.order_date AS wc_order_date, fc.product_name, order_item_name, fc.total_amount AS fc_total_amount, wc.total_amount AS wc_total_amount FROM (
+         SELECT order_date, order_item_name, round(sum(amount), 2) as total_amount FROM (
+            SELECT CONVERT(date_created_gmt, DATE) as order_date, order_id, oi.order_item_id, order_item_name, oim.meta_value AS amount
+            FROM `".$wpdb->prefix."woocommerce_order_items` oi, `wp_wc_orders` o, wp_woocommerce_order_itemmeta oim
+            WHERE o.id = oi.order_id
+            AND oim.order_item_id = oi.order_item_id
+            AND o.status IN ('wc-completed', 'wc-processing')
+            AND order_item_type = 'line_item'
+            AND oim.meta_key = '_line_total'
+            AND date_created_gmt >= %s
+            AND order_item_name NOT LIKE '%Guthaben%'
+
+        ) x group by order_date, order_item_name  ) wc
+    LEFT OUTER JOIN (
+        SELECT CONVERT(reported, DATE) as order_date, sum(amount) as total_amount, 
+        REGEXP_REPLACE(details, 'Neuer Verkauf von Produkt (.+?) ?\\\\([0-9\\.,]+x\\\\).*', '\\\\1') as product_name 
+        FROM `".$wpdb->prefix."foodcoop_wallet`
+        WHERE details LIKE 'Neuer Verkauf%'
+        AND reported >= %s
+        GROUP BY order_date, product_name) fc
+    ON (fc.order_date = wc.order_date AND fc.product_name = wc.order_item_name)
+    WHERE fc.order_date IS NULL or fc.total_amount < wc.total_amount;";
+
+      $results = $wpdb->get_results(
+        $wpdb->prepare($query, $start_date, $start_date)
+      );
+
+      $missing_items = array();
+      foreach($results as $result) {
+        $missing_items[] = array(
+          'order_date' => $result->wc_order_date,
+          'product_name' => $result->order_item_name,
+          'fc_total_amount' => $result->fc_total_amount,
+          'wc_total_amount' => $result->wc_total_amount
+        );
+      }
+
+      if (count($missing_items) > 0) {
+        // Fetch all products in order to get the product id and owner by name
+        $p = wc_get_products(array(
+          'status'            => array( 'publish' ),
+          'type'              => array_merge( array_keys( wc_get_product_types() ) ),
+          'parent'            => null,
+          'sku'               => '',
+          'limit'             => -1,
+          'offset'            => null,
+          'page'              => 1,
+          'include'           => array(),
+          'exclude'           => array(),
+          'orderby'           => 'date',
+          'order'             => 'DESC',
+          'return'            => 'objects',
+          'paginate'          => false,
+          'shipping_class'    => array(),
+        ));
+
+        // Create an array of products with name, owner, date and missing balance in order to fix the payout later
+        $missing_order_items = array();
+        foreach($missing_items as $missing_item){
+          $found_product = false;
+          foreach ($p as $product){
+            if ($product->get_name() == $missing_item['product_name']) {
+              if (!$product->get_meta('fc_owner')) {
+                // No owner - no payout
+                $found_product = true;
+                continue;
+              }
+
+              $amount = $missing_item['wc_total_amount'];
+              if ($missing_item['fc_total_amount'] !== null){
+                $amount = $missing_item['wc_total_amount'] - $missing_item['fc_total_amount'];
+              }
+
+              $the_product = array(
+                "id" => $product->get_id(),
+                "name" => $product->get_name(),
+                "owner_id" => $product->get_meta('fc_owner'),
+                "owner" => _getUserNameById($product->get_meta('fc_owner')),
+                "amount" => number_format($amount, 2, '.', ''),
+                "date" => $missing_item['order_date']
+              );
+              array_push($missing_order_items, $the_product);
+              $found_product = true;
+              break;
+            }
+          }
+          if (!$found_product) {
+            error_log('Product not found for order item: ' . $missing_item['product_name']);
+          }
+        }
+
+        return json_encode($missing_order_items);
+
+      } else {
+        return http_response_code(200);
+      }
+    } 
+
+    return json_encode(array("error"=>true, "message" => "Feature not enabled"));
+  }
+
+
+  /**
+   * postFixMissingPayout
+   */
+  function postFixMissingPayout($data) {
+
+    $product_id = $data['product_id'];
+    $product_name = $data['product_name'];
+    $amount = $data['amount'];
+    $owner = $data['owner'];
+    $date = $data['date'] . " 12:00:00";
+
+    global $wpdb;
+    if (get_option('fc_update_balance_on_purchase') == '1'){
+      $fc_owner = intval($owner);
+
+      $table = $wpdb->prefix.'foodcoop_wallet';
+      date_default_timezone_set('Europe/Zurich');
+
+      $product = wc_get_product($product_id);
+      $order_amount = $amount / $product->get_price();
+
+      // get current balance.
+      $current_balance = 0.00;
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $fc_owner)
+      );
+      foreach ( $results as $result ) {
+        $current_balance = $result->balance;
+      }
+
+      $details = 'Neuer Verkauf von Produkt '.$product_name.'('.$order_amount.'x) - Korrekturbuchung';
+      $created_by = get_current_user_id();
+      $new_balance = $current_balance + $amount;
+      $new_balance = number_format($new_balance, 2, '.', '');
+
+      $data = array('user_id' => $fc_owner, 'amount' => $amount, 'reported' => $date, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+
+      $wpdb->insert($table, $data);
+      return http_response_code(200);
+    }
+  }
 
 
   /**
@@ -4107,7 +4288,6 @@ class FoodcoopRestRoutes {
   }
 
 
-  
   /**
   * postCompleteBestellrunde
   */
@@ -4143,8 +4323,14 @@ class FoodcoopRestRoutes {
    }
 
    return json_encode($orders);
- }
+ }  
+}
 
-
-  
+function _getUserNameById($userId){
+  $user = get_user_by('id', $userId);
+  if ($user) {
+    return get_user_meta($userId, 'billing_first_name', true)." ".get_user_meta($userId, 'billing_last_name', true);
+  } else {
+    return '';
+  }
 }
