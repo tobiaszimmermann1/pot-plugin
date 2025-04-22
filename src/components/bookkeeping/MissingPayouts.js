@@ -20,8 +20,13 @@ const MissingPayouts = () => {
   const [startDate, setStartDate] = useState(new Date().setDate(new Date().getDate() - 14))
 
   const loadMissingPayouts = (ts) => {
+    let formattedStartDate;
+    try {
+      formattedStartDate = format(ts, "dd.MM.yyyy");
+    } catch (error) {
+      return;
+    }
     setLoading(true)
-    const formattedStartDate = format(ts, "dd.MM.yyyy")
     axios
       .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOrderItemsWithMissingPayout?start_date=${formattedStartDate}`, {
         headers: {
