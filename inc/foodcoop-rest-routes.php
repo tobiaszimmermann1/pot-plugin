@@ -4081,7 +4081,7 @@ class FoodcoopRestRoutes {
         ) x group by order_date, order_item_name  ) wc
     LEFT OUTER JOIN (
         SELECT CONVERT(reported, DATE) as order_date, sum(amount) as total_amount, 
-        REGEXP_REPLACE(REPLACE(REPLACE(details, 'Neuer Verkauf von Produkt ', ''), ' - Korrekturbuchung', ''), ' ?\\\\([0-9\\.,]+x\\\\)', '') as product_name 
+        REGEXP_REPLACE(REGEXP_REPLACE(REPLACE(REPLACE(details, 'Neuer Verkauf von Produkt ', ''), ' - Korrekturbuchung', ''), ' ?\\\\([0-9\\.,]+x\\\\)', ''), ' Bestellung .*', '') as product_name 
         FROM `".$wpdb->prefix."foodcoop_wallet`
         WHERE details LIKE 'Neuer Verkauf%'
         AND reported >= %s
