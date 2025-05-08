@@ -16,6 +16,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
   const [weightProd, setWeightProd] = useState(false)
   const [userWeightValue, setUserWeightValue] = useState(0)
   const [isEneteringWeight, setIsEnteringWeight] = useState(false)
+  const [scanActive, setScanActive] = useState(true)
 
   const wc_weight_units = {
     kg: 1000,
@@ -25,8 +26,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
   }
 
   function scanResultFunction(decodedText) {
-    setScanning(false)
-    setScanResult(1)
+    setScanActive(false)
 
     if (scanResult === 0) {
       let execute = 1
@@ -59,7 +59,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
                 // if it is not a weighed product, add it directly to the cart with quantity = 1
                 else {
                   // prepare cart
-                  let newCart = [...cart]
+                  let newCart = cart
                   res.id = newCart.length
                   res.order_type = "self_checkout"
                   newCart.push(res)
@@ -77,6 +77,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
           .catch(error => console.log(error))
       }
     }
+    setScanResult(1)
   }
 
   useEffect(() => {
@@ -86,7 +87,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
       weightProd.amount = (userWeightValue * 1000) / prodWeightInG
       weightProd.userWeightValue = userWeightValue
       // prepare cart
-      let newCart = [...cart]
+      let newCart = cart
       weightProd.id = newCart.length
       weightProd.order_type = "self_checkout"
       newCart.push(weightProd)
@@ -104,16 +105,18 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
     <>
       <Stack spacing={3} sx={{ width: "100%" }}>
         <strong>{__("QR Code scannen", "fcplugin")}</strong>{" "}
-        <QrReader
-          videoContainerStyle={containerStyle}
-          constraints={{ facingMode: "environment" }}
-          onResult={(result, error) => {
-            if (result) {
-              scanResultFunction(result?.text)
-            }
-          }}
-          style={{ width: "100%" }}
-        />
+        {scanActive && (
+          <QrReader
+            videoContainerStyle={containerStyle}
+            constraints={{ facingMode: "environment" }}
+            onResult={(result, error) => {
+              if (result) {
+                scanResultFunction(result?.text)
+              }
+            }}
+            style={{ width: "100%" }}
+          />
+        )}
       </Stack>
       {weightModalOpen && <WeightDialog setModalClose={setWeightModalOpen} prod={weightProd} setUserWeightValue={setUserWeightValue} setIsEnteringWeight={setIsEnteringWeight} />}
     </>

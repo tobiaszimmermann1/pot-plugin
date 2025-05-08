@@ -240,8 +240,7 @@ const Products = () => {
         accessorKey: "stock",
         header: __("Lagerbestand", "fcplugin"),
         size: 120,
-        enableEditing: false,
-        Cell: ({ cell }) => cell.getValue() !== "" && cell.getValue() !== 0 && cell.getValue().toFixed(3)
+        enableEditing: false
       },
       {
         accessorKey: "category",

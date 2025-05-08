@@ -3715,7 +3715,7 @@ class FoodcoopRestRoutes {
         update_post_meta( $product->id, "_manage_stock", "yes" );
         update_post_meta( $product->id, "_stock", 0 );
       } 
-      elseif ($product->stock === -1) {
+      elseif ($product->stock === "-1.000" || $product->stock === "-1.00" || $product->stock === "-1.0" || $product->stock === "-1" || $product->stock === -1) {
         update_post_meta( $product->id, "_stock_status", "instock" );
         update_post_meta( $product->id, "_manage_stock", "no" );
         update_post_meta( $product->id, "_stock", 0 );
