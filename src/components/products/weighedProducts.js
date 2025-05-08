@@ -78,6 +78,11 @@ function WeighedProducts({ setModalClose, prods }) {
         size: 80
       },
       {
+        accessorKey: "weight",
+        header: __("Gewicht", "fcplugin"),
+        size: 80
+      },
+      {
         accessorKey: "lot",
         header: __("Gebindegrösse", "fcplugin"),
         size: 80
@@ -89,10 +94,6 @@ function WeighedProducts({ setModalClose, prods }) {
       {
         accessorKey: "supplier",
         header: __("Lieferant", "fcplugin")
-      },
-      {
-        accessorKey: "origin",
-        header: __("Herkunft", "fcplugin")
       },
       {
         accessorKey: "category",

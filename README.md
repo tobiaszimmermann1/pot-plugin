@@ -28,6 +28,16 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.7
+
+- Fixed a bug in self-scanning that added products twice
+- Allow editing weight in Product list
+- Allow prodcuts to be in stock in untracked quantity (unlimited), when stock set to -1 and stock_status set to "instock"
+- Added weight as optional column in product import
+- Added weight as column to product export
+- Added Payment Gateway to Order list in Bookkeeping
+- Various small improvements and bugfixes
+
 ### 1.7.6
 
 - Added an option in Products Tab to define which products should be weighed in Self Checkout, before adding them to the cart.

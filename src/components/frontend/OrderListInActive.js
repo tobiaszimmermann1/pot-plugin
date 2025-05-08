@@ -64,6 +64,7 @@ const OrderListInActive = () => {
         productToDo.id = p.id
         productToDo.short_description = p.short_description
         productToDo.image = p.image
+        productToDo.thumbnail = p.thumbnail
         productToDo.description = p.description
         productToDo.tax = p.tax
         productToDo.loonity_id = p._loonity_id

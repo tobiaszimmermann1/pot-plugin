@@ -26,7 +26,7 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
             productToDo.lot = p._gebinde
             productToDo.id = p.id
             productToDo.sku = p.sku
-            p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
+            p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock.toFixed(3))
             reArrangeProductData.push(productToDo)
           })
           setProducts(reArrangeProductData)
@@ -82,8 +82,6 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
   )
 
   function handleSave() {
-    console.log(products)
-
     axios
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postSaveInventory`,
@@ -124,8 +122,9 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
             handleSaveCell(cell, event.target.value)
           }
         })}
+        autoResetPageIndex={false}
         enableFullScreenToggle={false}
-        initialState={{ density: "compact", pagination: { pageSize: 100 }, showAlertBanner: true }}
+        initialState={{ density: "compact", pagination: { pageSize: 50 }, showAlertBanner: true }}
         positionToolbarAlertBanner="top"
         muiToolbarAlertBannerProps={{
           color: "info",

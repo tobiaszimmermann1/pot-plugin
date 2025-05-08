@@ -10,8 +10,8 @@
   $args = array(
 
     'limit' => -1,
-    'orderby' => 'sku',
-    'order' => 'DESC'
+    'orderby'   => 'title',
+    'order'     => 'ASC',
 
   );
 
