@@ -93,12 +93,18 @@ const Products = () => {
                   p.thumbnail ? (productToDo.thumbnail = p.thumbnail) : (productToDo.thumbnail = "")
                   productToDo.description = p.description
                   productToDo.sku = p.sku
+
+                  //stock logic
                   p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
+                  productToDo.stock_status = p.stock_status
+                  p.stock_status === "instock" && p.stock === 0 ? (productToDo.stock = "unlimitiert") : (productToDo.stock = productToDo.stock)
+
                   productToDo.tax = p.tax
                   productToDo.owner = parseInt(p.fc_owner)
                   const owner = users.find(user => user.id === productToDo.owner)
                   productToDo.ownerName = owner ? owner.name : ""
                   productToDo.weight = p.weight
+                  productToDo.weight_unit = p.weight_unit
 
                   reArrangeProductData.push(productToDo)
                 })
@@ -223,7 +229,7 @@ const Products = () => {
       {
         accessorKey: "weight",
         header: __("Gewicht", "fcplugin"),
-        size: 80
+        Cell: ({ cell }) => (cell.getValue() !== "" ? cell.getValue() + " " + cell.row.original.weight_unit : "")
       },
       {
         accessorKey: "lot",
@@ -234,7 +240,8 @@ const Products = () => {
         accessorKey: "stock",
         header: __("Lagerbestand", "fcplugin"),
         size: 120,
-        enableEditing: false
+        enableEditing: false,
+        Cell: ({ cell }) => cell.getValue() !== "" && cell.getValue() !== 0 && cell.getValue().toFixed(3)
       },
       {
         accessorKey: "category",
@@ -372,6 +379,7 @@ const Products = () => {
       the_product["supplier"] = product.supplier
       the_product["tax"] = product.tax
       the_product["pot_id"] = product.pot_id
+      the_product["weight"] = product.weight
       exportProducts.push(the_product)
     })
 

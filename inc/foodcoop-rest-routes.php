@@ -940,6 +940,18 @@ class FoodcoopRestRoutes {
       }
     ));
 
+    /**
+     * POST update product description
+     * params: data
+     */
+    register_rest_route( 'foodcoop/v1', 'postProductDescriptionUpdate', array(
+      'methods' => WP_REST_SERVER::CREATABLE,
+      'callback' => array($this, 'postProductDescriptionUpdate'), 
+      'permission_callback' => function() {
+        return current_user_can( 'edit_others_posts' );
+      }
+    ));
+
 
     
     
@@ -1005,7 +1017,9 @@ class FoodcoopRestRoutes {
         "stock_status" => $product->get_stock_status(),
         "tax" => $product->get_tax_class(),
         "owner" => $product->get_meta('fc_owner'),
-        "weight" => $product->get_weight()." ".get_option("woocommerce_weight_unit")
+        "weight_html" => $product->get_weight()." ".get_option("woocommerce_weight_unit"),
+        "weight" => $product->get_weight(),
+        "weight_unit" => get_option('woocommerce_weight_unit')
       );
 
       // product thumbnail
@@ -1185,7 +1199,7 @@ class FoodcoopRestRoutes {
         update_post_meta($product_id, "_stock_status", 'instock');
       }
     }
-
+    
     $enableSelfCheckout = $data['enableSelfCheckout'];
     update_option('fc_self_checkout', $enableSelfCheckout);
 
@@ -1221,9 +1235,9 @@ class FoodcoopRestRoutes {
     $product->update_meta_data('_gebinde', $data['updatedValues']['lot']);
     $product->update_meta_data('_einheit', $data['updatedValues']['unit']);
     $product->update_meta_data('_sku', $data['updatedValues']['sku']);
+    $product->update_meta_data('_weight', $data['updatedValues']['weight']);
     $product->save();
     return json_encode($data['updatedValues']['name']);
-
   }
 
   /**
@@ -2778,7 +2792,8 @@ class FoodcoopRestRoutes {
         "category_id" => $product->get_category_ids()[0],
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
         "description" => $product->get_description(),
-        "stock" => $product->get_stock_quantity()
+        "stock" => $product->get_stock_quantity(),
+        "stock_status" => $product->get_stock_status()
       );
 
       // product thumbnail
@@ -3038,8 +3053,7 @@ class FoodcoopRestRoutes {
         $quantity = $product->get_stock_quantity();
         $stock_status = $product->get_stock_status();
 
-
-        if ($quantity > 0 || $stock_setting == "no") {
+        if ($quantity > 0 || $stock_setting == "no" || $stock_status == "instock") {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
@@ -3673,7 +3687,21 @@ class FoodcoopRestRoutes {
     
     $number = 0;
     foreach($products as $product) {
-      update_post_meta( $product->id, "_stock", intval($product->stock) );
+      if ($product->stock === 0) {
+        update_post_meta( $product->id, "_stock_status", "outofstock" );
+        update_post_meta( $product->id, "_manage_stock", "yes" );
+        update_post_meta( $product->id, "_stock", 0 );
+      } 
+      elseif ($product->stock === -1) {
+        update_post_meta( $product->id, "_stock_status", "instock" );
+        update_post_meta( $product->id, "_manage_stock", "no" );
+        update_post_meta( $product->id, "_stock", 0 );
+      } 
+      else {
+        update_post_meta( $product->id, "_stock_status", "instock" );
+        update_post_meta( $product->id, "_manage_stock", "yes" );
+        update_post_meta( $product->id, "_stock", floatval($product->stock) );
+      }
       $number++;
     }
     
@@ -3692,8 +3720,8 @@ class FoodcoopRestRoutes {
     
     $number = 0;
     foreach($products as $product) {
-      $current_stock = intval(get_post_meta( $product->id, "_stock", true ));
-      $new_stock = $current_stock + intval($product->amount);
+      $current_stock = floatval(get_post_meta( $product->id, "_stock", true ));
+      $new_stock = $current_stock + floatval($product->amount);
       $wc_product = wc_get_product($product->id);
       $wc_product->set_stock_quantity(floatval($new_stock));
       $wc_product->save();

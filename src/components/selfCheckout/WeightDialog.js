@@ -18,8 +18,8 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
       return
     }
 
-    // Validate the input (only numbers, max two decimals, greater than zero)
-    const regex = /^\d*(\.\d{0,2})?$/
+    // Validate the input (only numbers, max three decimals, greater than zero)
+    const regex = /^\d*(\.\d{0,3})?$/
     if (regex.test(value)) {
       setWeight(value)
       setError(false)
@@ -36,6 +36,16 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
     }
   }
 
+  function handleBlur() {
+    if (weight !== "" && !isNaN(weight)) {
+      setWeight(parseFloat(weight).toFixed(3))
+    }
+  }
+
+  useEffect(() => {
+    handleBlur()
+  }, [])
+
   return (
     <>
       <Dialog open={true} scroll="paper" disableEnforceFocus sx={{ zIndex: 1301 }} fullWidth maxWidth="md">
@@ -49,7 +59,23 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
             <Alert sx={{ marginBottom: 1 }} severity="info">
               {__("Bitte gib das Gewicht in kg ein.", "fcplugin")}
             </Alert>
-            <TextField autoFocus id="userWeight" name="userWeight" variant="outlined" value={weight} onChange={handleInputChange} error={error} sx={{ width: "100%" }} helperText={error ? __("Ungültiges Format: Nur Zahlen mit max. zwei Dezimalstellen erlaubt.", "fcplugin") : ""} />
+            <TextField
+              autoFocus
+              id="userWeight"
+              name="userWeight"
+              type="number"
+              inputProps={{
+                step: "0.001",
+                min: "0"
+              }}
+              variant="outlined"
+              value={weight}
+              onChange={handleInputChange}
+              onBlur={handleBlur}
+              error={error}
+              sx={{ width: "100%" }}
+              helperText={error ? __("Ungültiges Format: Nur Zahlen mit max. drei Dezimalstellen erlaubt.", "fcplugin") : __("Gewicht in kg, z.B. 0.250", "fcplugin")}
+            />
             <Button onClick={handleSubmit} variant="contained" size="large" color="primary">
               {__("Zum Warenkorb hinzufügen", "fcplugin")}
             </Button>

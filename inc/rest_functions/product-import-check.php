@@ -39,7 +39,7 @@ try {
     // check if header row has correct names
     if ($i === 1) {
       $header_formatting_error = true;
-      if (["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description", "sku", "supplier", "tax", "pot_id"] === $rowData) $header_formatting_error = false;
+      if (["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description", "sku", "supplier", "tax", "pot_id", "weight"] === $rowData) $header_formatting_error = false;
       if ($header_formatting_error) array_push($formatting_errors, array($i, "Kopfzeile beinhaltet falsche Bezeichnungen"));
       array_push($product_array, $rowData);
     } 
@@ -82,7 +82,7 @@ try {
         $row_has_error = true;
       }
 
-      // validate for numbers for price, lot, id, pot_id
+      // validate for numbers for price, lot, id, pot_id, weight
       if (!isIntFloatOrNumeric($rowData[1])) { 
         array_push($formatting_errors, array($i, "Zelle in Spalte 2 muss eine Zahl sein."));
         $row_has_error = true;
@@ -96,14 +96,18 @@ try {
         $row_has_error = true;
       }
       if (!isIntFloatOrNumeric($rowData[14]) && !empty($rowData[14])) { 
-        array_push($formatting_errors, array($i, "Zelle in Spalte 8 muss eine Zahl sein."));
+        array_push($formatting_errors, array($i, "Zelle in Spalte 15 muss eine Zahl sein."));
+        $row_has_error = true;
+      }
+      if (!isIntFloatOrNumeric($rowData[15]) && !empty($rowData[15])) { 
+        array_push($formatting_errors, array($i, "Zelle in Spalte 16 muss eine Zahl sein."));
         $row_has_error = true;
       }
 
       // check for duplicate sku's
       $sku = $rowData[11];
       if (in_array($sku, $all_skus) && !empty($sku)) {     
-        array_push($formatting_errors, array($i, "Doppelte Artikelnummer"));
+        array_push($formatting_errors, array($i, "Doppelte Artikelnummer vorhanden"));
         $row_has_error = true;
       }
       array_push($all_skus, $sku);

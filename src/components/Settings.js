@@ -451,7 +451,6 @@ const Settings = () => {
                 <strong>{__("Achtung!", "fcplugin")}</strong> {__("Bei Änderung des Auszahlungsmodells müssen die Guthaben manuell korrigiert werden!", "fcplugin")}{" "}
               </Alert>
             </Grid>
-
           </Grid>
         </CardContent>
         <CardActions>

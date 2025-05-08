@@ -113,7 +113,14 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
         productToDo.image = p.image
         productToDo.thumbnail = p.thumbnail
         productToDo.description = p.description
+        // stock logic
         productToDo.stock = p.stock
+        productToDo.stock_status = p.stock_status
+        if (p.stock === 0 && p.stock_status === "instock") {
+          productToDo.stock = 0
+          productToDo.stock_status = "unlimited"
+        }
+
         productToDo.tax = p.tax
         productToDo.loonity_id = p._loonity_id
         productToDo.produzent = p._produzent

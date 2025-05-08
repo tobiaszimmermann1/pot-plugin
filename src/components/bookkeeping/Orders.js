@@ -62,6 +62,11 @@ const Orders = () => {
         header: __("Total", "fcplugin"),
         size: 80,
         Cell: ({ cell }) => parseFloat(cell.getValue()).toFixed(2)
+      },
+      {
+        accessorKey: "payment_method_title",
+        header: __("Zahlungsart", "fcplugin"),
+        size: 160
       }
     ],
     []
@@ -87,6 +92,7 @@ const Orders = () => {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
+          console.log(res)
 
           let ordersReArranged = []
           res.map(order => {
@@ -94,6 +100,7 @@ const Orders = () => {
             theOrder["id"] = order.id
             theOrder["date_created"] = order.date_created.date
             theOrder["customer_name"] = order.billing.first_name + " " + order.billing.last_name
+            theOrder["payment_method_title"] = order.payment_method_title
             // bestellrunde id
             order.meta_data.map(meta => {
               if (meta.key === "bestellrunde_id") {

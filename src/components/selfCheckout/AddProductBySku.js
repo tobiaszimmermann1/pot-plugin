@@ -76,7 +76,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
                 setWeightProd(res)
 
                 // Only show modal if weight is not already entered
-                if (amount === 1){
+                if (amount === 1) {
                   setWeightModalOpen(true)
                 } else {
                   setUserWeightValue(amount)

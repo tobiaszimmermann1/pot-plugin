@@ -65,6 +65,7 @@ foreach ($import_products as $import_product) {
     $product->update_meta_data( '_herkunft', sanitize_text_field($import_product[5]) );
     $product->update_meta_data( '_produzent', sanitize_text_field($import_product[4]) );
     $product->update_meta_data( '_loonity_id', sanitize_text_field($import_product[14]) );
+    $product->update_meta_data( '_weight', sanitize_text_field($import_product[15]) );
     $product->save_meta_data();
 
     // handle category
