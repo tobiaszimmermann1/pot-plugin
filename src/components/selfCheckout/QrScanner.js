@@ -26,7 +26,6 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
 
   function scanResultFunction(decodedText) {
     setScanning(false)
-    setScanResult(1)
 
     if (scanResult === 0) {
       let execute = 1
@@ -59,7 +58,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
                 // if it is not a weighed product, add it directly to the cart with quantity = 1
                 else {
                   // prepare cart
-                  let newCart = [...cart]
+                  let newCart = cart
                   res.id = newCart.length
                   res.order_type = "self_checkout"
                   newCart.push(res)
@@ -77,6 +76,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
           .catch(error => console.log(error))
       }
     }
+    setScanResult(1)
   }
 
   useEffect(() => {
@@ -86,7 +86,7 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
       weightProd.amount = (userWeightValue * 1000) / prodWeightInG
       weightProd.userWeightValue = userWeightValue
       // prepare cart
-      let newCart = [...cart]
+      let newCart = cart
       weightProd.id = newCart.length
       weightProd.order_type = "self_checkout"
       newCart.push(weightProd)
