@@ -196,7 +196,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
                     )}
 
                     <FormControl>
-                      <TextField id="amount" value={amount} onChange={e => setAmount(e.target.value)} variant="outlined" type="number" label={__("Menge", "fcplugin")} />
+                      <TextField id="amount" value={amount} onChange={e => setAmount(e.target.value)} variant="outlined" type="number" label={__("Menge oder Gewicht", "fcplugin")} />
                     </FormControl>
                   </Stack>
 
