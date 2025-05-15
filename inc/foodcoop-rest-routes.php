@@ -1038,6 +1038,7 @@ class FoodcoopRestRoutes {
         "description" => $product->get_description(),
         "stock" => $product->get_stock_quantity(),
         "stock_status" => $product->get_stock_status(),
+        "manage_stock" => get_post_meta( $product->get_id(), '_manage_stock', true ),
         "tax" => $product->get_tax_class(),
         "owner" => $product->get_meta('fc_owner'),
         "weight_html" => $product->get_weight()." ".get_option("woocommerce_weight_unit"),
@@ -3718,7 +3719,6 @@ class FoodcoopRestRoutes {
       elseif ($product->stock === "-1.000" || $product->stock === "-1.00" || $product->stock === "-1.0" || $product->stock === "-1" || $product->stock === -1) {
         update_post_meta( $product->id, "_stock_status", "instock" );
         update_post_meta( $product->id, "_manage_stock", "no" );
-        update_post_meta( $product->id, "_stock", 0 );
       } 
       else {
         update_post_meta( $product->id, "_stock_status", "instock" );

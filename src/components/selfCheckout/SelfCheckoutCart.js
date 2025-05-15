@@ -80,7 +80,7 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
                     </Grid>
                   </Grid>
                   <Grid item xs={6} sx={{ textAlign: "right", fontSize: "1.5rem" }}>
-                    Bahrzahlung
+                    Barzahlung
                   </Grid>
                 </Grid>
               </ListItem>

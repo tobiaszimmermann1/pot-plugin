@@ -11,6 +11,7 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
   const [products, setProducts] = useState()
   const [productsLoading, setProductsLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [rowSelection, setRowSelection] = useState({})
 
   useEffect(() => {
     axios
@@ -27,8 +28,10 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
             productToDo.id = p.id
             productToDo.sku = p.sku
             p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock.toFixed(3))
+            if (p.manage_stock === "no" && p.stock_status === "instock") productToDo.stock = -1
             reArrangeProductData.push(productToDo)
           })
+
           setProducts(reArrangeProductData)
           setProductsLoading(false)
         }
@@ -82,11 +85,22 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
   )
 
   function handleSave() {
+    let rows = rowSelection
+
+    let selectedRows = []
+
+    var productsLength = products.length
+    for (var i = 0; i < productsLength; i++) {
+      if (products[i].id in rows) {
+        selectedRows.push(products[i])
+      }
+    }
+
     axios
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postSaveInventory`,
         {
-          products: JSON.stringify(products)
+          products: JSON.stringify(selectedRows)
         },
         {
           headers: {
@@ -110,9 +124,19 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
   return (
     <div className="pluginBody">
       <MaterialReactTable
+        enableRowSelection
+        enableMultiRowSelection
+        enableSelectAll
+        selectAllMode="all"
+        getRowId={originalRow => originalRow.id}
+        muiTableBodyRowProps={({ row }) => ({
+          onClick: row.getToggleSelectedHandler(),
+          sx: { cursor: "pointer" }
+        })}
+        onRowSelectionChange={setRowSelection}
         columns={columns}
         data={products ?? []}
-        state={{ isLoading: productsLoading }}
+        state={{ isLoading: productsLoading, rowSelection }}
         localization={MRT_Localization_DE}
         positionActionsColumn="first"
         editingMode={"table"}

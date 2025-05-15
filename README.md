@@ -28,6 +28,13 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.8
+
+- Improved Inventory Management
+- Added stock as optional column in product import
+- Optional stock logging with separate plugin available: https://github.com/tobiaszimmermann1/simple-inventory-log
+- various small fixes
+
 ### 1.7.7
 
 - Fixed a bug in self-scanning that added products twice

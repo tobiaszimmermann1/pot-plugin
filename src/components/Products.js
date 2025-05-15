@@ -97,7 +97,8 @@ const Products = () => {
                   //stock logic
                   p.stock === null ? (productToDo.stock = 0) : (productToDo.stock = p.stock)
                   productToDo.stock_status = p.stock_status
-                  p.stock_status === "instock" && p.stock === 0 ? (productToDo.stock = "unlimitiert") : (productToDo.stock = productToDo.stock)
+                  p.stock_status === "instock" && p.manage_stock === "no" ? (productToDo.stock = "unlimitiert") : (productToDo.stock = productToDo.stock)
+                  productToDo.manage_stock = p.manage_stock
 
                   productToDo.tax = p.tax
                   productToDo.owner = parseInt(p.fc_owner)
@@ -379,6 +380,7 @@ const Products = () => {
       the_product["tax"] = product.tax
       the_product["pot_id"] = product.pot_id
       the_product["weight"] = product.weight
+      product.stock === "unlimitiert" ? (the_product["stock"] = -1) : (the_product["stock"] = product.stock)
       exportProducts.push(the_product)
     })
 
