@@ -2817,7 +2817,8 @@ class FoodcoopRestRoutes {
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
         "description" => $product->get_description(),
         "stock" => $product->get_stock_quantity(),
-        "stock_status" => $product->get_stock_status()
+        "stock_status" => $product->get_stock_status(),
+        "manage_stock" => get_post_meta( $product->get_id(), '_manage_stock', true )
       );
 
       // product thumbnail
