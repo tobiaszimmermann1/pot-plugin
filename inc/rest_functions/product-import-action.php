@@ -68,21 +68,19 @@ foreach ($import_products as $import_product) {
     $product->update_meta_data( '_weight', sanitize_text_field($import_product[15]) );
 
     // handle stock
-    if ($import_product[16]) {
-      if ($import_product[16] === 0) {
-        update_post_meta( $product_id, "_stock_status", "outofstock" );
-        update_post_meta( $product_id, "_manage_stock", "yes" );
-        update_post_meta( $product_id, "_stock", 0 );
-      } 
-      elseif ($import_product[16] === "-1.000" || $import_product[16] === "-1.00" || $import_product[16] === "-1.0" || $import_product[16] === "-1" || $import_product[16] === -1) {
-        update_post_meta( $product_id, "_stock_status", "instock" );
-        update_post_meta( $product_id, "_manage_stock", "no" );
-      } 
-      else {
-        update_post_meta( $product_id, "_stock_status", "instock" );
-        update_post_meta( $product_id, "_manage_stock", "yes" );
-        update_post_meta( $product_id, "_stock", floatval($import_product[16]) );
-      }
+    if ($import_product[16] === 0 || $import_product[16] === "0" || $import_product[16] === "0.0" || $import_product[16] === "0.00" || $import_product[16] === "0.000" || $import_product[16] === null) {
+      update_post_meta( $product_id, "_stock_status", "outofstock" );
+      update_post_meta( $product_id, "_manage_stock", "yes" );
+      update_post_meta( $product_id, "_stock", 0 );
+    } 
+    elseif ($import_product[16] === "-1.000" || $import_product[16] === "-1.00" || $import_product[16] === "-1.0" || $import_product[16] === "-1" || $import_product[16] === -1) {
+      update_post_meta( $product_id, "_stock_status", "instock" );
+      update_post_meta( $product_id, "_manage_stock", "no" );
+    } 
+    else {
+      update_post_meta( $product_id, "_stock_status", "instock" );
+      update_post_meta( $product_id, "_manage_stock", "yes" );
+      update_post_meta( $product_id, "_stock", floatval($import_product[16]) );
     }
 
     $product->save_meta_data();
