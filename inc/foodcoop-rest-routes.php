@@ -1198,11 +1198,12 @@ class FoodcoopRestRoutes {
     if($adminEmail) update_option('new_admin_email', $adminEmail);
 
     $enableStock = $data['enableStock'];
-    $products = wc_get_products( array(
-      'limit' => -1,
-      'return' => 'ids',
-    ));
-   
+    if ($enableStock == true) {
+      update_option('woocommerce_manage_stock', 'yes');
+      update_option('woocommerce_notify_no_stock_amount', 0);
+    }
+
+    
     $enableSelfCheckout = $data['enableSelfCheckout'];
     update_option('fc_self_checkout', $enableSelfCheckout);
     
