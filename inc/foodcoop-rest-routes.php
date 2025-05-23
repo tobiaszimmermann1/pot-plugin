@@ -1202,28 +1202,7 @@ class FoodcoopRestRoutes {
       'limit' => -1,
       'return' => 'ids',
     ));
-
-    if ($enableStock == true) {
-      update_option('woocommerce_manage_stock', 'yes');
-      update_option('woocommerce_notify_no_stock_amount', 0);
-
-      $instant_topup_product = wc_get_product_id_by_sku( "fcplugin_instant_topup_product" );
-      foreach($products as $product_id) {
-        if ($product_id !== $instant_topup_product) {
-          update_post_meta($product_id, "_manage_stock", 'yes');
-          if (get_post_meta( $product_id, "_stock", true ) == null) {
-            update_post_meta($product_id, "_stock", 0);
-          }
-        }
-      }
-    } else {
-      update_option('woocommerce_manage_stock', 'no');
-      foreach($products as $product_id) {
-        update_post_meta($product_id, "_manage_stock", 'no');
-        update_post_meta($product_id, "_stock_status", 'instock');
-      }
-    }
-    
+   
     $enableSelfCheckout = $data['enableSelfCheckout'];
     update_option('fc_self_checkout', $enableSelfCheckout);
     
