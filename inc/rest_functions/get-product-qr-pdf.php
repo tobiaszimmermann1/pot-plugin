@@ -38,6 +38,13 @@
     ]);
     $mpdf->AddPage('','','','','',5,5,5,5,0,0);
 
+    // price html string
+    if (get_option('price_on_labels') == '0') {
+      $price_html = 'CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'<br /><br />';
+    } else {
+      $price_html = '';
+    }
+
     // pdf content
     $content = '
       <style>
@@ -53,7 +60,7 @@
           <td style="width:35mm;text-align:center;font-size:8pt;"><img src="'.$qrcode.'" width="35mm" /></td>
           <td style="width:85mm;font-size:12pt;font-weight:bold;">
             <span style="font-size:16pt;">'.$product->get_name().'</span><br /><br />
-            CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'<br /><br />
+            '.$price_html.'
             <table>
               <tr>
                 <td style="padding:5px;background-color:black;">

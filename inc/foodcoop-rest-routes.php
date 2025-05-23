@@ -1226,6 +1226,9 @@ class FoodcoopRestRoutes {
     
     $enableSelfCheckout = $data['enableSelfCheckout'];
     update_option('fc_self_checkout', $enableSelfCheckout);
+    
+    $priceOnLabels = $data['priceOnLabels'];
+    update_option('price_on_labels', $priceOnLabels);
 
     $taxes = $data['taxes'];
     if($taxes) {

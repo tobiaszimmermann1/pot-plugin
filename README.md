@@ -33,6 +33,7 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 - Improved Inventory Management
 - Added stock as optional column in product import
 - Optional stock logging with separate plugin available: https://github.com/tobiaszimmermann1/simple-inventory-log
+- Added a setting to hide prices on QR labels of products
 - various small fixes
 
 ### 1.7.7
