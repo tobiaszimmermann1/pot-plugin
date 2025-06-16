@@ -2694,7 +2694,8 @@ class FoodcoopRestRoutes {
     }
 
     // get orders of this user if they exist
-    $customer = new WC_Customer(intval($post_data['user']));
+    $customer = intval($data['user']);
+    
     $query = new WC_Order_Query( array(
       'limit' => 10,
       'orderby' => 'date',
@@ -2703,13 +2704,15 @@ class FoodcoopRestRoutes {
       'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
       'customer' => intval($customer),
     ));
+
     $order_ids = $query->get_orders();
     $orders = array();
+
     foreach($order_ids as $order_id) {
       $this_order = wc_get_order($order_id)->get_data();
       $meta_data = $this_order['meta_data'];
       foreach($meta_data as $meta) {
-        if ($meta->key = 'bestellrunde_id') {
+        if ($meta->key === 'bestellrunde_id') {
           if (in_array($meta->value, $active_bestellrunden_ids)) {
             array_push($orders, intval($meta->value));
           }

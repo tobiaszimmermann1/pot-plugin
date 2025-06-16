@@ -103,17 +103,23 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
         <div className="fc_order_list_line">
           {activeState && frontendLocalizer.currentUser.ID ? (
             <span className="fc_order_list_col col_1 col_nmbr">
-              <a onClick={removeOne}>
-                <IconButton aria-label="-" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
-                  <RemoveIcon />
-                </IconButton>
-              </a>
-              <input type="number" value={amount} onChange={e => setAmount(e.target.value)} style={amount > 0 ? { width: "100%", backgroundColor: "#f2fbe8" } : { width: "100%" }} />
-              <a onClick={addOne}>
-                <IconButton aria-label="+" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
-                  <AddIcon />
-                </IconButton>
-              </a>
+              {stockManagement === false || product.stock > 0 || (product.stock_status === "instock" && product.manage_stock === "no") ? (
+                <>
+                  <a onClick={removeOne}>
+                    <IconButton aria-label="-" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
+                      <RemoveIcon />
+                    </IconButton>
+                  </a>
+                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)} style={amount > 0 ? { width: "100%", backgroundColor: "#f2fbe8" } : { width: "100%" }} />
+                  <a onClick={addOne}>
+                    <IconButton aria-label="+" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
+                      <AddIcon />
+                    </IconButton>
+                  </a>
+                </>
+              ) : (
+                <input type="number" disabled />
+              )}
             </span>
           ) : (
             <span className="fc_order_list_col col_1 col_nmbr">
