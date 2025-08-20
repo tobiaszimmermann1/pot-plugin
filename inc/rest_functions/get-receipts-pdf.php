@@ -21,6 +21,11 @@
       'meta_value'    => $bestellrunde, 
   ));
 
+  // sort orders by billing first name
+  usort($orders, function($a, $b) {
+    return strcmp($a->get_billing_first_name(), $b->get_billing_first_name());
+  });
+
   // create pdf
   $mpdf = new \Mpdf\Mpdf([
     'mode' => 'utf-8',

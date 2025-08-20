@@ -186,13 +186,26 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
           }
         })
         .then(function (response) {
-          if (response.data) {
-            const linkSource = `data:application/pdf;base64,${response.data}`
+          if (response.data && response.data.success) {
+            const binaryString = atob(response.data.data)
+            const bytes = new Uint8Array(binaryString.length)
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i)
+            }
+
+            // Create blob and download link
+            const blob = new Blob([bytes], { type: response.data.mimetype })
+            const url = URL.createObjectURL(blob)
+
+            // Trigger download
             const downloadLink = document.createElement("a")
-            const fileName = `bestellrunde-${id}-orderlist.pdf`
-            downloadLink.href = linkSource
-            downloadLink.download = fileName
+            downloadLink.href = url
+            downloadLink.download = response.data.filename
+            document.body.appendChild(downloadLink)
             downloadLink.click()
+            document.body.removeChild(downloadLink)
+            URL.revokeObjectURL(url)
+
             setButtonLoading(false)
           }
         })

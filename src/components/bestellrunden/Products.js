@@ -42,7 +42,8 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
               productToDo.price = p.price
               productToDo.unit = p._einheit
               productToDo.lot = p._gebinde
-              productToDo.producer = p._lieferant
+              productToDo.producer = p._produzent
+              productToDo.supplier = p._lieferant
               productToDo.origin = p._herkunft
               productToDo.category = p.category_name
               productToDo.id = p.id
@@ -105,6 +106,10 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
       {
         accessorKey: "producer",
         header: __("Produzent", "fcplugin")
+      },
+      {
+        accessorKey: "supplier",
+        header: __("Lieferant", "fcplugin")
       },
       {
         accessorKey: "origin",

@@ -66,7 +66,7 @@ function NewDelivery({ prod, setModalClose, reload, setReload }) {
       // add product to delivery, if not already in list
       if (add) {
         let newDeliveredProducts = deliveredProducts
-        selectedProduct["amount"] = parseInt(deliveredAmount)
+        selectedProduct["amount"] = parseFloat(deliveredAmount)
         newDeliveredProducts.push(selectedProduct)
 
         setDeliveredProducts(newDeliveredProducts)

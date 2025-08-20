@@ -59,7 +59,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
       newAmount = 0
     }
 
-    if (stockManagement === true && newAmount >= product.stock && product.stock_status !== "unlimited") {
+    if (stockManagement === true && newAmount >= product.stock && product.stock_status !== "instock" && product.manage_stock === "no") {
       newAmount = product.stock
     }
     setAmount(newAmount)
@@ -78,7 +78,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
 
   useEffect(() => {
     if (stockManagement !== null) {
-      if (stockManagement === true && product.stock_status !== "unlimited") {
+      if (stockManagement === true && product.stock_status !== "instock" && product.manage_stock === "no") {
         product.stock > product.amount ? setAmount(product.amount) : setAmount(product.stock)
       } else {
         setAmount(product.amount)
@@ -87,7 +87,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
   }, [stockManagement])
 
   useEffect(() => {
-    if (stockManagement === true && product.stock_status !== "unlimited") {
+    if (stockManagement === true && product.stock_status !== "instock" && product.manage_stock === "no") {
       product.stock < amount && setAmount(product.stock)
     }
   }, [amount])
@@ -103,17 +103,23 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
         <div className="fc_order_list_line">
           {activeState && frontendLocalizer.currentUser.ID ? (
             <span className="fc_order_list_col col_1 col_nmbr">
-              <a onClick={removeOne}>
-                <IconButton aria-label="-" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
-                  <RemoveIcon />
-                </IconButton>
-              </a>
-              <input type="number" value={amount} onChange={e => setAmount(e.target.value)} style={amount > 0 ? { width: "100%", backgroundColor: "#f2fbe8" } : { width: "100%" }} />
-              <a onClick={addOne}>
-                <IconButton aria-label="+" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
-                  <AddIcon />
-                </IconButton>
-              </a>
+              {stockManagement === false || product.stock > 0 || (product.stock_status === "instock" && product.manage_stock === "no") ? (
+                <>
+                  <a onClick={removeOne}>
+                    <IconButton aria-label="-" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
+                      <RemoveIcon />
+                    </IconButton>
+                  </a>
+                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)} style={amount > 0 ? { width: "100%", backgroundColor: "#f2fbe8" } : { width: "100%" }} />
+                  <a onClick={addOne}>
+                    <IconButton aria-label="+" sx={{ border: "1px solid #cacaca", borderRadius: "2px", width: "100%" }}>
+                      <AddIcon />
+                    </IconButton>
+                  </a>
+                </>
+              ) : (
+                <input type="number" disabled />
+              )}
             </span>
           ) : (
             <span className="fc_order_list_col col_1 col_nmbr">
@@ -129,7 +135,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
                 {product.name}
                 {stockManagement === true && (
                   <>
-                    <br /> <span style={{ fontStyle: "italic", fontWeight: "normal", marginTop: "5px", fontSize: "0.95em" }}>{product.stock > 0 ? product.stock + " " + __("lagernd", "fcplugin") : product.stock_status === "unlimited" ? __("auf Lager", "fcplugin") : __("ausverkauft", "fcplugin")}</span>
+                    <br /> <span style={{ fontStyle: "italic", fontWeight: "normal", marginTop: "5px", fontSize: "0.95em" }}>{product.stock > 0 ? product.stock + " " + __("lagernd", "fcplugin") : product.stock_status === "instock" && product.manage_stock === "no" ? __("auf Lager", "fcplugin") : __("ausverkauft", "fcplugin")}</span>
                   </>
                 )}
               </span>
@@ -139,7 +145,7 @@ const ProductLine = ({ currency, product, setShoppingList, setTrigger, activeSta
               {product.name}
               {stockManagement === true && (
                 <>
-                  <br /> <span style={{ fontStyle: "italic", fontWeight: "normal", marginTop: "5px", fontSize: "0.95em" }}>{product.stock > 0 ? product.stock + " " + __("lagernd", "fcplugin") : product.stock_status === "unlimited" ? __("auf Lager", "fcplugin") : __("ausverkauft", "fcplugin")}</span>
+                  <br /> <span style={{ fontStyle: "italic", fontWeight: "normal", marginTop: "5px", fontSize: "0.95em" }}>{product.stock > 0 ? product.stock + " " + __("lagernd", "fcplugin") : product.stock_status === "instock" && product.manage_stock === "no" ? __("auf Lager", "fcplugin") : __("ausverkauft", "fcplugin")}</span>
                 </>
               )}
             </span>

@@ -39,7 +39,7 @@ try {
     // check if header row has correct names
     if ($i === 1) {
       $header_formatting_error = true;
-      if (["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description", "sku", "supplier", "tax", "pot_id", "weight"] === $rowData) $header_formatting_error = false;
+      if (["name", "price", "unit", "lot", "producer", "origin", "category", "id", "short_description", "image", "description", "sku", "supplier", "tax", "pot_id", "weight", "stock"] === $rowData) $header_formatting_error = false;
       if ($header_formatting_error) array_push($formatting_errors, array($i, "Kopfzeile beinhaltet falsche Bezeichnungen"));
       array_push($product_array, $rowData);
     } 
@@ -100,6 +100,10 @@ try {
         $row_has_error = true;
       }
       if (!isIntFloatOrNumeric($rowData[15]) && !empty($rowData[15])) { 
+        array_push($formatting_errors, array($i, "Zelle in Spalte 16 muss eine Zahl sein."));
+        $row_has_error = true;
+      }
+      if (!isIntFloatOrNumeric($rowData[16]) && !empty($rowData[16])) { 
         array_push($formatting_errors, array($i, "Zelle in Spalte 16 muss eine Zahl sein."));
         $row_has_error = true;
       }

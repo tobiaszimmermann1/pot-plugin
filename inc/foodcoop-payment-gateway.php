@@ -11,6 +11,13 @@ function fc_init_gateway_class() {
 
     class WC_Foodcoop_Guthaben extends WC_Payment_Gateway {
 
+        /**
+         * Class properties
+         */
+        public $testmode;
+        public $private_key;
+        public $publishable_key;
+
  		/**
  		 * Class constructor
  		 */

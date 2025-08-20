@@ -57,7 +57,7 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
         <DialogContent dividers={scroll === "paper"} sx={{ paddingTop: 0 }}>
           <Stack spacing={3} sx={{ width: "100%" }}>
             <Alert sx={{ marginBottom: 1 }} severity="info">
-              {__("Bitte gib das Gewicht in kg ein.", "fcplugin")}
+              {__("Bitte gib das Gewicht in kg oder das Volumen in L ein.", "fcplugin")}
             </Alert>
             <TextField
               autoFocus

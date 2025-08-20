@@ -1038,6 +1038,7 @@ class FoodcoopRestRoutes {
         "description" => $product->get_description(),
         "stock" => $product->get_stock_quantity(),
         "stock_status" => $product->get_stock_status(),
+        "manage_stock" => get_post_meta( $product->get_id(), '_manage_stock', true ),
         "tax" => $product->get_tax_class(),
         "owner" => $product->get_meta('fc_owner'),
         "weight_html" => $product->get_weight()." ".get_option("woocommerce_weight_unit"),
@@ -1197,34 +1198,17 @@ class FoodcoopRestRoutes {
     if($adminEmail) update_option('new_admin_email', $adminEmail);
 
     $enableStock = $data['enableStock'];
-    $products = wc_get_products( array(
-      'limit' => -1,
-      'return' => 'ids',
-    ));
-
     if ($enableStock == true) {
       update_option('woocommerce_manage_stock', 'yes');
       update_option('woocommerce_notify_no_stock_amount', 0);
-
-      $instant_topup_product = wc_get_product_id_by_sku( "fcplugin_instant_topup_product" );
-      foreach($products as $product_id) {
-        if ($product_id !== $instant_topup_product) {
-          update_post_meta($product_id, "_manage_stock", 'yes');
-          if (get_post_meta( $product_id, "_stock", true ) == null) {
-            update_post_meta($product_id, "_stock", 0);
-          }
-        }
-      }
-    } else {
-      update_option('woocommerce_manage_stock', 'no');
-      foreach($products as $product_id) {
-        update_post_meta($product_id, "_manage_stock", 'no');
-        update_post_meta($product_id, "_stock_status", 'instock');
-      }
     }
+
     
     $enableSelfCheckout = $data['enableSelfCheckout'];
     update_option('fc_self_checkout', $enableSelfCheckout);
+    
+    $priceOnLabels = $data['priceOnLabels'];
+    update_option('price_on_labels', $priceOnLabels);
 
     $taxes = $data['taxes'];
     if($taxes) {
@@ -1622,7 +1606,17 @@ class FoodcoopRestRoutes {
    */
   function getOrderListPDF($data) {
     require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-orderlist-pdf.php');
-    return base64_encode($pdf);
+    
+    // Return ZIP file as base64 encoded data with metadata
+    $bestellrunde = $data['bestellrunde'];
+    $filename = 'Bestellformulare_Bestellrunde_' . $bestellrunde . '_' . date('Y-m-d') . '.zip';
+    
+    return array(
+      'success' => true,
+      'data' => base64_encode($pdf),
+      'filename' => $filename,
+      'mimetype' => 'application/zip'
+    );
   }
 
   /**
@@ -2286,6 +2280,20 @@ class FoodcoopRestRoutes {
         }
       }
 
+      $last_transaction = $results[0]->date;
+
+      $last_order = false;
+      $orders = wc_get_orders( array(
+          'customer' => $id,
+          'limit'    => 1,
+          'orderby'  => 'date',
+          'order'    => 'DESC',
+      ) );
+
+      if ( ! empty( $orders ) ) {
+          $last_order = $orders[0]->get_date_created()->date('Y-m-d H:i:s');
+      }
+
 
       $the_user['name'] = $name;
       $the_user['id'] = $id;
@@ -2298,6 +2306,8 @@ class FoodcoopRestRoutes {
       $the_user['active'] = $membership_fees;
       $the_user['last_fee'] = $last_fee;
       $the_user['permission'] = $permission;
+      $the_user['last_transaction'] = $last_transaction;
+      $the_user['last_order'] = $last_order;
 
       array_push($userData, $the_user);
     }
@@ -2710,7 +2720,8 @@ class FoodcoopRestRoutes {
     }
 
     // get orders of this user if they exist
-    $customer = new WC_Customer(intval($post_data['user']));
+    $customer = intval($data['user']);
+    
     $query = new WC_Order_Query( array(
       'limit' => 10,
       'orderby' => 'date',
@@ -2719,13 +2730,15 @@ class FoodcoopRestRoutes {
       'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
       'customer' => intval($customer),
     ));
+
     $order_ids = $query->get_orders();
     $orders = array();
+
     foreach($order_ids as $order_id) {
       $this_order = wc_get_order($order_id)->get_data();
       $meta_data = $this_order['meta_data'];
       foreach($meta_data as $meta) {
-        if ($meta->key = 'bestellrunde_id') {
+        if ($meta->key === 'bestellrunde_id') {
           if (in_array($meta->value, $active_bestellrunden_ids)) {
             array_push($orders, intval($meta->value));
           }
@@ -2816,7 +2829,8 @@ class FoodcoopRestRoutes {
         "image" => wp_get_attachment_url( $product->get_image_id(), 'thumbnail'),
         "description" => $product->get_description(),
         "stock" => $product->get_stock_quantity(),
-        "stock_status" => $product->get_stock_status()
+        "stock_status" => $product->get_stock_status(),
+        "manage_stock" => get_post_meta( $product->get_id(), '_manage_stock', true )
       );
 
       // product thumbnail
@@ -3718,7 +3732,6 @@ class FoodcoopRestRoutes {
       elseif ($product->stock === "-1.000" || $product->stock === "-1.00" || $product->stock === "-1.0" || $product->stock === "-1" || $product->stock === -1) {
         update_post_meta( $product->id, "_stock_status", "instock" );
         update_post_meta( $product->id, "_manage_stock", "no" );
-        update_post_meta( $product->id, "_stock", 0 );
       } 
       else {
         update_post_meta( $product->id, "_stock_status", "instock" );
