@@ -122,20 +122,31 @@
     $users_by_lieferant[$lieferant] = $users_for_this_lieferant;
   }
 
-  // create pdf
-  $mpdf = new \Mpdf\Mpdf([
-    'mode' => 'utf-8',
-    'format' => 'A4',
-    'orientation' => 'L',
-    'default_font_size' => 9,
-    'default_font' => 'Verdana'
-  ]);
+  // create zip archive
+  $zip = new ZipArchive();
+  $zipData = '';
+  
+  // Use a temporary file to create the zip
+  $tempZipFile = tempnam(sys_get_temp_dir(), 'orderlist_zip_');
+  
+  if ($zip->open($tempZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
+    wp_die('Could not create ZIP file');
+  }
 
   // count total pages required
   $pages = count($lieferanten);
   $current_page = 1;
 
   foreach( $lieferanten as $lieferant ){
+
+    // create individual PDF for each supplier
+    $mpdf = new \Mpdf\Mpdf([
+      'mode' => 'utf-8',
+      'format' => 'A4',
+      'orientation' => 'L',
+      'default_font_size' => 9,
+      'default_font' => 'Verdana'
+    ]);
 
     // header
     $header = '
@@ -222,8 +233,28 @@
     $mpdf->WriteHTML($header);
     $mpdf->WriteHTML($body);
     $mpdf->WriteHTML($footer);
-    $current_page < $pages && $mpdf->AddPage();
+    
+    // Generate PDF for this supplier and add to ZIP
+    $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+    
+    // Create safe filename for the PDF
+    $safeFilename = preg_replace('/[^a-zA-Z0-9\-_\.]/', '_', $lieferant);
+    $filename = 'Bestellformular_' . $safeFilename . '.pdf';
+    
+    // Add PDF to ZIP
+    $zip->addFromString($filename, $pdfContent);
+    
     $current_page++;
   }
 
-  $pdf = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+  // Close and read the ZIP file
+  $zip->close();
+  
+  // Read the ZIP file contents
+  $zipData = file_get_contents($tempZipFile);
+  
+  // Clean up temporary file
+  unlink($tempZipFile);
+  
+  // Set the variable for return (keeping same variable name as original)
+  $pdf = $zipData;

@@ -57,6 +57,8 @@ const Members = () => {
             userToDo.active = u.active
             userToDo.lastFee = u.last_fee
             userToDo.permission = u.permission
+            userToDo.last_transaction = u.last_transaction
+            userToDo.last_order = u.last_order
 
             reArrangedUserData.push(userToDo)
           })
@@ -197,6 +199,18 @@ const Members = () => {
             )
           }
         }
+      },
+      {
+        accessorKey: "last_transaction",
+        header: __("Letzte Transaktion", "fcplugin"),
+        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy"),
+        size: 75
+      },
+      {
+        accessorKey: "last_order",
+        header: __("Letzte Bestellung", "fcplugin"),
+        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy"),
+        size: 75
       }
     ],
     []

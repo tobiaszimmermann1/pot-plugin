@@ -1606,7 +1606,17 @@ class FoodcoopRestRoutes {
    */
   function getOrderListPDF($data) {
     require_once(plugin_dir_path( __FILE__ ) . 'rest_functions/get-orderlist-pdf.php');
-    return base64_encode($pdf);
+    
+    // Return ZIP file as base64 encoded data with metadata
+    $bestellrunde = $data['bestellrunde'];
+    $filename = 'Bestellformulare_Bestellrunde_' . $bestellrunde . '_' . date('Y-m-d') . '.zip';
+    
+    return array(
+      'success' => true,
+      'data' => base64_encode($pdf),
+      'filename' => $filename,
+      'mimetype' => 'application/zip'
+    );
   }
 
   /**
@@ -2270,6 +2280,20 @@ class FoodcoopRestRoutes {
         }
       }
 
+      $last_transaction = $results[0]->date;
+
+      $last_order = false;
+      $orders = wc_get_orders( array(
+          'customer' => $id,
+          'limit'    => 1,
+          'orderby'  => 'date',
+          'order'    => 'DESC',
+      ) );
+
+      if ( ! empty( $orders ) ) {
+          $last_order = $orders[0]->get_date_created()->date('Y-m-d H:i:s');
+      }
+
 
       $the_user['name'] = $name;
       $the_user['id'] = $id;
@@ -2282,6 +2306,8 @@ class FoodcoopRestRoutes {
       $the_user['active'] = $membership_fees;
       $the_user['last_fee'] = $last_fee;
       $the_user['permission'] = $permission;
+      $the_user['last_transaction'] = $last_transaction;
+      $the_user['last_order'] = $last_order;
 
       array_push($userData, $the_user);
     }
