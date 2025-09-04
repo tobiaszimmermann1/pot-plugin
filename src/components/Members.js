@@ -203,13 +203,25 @@ const Members = () => {
       {
         accessorKey: "last_transaction",
         header: __("Letzte Transaktion", "fcplugin"),
-        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy"),
+        Cell: ({ cell }) => {
+          if (cell.getValue()) {
+            return format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy")
+          } else {
+            return __("Keine", "fcplugin")
+          }
+        },
         size: 75
       },
       {
         accessorKey: "last_order",
         header: __("Letzte Bestellung", "fcplugin"),
-        Cell: ({ cell }) => format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy"),
+        Cell: ({ cell }) => {
+          if (cell.getValue()) {
+            return format(new Date(cell.getValue().replace(" ", "T")), "dd.MM.yyyy")
+          } else {
+            return __("Keine", "fcplugin")
+          }
+        },
         size: 75
       }
     ],
