@@ -1201,6 +1201,16 @@ class FoodcoopRestRoutes {
     if ($enableStock == true) {
       update_option('woocommerce_manage_stock', 'yes');
       update_option('woocommerce_notify_no_stock_amount', 0);
+    } 
+    
+    if ($enableStock == false && get_option('woocommerce_manage_stock') == 'yes') {
+      update_option('woocommerce_manage_stock', 'no');
+      $products = wc_get_products(array('limit' => -1));
+      foreach ($products as $product) {
+        $product->set_manage_stock(false);
+        $product->set_stock_status('instock');
+        $product->save();
+      }
     }
 
     
