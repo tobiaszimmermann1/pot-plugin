@@ -28,6 +28,10 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.9
+
+- Code refactoring
+
 ### 1.7.8
 
 - Improved Inventory Management
