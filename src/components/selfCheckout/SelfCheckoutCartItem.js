@@ -9,29 +9,42 @@ import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
 import PhotoIcon from "@mui/icons-material/Photo"
 import DeleteIcon from "@mui/icons-material/Delete"
+import FavoriteIcon from "@mui/icons-material/Favorite"
+import axios from "axios"
 const __ = wp.i18n.__
 
 function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
 
   const [amount, setAmount] = useState(productData.amount)
+  const [userWeightValue, setUserWeightValue] = useState(productData.userWeightValue)
+  const [userTaraValue, setUserTaraValue] = useState(productData.userTaraValue)
+  const [userFavorit, setUserFavorit] = useState(productData.userFavorit)
   const [totalPrice, setTotalPrice] = useState(0)
+
   const [inputAmount, setInputAmount] = useState(false)
   const [inputAmountValue, setInputAmountValue] = useState(0)
+  
+  const [inputUserWeight, setInputUserWeight] = useState(false)
+  const [inputUserWeightValue, setInputUserWeightValue] = useState(0)
+  const [inputUserTaraValue, setInputUserTaraValue] = useState(0)
+  const [inputUserTaraError, setInputUserTaraError] = useState('')
+
   const [disableMinus, setDisableMinus] = useState(false)
 
   useEffect(() => {
     if (productData) {
+      setUserFavorit(productData.userFavorit)
+
       let newPrice = productData.price * amount
       setTotalPrice(newPrice)
     }
   }, [productData, amount])
 
   useEffect(() => {
-    let newAmount = amount
     const newCart = cart.map(cartItem => {
       if (cartItem.product_id === productData.product_id) {
-        return { ...cartItem, amount: newAmount }
+        return { ...cartItem, amount, userWeightValue, userTaraValue, userFavorit }
       } else {
         return cartItem
       }
@@ -39,11 +52,48 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
     setCart(newCart)
 
     localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
-  }, [amount])
+  }, [amount,userWeightValue,userTaraValue,userFavorit])
+
+  function toggleUserFavorit() {
+    axios
+      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/toggleUserProduktFavorit`,{
+        product_id:productData.product_id
+      },
+      {
+        headers: { "X-WP-Nonce": frontendLocalizer.nonce
+        }
+      })
+      .then(function (response) {
+        setUserFavorit(response.data.userFavorit);
+      })
+      .catch(error => console.log(error))
+  }
 
   function setNewAmount() {
     setAmount(parseFloat(inputAmountValue))
     setInputAmount(false)
+  }
+
+  function formatWeight(w){
+    w = parseFloat(w);
+
+    return Math.round(w*1000)/1000;
+  }
+
+  function setNewUserWeight() {
+    let w = formatWeight(inputUserWeightValue);
+    let t = formatWeight(inputUserTaraValue);
+
+    if ( t >= w ) {
+      setInputUserTaraError('Totalgewicht kleiner als Verpackungsgewicht');
+      return;
+    }
+
+    setUserWeightValue(w)
+    setUserTaraValue(t)
+    setAmount(formatWeight(w - t));
+
+    setInputUserWeight(false)
   }
 
   return productData ? (
@@ -53,10 +103,6 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
         <Divider />
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
-            <Box sx={{ padding: "10px", borderRadius: "5px", backgroundColor: "#f0f0f0" }}>
-              {__("Einheit", "fcplugin")}: {productData.unit} <br />
-              {__("Menge x Einheit = Gesamtmenge", "fcplugin")}
-            </Box>
             <FormControl>
               <TextField type="number" size="normal" id="amount" label={__("Menge", "fcplugin")} name="amount" variant="outlined" value={inputAmountValue} onChange={e => setInputAmountValue(e.target.value)} />
             </FormControl>
@@ -65,6 +111,28 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
         <DialogActions>
           <Button onClick={setNewAmount} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Menge Übernehmen", "fcplugin")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={inputUserWeight} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <DialogTitle id="alert-dialog-title">{__("Gewicht ändern", "fcplugin")}</DialogTitle>
+        <Divider />
+        <DialogContent>
+          <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
+            <FormControl>
+              <TextField type="number" size="normal" id="userWeightValue" label={__("Totalgewicht", "fcplugin")+' ( '+ productData.unit +' )'} name="userWeightValue" variant="outlined" value={inputUserWeightValue} onChange={e => setInputUserWeightValue(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <TextField type="number" size="normal" id="userTaraValue" label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.unit +' )' } name="amount" variant="outlined" value={inputUserTaraValue} onChange={e => setInputUserTaraValue(e.target.value)} />
+              { inputUserTaraError ? (
+                <span>{__(inputUserTaraError, "fcplugin")}</span>
+              ) : (<span/>)}
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={setNewUserWeight} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
+            {__("Gewicht übernehmen", "fcplugin")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -91,12 +159,26 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
               </Stack>
             ) : (
               <Stack direction="column" gap={2} sx={{ alignItems: "flex-start" }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                  <Chip label={`${productData.userWeightValue} kg`} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }} />
+                <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
                   <DeleteIcon
                     sx={{ cursor: "pointer", "&:hover": { color: "red" } }}
                     onClick={() => {
                       setAmount(0)
+                    }}
+                  />
+                  <FavoriteIcon
+                    sx={{ cursor: "pointer", color: (userFavorit?"red":"black")}}
+                    onClick={() => {
+                      toggleUserFavorit()
+                    }}
+                  />
+                  <Chip
+                    label={`${productData.amount} kg`}
+                    sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }}
+                    onClick={() => {
+                      setInputUserWeight(true)
+                      setInputUserWeightValue(userWeightValue)
+                      setInputUserTaraValue(userTaraValue)
                     }}
                   />
                 </div>
@@ -111,7 +193,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                     {productData.img ? <img src={productData.img} width={"50px"} height={"50px"} /> : <PhotoIcon />}
                   </Grid>
                   <Grid item xs={8}>
-                    {productData.name} <span style={{ fontWeight: "normal" }}>({productData.sku})</span>
+                    {productData.name} <span style={{ fontWeight: "normal" }}><br/>#{productData.sku}</span>
                     <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start" sx={{ marginTop: "0px" }}>
                       {POSMode ? (
                         <Grid item xs={12}>

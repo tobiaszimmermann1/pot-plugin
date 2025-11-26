@@ -10,7 +10,7 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart"
 import SelfCheckoutPaymentGateway from "./SelfCheckoutPaymentGateway"
 const __ = wp.i18n.__
 
-function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
+function SelfCheckoutCart({ POSMode, margin, userProduktFavoriten, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
   const { cart, setCart } = useContext(cartContext)
   const [total, setTotal] = useState(0)
   const [finalTotal, setFinalTotal] = useState(0)
@@ -20,8 +20,11 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
   useEffect(() => {
     if (cart.length > 0) {
       let newTotal = 0
+
       cart.map(cartItem => {
         newTotal += cartItem.price * cartItem.amount
+
+        cartItem.userFavorit = userProduktFavoriten?userProduktFavoriten.indexOf(cartItem.product_id) >= 0:false
 
         if (cartItem.amount === 0) {
           setRemoveProduct(cartItem)
@@ -30,7 +33,7 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
       setTotal(newTotal)
       setCartMargin(newTotal * (margin / 100))
     }
-  }, [cart, margin])
+  }, [cart, margin, userProduktFavoriten])
 
   useEffect(() => {
     POSMode ? setFinalTotal(total + cartMargin) : setFinalTotal(total)
