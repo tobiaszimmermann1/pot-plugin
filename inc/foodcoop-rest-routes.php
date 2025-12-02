@@ -996,6 +996,36 @@ class FoodcoopRestRoutes {
         ],
     ]);
     
+    register_rest_route('foodcoop/v1', 'getUserVerpackungen', [
+        [
+            'methods' => WP_REST_SERVER::READABLE,
+            'callback' => array($this,'getUserVerpackungen'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+    register_rest_route('foodcoop/v1', 'addUserVerpackung', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'addUserVerpackung'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+    
+    register_rest_route('foodcoop/v1', 'removeUserVerpackung', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'removeUserVerpackung'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+    
   }
 
   
@@ -1032,6 +1062,49 @@ class FoodcoopRestRoutes {
       return [
           'userFavorit' => $favorit,
       ];
+  }
+
+  function getUserVerpackungen() {
+    $user_id = get_current_user_id();
+    $verpackungen = get_user_meta($user_id, 'fc_verpackungen', true);
+    if (!$verpackungen) $verpackungen = [];
+
+    return [
+        'userVerpackungen' => $verpackungen
+    ];
+  }
+
+  function removeUserVerpackung($request) {
+    $user_id = get_current_user_id();
+    $name = $request['name'];
+
+    $verpackungen = get_user_meta($user_id, 'fc_verpackungen', true);
+    if ( !$verpackungen ) $verpackungen = [];
+
+    $verpackungen = array_filter($verpackungen,fn($verpackung) => $verpackung['name'] != $name );
+
+    update_user_meta($user_id, 'fc_verpackungen', $verpackungen);
+
+    return [
+        'userVerpackungen' => $verpackungen
+    ];
+  }
+
+  function addUserVerpackung($request) {
+    $user_id = get_current_user_id();
+    $name = $request['name'];
+    $gewicht = floatval($request['gewicht']);
+
+    $verpackungen = get_user_meta($user_id, 'fc_verpackungen', true);
+    if ( !$verpackungen ) $verpackungen = [];
+
+    $verpackungen[] = ['name'=>$name,'gewicht'=>$gewicht];
+
+    update_user_meta($user_id, 'fc_verpackungen', $verpackungen);
+
+    return [
+        'userVerpackungen' => $verpackungen
+    ];
   }
   
   /**
