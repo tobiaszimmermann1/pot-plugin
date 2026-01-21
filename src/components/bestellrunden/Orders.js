@@ -272,88 +272,86 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
         !users.includes(order.customer_name) && users.push(order.customer_name)
         // map line_items of order
         order.line_items.map(lineItem => {
+          const supplier = lineItem.allmeta[0]?.value
+          const unit = lineItem.allmeta[1]?.value
+          const sku = typeof lineItem.product_sku !== "undefined" ? lineItem.product_sku : lineItem.allmeta?.[5]?.value ?? "-"
+          const productKey = sku !== "-" ? sku : `${lineItem.product_name}::${lineItem.item_id}`
+
           // add line_item to array
           orderItems.push({
             user: order.customer_name,
             itemId: lineItem.item_id,
             name: lineItem.product_name,
+            sku: sku !== "-" ? sku : null,
+            productKey,
             quantity: lineItem.quantity,
-            lieferant: lineItem.allmeta[0]?.value,
-            einheit: lineItem.allmeta[1]?.value
+            lieferant: supplier,
+            einheit: unit
           })
 
-          if (typeof lineItem.product_sku !== "undefined") {
-            // add product to array, if it is not already and add product data to products object
-            !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
-            productsData[lineItem.product_name] = [lineItem.product_name, lineItem.product_sku, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
-            // add lieferant to array, if it is not already
-            !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
-          } else if (typeof lineItem.allmeta[5] !== "undefined") {
-            // add product to array, if it is not already and add product data to products object
-            !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
-            productsData[lineItem.product_name] = [lineItem.product_name, lineItem.allmeta[5].value, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
-            // add lieferant to array, if it is not already
-            !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
-          } else {
-            // add product to array, if it is not already and add product data to products object
-            !products.includes(lineItem.product_name) && products.push([lineItem.product_name, lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value])
-            productsData[lineItem.product_name] = [lineItem.product_name, "-", lineItem.allmeta[0]?.value, lineItem.allmeta[1]?.value]
-            // add lieferant to array, if it is not already
-            !lieferanten.includes(lineItem.allmeta[0]?.value) && lieferanten.push(lineItem.allmeta[0]?.value)
+          // register product (use productKey to avoid merging different SKUs with same name)
+          if (!products.includes(productKey)) {
+            products.push(productKey)
+            productsData[productKey] = [lineItem.product_name, sku, supplier, unit]
+          }
+
+          // register supplier
+          if (!lieferanten.includes(supplier)) {
+            lieferanten.push(supplier)
           }
         })
       })
 
-      // structure the products data
-      let productsByLieferant = []
+      // structure the products data (products now holds productKey strings)
+      let productsByLieferant = {}
       lieferanten.forEach(lieferant => {
-        let productsForThisLieferant = []
-        products.map(product => {
-          if (product[1] === lieferant) {
-            !productsForThisLieferant.includes(product[0]) && productsForThisLieferant.push(product[0])
-          }
-        })
-        productsByLieferant[lieferant] = productsForThisLieferant
+        productsByLieferant[lieferant] = products.filter(pk => (productsData[pk] && productsData[pk][2]) === lieferant)
       })
 
-      // structure the products data
-      let usersByLieferant = []
+      // structure the users data
+      let usersByLieferant = {}
       lieferanten.forEach(lieferant => {
-        let usersForThisLieferant = []
-        orderItems.map(orderItem => {
-          if (orderItem.lieferant === lieferant) {
-            !usersForThisLieferant.includes(orderItem.user) && usersForThisLieferant.push(orderItem.user)
-          }
-        })
-        usersByLieferant[lieferant] = usersForThisLieferant
+        usersByLieferant[lieferant] = [...new Set(orderItems.filter(oi => oi.lieferant === lieferant).map(oi => oi.user))]
       })
 
       // create xlsx data matrix
       let dataMatrix = {}
-      lieferanten.map(lieferant => {
+      lieferanten.forEach(lieferant => {
         let rows = []
 
-        productsByLieferant[lieferant].map(product => {
-          let row = { product: product, sku: productsData[product][1], supplier: productsData[product][2], unit: productsData[product][3] }
+        ;(productsByLieferant[lieferant] || []).forEach(productKey => {
+          const pd = productsData[productKey] || [productKey, "-", lieferant, "-"]
+          const displayName = pd[0]
+          const sku = pd[1]
+          const supplier = pd[2]
+          const unit = pd[3]
 
-          usersByLieferant[lieferant].map(user => {
-            orderItems.map(orderItem => {
-              if (orderItem.user === user && orderItem.lieferant === lieferant && orderItem.name === product) {
-                row[user] = orderItem.quantity
+          let row = { product: displayName, sku: sku, supplier: supplier, unit: unit }
+
+          ;(usersByLieferant[lieferant] || []).forEach(user => {
+            let qty = 0
+            let matched = false
+            orderItems.forEach(orderItem => {
+              const matchesSku = orderItem.sku && orderItem.sku === productKey
+              const matchesFallback = !orderItem.sku && orderItem.name === displayName
+              if (orderItem.user === user && orderItem.lieferant === lieferant && (matchesSku || matchesFallback)) {
+                matched = true
+                qty += Number(orderItem.quantity) || 0
               }
             })
+            if (matched) {
+              row[user] = qty === 0 ? "0" : qty.toString()
+            }
           })
+
           rows.push(row)
         })
-        //shorten lieferant string to max 30 chars
-        let lieferantString = lieferant
-        if (typeof lieferant !== "undefined") {
-          if (lieferant.length > 30) {
-            lieferantString = lieferant.substring(0, 29)
-          }
-          dataMatrix[lieferantString] = rows
-        }
+
+        let lieferantString = lieferant || ""
+        if (lieferantString.length > 30) lieferantString = lieferantString.substring(0, 29)
+        dataMatrix[lieferantString] = rows
       })
+
       setExportData(dataMatrix)
     }
   }, [orders, id])

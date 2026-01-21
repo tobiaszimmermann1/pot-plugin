@@ -4041,6 +4041,15 @@ class FoodcoopRestRoutes {
     if ($type == 'memberOrder') { 
       $order->set_customer_id($user_id);
 
+      // get current balance
+      $current_balance = 0.00;
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+      );
+      foreach ( $results as $result ) {
+        $current_balance = $result->balance;
+      }
+
       // set address
       $address = array(
         'first_name' => get_user_meta($user_id, 'billing_first_name', true),
@@ -4069,7 +4078,7 @@ class FoodcoopRestRoutes {
     $order->set_payment_method_title( $payment_gateway->name );
 
     if ($payment_gateway->id == 'foodcoop_guthaben') {
-      $new_balance = floatval($user->balance) - $order->get_total();
+      $new_balance = $current_balance - $order->get_total();
       $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order->get_total() . '; Neues Guthaben: CHF' . $new_balance;
       $order->update_status( 'processing', $order_note );
 
@@ -4080,7 +4089,6 @@ class FoodcoopRestRoutes {
       $date = date("Y-m-d H:i:s");
       $details = 'Bestellung #'.$order->id.' (POS Bestellung)';
       $amount = -1 * $order->get_total();
-      $new_balance = floatval($user->balance) - $order->get_total();
       $new_balance = number_format($new_balance, 2, '.', '');
       $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order->get_total() . '; Neues Guthaben: CHF' . $new_balance;
       $order->update_status( 'processing', $order_note );

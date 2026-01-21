@@ -255,27 +255,14 @@ function fc_plugin_init() {
  */
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
-  $is_dev = defined('WP_DEBUG') && WP_DEBUG; // or define your own constant
-
-  if ( $is_dev ) {
-    // Load from webpack-dev-server
-    wp_enqueue_script(
-      'fc-script',
-      'http://localhost:8887/backend.js',
-      [ 'wp-element', 'wp-i18n' ],
-      null, // no version in dev
-      true
-    );
-  } else {
-    // Load built file
-    wp_enqueue_script(
-      'fc-script',
-      plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.9',
-      [ 'wp-element', 'wp-i18n' ],
-      '1.0',
-      true
-    );
-  }
+  // Load built file
+  wp_enqueue_script(
+    'fc-script',
+    plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.9',
+    [ 'wp-element', 'wp-i18n' ],
+    '1.0',
+    true
+  );
 
   wp_localize_script( 'fc-script', 'appLocalizer', [
     'apiUrl'      => home_url('/wp-json'),
@@ -293,26 +280,15 @@ function fc_admin_load_scripts() {
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
-  $is_dev = defined('WP_DEBUG') && WP_DEBUG;
 
-  if ( $is_dev ) {
+  if ( get_option('fc_enable_rounds_storewide') ) {
     wp_enqueue_script(
-      'fc-script-frontend',
-      'http://localhost:8887/frontend.js',
-      [ 'wp-element', 'wp-i18n' ],
-      null,
+      'fc-script-sitewide-bestellrunden',
+      plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.9',
+      [ 'jquery' ],
+      '1.0',
       true
     );
-  } else {
-    if ( get_option('fc_enable_rounds_storewide') ) {
-      wp_enqueue_script(
-        'fc-script-sitewide-bestellrunden',
-        plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.9',
-        [ 'jquery' ],
-        '1.0',
-        true
-      );
-    }
 
     wp_enqueue_script(
       'fc-script-frontend',
