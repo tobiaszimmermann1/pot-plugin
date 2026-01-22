@@ -289,6 +289,7 @@ function fc_wp_load_scripts() {
       '1.0',
       true
     );
+  }
 
     wp_enqueue_script(
       'fc-script-frontend',
@@ -297,7 +298,6 @@ function fc_wp_load_scripts() {
       '1.0',
       true
     );
-  }
 
   wp_localize_script( 'fc-script-frontend', 'frontendLocalizer', [
     'apiUrl'      => home_url('/wp-json'),
