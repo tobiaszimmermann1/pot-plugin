@@ -30,7 +30,8 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ### 1.7.9
 
-- Code refactoring
+- Improved product import
+- Fixed various bugs
 
 ### 1.7.8
 
