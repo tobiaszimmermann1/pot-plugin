@@ -8,6 +8,7 @@ $data = $request->get_params();
 
 $file = $data['file'];
 $delete_products = $data['delete_products'];
+$stock_import = $data['stock'];
 
 $product_array = array();
 $formatting_errors = array();

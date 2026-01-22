@@ -2234,9 +2234,21 @@ class FoodcoopRestRoutes {
    */
   function postImportProductsProgress($file) {
     $progress = get_transient( "foodcoop_".$file['file']."_importprogress" );
-    return [
+    $deletion_progress = get_transient( "foodcoop_".$file['file']."_deletionprogress" );
+    $result = get_transient( "foodcoop_".$file['file']."_importresult" );
+    
+    $response = [
       'progress' => $progress, 
+      'deletion_progress' => $deletion_progress,
     ];
+    
+    // if import completed, include result data for redirect
+    if ( $result && is_array( $result ) ) {
+      $response['success'] = true;
+      $response['data'] = $result;
+    }
+    
+    return $response;
   }
 
   
@@ -2731,7 +2743,7 @@ class FoodcoopRestRoutes {
 
     // get orders of this user if they exist
     $customer = intval($data['user']);
-    
+
     $query = new WC_Order_Query( array(
       'limit' => 10,
       'orderby' => 'date',
