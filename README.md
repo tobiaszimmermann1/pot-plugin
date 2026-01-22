@@ -28,6 +28,11 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.7.9
+
+- Improved product import
+- Fixed various bugs
+
 ### 1.7.8
 
 - Improved Inventory Management

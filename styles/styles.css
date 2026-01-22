@@ -1278,7 +1278,7 @@ html {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #ccc;
   box-sizing: border-box;
   padding-right: 10px;
 }

@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.7.8
+Version: 1.7.9
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -255,27 +255,14 @@ function fc_plugin_init() {
  */
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
-  $is_dev = defined('WP_DEBUG') && WP_DEBUG; // or define your own constant
-
-  if ( $is_dev ) {
-    // Load from webpack-dev-server
-    wp_enqueue_script(
-      'fc-script',
-      'http://localhost:8887/backend.js',
-      [ 'wp-element', 'wp-i18n' ],
-      null, // no version in dev
-      true
-    );
-  } else {
-    // Load built file
-    wp_enqueue_script(
-      'fc-script',
-      plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.8',
-      [ 'wp-element', 'wp-i18n' ],
-      '1.0',
-      true
-    );
-  }
+  // Load built file
+  wp_enqueue_script(
+    'fc-script',
+    plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.9',
+    [ 'wp-element', 'wp-i18n' ],
+    '1.0',
+    true
+  );
 
   wp_localize_script( 'fc-script', 'appLocalizer', [
     'apiUrl'      => home_url('/wp-json'),
@@ -284,39 +271,28 @@ function fc_admin_load_scripts() {
     'pluginUrl'   => plugin_dir_url(__FILE__),
     'nonce'       => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version'     => "1.7.8"
+    'version'     => "1.7.9"
   ]);
 
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.8' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.9' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
-  $is_dev = defined('WP_DEBUG') && WP_DEBUG;
 
-  if ( $is_dev ) {
+  if ( get_option('fc_enable_rounds_storewide') ) {
     wp_enqueue_script(
-      'fc-script-frontend',
-      'http://localhost:8887/frontend.js',
-      [ 'wp-element', 'wp-i18n' ],
-      null,
+      'fc-script-sitewide-bestellrunden',
+      plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.9',
+      [ 'jquery' ],
+      '1.0',
       true
     );
-  } else {
-    if ( get_option('fc_enable_rounds_storewide') ) {
-      wp_enqueue_script(
-        'fc-script-sitewide-bestellrunden',
-        plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.8',
-        [ 'jquery' ],
-        '1.0',
-        true
-      );
-    }
 
     wp_enqueue_script(
       'fc-script-frontend',
-      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.8',
+      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.9',
       [ 'wp-element', 'wp-i18n' ],
       '1.0',
       true
@@ -336,7 +312,7 @@ function fc_wp_load_scripts() {
   ]);
 
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.8' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.9' );
 }
 
 

@@ -16,7 +16,7 @@ class FoodcoopProductImport {
   }
 
   function enqueue_admin_js(){
-    wp_enqueue_script( 'product-import-upload', FOODCOOP_PLUGIN_URL. 'scripts/product-import/product-import-upload.js?version=1.7.8', array( 'jquery-ui-core', 'jquery-ui-tabs' ), null, false );  
+    wp_enqueue_script( 'product-import-upload', FOODCOOP_PLUGIN_URL. 'scripts/product-import/product-import-upload.js?version=1.7.9', array( 'jquery-ui-core', 'jquery-ui-tabs' ), null, false );  
     wp_localize_script( 'product-import-upload', 'importLocalizer', array(
       'apiUrl' => home_url('/wp-json'),
       'homeUrl' => home_url(),
@@ -65,6 +65,7 @@ class FoodcoopProductImport {
           $formatting_errors = $transient_data->errors;
           $rows_with_errors = $transient_data->rows_with_errors;
           $_GET['del'] === "true" ? $foodcoop_product_import_delete = "true" : $foodcoop_product_import_delete = "false";
+          $_GET['stock'] === "true" ? $foodcoop_product_import_stock = "true" : $foodcoop_product_import_stock = "false";
         }
       }
 
@@ -164,6 +165,13 @@ class FoodcoopProductImport {
                       <small><?php echo __("Betrifft Produkte, die aktuell in der WordPress Datenbank erfasst sind, aber nicht mittels Import überschrieben werden. Du kannst diese behalten oder löschen lassen.", "fcplugin"); ?></small>
                     </td>
                   </tr>
+                  <tr>
+                    <td><input type="checkbox" id="foodcoop_product_import_stock" name="foodcoop_product_import_stock"></td>
+                    <td>
+                      <label for="foodcoop_product_import_stock"><?php echo __("Lagerbestand aktualisieren?", "fcplugin"); ?></label>
+                      <small><?php echo __("Bestimmt, ob die Spalte 'stock' importiert werden soll oder nicht.", "fcplugin"); ?></small>
+                    </td>
+                  </tr>
                 </table>
               </div>
 
@@ -204,14 +212,30 @@ class FoodcoopProductImport {
                     } else {
                       ?>
                         <p> <?php echo __("Die Datei wurde geprüft und ist bereit für den Import. Du kannst hier alle Zeilen überprüfen und dann mit dem Import fortfahren.", "fcplugin"); ?> </p>
+                        <h4> <?php echo __("Einstellungen", "fcplugin"); ?> </h4>
+                        <ul>
                       <?php
                         if ($foodcoop_product_import_delete === "true") {
                         ?>
-                          <p><strong> <?php echo __("Achtung: Alle Produkte, die nicht in der Import-Liste sind, werden gelöscht!", "fcplugin"); ?> </strong></p>
+                          <li> <?php echo __("Alle Produkte, die nicht in der Import-Liste sind, werden gelöscht!", "fcplugin"); ?> </li>
+                        <?php
+                        } else {
+                        ?>
+                          <li> <?php echo __("Produkte, die nicht in der Import-Liste sind, bleiben erhalten.", "fcplugin"); ?> </li>
+                        <?php
+                        }
+                        if ($foodcoop_product_import_stock === "true") {
+                        ?>
+                          <li> <?php echo __("Der Lagerbestand wird aktualisiert.", "fcplugin"); ?> </li>
+                        <?php
+                        } else {
+                        ?>
+                          <li> <?php echo __("Der Lagerbestand wird nicht aktualisiert.", "fcplugin"); ?> </li>
                         <?php
                         }
                     }
                   ?>
+                        </ul>
                 </div>
 
                 <?php 
@@ -250,6 +274,7 @@ class FoodcoopProductImport {
                   <input type="hidden" id="foodcoop_product_import_file" value="<?php echo $file_path; ?>" />
                   <div id="foodcoop_product_import_progress"></div>
                   <input type="hidden" id="foodcoop_file_import_file" value="<?php echo $_GET['file']; ?>" />
+                  <input type="hidden" id="foodcoop_product_import_stock" value="<?php echo $foodcoop_product_import_stock; ?>" />
                   <?php count($formatting_errors) > 0 ? $disabled = false : $disabled = true; ?>
                   <?php if (!$disabled) {
                   ?>
@@ -275,6 +300,7 @@ class FoodcoopProductImport {
             $totalproducts = $_GET['updatedproducts'] + $_GET['newproducts'];
             $updatedproducts = $_GET['updatedproducts'];
             $newproducts = $_GET['newproducts'];
+            $deletedproducts = isset($_GET['deletedproducts']) ? $_GET['deletedproducts'] : 0;
             ?>
 
             <form id="foodcoop_product_import_step1">
@@ -283,7 +309,10 @@ class FoodcoopProductImport {
                 <h1> <?php echo $totalproducts." ".__("Produkte wurden importiert", "fcplugin"); ?> </h1>
                 <ul>
                   <li> <?php echo $newproducts." ".__("Produkte wurden neu erstellt", "fcplugin"); ?> </li>
-                  <li> <?php echo $updatedproducts." ".__("Produkte wurden aktualisiert", "fcplugin"); ?> </li>  
+                  <li> <?php echo $updatedproducts." ".__("Produkte wurden aktualisiert", "fcplugin"); ?> </li>
+                  <?php if ($deletedproducts > 0) { ?>
+                    <li> <?php echo $deletedproducts." ".__("Produkte wurden gelöscht", "fcplugin"); ?> </li>
+                  <?php } ?>
                 </ul>
               </div>
 

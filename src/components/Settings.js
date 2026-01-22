@@ -94,12 +94,37 @@ const Settings = () => {
       setEnablePaymentByBill(options.fc_enable_payment_by_bill === "1")
       setEnableUserBlock(options.fc_enable_user_block === "1")
       setEnableRoundsStorewide(options.fc_enable_rounds_storewide === "1")
+
+      // Safe privacy settings parsing with defaults
       if (options.fc_privacy) {
-        let privacy = JSON.parse(options.fc_privacy)
-        setPrivacyMailchimp(privacy.privacyMailchimp)
-        setPrivacyRecaptcha(privacy.privacyRecaptcha)
-        setPrivacyFontawesome(privacy.privacyFontawesome)
-        setPrivacyTwint(privacy.privacyTwint)
+        try {
+          const privacy = JSON.parse(options.fc_privacy)
+          if (privacy && typeof privacy === "object") {
+            setPrivacyMailchimp(privacy.privacyMailchimp || false)
+            setPrivacyRecaptcha(privacy.privacyRecaptcha || false)
+            setPrivacyFontawesome(privacy.privacyFontawesome || false)
+            setPrivacyTwint(privacy.privacyTwint || false)
+          } else {
+            // Set defaults if parsing resulted in null or non-object
+            setPrivacyMailchimp(false)
+            setPrivacyRecaptcha(false)
+            setPrivacyFontawesome(false)
+            setPrivacyTwint(false)
+          }
+        } catch (error) {
+          console.warn("Error parsing privacy settings:", error)
+          // Set defaults on parse error
+          setPrivacyMailchimp(false)
+          setPrivacyRecaptcha(false)
+          setPrivacyFontawesome(false)
+          setPrivacyTwint(false)
+        }
+      } else {
+        // Set defaults if fc_privacy doesn't exist
+        setPrivacyMailchimp(false)
+        setPrivacyRecaptcha(false)
+        setPrivacyFontawesome(false)
+        setPrivacyTwint(false)
       }
     }
   }, [options])

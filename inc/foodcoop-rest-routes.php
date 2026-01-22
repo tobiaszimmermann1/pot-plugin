@@ -1201,6 +1201,16 @@ class FoodcoopRestRoutes {
     if ($enableStock == true) {
       update_option('woocommerce_manage_stock', 'yes');
       update_option('woocommerce_notify_no_stock_amount', 0);
+    } 
+    
+    if ($enableStock == false && get_option('woocommerce_manage_stock') == 'yes') {
+      update_option('woocommerce_manage_stock', 'no');
+      $products = wc_get_products(array('limit' => -1));
+      foreach ($products as $product) {
+        $product->set_manage_stock(false);
+        $product->set_stock_status('instock');
+        $product->save();
+      }
     }
 
     
@@ -2224,9 +2234,21 @@ class FoodcoopRestRoutes {
    */
   function postImportProductsProgress($file) {
     $progress = get_transient( "foodcoop_".$file['file']."_importprogress" );
-    return [
+    $deletion_progress = get_transient( "foodcoop_".$file['file']."_deletionprogress" );
+    $result = get_transient( "foodcoop_".$file['file']."_importresult" );
+    
+    $response = [
       'progress' => $progress, 
+      'deletion_progress' => $deletion_progress,
     ];
+    
+    // if import completed, include result data for redirect
+    if ( $result && is_array( $result ) ) {
+      $response['success'] = true;
+      $response['data'] = $result;
+    }
+    
+    return $response;
   }
 
   
@@ -2721,7 +2743,7 @@ class FoodcoopRestRoutes {
 
     // get orders of this user if they exist
     $customer = intval($data['user']);
-    
+
     $query = new WC_Order_Query( array(
       'limit' => 10,
       'orderby' => 'date',
@@ -4031,6 +4053,15 @@ class FoodcoopRestRoutes {
     if ($type == 'memberOrder') { 
       $order->set_customer_id($user_id);
 
+      // get current balance
+      $current_balance = 0.00;
+      $results = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $user_id)
+      );
+      foreach ( $results as $result ) {
+        $current_balance = $result->balance;
+      }
+
       // set address
       $address = array(
         'first_name' => get_user_meta($user_id, 'billing_first_name', true),
@@ -4059,7 +4090,7 @@ class FoodcoopRestRoutes {
     $order->set_payment_method_title( $payment_gateway->name );
 
     if ($payment_gateway->id == 'foodcoop_guthaben') {
-      $new_balance = floatval($user->balance) - $order->get_total();
+      $new_balance = $current_balance - $order->get_total();
       $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order->get_total() . '; Neues Guthaben: CHF' . $new_balance;
       $order->update_status( 'processing', $order_note );
 
@@ -4070,7 +4101,6 @@ class FoodcoopRestRoutes {
       $date = date("Y-m-d H:i:s");
       $details = 'Bestellung #'.$order->id.' (POS Bestellung)';
       $amount = -1 * $order->get_total();
-      $new_balance = floatval($user->balance) - $order->get_total();
       $new_balance = number_format($new_balance, 2, '.', '');
       $order_note = 'Bezahlt mit Foodcoop Guthaben: CHF' . $order->get_total() . '; Neues Guthaben: CHF' . $new_balance;
       $order->update_status( 'processing', $order_note );
