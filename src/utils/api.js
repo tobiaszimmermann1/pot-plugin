@@ -4,8 +4,25 @@
  * Wraps axios to provide consistent nonce authentication, JSON response parsing,
  * and a single location for the API base URL. All REST API calls in this plugin
  * should use these helpers instead of calling axios directly.
+ *
+ * Supports both the admin backend context (appLocalizer) and the customer-facing
+ * frontend context (frontendLocalizer), automatically selecting the correct one.
  */
 import axios from "axios"
+
+/**
+ * Returns the active localizer object, preferring the admin backend localizer
+ * (appLocalizer) when available and falling back to the frontend localizer
+ * (frontendLocalizer) for customer-facing pages.
+ *
+ * @returns {Object} The active localizer object.
+ */
+function getLocalizer() {
+  if (typeof appLocalizer !== "undefined") {
+    return appLocalizer
+  }
+  return frontendLocalizer
+}
 
 /**
  * Returns the default request headers including the WordPress REST API nonce.
@@ -14,7 +31,7 @@ import axios from "axios"
  */
 function getHeaders() {
   return {
-    "X-WP-Nonce": appLocalizer.nonce
+    "X-WP-Nonce": getLocalizer().nonce
   }
 }
 
@@ -25,7 +42,7 @@ function getHeaders() {
  * @returns {string} The full API URL.
  */
 function apiUrl(endpoint) {
-  return `${appLocalizer.apiUrl}/foodcoop/v1/${endpoint}`
+  return `${getLocalizer().apiUrl}/foodcoop/v1/${endpoint}`
 }
 
 /**
