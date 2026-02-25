@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import { Box, Typography, Button, CircularProgress, Alert, Chip } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -36,13 +36,9 @@ const ProducersList = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProducers`, {
-        user: frontendLocalizer.currentUser.ID
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getProducers")
+      .then(res => {
+        if (res) {
           console.log(res)
           setProducers(res)
         }

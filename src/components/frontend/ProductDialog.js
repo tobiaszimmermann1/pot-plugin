@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import IconButton from "@mui/material/IconButton"
 import { Card, CardActions, CardContent, Typography, Skeleton, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 
@@ -16,11 +16,9 @@ const ProductDialog = ({ product, handleClose, currency, stockManagement }) => {
   useEffect(() => {
     console.log(product)
     if (product) {
-      axios
-        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductDetails?id=${product.id}`)
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
+      apiGet("getProductDetails", { id: product.id })
+        .then(res => {
+          if (res) {
             res[0].length > 0 && setSupplier(res[0])
             res[1].length > 0 && setProducer(res[1])
           }

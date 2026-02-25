@@ -3,7 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import Grid from "@mui/material/Grid"
 import { SVG } from "swissqrbill/svg"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import { Box, LinearProgress, Divider } from "@mui/material"
 import Alert from "@mui/material/Alert"
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
@@ -36,14 +36,8 @@ function MyBalance() {
 
   useEffect(() => {
     // get banking options
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBankingOptions`, {
-        headers: {
-          "X-WP-Nonce": frontendLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        const res = JSON.parse(response.data)
+    apiGet("getBankingOptions")
+      .then(res => {
         res[0] && setAccount(res[0].replace(" ", ""))
         setStoreAddress(res[1])
         setStoreCity(res[2])
@@ -95,13 +89,12 @@ function MyBalance() {
 
   function handleInstandTopUp() {
     if (instantTopUpAmount > 0) {
-      axios
-        .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/instantTopup`, {
-          user_id: frontendLocalizer.currentUser.ID,
-          amount: instantTopUpAmount
-        })
-        .then(function (response) {
-          location.href = JSON.parse(response.data)
+      apiPost("instantTopup", {
+        user_id: frontendLocalizer.currentUser.ID,
+        amount: instantTopUpAmount
+      })
+        .then(res => {
+          location.href = res
         })
         .catch(function (error) {
           console.log(error)
@@ -111,17 +104,16 @@ function MyBalance() {
 
   function handlePayout() {
     if (payoutAmount > 0 && toIban !== "" && toName !== "" && toCity !== "") {
-      axios
-        .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/payout`, {
-          user_id: frontendLocalizer.currentUser.ID,
-          amount: payoutAmount,
-          iban: toIban,
-          toname: toName,
-          tocity: toCity
-        })
-        .then(function (response) {
-          console.log(response.data)
-          if (response.data === 200) {
+      apiPost("payout", {
+        user_id: frontendLocalizer.currentUser.ID,
+        amount: payoutAmount,
+        iban: toIban,
+        toname: toName,
+        tocity: toCity
+      })
+        .then(res => {
+          console.log(res)
+          if (res === 200) {
             setSuccess(true)
           }
         })

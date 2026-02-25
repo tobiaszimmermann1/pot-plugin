@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import { Box, Typography, Button, Alert, LinearProgress } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -43,14 +44,12 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
   const [showTaxes, setShowTaxes] = useState(false)
 
   useEffect(() => {
-    axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductList`, {
-        user: frontendLocalizer.currentUser.ID,
-        bestellrunde: activeBestellrunde
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiPost("getProductList", {
+      user: frontendLocalizer.currentUser.ID,
+      bestellrunde: activeBestellrunde
+    })
+      .then(res => {
+        if (res) {
           setAllProducts(res[3])
           setBestellrundenProducts(res[2])
           setCategories(res[4])
@@ -160,38 +159,34 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
    * Get options for product list
    */
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"0"' ? setPublicPrices(false) : setPublicPrices(true)
+    apiGet("getOption", { option: "fc_public_prices" })
+      .then(res => {
+        if (res) {
+          res === "0" ? setPublicPrices(false) : setPublicPrices(true)
         }
       })
       .catch(error => console.log(error))
 
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_products`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"0"' ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
+    apiGet("getOption", { option: "fc_public_products" })
+      .then(res => {
+        if (res) {
+          res === "0" ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
         }
       })
       .catch(error => console.log(error))
 
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"yes"' ? setStockManagement(true) : setStockManagement(false)
+    apiGet("getOption", { option: "woocommerce_manage_stock" })
+      .then(res => {
+        if (res) {
+          res === "yes" ? setStockManagement(true) : setStockManagement(false)
         }
       })
       .catch(error => console.log(error))
 
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_taxes`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"1"' ? setShowTaxes(true) : setShowTaxes(false)
+    apiGet("getOption", { option: "fc_taxes" })
+      .then(res => {
+        if (res) {
+          res === "1" ? setShowTaxes(true) : setShowTaxes(false)
         }
       })
       .catch(error => console.log(error))

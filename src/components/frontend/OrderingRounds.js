@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
+import { apiPost } from "../../utils/api"
 import { Box, Typography, Button, LinearProgress, Alert, Chip } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -22,13 +23,11 @@ const OrderingRounds = () => {
   const [activeOrders, setActiveOrders] = useState(null)
 
   useEffect(() => {
-    axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getActiveBestellrunden`, {
-        user: frontendLocalizer.currentUser.ID
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiPost("getActiveBestellrunden", {
+      user: frontendLocalizer.currentUser.ID
+    })
+      .then(res => {
+        if (res) {
           setBestellrunden(res[0])
           setActiveOrders(res[1])
         }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import Grid from "@mui/material/Grid"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Stack, TextField, Switch, Box, Divider, FormControl, InputLabel, Select, MenuItem, LinearProgress } from "@mui/material"
 import ListItem from "@mui/material/ListItem"
 import AddIcon from "@mui/icons-material/Add"
@@ -38,18 +38,13 @@ function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, select
   useEffect(() => {
     if (memberCheckout) {
       setLoading(true)
-      axios
-        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
-          headers: {
-            "X-WP-Nonce": frontendLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data).sort((a, b) => a.name.localeCompare(b.name))
-            console.log(res)
-            setUsers(res)
-            setSelectedMember(res[0])
+      apiGet("getUsers")
+        .then(res => {
+          if (res) {
+            const users = res.sort((a, b) => a.name.localeCompare(b.name))
+            console.log(users)
+            setUsers(users)
+            setSelectedMember(users[0])
             setLoading(false)
           }
         })

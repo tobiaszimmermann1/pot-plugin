@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining"
@@ -90,20 +90,15 @@ function MyProducts() {
   ]
 
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProducts`, {
-        headers: {
-          "X-WP-Nonce": frontendLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)[0]
-          const cats = JSON.parse(response.data)[1]
+    apiGet("getProducts")
+      .then(res => {
+        if (res) {
+          const data = res[0]
+          const cats = res[1]
           let ownedProducts = []
 
-          if (res.length > 0) {
-            res.map(p => {
+          if (data.length > 0) {
+            data.map(p => {
               if (parseInt(p.fc_owner) === frontendLocalizer.currentUser.ID) {
                 let productToDo = {}
                 productToDo.name = p.name
@@ -140,21 +135,12 @@ function MyProducts() {
   async function handleSaveRow({ exitEditingMode, row, values }) {
     products[row.index] = values
     console.log(values)
-    axios
-      .post(
-        `${frontendLocalizer.apiUrl}/foodcoop/v1/postProductUpdateByOwner`,
-        {
-          user_id: frontendLocalizer.currentUser.ID,
-          updatedValues: values,
-          id: values.id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": frontendLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {})
+    apiPost("postProductUpdateByOwner", {
+      user_id: frontendLocalizer.currentUser.ID,
+      updatedValues: values,
+      id: values.id
+    })
+      .then(() => {})
       .catch(error => console.log(error))
 
     // update table values

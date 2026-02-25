@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import axios from "axios"
+import { apiGet, apiPost } from "./utils/api"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
@@ -59,31 +59,25 @@ function SelfCheckout() {
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
 
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=blogname`)
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getOption", { option: "blogname" })
+      .then(res => {
+        if (res) {
           setBlogname(res)
         }
       })
       .catch(error => console.log(error))
 
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout`)
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getOption", { option: "fc_self_checkout" })
+      .then(res => {
+        if (res) {
           res === "1" ? setActive(true) : setActive(false)
         }
       })
       .catch(error => console.log(error))
 
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_margin`)
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getOption", { option: "fc_margin" })
+      .then(res => {
+        if (res) {
           setMargin(parseFloat(res))
         }
       })
@@ -119,23 +113,14 @@ function SelfCheckout() {
     setSubmitting(true)
 
     if (cart.length > 0) {
-      axios
-        .post(
-          `${frontendLocalizer.apiUrl}/foodcoop/v1/addToCart`,
-          {
-            data: JSON.stringify(cart),
-            user: JSON.stringify(frontendLocalizer.currentUser)
-          },
-          {
-            headers: {
-              "X-WP-Nonce": frontendLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
+      apiPost("addToCart", {
+          data: JSON.stringify(cart),
+          user: JSON.stringify(frontendLocalizer.currentUser)
+        })
+        .then(res => {
           setSubmitting(false)
           localStorage.removeItem("fc_selfcheckout_cart")
-          location.href = JSON.parse(response.data)
+          location.href = res
           return false
         })
         .catch(error => console.log(error.message))
@@ -152,23 +137,14 @@ function SelfCheckout() {
     setSubmitting(true)
 
     if (cart.length > 0) {
-      axios
-        .post(
-          `${frontendLocalizer.apiUrl}/foodcoop/v1/postCreatePOSorder`,
-          {
-            pos_user: frontendLocalizer.currentUser.data.ID,
-            type: selectedMember ? "memberOrder" : "guestOrder",
-            cart: JSON.stringify(cart),
-            user: selectedMember ? JSON.stringify(selectedMember) : JSON.stringify(frontendLocalizer.currentUser.data),
-            payment_gateway: JSON.stringify(selectedPaymentGateway)
-          },
-          {
-            headers: {
-              "X-WP-Nonce": frontendLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
+      apiPost("postCreatePOSorder", {
+          pos_user: frontendLocalizer.currentUser.data.ID,
+          type: selectedMember ? "memberOrder" : "guestOrder",
+          cart: JSON.stringify(cart),
+          user: selectedMember ? JSON.stringify(selectedMember) : JSON.stringify(frontendLocalizer.currentUser.data),
+          payment_gateway: JSON.stringify(selectedPaymentGateway)
+        })
+        .then(() => {
           setCart([])
           localStorage.removeItem("fc_selfcheckout_cart")
         })

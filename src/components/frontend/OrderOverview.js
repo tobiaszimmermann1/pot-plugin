@@ -6,6 +6,7 @@ import ListAltIcon from "@mui/icons-material/ListAlt"
 import { ShoppingContext } from "./ShoppingContext"
 import { TriggerContext } from "./ShoppingContext"
 import axios from "axios"
+import { apiPost } from "../../utils/api"
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
@@ -61,13 +62,11 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
    */
   // get current wallet balance of user and list of payment gateways
   useEffect(() => {
-    axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getBalance`, {
+    apiPost("getBalance", {
         id: frontendLocalizer.currentUser.ID
       })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+      .then(res => {
+        if (res) {
           let b = res[0]
           if (b === null) {
             b = 0
@@ -125,22 +124,13 @@ const OrderOverview = ({ currency, order, cartNonce, activeState, cart, activeBe
     }
 
     if (cart.length > 0) {
-      axios
-        .post(
-          `${frontendLocalizer.apiUrl}/foodcoop/v1/addToCart`,
-          {
-            data: JSON.stringify(cart),
-            user: JSON.stringify(frontendLocalizer.currentUser)
-          },
-          {
-            headers: {
-              "X-WP-Nonce": frontendLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
+      apiPost("addToCart", {
+          data: JSON.stringify(cart),
+          user: JSON.stringify(frontendLocalizer.currentUser)
+        })
+        .then(res => {
           setAddingToCart(false)
-          location.href = JSON.parse(response.data)
+          location.href = res
         })
         .catch(error => console.log(error.message))
         .finally(response => {
