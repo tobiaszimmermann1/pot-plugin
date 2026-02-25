@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import BlockIcon from "@mui/icons-material/Block"
@@ -14,12 +14,10 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
   const [rowSelection, setRowSelection] = useState({})
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getProducts`)
-      .then(function (response) {
+    apiGet("getProducts")
+      .then(res => {
         let reArrangeProductData = []
-        if (response.data) {
-          const res = JSON.parse(response.data)
+        if (res) {
           res[0].map(p => {
             let productToDo = {}
             productToDo.name = p.name
@@ -96,19 +94,10 @@ const Inventory = ({ setInventoryMode, setReload, reload }) => {
       }
     }
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveInventory`,
-        {
+    apiPost("postSaveInventory", {
           products: JSON.stringify(selectedRows)
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(response => {
+        })
+      .then(res => {
         setInventoryMode(false)
         setReload(reload + 1)
       })

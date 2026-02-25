@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import { Stack, Select, MenuItem, FormControl, InputLabel, Card, LinearProgress, Box, Button } from "@mui/material"
 import DownloadIcon from "@mui/icons-material/Download"
 import Table from "@mui/material/Table"
@@ -28,22 +28,11 @@ function BillingOverview() {
     setLoading(true)
     setExportData(null)
     if (selectedYear !== "") {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/getAllOrders`,
-          {
+      apiPost("getAllOrders", {
             year: selectedYear
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
-
+          })
+        .then(res => {
+          if (res) {
             let bestellrundenInYear = []
             let usersInYear = []
             let revenueInYear = 0.0

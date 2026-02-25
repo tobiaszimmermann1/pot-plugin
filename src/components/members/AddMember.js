@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -23,25 +23,16 @@ function AddMember({ id, setModalClose, handleAddMember }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postAddUser`,
-          {
+      apiPost("postAddUser", {
             firstName: firstName,
             lastName: lastName,
             email: email
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response) {
-            if (Array.isArray(response.data)) {
+          })
+        .then(res => {
+          if (res) {
+            if (Array.isArray(res)) {
               handleAddMember({
-                id: response.data[1],
+                id: res[1],
                 name: firstName + " " + lastName,
                 email: email,
                 balance: 0.0,
@@ -49,7 +40,7 @@ function AddMember({ id, setModalClose, handleAddMember }) {
               })
               setModalClose(false)
             } else {
-              if (response.data === "error_email") {
+              if (res === "error_email") {
                 setError(__("Benutzer erstellt. Fehler beim Versenden der Email Bestätigung.", "fcplugin"))
               } else {
                 setError(__("Fehler beim Erstellen des Benutzers. Bitte verwende eine andere Email Adresse.", "fcplugin"))

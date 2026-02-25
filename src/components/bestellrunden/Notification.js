@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import AppBar from "@mui/material/AppBar"
@@ -21,14 +21,9 @@ function NotificationModal({ id, open, setModalClose }) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellungen?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          setOrders(JSON.parse(response.data))
+      apiGet("getBestellungen", { bestellrunde: id })
+        .then(res => {
+          setOrders(res)
         })
         .catch(error => console.log(error))
     }
@@ -37,23 +32,14 @@ function NotificationModal({ id, open, setModalClose }) {
   const handleSubmit = () => {
     setSubmitting(true)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/emailNotificationBestellrunden`,
-        {
+    apiPost("emailNotificationBestellrunden", {
           orders: JSON.stringify(orders),
           message: message,
           subject: subject
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
-          setNumber(response.data)
+        })
+      .then(res => {
+        if (res) {
+          setNumber(res)
           setSuccess(true)
         }
       })
@@ -66,23 +52,14 @@ function NotificationModal({ id, open, setModalClose }) {
   const handleTestSubmit = () => {
     setSubmitting(true)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/emailNotificationBestellrundenTest`,
-        {
+    apiPost("emailNotificationBestellrundenTest", {
           email: testEmail,
           message: message,
           subject: subject
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
-          setNumber(response.data)
+        })
+      .then(res => {
+        if (res) {
+          setNumber(res)
           setSuccess(true)
         }
       })

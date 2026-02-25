@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import CategoryIcon from "@mui/icons-material/Category"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -21,22 +21,13 @@ function AddCategory({ setModalClose, handleAddCategory }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postAddCategory`,
-          {
+      apiPost("postAddCategory", {
             name: name
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response) {
+          })
+        .then(res => {
+          if (res) {
             handleAddCategory({
-              term_id: JSON.parse(response.data),
+              term_id: res,
               name: name,
               count: 0,
               image: null

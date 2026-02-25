@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import AgricultureIcon from "@mui/icons-material/Agriculture"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert, Button, Card, CardContent, CardActions, CardMedia, Box } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -41,27 +41,18 @@ function AddProducer({ setModalClose, handleAddProducer, producerToEdit }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postAddProducer`,
-          {
+      apiPost("postAddProducer", {
             name: name,
             short_description: shortDescription,
             image: image,
             description: description,
             origin: origin,
             website: website
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response) {
+          })
+        .then(res => {
+          if (res) {
             handleAddProducer({
-              id: JSON.parse(response.data),
+              id: res,
               name: name,
               image: image,
               short_description: shortDescription,
@@ -87,10 +78,7 @@ function AddProducer({ setModalClose, handleAddProducer, producerToEdit }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postProducerUpdate`,
-          {
+      apiPost("postProducerUpdate", {
             id: producerToEdit.id,
             name: name,
             short_description: shortDescription,
@@ -98,15 +86,9 @@ function AddProducer({ setModalClose, handleAddProducer, producerToEdit }) {
             description: description,
             origin: origin,
             website: website
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response) {
+          })
+        .then(res => {
+          if (res) {
             setModalClose(false)
           }
         })

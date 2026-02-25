@@ -4,7 +4,7 @@ import Members from "./components/Members"
 import Bestellrunden from "./components/Bestellrunden"
 import Products from "./components/Products"
 import Settings from "./components/Settings"
-import axios from "axios"
+import { apiGet } from "./utils/api"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import DashboardIcon from "@mui/icons-material/Dashboard"
@@ -48,10 +48,9 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=blogname`)
-      .then(function (response) {
-        setName(JSON.parse(response.data))
+    apiGet("getOption", { option: "blogname" })
+      .then(res => {
+        setName(res)
       })
       .catch(function (error) {
         console.log(error)
@@ -59,15 +58,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUser?id=${appLocalizer.currentUser.ID}`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getUser", { id: appLocalizer.currentUser.ID })
+      .then(res => {
+        if (res) {
           res.permissions && setPermissions(res.permissions)
           setRole(res.role)
           setLoading(false)

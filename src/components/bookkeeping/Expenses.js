@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
@@ -26,15 +26,9 @@ const Expenses = () => {
    * get expenses
    */
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getExpenses`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getExpenses")
+      .then(res => {
+        if (res) {
           setExpenseData(res)
           setAllExpenses(res)
         }
@@ -195,25 +189,16 @@ export const CreateNewExpenseModal = ({ open, onClose, onSubmit }) => {
       setSubmitting(true)
       let values = {}
 
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postCreateExpense`,
-          {
+      apiPost("postCreateExpense", {
             date: format(new Date(date), "yyyy-MM-dd"),
             created_by: appLocalizer.currentUser.data.ID,
             type: type,
             amount: amount,
             note: note
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response.status == 200) {
-            values["id"] = response.data
+          })
+        .then(res => {
+          if (res) {
+            values["id"] = res
             values["date"] = format(new Date(date), "yyyy-MM-dd")
             values["type"] = type
             values["amount"] = amount

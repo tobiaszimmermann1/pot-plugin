@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { Box, Typography, Button, TextField } from "@mui/material"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
@@ -25,15 +25,9 @@ const Journal = () => {
    * get transactions
    */
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllTransactions`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getAllTransactions")
+      .then(res => {
+        if (res) {
           setAllTransactions(res)
         }
       })
@@ -44,15 +38,9 @@ const Journal = () => {
    * get expenses
    */
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getExpenses`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getExpenses")
+      .then(res => {
+        if (res) {
           setAllExpenses(res)
         }
       })

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import AgricultureIcon from "@mui/icons-material/Agriculture"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert, Button, Card, CardContent, CardActions, CardMedia, Box } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -51,10 +51,7 @@ function AddSupplier({ setModalClose, handleAddSupplier, supplierToEdit }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postAddSupplier`,
-          {
+      apiPost("postAddSupplier", {
             name: name,
             short_description: shortDescription,
             image: image,
@@ -66,17 +63,11 @@ function AddSupplier({ setModalClose, handleAddSupplier, supplierToEdit }) {
             contact: contact,
             customerNumber: customerNumber,
             note: note
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response) {
+          })
+        .then(res => {
+          if (res) {
             handleAddSupplier({
-              id: JSON.parse(response.data),
+              id: res,
               name: name,
               image: image,
               short_description: shortDescription,
@@ -107,10 +98,7 @@ function AddSupplier({ setModalClose, handleAddSupplier, supplierToEdit }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postSupplierUpdate`,
-          {
+      apiPost("postSupplierUpdate", {
             id: supplierToEdit.id,
             name: name,
             short_description: shortDescription,
@@ -123,15 +111,9 @@ function AddSupplier({ setModalClose, handleAddSupplier, supplierToEdit }) {
             contact: contact,
             customerNumber: customerNumber,
             note: note
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response) {
+          })
+        .then(res => {
+          if (res) {
             setModalClose(false)
           }
         })

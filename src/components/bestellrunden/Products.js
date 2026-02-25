@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import SaveIcon from "@mui/icons-material/Save"
@@ -26,16 +26,10 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellrundeProducts?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
+      apiGet("getBestellrundeProducts", { bestellrunde: id })
+        .then(res => {
           let reArrangeProductData = []
-          if (response.data) {
-            const res = JSON.parse(response.data)
+          if (res) {
             res[0].map(p => {
               let productToDo = {}
               productToDo.name = p.name
@@ -129,20 +123,11 @@ function ProductsOfBestellrundeModal({ id, setModalClose }) {
     setSubmitting(true)
     let productIds = Object.keys(rowSelection)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveProductsBestellrunde`,
-        {
+    apiPost("postSaveProductsBestellrunde", {
           products: JSON.stringify(productIds),
           bestellrunde: id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {})
+        })
+      .then(res => {})
       .catch(error => console.log(error))
       .finally(() => {
         setSubmitting(false)

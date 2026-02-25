@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import SaveIcon from "@mui/icons-material/Save"
 import { Box, Card, LinearProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, Stack, TextField, Autocomplete, Alert, FormControl, Select, MenuItem, InputLabel } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -33,16 +33,11 @@ function ProductOwnerModal({ product, setModalClose, reload, setReload }) {
 
   useEffect(() => {
     if (product && users) {
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getProductOwner?product_id=${product.id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response) {
+      apiGet("getProductOwner", { product_id: product.id })
+        .then(res => {
+          if (res) {
             users.map(user => {
-              if (user.id === parseInt(JSON.parse(response.data))) {
+              if (user.id === parseInt(res)) {
                 setLoadedProductOwner(user)
                 console.log("selectedMember", user)
                 setOwnerLoading(false)
@@ -59,15 +54,9 @@ function ProductOwnerModal({ product, setModalClose, reload, setReload }) {
   }, [product, users])
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getUsers")
+      .then(res => {
+        if (res) {
           setUsers(res)
         }
       })
@@ -77,22 +66,13 @@ function ProductOwnerModal({ product, setModalClose, reload, setReload }) {
   const handleSubmit = () => {
     setSubmitting(true)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveProductOwner`,
-        {
+    apiPost("postSaveProductOwner", {
           user_id: selectedMember.id,
           product_id: product.id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
-          console.log(response.data)
+        })
+      .then(res => {
+        if (res) {
+          console.log(res)
         }
       })
       .catch(error => console.log(error))

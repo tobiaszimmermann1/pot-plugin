@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -51,13 +51,10 @@ const Bestellrunden = () => {
   })
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellrunden`)
-      .then(function (response) {
+    apiGet("getBestellrunden")
+      .then(res => {
         let reArrangedBestellrunden = []
-        if (response.data) {
-          const res = JSON.parse(response.data)
-
+        if (res) {
           res.map(b => {
             let bestellrundeToDo = {}
             bestellrundeToDo.author = b.name
@@ -210,26 +207,16 @@ const Bestellrunden = () => {
     const isValidDateVerteil = isValid(parse(values.bestellrunde_verteiltag, "yyyy-MM-dd", new Date()))
 
     if (isValidDateStart && isValidDateEnd && isValidDateVerteil) {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postUpdateBestellrunde`,
-          {
+      apiPost("postUpdateBestellrunde", {
             bestellrunde_start: format(new Date(values.bestellrunde_start), "yyyy-MM-dd"),
             bestellrunde_ende: format(new Date(values.bestellrunde_ende), "yyyy-MM-dd"),
             bestellrunde_verteiltag: format(new Date(values.bestellrunde_verteiltag), "yyyy-MM-dd"),
             id: values.id,
             bestellrunde_name: values.bestellrunde_name,
             bestellrunde_bild: values.bestellrunde_bild
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          response.status == 200 &&
-            setStatusMessage({
+          })
+        .then(res => {
+                      setStatusMessage({
               message: __("Bestellrunde wurde gespeichert.", "fcplugin"),
               type: "successStatus",
               active: true
@@ -250,28 +237,19 @@ const Bestellrunden = () => {
       return
     }
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postBestellrundeDelete`,
-        {
+    apiPost("postBestellrundeDelete", {
           id: row.getValue("id")
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response.data) {
-          if (response.data === "false") {
-            alert(__("Bestellrunde", "fcplugin") + " " + response.data + " " + __("kann nicht gelöscht werden, da schon Bestellungen existieren.", "fcplugin"))
+        })
+      .then(res => {
+        if (res) {
+          if (res === "false") {
+            alert(__("Bestellrunde", "fcplugin") + " " + res + " " + __("kann nicht gelöscht werden, da schon Bestellungen existieren.", "fcplugin"))
           } else {
             bestellrunden.splice(row.index, 1)
             setBestellrunden([...bestellrunden])
 
             setStatusMessage({
-              message: response.data + " " + __("wurde gelöscht.", "fcplugin"),
+              message: res + " " + __("wurde gelöscht.", "fcplugin"),
               type: "successStatus",
               active: true
             })
@@ -284,21 +262,12 @@ const Bestellrunden = () => {
   function handleDuplicateRow(row) {
     console.log(row)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postDuplicateBestellrunde`,
-        {
+    apiPost("postDuplicateBestellrunde", {
           id: row.original.id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
+        })
+      .then(res => {
         setReload(reload + 1)
-        console.log(response.data)
+        console.log(res)
       })
       .catch(error => console.log(error))
   }
@@ -436,25 +405,16 @@ export const CreateNewBestellrundeModal = ({ open, onClose, onSubmit }) => {
       setSubmitting(true)
       let values = {}
 
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postCreateBestellrunde`,
-          {
+      apiPost("postCreateBestellrunde", {
             bestellrunde_start: format(new Date(valueStart), "yyyy-MM-dd"),
             bestellrunde_ende: format(new Date(valueEnd), "yyyy-MM-dd"),
             bestellrunde_verteiltag: format(new Date(valueDist), "yyyy-MM-dd"),
             bestellrunde_name: valueName,
             bestellrunde_bild: valueImg
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response.status == 200) {
-            values["id"] = response.data
+          })
+        .then(res => {
+          if (res) {
+            values["id"] = res
             values["bestellrunde_start"] = format(new Date(valueStart), "yyyy-MM-dd")
             values["bestellrunde_ende"] = format(new Date(valueEnd), "yyyy-MM-dd")
             values["bestellrunde_verteiltag"] = format(new Date(valueDist), "yyyy-MM-dd")

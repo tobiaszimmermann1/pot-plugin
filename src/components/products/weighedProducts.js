@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import SaveIcon from "@mui/icons-material/Save"
@@ -22,18 +22,11 @@ function WeighedProducts({ setModalClose, prods }) {
 
   useEffect(() => {
     if (prods) {
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_weighed_products`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
-
+      apiGet("getOption", { option: "fc_weighed_products" })
+        .then(res => {
+          if (res) {
             let selectedRowsOnLoad = {}
-            JSON.parse(res).map(rowId => {
+            res.map(rowId => {
               selectedRowsOnLoad[rowId] = true
             })
             setRowSelection(selectedRowsOnLoad)
@@ -107,19 +100,10 @@ function WeighedProducts({ setModalClose, prods }) {
     setSubmitting(true)
     let productIds = Object.keys(rowSelection)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveProductsWeighed`,
-        {
+    apiPost("postSaveProductsWeighed", {
           products: JSON.stringify(productIds)
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {})
+        })
+      .then(res => {})
       .catch(error => console.log(error))
       .finally(() => {
         setSubmitting(false)

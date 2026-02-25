@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import axios from "axios"
+import { apiGet } from "../utils/api"
 import { Box, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -26,14 +26,9 @@ const Bookkeeping = () => {
   }, [activeTab])
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOptions`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        setOptions(JSON.parse(response.data))
+    apiGet("getAllOptions")
+      .then(res => {
+        setOptions(res)
       })
       .catch(function (error) {
         console.log(error)
