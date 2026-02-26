@@ -1033,27 +1033,27 @@ class FoodcoopRestRoutes {
   function getUserProduktFavoriten() {
     $user_id = get_current_user_id();
     $favoriten = get_user_meta($user_id, 'fc_produkt_favoriten', true);
-    if (!$favoriten) $favoriten = [];
+    if ( !is_array($favoriten) ) $favoriten = [];
 
     return [
-        'userProduktFavoriten' => $favoriten
+        'userProduktFavoriten' => array_values($favoriten)
     ];
   }
 
   function toggleUserProduktFavorit($request) {
       $user_id = get_current_user_id();
-      $product_id = intval($request['product_id']);
+      $sku = (string)$request['sku'];
 
       $favoriten = get_user_meta($user_id, 'fc_produkt_favoriten', true);
       if ( !$favoriten ) $favoriten = [];
 
       $favorit = null;
 
-      if ( !in_array($product_id, $favoriten) ) {
-        $favoriten[] = $product_id;
+      if ( !in_array($sku, $favoriten) ) {
+        $favoriten[] = $sku;
         $favorit = true;
       } else {
-        $favoriten = array_filter($favoriten,fn($pid) => $pid != $product_id );
+        $favoriten = array_values(array_filter($favoriten,fn($id) => $id != $sku ));
         $favorit = false;
       }
 
@@ -1061,6 +1061,7 @@ class FoodcoopRestRoutes {
 
       return [
           'userFavorit' => $favorit,
+          'userProduktFavoriten' => $favoriten,
       ];
   }
 
@@ -1070,7 +1071,7 @@ class FoodcoopRestRoutes {
     if (!$verpackungen) $verpackungen = [];
 
     return [
-        'userVerpackungen' => $verpackungen
+        'userVerpackungen' => array_values($verpackungen)
     ];
   }
 
@@ -1083,10 +1084,10 @@ class FoodcoopRestRoutes {
 
     $verpackungen = array_filter($verpackungen,fn($verpackung) => $verpackung['name'] != $name );
 
-    update_user_meta($user_id, 'fc_verpackungen', $verpackungen);
+    update_user_meta($user_id, 'fc_verpackungen', array_values($verpackungen));
 
     return [
-        'userVerpackungen' => $verpackungen
+        'userVerpackungen' => array_values($verpackungen)
     ];
   }
 
@@ -1103,7 +1104,7 @@ class FoodcoopRestRoutes {
     update_user_meta($user_id, 'fc_verpackungen', $verpackungen);
 
     return [
-        'userVerpackungen' => $verpackungen
+        'userVerpackungen' => array_values($verpackungen)
     ];
   }
   
@@ -3205,8 +3206,6 @@ class FoodcoopRestRoutes {
     $weighed_products = json_decode(get_option( 'fc_weighed_products' )) ?: [];
 
     $user_id = get_current_user_id();
-    $favoriten = get_user_meta($user_id, 'fc_produkt_favoriten', true);
-    if ( !$favoriten ) $favoriten = [];
 
     if (in_array($product_id, $self_checkout_products)) {
       $product = wc_get_product($product_id);
@@ -3227,7 +3226,6 @@ class FoodcoopRestRoutes {
             'sku' => $sku,
             'product_id' => $product->get_id(),
             'is_weighed' => in_array($product_id, $weighed_products),
-            'userFavorit' => in_array($product_id, $favoriten),
             'weight_unit' => get_option('woocommerce_weight_unit')
           );
           return json_encode($product_data);

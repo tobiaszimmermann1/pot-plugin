@@ -10,12 +10,11 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart"
 import SelfCheckoutPaymentGateway from "./SelfCheckoutPaymentGateway"
 const __ = wp.i18n.__
 
-function SelfCheckoutCart({ POSMode, margin, userProduktFavoriten, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
+function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
   const { cart, setCart } = useContext(cartContext)
   const [total, setTotal] = useState(0)
   const [finalTotal, setFinalTotal] = useState(0)
   const [cartMargin, setCartMargin] = useState(0)
-  const [removeProduct, setRemoveProduct] = useState(null)
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -23,39 +22,16 @@ function SelfCheckoutCart({ POSMode, margin, userProduktFavoriten, selectedMembe
 
       cart.map(cartItem => {
         newTotal += cartItem.price * cartItem.amount
-
-        cartItem.userFavorit = userProduktFavoriten?userProduktFavoriten.indexOf(cartItem.product_id) >= 0:false
-
-        if (cartItem.amount === 0) {
-          setRemoveProduct(cartItem)
-        }
       })
+
       setTotal(newTotal)
       setCartMargin(newTotal * (margin / 100))
     }
-  }, [cart, margin, userProduktFavoriten])
+  }, [cart, margin])
 
   useEffect(() => {
     POSMode ? setFinalTotal(total + cartMargin) : setFinalTotal(total)
   }, [cartMargin, POSMode])
-
-  useEffect(() => {
-    if (removeProduct) {
-      let newCart = cart.filter(el => {
-        return el.product_id !== removeProduct.product_id
-      })
-
-      setCart(newCart)
-
-      if (newCart.length > 0) {
-        localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
-      } else {
-        localStorage.removeItem("fc_selfcheckout_cart")
-      }
-
-      setRemoveProduct(null)
-    }
-  }, [removeProduct])
 
   return cart.length > 0 ? (
     <>

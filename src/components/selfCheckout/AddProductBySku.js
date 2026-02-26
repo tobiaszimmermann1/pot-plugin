@@ -1,16 +1,16 @@
 import React, { useState, useContext, useEffect } from "react"
 import axios from "axios"
-import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete, IconButton } from "@mui/material"
+import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete, IconButton, InputAdornment } from "@mui/material"
 import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, ListItemAvatar, Avatar } from "@mui/material"
 import { ImageList,ImageListItem,ImageListItemBar } from "@mui/material"
-import { Delete as DeleteIcon, Add as AddIcon } from "@mui/icons-material"
+import { Delete as DeleteIcon, Add as AddIcon, Clear as ClearIcon } from "@mui/icons-material"
 import { cartContext } from "./cartContext"
-import { getProductListOverview, getSelfCheckoutProducts } from "../products/products"
+import { getProductListOverview, getSelfCheckoutProducts, updateProductAmount } from "../products/products"
 import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
 
-function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, userProduktFavoriten }) {
+function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
   const [products, setProducts] = useState(null)
   const [productsLoading, setProductsLoading] = useState(true)
@@ -21,18 +21,13 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
   const [freePositionPrice, setFreePositionPrice] = useState(0)
   const [freeEntry, setFreeEntry] = useState(false)
   const [userWeightValue, setUserWeightValue] = useState(0)
+  const [userFavorit, setUserFavorit] = useState(false)
   const [userTaraValue, setUserTaraValue] = useState(0)
   const [userTaraError, setUserTaraError] = useState('')
   const [userVerpackungen, setUserVerpackungen] = useState([])
   const [userVerpackungName, setUserVerpackungName] = useState('')
   const [userVerpackungFormVisible, showUserVerpackungForm] = useState(false)
-
-  const wc_weight_units = {
-    kg: 1000,
-    g: 1,
-    lbs: 453.592,
-    oz: 28.3495
-  }
+  const [userProduktFavoriten, setUserProduktFavoriten] = useState([])
 
   useEffect(() => {
     let reArrangeProductData = []
@@ -73,7 +68,22 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
         }
       })
       .catch(error => console.log(error))
+      
+      axios
+        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserProduktFavoriten`,{
+          headers: {"X-WP-Nonce": frontendLocalizer.nonce}
+        })
+        .then(function (response) {
+          if (response.data.userProduktFavoriten) {
+            setUserProduktFavoriten(response.data.userProduktFavoriten)
+          }
+        })
+        .catch(error => console.log(error))
   }, [])
+
+  useEffect(() => {
+      setUserFavorit(product?isUserFavorit(product.sku):false);
+    }, [product])
 
   function addUserVerpackung() {
     axios
@@ -109,6 +119,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
   }
 
   function addProduct() {
+    /*
     const productExists = cart.some(cartItem => {
       return sku.toString() === cartItem.sku.toString()
     })
@@ -117,6 +128,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
       setShowCart(true)
       setAdding(false)
     } else {
+    */
       axios
         .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProduct?sku=${sku}`)
         .then(function (response) {
@@ -125,8 +137,6 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
             if (!res) {
               setProductError("Produkt nicht gefunden oder nicht an Lager.")
             } else {
-              let w = formatWeight(userWeightValue);
-              let t = formatWeight(userTaraValue);
 
               /*
               if ( w < t ) {
@@ -139,18 +149,8 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
               let newCart = cart
               res.id = newCart.length
               res.order_type = "self_checkout"
-              res.userFavorit = isUserFavorit(res.product_id)
-              
-              const prodWeightInG = res.weight * wc_weight_units[res.weight_unit]
 
-              if ( res.is_weighed ) {
-                res.userWeightValue = w;
-                res.userTaraValue = t;
-
-                res.amount = formatWeight((w - t) / prodWeightInG * 1000);
-              } else {
-                res.amount = amount
-              }
+              updateProductAmount(res,userWeightValue,userTaraValue);
 
               newCart.push(res)
               setCart(newCart)
@@ -163,17 +163,11 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
           }
         })
         .catch(error => console.log(error))
-    }
+    //}
   }
 
   function isUserFavorit(id){
     return userProduktFavoriten?userProduktFavoriten.indexOf(id) >= 0:false
-  }
-
-  function formatWeight(w){
-    w = parseFloat(w);
-
-    return Math.round(w*1000)/1000;
   }
 
   function addFreeProduct() {
@@ -194,6 +188,26 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
     setFreeEntry(false)
     setFreePosition("")
     setFreePositionPrice(0)
+  }
+  
+  function resetProduct(){
+    setProduct(null);
+  }
+
+  function toggleUserFavorit() {
+    axios
+      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/toggleUserProduktFavorit`,{
+        sku:product.sku
+      },
+      {
+        headers: { "X-WP-Nonce": frontendLocalizer.nonce
+        }
+      })
+      .then(function (response) {
+        setUserFavorit(response.data.userFavorit);
+        setUserProduktFavoriten(response.data.userProduktFavoriten);
+      })
+      .catch(error => console.log(error))
   }
 
   useEffect(() => {
@@ -250,7 +264,23 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
                         id="product"
                         options={products}
                         disablePortal
-                        renderInput={params => <TextField {...params} label={__("Produkt", "fcplugin")} className="autocompleteField" />}
+                        renderInput={params => 
+                          <TextField {...params}
+                            label={__("Produkt", "fcplugin")}
+                            className="autocompleteField"
+                            InputProps={{
+                              ...params.InputProps,
+                              endAdornment: product?(
+                                <>
+                                <InputAdornment position="end">
+                                  <IconButton onClick={ toggleUserFavorit }><FavoriteIcon sx={{ color: (userFavorit?"red":"black")}} /></IconButton>
+                                </InputAdornment>
+                                {params.InputProps.endAdornment}
+                                </>
+                              ):null
+                            }}
+                          />
+                        }
                       />
                     )}
 
@@ -315,12 +345,12 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode, use
                         </ListItem>
                         {products.filter( function(product) {
                           const productExists = cart.some(cartItem => {
-                            return product.id === cartItem.product_id
+                            return product.sku === cartItem.sku
                           })
                           
-                          return !productExists && isUserFavorit(product.id);
+                          return !productExists && isUserFavorit(product.sku);
                         } ).map((product) => (
-                          <ListItem disableGutters key={product.product_id}>
+                          <ListItem disableGutters key={product.sku}>
                             <ListItemButton onClick={() => {
                               setProduct(product)
                               setSku(product?product.sku:null)

@@ -57,7 +57,6 @@ function SelfCheckout() {
   const [margin, setMargin] = useState(0)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
-  const [userProduktFavoriten, setUserProduktFavoriten] = useState([])
 
   useEffect(() => {
     axios
@@ -93,17 +92,6 @@ function SelfCheckout() {
     if (frontendLocalizer.currentUser.roles.includes("administrator") || frontendLocalizer.currentUser.roles.includes("foodcoop_manager")) {
       setIsPOSAdmin(true)
     }
-
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserProduktFavoriten`,{
-        headers: {"X-WP-Nonce": frontendLocalizer.nonce}
-      })
-      .then(function (response) {
-        if (response.data.userProduktFavoriten) {
-          setUserProduktFavoriten(response.data.userProduktFavoriten)
-        }
-      })
-      .catch(error => console.log(error))
   }, [])
 
   useEffect(() => {
@@ -236,8 +224,8 @@ function SelfCheckout() {
                   </Box>
                 )}
                 {scanning && !POSMode && <QrScanner setScanning={setScanning} cart={cart} setShowCart={setShowCart} setProductError={setProductError} setCart={setCart} productError={productError} setLoading={setLoading} />}
-                {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} setProductError={setProductError} POSMode={POSMode} userProduktFavoriten={userProduktFavoriten}/>}
-                {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} userProduktFavoriten={userProduktFavoriten} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
+                {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} setProductError={setProductError} POSMode={POSMode}/>}
+                {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
               </DialogContent>
               <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
                 {isPOSAdmin && (

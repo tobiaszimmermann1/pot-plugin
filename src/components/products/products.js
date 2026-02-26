@@ -2,6 +2,13 @@ import axios from "axios"
 
 let productListOverviewCache = null
 
+const wc_weight_units = {
+    kg: 1000,
+    g: 1,
+    lbs: 453.592,
+    oz: 28.3495
+}
+
 export async function getProductListOverview() {
   if (productListOverviewCache === null) {
     const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
@@ -69,4 +76,32 @@ export async function getSelfCheckoutProducts() {
     }
     return JSON.parse(JSON.parse(response.data)).map(Number)
   }
+}
+
+export function updateProductAmount(product,w,t){
+    if ( product.is_weighed ) {
+      const prodWeightInG = product.weight * wc_weight_units[product.weight_unit];
+
+      product.userWeightValue = formatProductWeight(w);
+      product.userTaraValue = formatProductWeight(t);
+      product.amountWeight = w > t
+        ? formatProductWeight(w - t)
+        : 0
+      ;
+
+      product.amount = w > t
+        ? formatProductWeight((w - t) / prodWeightInG * 1000)
+        : 0
+      ;
+    } else {
+      product.userWeightValue = null;
+      product.userTaraValue = null;
+      product.amount = amount
+    }
+}
+
+export function formatProductWeight(w){
+  w = parseFloat(w);
+
+  return Math.round(w*1000)/1000;
 }
