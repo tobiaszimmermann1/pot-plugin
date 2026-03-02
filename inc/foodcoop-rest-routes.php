@@ -873,7 +873,7 @@ class FoodcoopRestRoutes {
      * GET Product List for Overview
      */
     register_rest_route( 'foodcoop/v1', 'getProductListOverview', array(
-      'methods' => WP_REST_SERVER::CREATABLE,
+      'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getProductListOverview'), 
       'permission_callback' => function() {
         return true;
@@ -4043,6 +4043,7 @@ class FoodcoopRestRoutes {
           "stock" => $product->get_stock_quantity(),
           "stock_status" => $product->get_stock_status(),
           'is_weighed' => in_array($product->get_id(), $weighed_products),
+          "weight_unit" => get_option('woocommerce_weight_unit'),
           "sku" => $sku,
         );
       

@@ -49,6 +49,7 @@ function SelfCheckout() {
   const [productError, setProductError] = useState(null)
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(true)
+  const [scaleURL, setScaleURL] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [active, setActive] = useState(null)
@@ -59,6 +60,8 @@ function SelfCheckout() {
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
 
   useEffect(() => {
+    setScaleURL(localStorage.getItem("fc_selfcheckout_scale_url"));
+
     axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=blogname`)
       .then(function (response) {
@@ -97,6 +100,10 @@ function SelfCheckout() {
   useEffect(() => {
     scanning && setProductError(null)
   }, [scanning])
+
+  useEffect(() => {
+    localStorage.setItem("fc_selfcheckout_scale_url",scaleURL);
+  }, [scaleURL])
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -223,8 +230,17 @@ function SelfCheckout() {
                     <LinearProgress />
                   </Box>
                 )}
-                {scanning && !POSMode && <QrScanner setScanning={setScanning} cart={cart} setShowCart={setShowCart} setProductError={setProductError} setCart={setCart} productError={productError} setLoading={setLoading} />}
-                {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} setProductError={setProductError} POSMode={POSMode}/>}
+                {scanning && !POSMode && <QrScanner
+                  setScanning={setScanning}
+                  cart={cart}
+                  setShowCart={setShowCart}
+                  setProductError={setProductError}
+                  setCart={setCart}
+                  productError={productError}
+                  setLoading={setLoading}
+                  setScaleURL={setScaleURL}
+                />}
+                {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} setProductError={setProductError} scaleURL={scaleURL} POSMode={POSMode}/>}
                 {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
               </DialogContent>
               <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>

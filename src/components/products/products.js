@@ -9,20 +9,25 @@ const wc_weight_units = {
     oz: 28.3495
 }
 
-export async function getProductListOverview() {
+async function updateProductListOverview() {
   if (productListOverviewCache === null) {
-    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
+    const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
     if (response.data) {
       productListOverviewCache = JSON.parse(response.data)
     }
   }
 
-  const res = productListOverviewCache
+  return productListOverviewCache;
+}
+
+export async function getProductListOverview() {
+  const res = await updateProductListOverview();
   const products = res[0]
   const categories = res[1]
   const currency = res[2]
+
   let productsByCategory = {}
-  res[1].map(category => {
+  categories.map(category => {
     productsByCategory[category.name] = []
   })
 
@@ -45,13 +50,7 @@ export async function getProductListOverview() {
 }
 
 export async function getProduct(id) {
-  if (productListOverviewCache === null) {
-    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-    if (response.data) {
-      productListOverviewCache = JSON.parse(response.data)
-    }
-  }
-  const res = productListOverviewCache
+  const res = await updateProductListOverview();
   let product = res[0].find(product => product.id == id)
 
   const currency = res[2]

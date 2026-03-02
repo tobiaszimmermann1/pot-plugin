@@ -1,16 +1,16 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect, useRef } from "react"
 import axios from "axios"
-import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete, IconButton, InputAdornment } from "@mui/material"
+import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete, IconButton, InputAdornment, Chip } from "@mui/material"
 import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, ListItemAvatar, Avatar } from "@mui/material"
 import { ImageList,ImageListItem,ImageListItemBar } from "@mui/material"
-import { Delete as DeleteIcon, Add as AddIcon, Clear as ClearIcon } from "@mui/icons-material"
+import { Delete as DeleteIcon, Add as AddIcon, Scale as ScaleIcon } from "@mui/icons-material"
 import { cartContext } from "./cartContext"
 import { getProductListOverview, getSelfCheckoutProducts, updateProductAmount } from "../products/products"
 import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
 
-function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
+function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
   const [products, setProducts] = useState(null)
   const [productsLoading, setProductsLoading] = useState(true)
@@ -21,6 +21,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
   const [freePositionPrice, setFreePositionPrice] = useState(0)
   const [freeEntry, setFreeEntry] = useState(false)
   const [userWeightValue, setUserWeightValue] = useState(0)
+  const [scaleWeightValue, setScaleWeightValue] = useState(0)
   const [userFavorit, setUserFavorit] = useState(false)
   const [userTaraValue, setUserTaraValue] = useState(0)
   const [userTaraError, setUserTaraError] = useState('')
@@ -29,56 +30,18 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
   const [userVerpackungFormVisible, showUserVerpackungForm] = useState(false)
   const [userProduktFavoriten, setUserProduktFavoriten] = useState([])
 
-  useEffect(() => {
-    let reArrangeProductData = []
-    getSelfCheckoutProducts()
-      .then(function (scProds) {
-        getProductListOverview()
-          .then(function (response) {
-            if (response.products) {
-              const prod = response.products
-              Object.keys(prod).forEach(function (key, index) {
-                if (scProds.includes(prod[key].id)) {
-                  let productToDo = {}
-                  productToDo.label = prod[key].name + " ( #" + prod[key].sku + " )"
-                  productToDo.id = prod[key].id
-                  productToDo.sku = prod[key].sku
-                  productToDo.unit = prod[key].unit
-                  productToDo.is_weighed = prod[key].is_weighed
-                  productToDo.image = prod[key].image
-                  
-                  reArrangeProductData.push(productToDo)
-                }
-              })
-              setProducts(reArrangeProductData)
-              setProductsLoading(false)
-            }
-          })
-          .catch(error => console.log(error))
-      })
-      .catch(error => console.log(error))
+  const scaleWeightPollInterval = useRef(null);
 
-      axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserVerpackungen`,{
-        headers: {"X-WP-Nonce": frontendLocalizer.nonce}
-      })
-      .then(function (response) {
-        if (response.data.userVerpackungen) {
-          setUserVerpackungen(response.data.userVerpackungen)
-        }
-      })
-      .catch(error => console.log(error))
-      
-      axios
-        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserProduktFavoriten`,{
-          headers: {"X-WP-Nonce": frontendLocalizer.nonce}
-        })
-        .then(function (response) {
-          if (response.data.userProduktFavoriten) {
-            setUserProduktFavoriten(response.data.userProduktFavoriten)
-          }
-        })
-        .catch(error => console.log(error))
+  useEffect(() => {
+      updateProducts();
+      updateUserVerpackungen();
+      updateUserProduktFavoriten();
+
+      if ( scaleURL ) pollScaleWeightValue();
+
+      return () => {
+        stopPollScaleWeightValue();
+      }
   }, [])
 
   useEffect(() => {
@@ -118,17 +81,89 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
       .catch(error => console.log(error))
   }
 
+  function updateProducts() {
+    let reArrangeProductData = []
+    getSelfCheckoutProducts()
+      .then(function (scProds) {
+        getProductListOverview()
+          .then(function (response) {
+            if (response.products) {
+              const prod = response.products
+              Object.keys(prod).forEach(function (key, index) {
+                let product = prod[key];
+
+                if (scProds.includes(product.id)) {
+                  product.label = product.name;// + " ( #" + product.sku + " )"
+                  
+                  reArrangeProductData.push(product)
+                }
+              })
+              setProducts(reArrangeProductData)
+              setProductsLoading(false)
+            }
+          })
+          .catch(error => console.log(error))
+      })
+      .catch(error => console.log(error))
+  }
+
+  function updateUserVerpackungen() {
+    axios
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserVerpackungen`,{
+        headers: {"X-WP-Nonce": frontendLocalizer.nonce}
+      })
+      .then(function (response) {
+        if (response.data.userVerpackungen) {
+          setUserVerpackungen(response.data.userVerpackungen)
+        }
+      })
+      .catch(error => console.log(error))
+  }
+
+  function updateUserProduktFavoriten() {
+      axios
+        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserProduktFavoriten`,{
+          headers: {"X-WP-Nonce": frontendLocalizer.nonce}
+        })
+        .then(function (response) {
+          if (response.data.userProduktFavoriten) {
+            setUserProduktFavoriten(response.data.userProduktFavoriten)
+          }
+        })
+        .catch(error => console.log(error))
+  }
+
+  function stopPollScaleWeightValue() {
+    if ( scaleWeightPollInterval.current ) {
+      clearInterval(scaleWeightPollInterval.current);
+      scaleWeightPollInterval.current = null;
+    }
+  }
+
+  function pollScaleWeightValue() {
+    if ( scaleWeightPollInterval.current ) return;
+
+    updateScaleWeightValue();
+
+    scaleWeightPollInterval.current = setInterval(updateScaleWeightValue,1000);
+  }
+
+  function updateScaleWeightValue() {
+    if ( !scaleURL ) return;
+    
+    axios
+      .get(scaleURL) //status=connected, time, unit, value, stable, negative, tara
+      .then(function (response) {
+        if ( response.data.status == 'connected' ) {
+          setScaleWeightValue(response.data.value / 1000);
+        } else {
+          setScaleWeightValue(0);
+        }
+      })
+      .catch(error => console.log(error))
+  }
+
   function addProduct() {
-    /*
-    const productExists = cart.some(cartItem => {
-      return sku.toString() === cartItem.sku.toString()
-    })
-    if (productExists) {
-      setProductError(__("Produkt ist schon im Warenkorb. Du kannst die Menge erhöhen", "fcplugin"))
-      setShowCart(true)
-      setAdding(false)
-    } else {
-    */
       axios
         .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProduct?sku=${sku}`)
         .then(function (response) {
@@ -137,14 +172,6 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
             if (!res) {
               setProductError("Produkt nicht gefunden oder nicht an Lager.")
             } else {
-
-              /*
-              if ( w < t ) {
-                setUserTaraError("Verpackungsgewicht ist grösser als das Totalgewicht");
-                return;
-              }
-              */
-
               // prepare cart
               let newCart = cart
               res.id = newCart.length
@@ -163,7 +190,6 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
           }
         })
         .catch(error => console.log(error))
-    //}
   }
 
   function isUserFavorit(id){
@@ -214,6 +240,23 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
     !POSMode && setFreeEntry(false)
   }, [POSMode])
 
+  function scaleWeightChip(cb){
+    if ( !scaleURL ) return null;
+
+    return <>
+      <InputAdornment position="end">
+        <Chip
+          sx={{width:'100px'}}
+          variant="outlined"
+          label={`${scaleWeightValue} kg`}
+          onClick={() => cb(scaleWeightValue)}
+          onDelete={() => cb(scaleWeightValue)}
+          deleteIcon={<ScaleIcon />}
+        />
+      </InputAdornment>
+    </>
+  }
+
   return (
     <>
       {!productsLoading ? (
@@ -240,7 +283,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
                 { userVerpackungFormVisible ? (
                   <>
                     <FormControl>
-                      <TextField id="userTaraValue" value={userTaraValue} onChange={e => setUserTaraValue(e.target.value)} variant="outlined" type="number" label={__("Verpackungsgewicht", "fcplugin") +' ( '+ product.unit +' )'} />
+                      <TextField id="userTaraValue" value={userTaraValue} onChange={e => setUserTaraValue(e.target.value)} variant="outlined" type="number" label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'} />
                       {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
                     </FormControl>
                     <FormControl>
@@ -289,10 +332,26 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
                         { product.is_weighed ? (
                           <>
                             <FormControl>
-                              <TextField id="userWeightValue" value={userWeightValue} onChange={e => setUserWeightValue(e.target.value)} variant="outlined" type="number" label={__("Totalgewicht", "fcplugin") +' ( '+ product.unit +' )' } />
+                              <TextField
+                                id="userWeightValue"
+                                value={userWeightValue}
+                                onChange={e => setUserWeightValue(e.target.value)}
+                                variant="outlined"
+                                type="number"
+                                label={__("Totalgewicht", "fcplugin") +' ( '+ product.weight_unit +' )' }
+                                InputProps={{ endAdornment: scaleWeightChip(setUserWeightValue) }}
+                              />
                             </FormControl>
                             <FormControl>
-                              <TextField id="userTaraValue" value={userTaraValue} onChange={e => setUserTaraValue(e.target.value)} variant="outlined" type="number" label={__("Verpackungsgewicht", "fcplugin") +' ( '+ product.unit +' )'} />
+                              <TextField
+                                id="userTaraValue"
+                                value={userTaraValue}
+                                onChange={e => setUserTaraValue(e.target.value)}
+                                variant="outlined"
+                                type="number"
+                                label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'}
+                                InputProps={{ endAdornment: scaleWeightChip(setUserTaraValue) }}
+                              />
                               {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
                             </FormControl>
                             <Button onClick={addProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
