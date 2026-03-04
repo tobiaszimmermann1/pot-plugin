@@ -283,7 +283,15 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
                 { userVerpackungFormVisible ? (
                   <>
                     <FormControl>
-                      <TextField id="userTaraValue" value={userTaraValue} onChange={e => setUserTaraValue(e.target.value)} variant="outlined" type="number" label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'} />
+                      <TextField
+                        id="userTaraValue"
+                        value={userTaraValue}
+                        onChange={e => setUserTaraValue(e.target.value)}
+                        variant="outlined"
+                        type="number"
+                        label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'}
+                        InputProps={{ endAdornment: scaleWeightChip(setUserTaraValue) }}
+                      />
                       {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
                     </FormControl>
                     <FormControl>
