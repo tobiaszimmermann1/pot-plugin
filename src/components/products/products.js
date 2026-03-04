@@ -95,7 +95,6 @@ export function updateProductAmount(product,w,t){
     } else {
       product.userWeightValue = null;
       product.userTaraValue = null;
-      product.amount = amount
     }
 }
 
