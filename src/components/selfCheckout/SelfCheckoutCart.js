@@ -67,9 +67,16 @@ function SelfCheckoutCart({ POSMode, margin, selectedMember, setSelectedMember, 
           )}
         </>
       )}
-      <Stack justifyContent={"flex-end"} alignItems={"flex-end"}>
-        <h5 style={{ fontWeight: "bold", textAlign: "right", marginTop: "10px", marginRight: "10px", fontSize: POSMode ? "1.75rem" : "1.25rem" }}>
-          {__("Total: CHF", "fcplugin")} {finalTotal.toFixed(2)}
+      <Stack>
+        <h5 style={{
+          fontWeight: "bold", marginTop: "10px", marginRight: "10px",
+          display:"flex",width:"100%",justifyContent:'space-between',
+          fontSize: POSMode ? "1.75rem" : "1.25rem" }}>
+          <div>{__("Total", "fcplugin")}</div>
+          <div style={{minWidth:'120px', textAlign: "right"}}>
+            <div style={{float:'left'}}>CHF</div>
+            <div>{finalTotal.toFixed(2)}</div>
+          </div>
         </h5>
 
         <Button

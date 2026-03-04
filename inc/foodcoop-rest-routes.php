@@ -3215,13 +3215,18 @@ class FoodcoopRestRoutes {
         $quantity = $product->get_stock_quantity();
         $stock_status = $product->get_stock_status();
 
+        $pimg = wp_get_attachment_url( $product->get_image_id(), 'thumbnail');
+        if (!$pimg) {
+          $pimg = plugin_dir_url( __FILE__ ).'../images/placeholder.png';
+        }
+
         if ($quantity > 0 || $stock_setting == "no" || $stock_status == "instock") {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
             'unit' => $product->get_meta('_einheit'),
             'weight' => floatval($product->get_weight()),
-            'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
+            'img' => $pimg,
             'amount' => 1, 
             'sku' => $sku,
             'product_id' => $product->get_id(),

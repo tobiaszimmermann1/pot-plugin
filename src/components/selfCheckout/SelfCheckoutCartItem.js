@@ -84,20 +84,18 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   }
 
   function renderWeighedItemContent(){
-    return <ListItemText primary={
-      <Chip
-        sx={{float:'right',width:'100px'}}
-        variant="outlined"
-        label={`${productData.amountWeight} ${productData.weight_unit}`}
-        onClick={() => {
-          setInputUserWeight(true)
-          setInputUserWeightValue(userWeightValue)
-          setInputUserTaraValue(userTaraValue)
-        }}
-        onDelete={removeItem}
-        deleteIcon={<DeleteIcon />}
-      />
-    }/>
+    return <Chip
+      sx={{width:'100px'}}
+      variant="outlined"
+      label={`${productData.amountWeight} ${productData.weight_unit}`}
+      onClick={() => {
+        setInputUserWeight(true)
+        setInputUserWeightValue(userWeightValue)
+        setInputUserTaraValue(userTaraValue)
+      }}
+      onDelete={removeItem}
+      deleteIcon={<DeleteIcon />}
+    />
   }
 
   function decreaseAmount(){
@@ -113,16 +111,14 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   }
 
   function renderItemContent(){
-    return <ListItemText primary={
-      <Chip
-        sx={{float:'right',width:'100px'}}
-        avatar={<AddIcon onClick={increaseAmount} sx={{ cursor: "pointer" }} />}
-        variant="outlined"
-        label={productData.amount}
-        onDelete={decreaseAmount}
-        deleteIcon={productData.amount>1?<RemoveIcon/>:<DeleteIcon/>}
-      />
-    }/>
+    return <Chip
+      sx={{width:'100px'}}
+      avatar={<AddIcon onClick={increaseAmount} sx={{ cursor: "pointer" }} />}
+      variant="outlined"
+      label={productData.amount}
+      onDelete={decreaseAmount}
+      deleteIcon={productData.amount>1?<RemoveIcon/>:<DeleteIcon/>}
+    />
   }
 
   if ( !productData ) return "";
@@ -132,21 +128,25 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   return <>
       { renderWeightDialog() }
       <ListItem
-      disableGutters dense
-      sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
-      secondaryAction={
-        <strong>{parseFloat(totalPrice).toFixed(2)}</strong>
-      }>
-      <ListItemAvatar>{productData.img ? <img src={productData.img} width="50px" height="50px"/> : ""}</ListItemAvatar>
-      <ListItemText primary={<>
-          <strong>{productData.name}</strong> #{productData.sku}<br/>
-          CHF {parseFloat(productData.price).toFixed(2)} / {productData.unit}
-        </>}
-      />
-      {productData.is_weighed
-        ? renderWeighedItemContent()
-        : renderItemContent()
-      }
+        disableGutters dense
+        sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
+        secondaryAction={
+          <Box sx={{ minWidth: '120px', textAlign: 'right' }}>
+            <span style={{float:'left'}}>CHF</span>{parseFloat(totalPrice).toFixed(2)}
+          </Box>
+        }
+      >
+        <ListItemAvatar sx={{marginRight:'10px'}}>
+          {productData.img ? <img src={productData.img} width="60px" height="60px"/> : ""}
+        </ListItemAvatar>
+        <ListItemText
+          sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}
+          primary={<strong>{productData.name}</strong>}
+          secondary={productData.is_weighed
+            ? renderWeighedItemContent()
+            : renderItemContent()
+          }
+        />
       </ListItem>
       <Divider />
     </>
