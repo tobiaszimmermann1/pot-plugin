@@ -424,7 +424,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
                             }}>
                               <ListItemAvatar>
                                 <Avatar>
-                                  {product.image ? <img src={product.image} width={"50px"} height={"50px"} /> : <span/>}
+                                  {product.img ? <img src={product.img} width={"50px"} height={"50px"} /> : <span/>}
                                 </Avatar>
                               </ListItemAvatar>
                               <ListItemText primary={product.label} />

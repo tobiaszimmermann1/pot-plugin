@@ -103,3 +103,26 @@ export function formatProductWeight(w){
 
   return Math.round(w*1000)/1000;
 }
+
+export async function addUserEinkaufsliste(cart,id) {
+  const produkte = cart.map(( item ) => ({
+    sku:item.sku,
+    amount:item.amount,
+    weight:item.userWeightValue,
+    tara:item.userTaraValue
+  }) );
+
+  const auto = !id;
+  if ( auto ) id = self.crypto.randomUUID();
+  
+  const response = await axios
+    .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/addUserEinkaufsliste`,{
+      id:id,
+      auto:auto?true:false,
+      date:Date.now(),
+      produkte:produkte,
+    },{headers: { "X-WP-Nonce": frontendLocalizer.nonce}}
+  )
+
+  return response;
+}

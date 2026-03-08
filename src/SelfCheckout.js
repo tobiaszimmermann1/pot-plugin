@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import axios from "axios"
+import { addUserEinkaufsliste } from "./components/products/products"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
@@ -59,6 +60,7 @@ function SelfCheckout() {
   const [margin, setMargin] = useState(0)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
+  const [saveEinkaufsliste, setSaveEinkaufsliste] = useState(false)
 
   useEffect(() => {
     setScaleURL(localStorage.getItem("fc_selfcheckout_scale_url"));
@@ -123,33 +125,28 @@ function SelfCheckout() {
     }
   }, [productError])
 
-  function checkout() {
+  async function checkout() {
     setSubmitting(true)
 
     if (cart.length > 0) {
-      axios
-        .post(
-          `${frontendLocalizer.apiUrl}/foodcoop/v1/addToCart`,
-          {
+
+      await addUserEinkaufsliste(cart);
+
+      try {
+        const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/addToCart`,{
             data: JSON.stringify(cart),
             user: JSON.stringify(frontendLocalizer.currentUser)
           },
-          {
-            headers: {
-              "X-WP-Nonce": frontendLocalizer.nonce
-            }
-          }
+          {headers: {"X-WP-Nonce": frontendLocalizer.nonce}}
         )
-        .then(function (response) {
-          setSubmitting(false)
-          localStorage.removeItem("fc_selfcheckout_cart")
-          location.href = JSON.parse(response.data)
-          return false
-        })
-        .catch(error => console.log(error.message))
-        .finally(response => {
-          setSubmitting(false)
-        })
+        
+        setSubmitting(false)
+        localStorage.removeItem("fc_selfcheckout_cart")
+        location.href = JSON.parse(response.data)
+      } catch( error ) {
+        setSubmitting(false)
+        console.error(error);
+      }
     } else {
       setProductError("Warenkorb leer.")
       setSubmitting(false)
@@ -202,12 +199,12 @@ function SelfCheckout() {
   }, [POSMode])
 
   let buttons = {
-    pos: isPOSAdmin && !scanning && !adding,
-    scan: !POSMode && !scanning && !adding,
-    add: !scanning && !adding,
-    cart: scanning || adding,
-    save: !POSMode && !scanning && !adding,
-    checkout: !scanning && !adding,
+    pos: isPOSAdmin && showCart,
+    scan: !POSMode && showCart,
+    add: showCart,
+    cart: !showCart,
+    save: !POSMode && showCart && cart.length > 0,
+    checkout: showCart && cart.length > 0,
   }
 
   return (
@@ -250,8 +247,23 @@ function SelfCheckout() {
                   setLoading={setLoading}
                   setScaleURL={setScaleURL}
                 />}
-                {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} setProductError={setProductError} scaleURL={scaleURL} POSMode={POSMode}/>}
-                {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
+                {adding && <AddProductBySku
+                  setShowCart={setShowCart}
+                  setAdding={setAdding}
+                  setProductError={setProductError}
+                  scaleURL={scaleURL}
+                  POSMode={POSMode}
+                />}
+                {showCart && <SelfCheckoutCart
+                  POSMode={POSMode}
+                  margin={margin}
+                  saveEinkaufsliste={saveEinkaufsliste}
+                  setSaveEinkaufsliste={setSaveEinkaufsliste}
+                  selectedMember={selectedMember}
+                  setSelectedMember={setSelectedMember}
+                  selectedPaymentGateway={selectedPaymentGateway}
+                  setSelectedPaymentGateway={setSelectedPaymentGateway}
+                />}
               </DialogContent>
               <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
                 
@@ -312,9 +324,7 @@ function SelfCheckout() {
                       size="large"
                       color={POSMode ? "POSModeColor" : "primary"}
                       onClick={() => {
-                        setShowCart(true)
-                        setScanning(false)
-                        setAdding(false)
+                        setSaveEinkaufsliste(true)
                       }}
                     >
                       <SaveIcon />

@@ -1025,6 +1025,36 @@ class FoodcoopRestRoutes {
             }
         ],
     ]);
+
+    register_rest_route('foodcoop/v1', 'getUserEinkaufslisten', [
+        [
+            'methods' => WP_REST_SERVER::READABLE,
+            'callback' => array($this,'getUserEinkaufslisten'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+    register_rest_route('foodcoop/v1', 'addUserEinkaufsliste', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'addUserEinkaufsliste'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+    
+    register_rest_route('foodcoop/v1', 'removeUserEinkaufsliste', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'removeUserEinkaufsliste'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
     
   }
 
@@ -1105,6 +1135,77 @@ class FoodcoopRestRoutes {
 
     return [
         'userVerpackungen' => array_values($verpackungen)
+    ];
+  }
+
+  function getUserEinkaufslisten() {
+    $user_id = get_current_user_id();
+    $einkaufslisten = get_user_meta($user_id, 'fc_einkaufslisten', true);
+    if (!$einkaufslisten) $einkaufslisten = [];
+
+    return [
+        'userEinkaufslisten' => array_values($einkaufslisten)
+    ];
+  }
+
+  function removeUserEinkaufsliste($request) {
+    $user_id = get_current_user_id();
+    $id = $request['id'];
+
+    $einkaufslisten = get_user_meta($user_id, 'fc_einkaufslisten', true);
+    if ( !$einkaufslisten ) $einkaufslisten = [];
+
+    $einkaufslisten = array_filter($einkaufslisten,fn($einkaufsliste) => $einkaufsliste['id'] != $id );
+
+    update_user_meta($user_id, 'fc_einkaufslisten', array_values($einkaufslisten));
+
+    return [
+        'userEinkaufslisten' => array_values($einkaufslisten)
+    ];
+  }
+
+  function addUserEinkaufsliste($request) {
+    $user_id = get_current_user_id();
+
+    $einkaufslisten = get_user_meta($user_id, 'fc_einkaufslisten', true);
+    if ( !$einkaufslisten ) $einkaufslisten = [];
+
+    $id = $request['id'];
+    $date = $request['date'];
+    $auto = (bool)$request['auto']??false;
+    $produkte = [];
+    foreach( $request['produkte']??[] as $produkt ) {
+      if ( empty($produkt['sku']) ) continue;
+
+      $produkte[] = [
+        'sku'=>(string)$produkt['sku'],
+        'amount'=>floatval($produkt['amount']),
+        'weight'=>floatval($produkt['weight']),
+        'tara'=>floatval($produkt['tara']),
+      ];
+    }
+
+    $neueListe = [
+      'id'=>$id,
+      'auto'=>$auto,
+      'date'=>$date,
+      'produkte'=>$produkte
+    ];
+
+    foreach( $einkaufslisten as $idx => $liste ) {
+      if ( $liste['id'] === $id ) {
+        $einkaufslisten[$idx] = $neueListe;
+        $neueListe = null;
+        break;
+      }
+    }
+
+    if ( $neueListe ) $einkaufslisten[] = $neueListe;
+
+    update_user_meta($user_id, 'fc_einkaufslisten', $einkaufslisten);
+
+    return [
+        'userEinkaufslisten' => array_values($einkaufslisten)
     ];
   }
   
@@ -4043,7 +4144,8 @@ class FoodcoopRestRoutes {
           "name" => $product->get_name(),
           "price" => $product->get_price(),
           "category_id" => $product->get_category_ids()[0],
-          "image" => $pimg,
+          'weight' => floatval($product->get_weight()),
+          "img" => $pimg,
           "description" => $product->get_description(),
           "stock" => $product->get_stock_quantity(),
           "stock_status" => $product->get_stock_status(),
