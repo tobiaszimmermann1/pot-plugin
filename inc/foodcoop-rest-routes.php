@@ -1192,15 +1192,31 @@ class FoodcoopRestRoutes {
       'produkte'=>$produkte
     ];
 
-    foreach( $einkaufslisten as $idx => $liste ) {
-      if ( $liste['id'] === $id ) {
-        $einkaufslisten[$idx] = $neueListe;
-        $neueListe = null;
-        break;
+    if ( $auto ) {
+      foreach( $einkaufslisten as $einkaufsliste ) {
+        if ( $einkaufsliste['auto'] ) $autoListen[] = $einkaufsliste;
+        else $namedListen[] = $einkaufsliste;
       }
+
+      $autoListen[] = $neueListe;
+
+      $autoListen = array_slice($autoListen,-5); //only keep last 5 auto listen
+
+      $einkaufslisten = array_merge($autoListen,$namedListen);
+
+    } else {
+      foreach( $einkaufslisten as $idx => $liste ) {
+        if ( $liste['id'] === $id ) {
+          $einkaufslisten[$idx] = $neueListe;
+          $neueListe = null;
+          break;
+        }
+      }
+
+      if ( $neueListe ) $einkaufslisten[] = $neueListe;
     }
 
-    if ( $neueListe ) $einkaufslisten[] = $neueListe;
+    
 
     update_user_meta($user_id, 'fc_einkaufslisten', $einkaufslisten);
 

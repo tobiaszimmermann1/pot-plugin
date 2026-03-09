@@ -61,14 +61,19 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
       if ( !product ) return null;
 
       product.order_type = "self_checkout"
-      product.amount = einkauf.amount;
 
-      updateProductAmount(product,einkauf.weight,einkauf.tara);
+      if ( einkaufsliste.auto ) {
+        product.amount = einkauf.amount;
+        updateProductAmount(product,einkauf.weight,einkauf.tara);
+      } else {
+        product.amount = 0;
+        updateProductAmount(product,0,einkauf.tara);
+      }
 
       return product;
     });
 
-    if ( !einkaufsliste.auto ) setUserEinkaufslisteName(einkaufsliste.id);
+    setUserEinkaufslisteName(einkaufsliste.auto?'':einkaufsliste.id);
     setCart(newCart);
   }
 
@@ -171,7 +176,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
       <ListItem disableGutters>
         <ListItemText><strong>{__("Gespeicherte Einkaufslisten", "fcplugin")}</strong></ListItemText>
       </ListItem>
-      {userEinkaufslisten.map((einkaufsliste) => (
+      {[...userEinkaufslisten].reverse().map((einkaufsliste) => (
         <ListItem disableGutters
           secondaryAction={
             <IconButton onClick={() => { removeUserEinkaufsliste(einkaufsliste.id) }}>
