@@ -68,10 +68,18 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
             <FormControl>
-              <TextField type="number" size="normal" id="userWeightValue" label={__("Totalgewicht", "fcplugin")+' ( '+ productData.weight_unit +' )'} name="userWeightValue" variant="outlined" value={inputUserWeightValue} onChange={e => setInputUserWeightValue(e.target.value)} />
+              <TextField type="number" size="normal" id="userWeightValue" name="userWeightValue" variant="outlined"
+                label={__("Totalgewicht", "fcplugin")+' ( '+ productData.weight_unit +' )'}
+                value={inputUserWeightValue}
+                onChange={e => setInputUserWeightValue(e.target.value)}
+              />
             </FormControl>
             <FormControl>
-              <TextField type="number" size="normal" id="userTaraValue" label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.weight_unit +' )' } name="amount" variant="outlined" value={inputUserTaraValue} onChange={e => setInputUserTaraValue(e.target.value)} />
+              <TextField type="number" size="normal" id="userTaraValue" name="userTaraValue" variant="outlined"
+                label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.weight_unit +' )' }
+                value={inputUserTaraValue}
+                onChange={e => setInputUserTaraValue(e.target.value)}
+              />
             </FormControl>
           </Stack>
         </DialogContent>

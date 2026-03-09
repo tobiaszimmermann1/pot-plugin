@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect, useRef } from "react"
 import axios from "axios"
 import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete, IconButton, InputAdornment, Chip } from "@mui/material"
-import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, ListItemAvatar, Avatar } from "@mui/material"
-import { ImageList,ImageListItem,ImageListItemBar } from "@mui/material"
+import { List, ListItem, ListItemText, ListItemButton, ListItemAvatar, Avatar } from "@mui/material"
 import { Delete as DeleteIcon, Add as AddIcon, Scale as ScaleIcon } from "@mui/icons-material"
 import { cartContext } from "./cartContext"
-import { getProductListOverview, getSelfCheckoutProducts, updateProductAmount } from "../products/products"
+import { getProductListOverview, getProductBySku, getSelfCheckoutProducts, updateProductAmount } from "../products/products"
 import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
@@ -164,32 +163,21 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
   }
 
   function addProduct() {
-      axios
-        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProduct?sku=${sku}`)
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
-            if (!res) {
-              setProductError("Produkt nicht gefunden oder nicht an Lager.")
-            } else {
-              // prepare cart
-              let newCart = cart
-              res.id = newCart.length
-              res.order_type = "self_checkout"
+    getProductBySku(sku).then( (product) => {
+        const cartItem = JSON.parse(JSON.stringify(product));
 
-              updateProductAmount(res,userWeightValue,userTaraValue);
+        cartItem.order_type = "self_checkout"
+        cartItem.amount = amount;
+        
+        updateProductAmount(cartItem,userWeightValue,userTaraValue);
 
-              newCart.push(res)
-              setCart(newCart)
-              if (newCart.length > 0) {
-                localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
-              }
-              setAdding(false)
-              setShowCart(true)
-            }
-          }
-        })
-        .catch(error => console.log(error))
+        cart.push(cartItem);
+
+        localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(cart))
+
+        setAdding(false)
+        setShowCart(true)
+    });
   }
 
   function isUserFavorit(id){

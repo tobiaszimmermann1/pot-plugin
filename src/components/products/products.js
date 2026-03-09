@@ -49,6 +49,13 @@ export async function getProductListOverview() {
   }
 }
 
+export async function getProductBySku(sku) {
+  const res = await updateProductListOverview();
+  let product = res[0].find(product => product.sku == sku)
+
+  return product;
+}
+
 export async function getProduct(id) {
   const res = await updateProductListOverview();
   let product = res[0].find(product => product.id == id)
