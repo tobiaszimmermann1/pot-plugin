@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
 import AppBar from "@mui/material/AppBar"
@@ -14,19 +14,10 @@ function EditDescription({ id, open, setModalClose, description, title, reload, 
   const [newDescription, setNewDescription] = useState("")
 
   const handleSubmit = () => {
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postProductDescriptionUpdate`,
-        {
+    apiPost("postProductDescriptionUpdate", {
           id: id,
           description: newDescription,
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce,
-          },
-        }
-      )
+        })
       .catch((error) => console.log(error))
       .finally(() => {
         setReload(reload + 1)

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete } from "@mui/material"
 import { cartContext } from "./cartContext"
 import { getProductListOverview, getSelfCheckoutProducts } from "../products/products"
@@ -63,11 +63,9 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
       setShowCart(true)
       setAdding(false)
     } else {
-      axios
-        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProduct?sku=${sku}`)
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
+      apiGet("getProduct", { sku })
+        .then(res => {
+          if (res) {
             if (!res) {
               setProductError("Produkt nicht gefunden oder nicht an Lager.")
             } else {

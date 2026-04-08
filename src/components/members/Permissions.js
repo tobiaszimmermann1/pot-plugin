@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import SaveIcon from "@mui/icons-material/Save"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -21,15 +21,9 @@ function Permissions({ setModalClose, permissionsID, permissionsName }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUser?id=${permissionsID}`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getUser", { id: permissionsID })
+      .then(res => {
+        if (res) {
           console.log(res)
           setRole(res.role)
           setInitialRole(res.role)
@@ -42,23 +36,13 @@ function Permissions({ setModalClose, permissionsID, permissionsName }) {
 
   function handleSubmit() {
     setSubmitting(true)
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/setUserPermissions`,
-        {
+    apiPost("setUserPermissions", {
           role: role,
           permissions: permissions,
           id: permissionsID
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+        })
+      .then(res => {
+        if (res) {
           console.log(res)
         }
       })

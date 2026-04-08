@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import { Box, LinearProgress } from "@mui/material"
 import ProductCategory from "./ProductCategory"
 import { ShoppingContext, TriggerContext } from "./ShoppingContext"
@@ -23,13 +23,9 @@ const OrderListInActive = () => {
   const [currency, setCurrency] = useState(null)
 
   useEffect(() => {
-    axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListInActive`)
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
-          console.log(res)
-
+    apiPost("getProductListInActive")
+      .then(res => {
+        if (res) {
           setAllProducts(res[3])
 
           let productsByCategory = {}
@@ -91,20 +87,18 @@ const OrderListInActive = () => {
    * Get options for product list
    */
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_prices`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"0"' ? setPublicPrices(false) : setPublicPrices(true)
+    apiGet("getOption", { option: "fc_public_prices" })
+      .then(res => {
+        if (res) {
+          res === "0" ? setPublicPrices(false) : setPublicPrices(true)
         }
       })
       .catch(error => console.log(error))
 
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_public_products`)
-      .then(function (response) {
-        if (response.data) {
-          response.data === '"0"' ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
+    apiGet("getOption", { option: "fc_public_products" })
+      .then(res => {
+        if (res) {
+          res === "0" ? setAdditionalProductInformation(false) : setAdditionalProductInformation(true)
         }
       })
       .catch(error => console.log(error))

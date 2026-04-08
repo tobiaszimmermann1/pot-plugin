@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { Box, IconButton, Button, CircularProgress, Card, CardContent, Typography } from "@mui/material"
@@ -60,22 +60,15 @@ const Products = () => {
   const [weighedProducts, setWeighedProducts] = useState(false)
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getProducts`)
-      .then(function (response) {
-        axios
-          .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          })
-          .then(function (userResponse) {
-            if (userResponse.data) {
-              const users = JSON.parse(userResponse.data)
+    apiGet("getProducts")
+      .then(res => {
+        apiGet("getUsers")
+          .then(userRes => {
+            if (userRes) {
+              const users = userRes
 
               let reArrangeProductData = []
-              if (response.data) {
-                const res = JSON.parse(response.data)
+              if (res) {
                 res[0].map(p => {
                   let productToDo = {}
                   productToDo.name = p.name
@@ -121,14 +114,9 @@ const Products = () => {
   }, [reload])
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOptions`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
+    apiGet("getAllOptions")
       .then(res => {
-        let options = JSON.parse(res.data)
+        let options = res
 
         let visOptions = {}
         options.woocommerce_manage_stock === "yes" ? (visOptions["stock"] = true) : (visOptions["stock"] = false)
@@ -271,23 +259,13 @@ const Products = () => {
 
   async function handleSaveRow({ exitEditingMode, row, values }) {
     products[row.index] = values
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postProductUpdate`,
-        {
+    apiPost("postProductUpdate", {
           updatedValues: values,
           id: values.id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        response.status == 200 &&
-          setStatusMessage({
-            message: JSON.parse(response.data) + " " + __("wurde gespeichert.", "fcplugin"),
+        })
+      .then(res => {
+                  setStatusMessage({
+            message: res + " " + __("wurde gespeichert.", "fcplugin"),
             type: "successStatus",
             active: true
           })
@@ -305,23 +283,13 @@ const Products = () => {
         return
       }
 
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postProductDelete`,
-          {
+      apiPost("postProductDelete", {
             name: row.getValue("name"),
             id: row.getValue("id")
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          response.status == 200 &&
-            setStatusMessage({
-              message: JSON.parse(response.data) + " " + __("wurde gelöscht.", "fcplugin"),
+          })
+        .then(res => {
+                      setStatusMessage({
+              message: res + " " + __("wurde gelöscht.", "fcplugin"),
               type: "successStatus",
               active: true
             })
@@ -389,15 +357,10 @@ const Products = () => {
 
   function handleQRCode(row) {
     setButtonLoading(true)
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/productQRPDF?sku=${row.original.sku}`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const linkSource = `data:application/pdf;base64,${response.data}`
+    apiGet("productQRPDF", { sku: row.original.sku })
+      .then(res => {
+        if (res) {
+          const linkSource = `data:application/pdf;base64,${res}`
           const downloadLink = document.createElement("a")
           const fileName = `QR-${row.original.sku}.pdf`
           downloadLink.href = linkSource
@@ -414,15 +377,10 @@ const Products = () => {
 
   function handleQRCodeAll() {
     setButtonLoading(true)
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/allProductsQRPDF`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const linkSource = `data:application/pdf;base64,${response.data}`
+    apiGet("allProductsQRPDF")
+      .then(res => {
+        if (res) {
+          const linkSource = `data:application/pdf;base64,${res}`
           const downloadLink = document.createElement("a")
           const fileName = `QR-labels.pdf`
           downloadLink.href = linkSource

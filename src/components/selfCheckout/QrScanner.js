@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { QrReader } from "react-qr-reader"
 import { Stack } from "@mui/material"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import WeightDialog from "./WeightDialog"
 
 const __ = wp.i18n.__
@@ -42,11 +42,9 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
       })
 
       if (execute === 1) {
-        axios
-          .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProduct?sku=${decodedText}`)
-          .then(function (response) {
-            if (response.data) {
-              const res = JSON.parse(response.data)
+        apiGet("getProduct", { sku: decodedText })
+          .then(res => {
+            if (res) {
               if (!res) {
                 setProductError("Produkt wurde nicht gefunden oder ist nicht an Lager.")
               } else {

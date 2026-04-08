@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import SaveIcon from "@mui/icons-material/Save"
@@ -42,27 +42,16 @@ function Wallet({ setModalClose, walletID, walletName }) {
       setError(__("Felder dürfen nicht leer sein.", "fcplugin"))
       setSubmitting(false)
     } else {
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postAddTransaction`,
-          {
+      apiPost("postAddTransaction", {
             amount: amount,
             user: walletID,
             details: details,
             created_by: appLocalizer.currentUser.ID,
             date: new Date(),
             type: transactionType
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response.data) {
-            const res = JSON.parse(response.data)
-
+          })
+        .then(res => {
+          if (res) {
             handleAddTransaction({
               date: format(new Date(), "yyyy-MM-dd"),
               amount: res[3],
@@ -90,27 +79,16 @@ function Wallet({ setModalClose, walletID, walletName }) {
    */
   const handleYearlyFeeTransaction = () => {
     setSubmitting(true)
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postAddTransaction`,
-        {
+    apiPost("postAddTransaction", {
           amount: "jahresbeitrag",
           user: walletID,
           details: __("Jahresbeitrag ", "fcplugin") + " " + new Date().getFullYear(),
           created_by: appLocalizer.currentUser.ID,
           date: new Date(),
           type: "yearly_fee"
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
-
+        })
+      .then(res => {
+        if (res) {
           handleAddTransaction({
             date: format(new Date(), "yyyy-MM-dd"),
             amount: res[3],
@@ -132,21 +110,11 @@ function Wallet({ setModalClose, walletID, walletName }) {
    * get wallet of user
    */
   useEffect(() => {
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/getTransactions`,
-        {
+    apiPost("getTransactions", {
           id: walletID
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+        })
+      .then(res => {
+        if (res) {
           setWalletData(res)
           setLoading(false)
         }

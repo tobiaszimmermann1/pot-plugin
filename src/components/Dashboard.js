@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet } from "../utils/api"
 import { Box, Button, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -17,15 +17,9 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState()
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getDashboardData`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getDashboardData")
+      .then(res => {
+        if (res) {
           setBestellrunden(res[2].length || 0)
           setProducts(res[0].length - 1 || 0)
           setCats(res[1].length || 0)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Stack, TextField, Autocomplete, Alert } from "@mui/material"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
@@ -17,19 +17,10 @@ function CompleteModal({ id, setModalClose, setReload, reload }) {
   const handleSubmit = () => {
     setSubmitting(true)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postCompleteBestellrunde`,
-        {
+    apiPost("postCompleteBestellrunde", {
           id: id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
+        })
+      .then(res => {
         setReload(reload + 1)
       })
       .catch(error => console.log(error))

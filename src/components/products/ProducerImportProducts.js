@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
+import { apiGet } from "../../utils/api"
 import SaveIcon from "@mui/icons-material/Save"
 import Typography from "@mui/material/Typography"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, Stack, TextField, Alert } from "@mui/material"
@@ -24,12 +25,10 @@ function ProducerImportProducts({ setModalClose }) {
    * Get Bestellrunden and check if currently active
    */
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellrunden`)
-      .then(function (response) {
+    apiGet("getBestellrunden")
+      .then(res => {
         let reArrangedBestellrunden = []
-        if (response.data) {
-          const res = JSON.parse(response.data)
+        if (res) {
           res.map(b => {
             let bestellrundeToDo = {}
             bestellrundeToDo.author = b.name

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiPost } from "../../utils/api"
 import SaveIcon from "@mui/icons-material/Save"
 import { Box, Card, LinearProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, Stack, TextField, Autocomplete, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -89,21 +89,12 @@ function NewDelivery({ prod, setModalClose, reload, setReload }) {
   const handleSubmit = () => {
     setSubmitting(true)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveDelivery`,
-        {
+    apiPost("postSaveDelivery", {
           products: JSON.stringify(deliveredProducts)
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
-          console.log(response.data)
+        })
+      .then(res => {
+        if (res) {
+          console.log(res)
         }
       })
       .catch(error => console.log(error))

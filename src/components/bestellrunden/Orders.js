@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import EditIcon from "@mui/icons-material/Edit"
@@ -58,15 +58,10 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellungen?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            setOrders(JSON.parse(response.data))
+      apiGet("getBestellungen", { bestellrunde: id })
+        .then(res => {
+          if (res) {
+            setOrders(res)
             setLoading(false)
             setButtonLoading(false)
           }
@@ -83,15 +78,10 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   function handleGetReceipts() {
     if (id) {
       setButtonLoading(true)
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getReceiptsPDF?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            const linkSource = `data:application/pdf;base64,${response.data}`
+      apiGet("getReceiptsPDF", { bestellrunde: id })
+        .then(res => {
+          if (res) {
+            const linkSource = `data:application/pdf;base64,${res}`
             const downloadLink = document.createElement("a")
             const fileName = `bestellrunde-${id}-receipts.pdf`
             downloadLink.href = linkSource
@@ -113,15 +103,10 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   function handleGetDistList() {
     if (id) {
       setButtonLoading(true)
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getDistListPDF?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            const linkSource = `data:application/pdf;base64,${response.data}`
+      apiGet("getDistListPDF", { bestellrunde: id })
+        .then(res => {
+          if (res) {
+            const linkSource = `data:application/pdf;base64,${res}`
             const downloadLink = document.createElement("a")
             const fileName = `bestellrunde-${id}-distlist.pdf`
             downloadLink.href = linkSource
@@ -146,15 +131,10 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   function handleGetDistListDetail() {
     if (id) {
       setButtonLoading(true)
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getDistListDetailPDF?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            const linkSource = `data:application/pdf;base64,${response.data}`
+      apiGet("getDistListDetailPDF", { bestellrunde: id })
+        .then(res => {
+          if (res) {
+            const linkSource = `data:application/pdf;base64,${res}`
             const downloadLink = document.createElement("a")
             const fileName = `bestellrunde-${id}-distlist-detail.pdf`
             downloadLink.href = linkSource
@@ -179,28 +159,23 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   function handleGetOrderList() {
     if (id) {
       setButtonLoading(true)
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOrderListPDF?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data && response.data.success) {
-            const binaryString = atob(response.data.data)
+      apiGet("getOrderListPDF", { bestellrunde: id })
+        .then(res => {
+          if (res && res.success) {
+            const binaryString = atob(res.data)
             const bytes = new Uint8Array(binaryString.length)
             for (let i = 0; i < binaryString.length; i++) {
               bytes[i] = binaryString.charCodeAt(i)
             }
 
             // Create blob and download link
-            const blob = new Blob([bytes], { type: response.data.mimetype })
+            const blob = new Blob([bytes], { type: res.mimetype })
             const url = URL.createObjectURL(blob)
 
             // Trigger download
             const downloadLink = document.createElement("a")
             downloadLink.href = url
-            downloadLink.download = response.data.filename
+            downloadLink.download = res.filename
             document.body.appendChild(downloadLink)
             downloadLink.click()
             document.body.removeChild(downloadLink)
@@ -226,15 +201,10 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   function handleGetCategoryList() {
     if (id) {
       setButtonLoading(true)
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getCategoryListPDF?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
-          if (response.data) {
-            const linkSource = `data:application/pdf;base64,${response.data}`
+      apiGet("getCategoryListPDF", { bestellrunde: id })
+        .then(res => {
+          if (res) {
+            const linkSource = `data:application/pdf;base64,${res}`
             const downloadLink = document.createElement("a")
             const fileName = `bestellrunde-${id}-categorylist.pdf`
             downloadLink.href = linkSource

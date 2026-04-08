@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import SaveIcon from "@mui/icons-material/Save"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Stack, TextField, Autocomplete, Alert } from "@mui/material"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -34,16 +34,10 @@ function Mutations({ id, setModalClose }) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${appLocalizer.apiUrl}/foodcoop/v1/getProductsOrdersInBestellrunde?bestellrunde=${id}`, {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        })
-        .then(function (response) {
+      apiGet("getProductsOrdersInBestellrunde", { bestellrunde: id })
+        .then(res => {
           let reArrangeProductData = []
-          if (response.data) {
-            let res = JSON.parse(response.data)
+          if (res) {
             Object.keys(res[1]).forEach(function (key, index) {
               let productToDo = {}
               productToDo.label = res[1][key].name + ", " + res[1][key].einheit
@@ -77,26 +71,17 @@ function Mutations({ id, setModalClose }) {
       ordersToMutate = ordersToChange
     }
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postSaveMutation`,
-        {
+    apiPost("postSaveMutation", {
           product: selectedProduct.id,
           orders: ordersToMutate,
           mutation_type: mutationType,
           price: priceAdjust,
           created_by: appLocalizer.currentUser.ID
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
+        })
+      .then(res => {
+        if (res) {
           setSuccess(true)
-          console.log(response.data)
+          console.log(res)
         }
       })
       .catch(error => console.log(error))

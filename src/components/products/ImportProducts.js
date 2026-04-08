@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import SaveIcon from "@mui/icons-material/Save"
 import Typography from "@mui/material/Typography"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert } from "@mui/material"
@@ -35,12 +35,10 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellrunden`)
-      .then(function (response) {
+    apiGet("getBestellrunden")
+      .then(res => {
         let reArrangedBestellrunden = []
-        if (response.data) {
-          const res = JSON.parse(response.data)
+        if (res) {
           res.map(b => {
             let bestellrundeToDo = {}
             bestellrundeToDo.author = b.name
@@ -72,21 +70,12 @@ function ImportProducts({ setModalClose, categories, reload, setReload }) {
 
   function handleSubmit() {
     setSubmitting(true)
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postImportProducts`,
-        {
+    apiPost("postImportProducts", {
           products: JSON.stringify(validatedData)
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response) {
-          let msg = `${__("Import fertiggestellt:", "fcplugin")} ${__("Neu:", "fcplugin")} ${response.data[1]}, ${__("Aktualisiert:", "fcplugin")} ${response.data[0]}, ${__("Gelöscht:", "fcplugin")} ${response.data[2]}`
+        })
+      .then(res => {
+        if (res) {
+          let msg = `${__("Import fertiggestellt:", "fcplugin")} ${__("Neu:", "fcplugin")} ${res[1]}, ${__("Aktualisiert:", "fcplugin")} ${res[0]}, ${__("Gelöscht:", "fcplugin")} ${res[2]}`
           setValidationSuccess(msg)
         }
       })

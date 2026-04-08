@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react"
-import axios from "axios"
+import { apiGet } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { Box, Grid, LinearProgress } from "@mui/material"
@@ -12,15 +12,9 @@ function MyTransactions() {
   const [walletData, setWalletData] = useState(null)
 
   useEffect(() => {
-    axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getMyTransactions`, {
-        headers: {
-          "X-WP-Nonce": frontendLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getMyTransactions")
+      .then(res => {
+        if (res) {
           setWalletData(res)
           setLoading(false)
         }

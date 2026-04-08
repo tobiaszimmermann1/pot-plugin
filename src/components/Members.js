@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { Box, IconButton, Button } from "@mui/material"
@@ -34,15 +34,9 @@ const Members = () => {
   const [permissionsName, setPermissionsName] = useState()
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getUsers")
+      .then(res => {
+        if (res) {
           let reArrangedUserData = []
           res.map(u => {
             let userToDo = {}
@@ -234,25 +228,13 @@ const Members = () => {
         return
       }
 
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postUserDelete`,
-          {
+      apiPost("postUserDelete", {
             name: row.getValue("name"),
             id: row.getValue("id")
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          if (response.data) {
-          }
-          response.status == 200 &&
-            setStatusMessage({
-              message: JSON.parse(response.data) + " " + __("wurde gelöscht.", "fcplugin"),
+          })
+        .then(res => {
+                                setStatusMessage({
+              message: res + " " + __("wurde gelöscht.", "fcplugin"),
               type: "successStatus",
               active: true
             })
@@ -303,20 +285,11 @@ const Members = () => {
   const handleSaveCell = (cell, value) => {
     users[cell.row.index][cell.column.id] = value
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/postUpdateUser`,
-        {
+    apiPost("postUpdateUser", {
           id: cell.row.original.id,
           value: value,
           cell: cell.column.id
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
+        })
       .catch(error => console.log(error))
 
     setUsers([...users])

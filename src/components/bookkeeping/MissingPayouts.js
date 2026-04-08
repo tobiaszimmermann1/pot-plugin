@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { Box } from "@mui/material"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { format } from "date-fns"
@@ -10,7 +10,6 @@ import TextField from "@mui/material/TextField"
 import IconButton from "@mui/material/IconButton"
 import Plumbing from "@mui/icons-material/Plumbing"
 import Divider from "@mui/material/Divider"
-
 
 const __ = wp.i18n.__
 
@@ -27,15 +26,9 @@ const MissingPayouts = () => {
       return;
     }
     setLoading(true)
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getOrderItemsWithMissingPayout?start_date=${formattedStartDate}`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getOrderItemsWithMissingPayout", { start_date: formattedStartDate })
+      .then(res => {
+        if (res) {
           setMissingOrderItems(res)
           setLoading(false)
         }
@@ -54,27 +47,21 @@ const MissingPayouts = () => {
     }
 
     setLoading(true)
-    axios
-      .post(`${appLocalizer.apiUrl}/foodcoop/v1/fixMissingPayout`, {
+    apiPost("fixMissingPayout", {
         product_id: row.id,
         product_name: row.name,
         date: row.date,
         owner: row.owner_id,
         amount: row.amount,
-      }, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
       })
-      .then(function (response) {
-        if (response) {
+      .then(res => {
+        if (res) {
           setMissingOrderItems(prevItems => prevItems.filter(item => item.id !== row.id));
           setLoading(false)
         }
       })
       .catch(error => console.log(error))
   }
-
 
   /**
    * Get potentially missing payouts
@@ -112,7 +99,6 @@ const MissingPayouts = () => {
     ],
     []
   )
-
 
   return (
     <>

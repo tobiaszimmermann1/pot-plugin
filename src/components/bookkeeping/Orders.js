@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { Box, Typography, Button } from "@mui/material"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
@@ -77,21 +77,11 @@ const Orders = () => {
    */
 
   useEffect(() => {
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/getAllOrders`,
-        {
+    apiPost("getAllOrders", {
           year: null
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+        })
+      .then(res => {
+        if (res) {
           console.log(res)
 
           let ordersReArranged = []
@@ -124,15 +114,9 @@ const Orders = () => {
    * get list of users
    */
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getUsers`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getUsers")
+      .then(res => {
+        if (res) {
           let reArrangedUserData = []
           res.map(u => {
             let userToDo = {}
@@ -155,15 +139,9 @@ const Orders = () => {
    * get list of bestellrunden
    */
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getBestellrunden`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getBestellrunden")
+      .then(res => {
+        if (res) {
           setBestellrunden(res)
         }
       })

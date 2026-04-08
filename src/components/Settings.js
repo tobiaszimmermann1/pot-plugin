@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../utils/api"
 import { LoadingButton } from "@mui/lab"
 import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
@@ -56,14 +56,9 @@ const Settings = () => {
   }, [privacyTwint])
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getAllOptions`, {
-        headers: {
-          "X-WP-Nonce": appLocalizer.nonce
-        }
-      })
-      .then(function (response) {
-        setOptions(JSON.parse(response.data))
+    apiGet("getAllOptions")
+      .then(res => {
+        setOptions(res)
       })
       .catch(function (error) {
         console.log(error)
@@ -132,10 +127,7 @@ const Settings = () => {
   const handleSave = () => {
     setSubmitting(true)
 
-    axios
-      .post(
-        `${appLocalizer.apiUrl}/foodcoop/v1/saveAllOptions`,
-        {
+    apiPost("saveAllOptions", {
           fee: fee,
           bank: bank,
           transfer: transfer,
@@ -164,13 +156,7 @@ const Settings = () => {
             privacyFontawesome: privacyFontawesome,
             privacyTwint: privacyTwint
           }
-        },
-        {
-          headers: {
-            "X-WP-Nonce": appLocalizer.nonce
-          }
-        }
-      )
+        })
       .catch(error => console.log(error.message))
       .finally(() => {
         setSubmitting(false)

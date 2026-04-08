@@ -2,10 +2,29 @@
 
 class FoodcoopRestRoutes {
 
+  /**
+   * Constructor: Registers the REST API routes on the 'rest_api_init' action hook.
+   */
   function __construct() {
     add_action( 'rest_api_init', array($this, 'rest_routes'));
   }
 
+  /**
+   * Permission callback for admin-only REST routes.
+   * Grants access only to users with the 'edit_others_posts' capability
+   * (typically Editors, Administrators, Shop Managers, and Foodcoop Managers).
+   *
+   * @return bool True if the current user has the required capability, false otherwise.
+   */
+  function permission_admin() {
+    return current_user_can( 'edit_others_posts' );
+  }
+
+  /**
+   * Registers all plugin REST API routes under the 'foodcoop/v1' namespace.
+   *
+   * @return void
+   */
   function rest_routes() {
     /**
      * GET all products
@@ -36,9 +55,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getAllOptions', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getAllOptions'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -47,9 +64,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'saveAllOptions', array(
       'methods' => 'POST',
       'callback' => array($this, 'saveAllOptions'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -70,9 +85,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postProductUpdate', array(
       'methods' => 'POST',
       'callback' => array($this, 'postProductUpdate'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -95,9 +108,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postProductDelete', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postProductDelete'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -118,9 +129,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCreateBestellrunde', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postCreateBestellrunde'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -130,9 +139,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postUpdateBestellrunde', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postUpdateBestellrunde'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -142,9 +149,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getBestellungen', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getBestellungen'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -153,9 +158,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getAllOrders', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'getAllOrders'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -164,9 +167,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getOrderItemsWithMissingPayout', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getOrderItemsWithMissingPayout'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -176,9 +177,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'productQRPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'productQRPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -187,9 +186,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'allProductsQRPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'allProductsQRPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -199,9 +196,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getReceiptsPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getReceiptsPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -211,9 +206,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getDistListPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getDistListPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -223,9 +216,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getOrderListPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getOrderListPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -235,9 +226,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getCategoryListPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getCategoryListPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -247,9 +236,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getDistlistDetailPDF', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getDistlistDetailPDF'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -259,9 +246,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getDataExport', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'getDataExport'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -270,9 +255,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'productImport', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'productImport'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -281,9 +264,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'productImportCheckFile', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'productImportCheckFile'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -292,9 +273,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'productImportAction', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'productImportAction'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -304,9 +283,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postBestellrundeDelete', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postBestellrundeDelete'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -316,9 +293,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveProductsBestellrunde', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveProductsBestellrunde'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -328,9 +303,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveProductsSelfCheckout', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveProductsSelfCheckout'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -340,9 +313,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveProductsWeighed', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveProductsWeighed'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -364,9 +335,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getProductsOrdersInBestellrunde', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getProductsOrdersInBestellrunde'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -376,9 +345,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveMutation', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveMutation'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -388,9 +355,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postImportProducts', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postImportProducts'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -400,9 +365,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postImportProductsProgress', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postImportProductsProgress'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -411,9 +374,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getUsers', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getUsers'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -422,9 +383,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getUser', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getUser'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -434,9 +393,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'setUserPermissions', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'setUserPermissions'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -446,9 +403,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postUserDelete', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postUserDelete'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -458,9 +413,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postAddUser', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postAddUser'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -470,9 +423,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postUpdateUser', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postUpdateUser'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -492,9 +443,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getTransactions', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'getTransactions'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -503,9 +452,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getAllTransactions', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getAllTransactions'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -514,9 +461,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postAddTransaction', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postAddTransaction'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -525,9 +470,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getDashboardData', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getDashboardData'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -580,9 +523,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getExpenses', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getExpenses'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -592,9 +533,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCreateExpense', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postCreateExpense'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -603,9 +542,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getPages', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getPages'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -662,9 +599,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'emailNotificationBestellrunden', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'emailNotificationBestellrunden'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -674,9 +609,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'emailNotificationBestellrundenTest', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'emailNotificationBestellrundenTest'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -697,9 +630,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCategoryUpdate', array(
       'methods' => 'POST',
       'callback' => array($this, 'postCategoryUpdate'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -709,9 +640,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCategoryDelete', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postCategoryDelete'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -721,9 +650,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postAddCategory', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postAddCategory'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -744,9 +671,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSupplierUpdate', array(
       'methods' => 'POST',
       'callback' => array($this, 'postSupplierUpdate'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -756,9 +681,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSupplierDelete', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSupplierDelete'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -768,9 +691,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postAddSupplier', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postAddSupplier'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -791,9 +712,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postProducerUpdate', array(
       'methods' => 'POST',
       'callback' => array($this, 'postProducerUpdate'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -803,9 +722,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postProducerDelete', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postProducerDelete'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -815,9 +732,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postAddProducer', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postAddProducer'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -839,9 +754,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveInventory', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveInventory'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -851,9 +764,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveDelivery', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveDelivery'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -898,9 +809,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCreatePOSorder', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postCreatePOSorder'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -910,9 +819,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'fixMissingPayout', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postFixMissingPayout'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -922,9 +829,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postSaveProductOwner', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postSaveProductOwner'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -934,9 +839,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'getProductOwner', array(
       'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getProductOwner'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
     
     /**
@@ -946,9 +849,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postDuplicateBestellrunde', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postDuplicateBestellrunde'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -958,9 +859,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postCompleteBestellrunde', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postCompleteBestellrunde'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
     /**
@@ -970,9 +869,7 @@ class FoodcoopRestRoutes {
     register_rest_route( 'foodcoop/v1', 'postProductDescriptionUpdate', array(
       'methods' => WP_REST_SERVER::CREATABLE,
       'callback' => array($this, 'postProductDescriptionUpdate'), 
-      'permission_callback' => function() {
-        return current_user_can( 'edit_others_posts' );
-      }
+      'permission_callback' => array($this, 'permission_admin')
     ));
 
 
@@ -990,28 +887,59 @@ class FoodcoopRestRoutes {
    */
 
    /**
-    * getProducts
-    */
-  function getProducts($data) {
+   * getProducts
+   * Supports optional pagination via 'page' and 'per_page' query parameters.
+   * Returns a JSON-encoded array of [products, categories] for backwards compatibility,
+   * or a JSON object with 'data', 'categories', 'total', and 'pages' when paginating.
+   *
+   * @param WP_REST_Request $request Request object. Accepts 'page' and 'per_page' params.
+   * @return string JSON-encoded response.
+   */
+  function getProducts( $request ) {
 
-    $p = wc_get_products(array(
+    $page     = intval( $request->get_param('page') );
+    $per_page = intval( $request->get_param('per_page') );
+
+    $query_args = array(
       'status'            => array( 'publish' ),
       'type'              => array_merge( array_keys( wc_get_product_types() ) ),
       'parent'            => null,
       'sku'               => '',
       'category'          => array(),
       'tag'               => array(),
-      'limit'             => -1,
-      'offset'            => null,
-      'page'              => 1,
-      'include'           => array(),
-      'exclude'           => array(),
       'orderby'           => 'date',
       'order'             => 'DESC',
       'return'            => 'objects',
       'paginate'          => false,
       'shipping_class'    => array(),
-    ));
+    );
+
+    if ( $page > 0 && $per_page > 0 ) {
+      $query_args['limit']  = $per_page;
+      $query_args['offset'] = ( $page - 1 ) * $per_page;
+    } else {
+      $query_args['limit'] = -1;
+    }
+
+    $p = wc_get_products( $query_args );
+
+    // Get total product count (excluding internal products)
+    $total_count = count( wc_get_products( array(
+      'status' => array( 'publish' ),
+      'limit'  => -1,
+      'return' => 'ids',
+    ) ) ) - count( wc_get_products( array(
+      'status' => array( 'publish' ),
+      'sku'    => 'fcplugin_instant_topup_product',
+      'limit'  => -1,
+      'return' => 'ids',
+    ) ) ) - count( wc_get_products( array(
+      'status' => array( 'publish' ),
+      'sku'    => 'fcplugin_pos_product',
+      'limit'  => -1,
+      'return' => 'ids',
+    ) ) );
+    $pages = ( $per_page > 0 ) ? ceil( $total_count / $per_page ) : 1;
 
     $product_categories = get_terms( array(
       'taxonomy' => 'product_cat',
@@ -1055,8 +983,8 @@ class FoodcoopRestRoutes {
       // product meta data
       $the_meta = $product->get_meta_data();
       foreach($the_meta as $meta) {
-        $data = $meta->get_data();
-        $the_product[$data['key']] = $data['value'];
+        $meta_data = $meta->get_data();
+        $the_product[$meta_data['key']] = $meta_data['value'];
       }
   
       // product category (only the first one!)
@@ -1071,6 +999,10 @@ class FoodcoopRestRoutes {
       if ($the_product['sku'] != "fcplugin_instant_topup_product" && $the_product['sku'] != 'fcplugin_pos_product') {
         array_push($products, $the_product);
       }
+    }
+
+    if ( $page > 0 && $per_page > 0 ) {
+      return json_encode( array( 'data' => $products, 'categories' => $categories, 'total' => $total_count, 'pages' => $pages ) );
     }
          
     return json_encode(array($products, $categories));
@@ -2256,10 +2188,30 @@ class FoodcoopRestRoutes {
 
   /**
    * getUsers
+   * Supports optional pagination via 'page' and 'per_page' query parameters.
+   * Returns a JSON object with 'data' (array of user objects), 'total' (total user count),
+   * and 'pages' (total number of pages). When no pagination params are provided,
+   * all users are returned for backwards compatibility.
+   *
+   * @param WP_REST_Request $request Request object. Accepts 'page' and 'per_page' params.
+   * @return string JSON-encoded response.
    */
 
-  function getUsers() {
-    $users = get_users();
+  function getUsers( $request ) {
+    $page     = intval( $request->get_param('page') );
+    $per_page = intval( $request->get_param('per_page') );
+
+    $user_args = array( 'orderby' => 'ID', 'order' => 'ASC' );
+
+    // Apply pagination when requested
+    if ( $page > 0 && $per_page > 0 ) {
+      $user_args['number'] = $per_page;
+      $user_args['offset'] = ( $page - 1 ) * $per_page;
+    }
+
+    $users      = get_users( $user_args );
+    $total      = count( get_users( array( 'fields' => 'ID' ) ) );
+    $pages      = ( $per_page > 0 ) ? ceil( $total / $per_page ) : 1;
 
     $userData = array();
     foreach ($users as $user) {
@@ -2334,6 +2286,11 @@ class FoodcoopRestRoutes {
       array_push($userData, $the_user);
     }
 
+    // Return paginated response when pagination was requested
+    if ( $page > 0 && $per_page > 0 ) {
+      return json_encode( array( 'data' => $userData, 'total' => $total, 'pages' => $pages ) );
+    }
+
     return json_encode($userData);
   }
 
@@ -2393,9 +2350,9 @@ class FoodcoopRestRoutes {
    * postAddUser
    */
   function postAddUser($data) {
-    $firstName = esc_attr($data['firstName']);
-    $lastName = esc_attr($data['lastName']);
-    $email = esc_attr($data['email']);
+    $firstName = sanitize_text_field($data['firstName']);
+    $lastName = sanitize_text_field($data['lastName']);
+    $email = sanitize_email($data['email']);
 
     // password generator
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$!?';
@@ -2475,9 +2432,9 @@ class FoodcoopRestRoutes {
    * postUpdateUser
    */
   function postUpdateUser($data) {
-    $id = esc_attr($data['id']);
-    $cell = esc_attr($data['cell']);
-    $value = esc_attr($data['value']);
+    $id = intval($data['id']);
+    $cell = sanitize_text_field($data['cell']);
+    $value = sanitize_text_field($data['value']);
 
     switch ($cell) {
       case 'name':
@@ -2573,13 +2530,38 @@ class FoodcoopRestRoutes {
 
 
   /**
+  /**
    * getAllTransactions
+   * Supports optional pagination via 'page' and 'per_page' query parameters.
+   * Returns a JSON object with 'data' (array of transaction objects), 'total', and 'pages'
+   * when pagination is requested. Returns a plain array for backwards compatibility otherwise.
+   *
+   * @param WP_REST_Request $request Request object. Accepts 'page' and 'per_page' params.
+   * @return string JSON-encoded response.
    */
-  function getAllTransactions($data) {
+  function getAllTransactions( $request ) {
     global $wpdb;
-    $transactions = $wpdb->get_results(
-      $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` ORDER BY `id` DESC")
-    );
+
+    $page     = intval( $request->get_param('page') );
+    $per_page = intval( $request->get_param('per_page') );
+
+    $total = intval( $wpdb->get_var( "SELECT COUNT(*) FROM `".$wpdb->prefix."foodcoop_wallet`" ) );
+    $pages = ( $per_page > 0 ) ? ceil( $total / $per_page ) : 1;
+
+    if ( $page > 0 && $per_page > 0 ) {
+      $offset = ( $page - 1 ) * $per_page;
+      $transactions = $wpdb->get_results(
+        $wpdb->prepare(
+          "SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` ORDER BY `id` DESC LIMIT %d OFFSET %d",
+          $per_page,
+          $offset
+        )
+      );
+    } else {
+      $transactions = $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` ORDER BY `id` DESC")
+      );
+    }
     
     $transactions_fixed = array();
     foreach($transactions as $transaction) {
@@ -2598,6 +2580,10 @@ class FoodcoopRestRoutes {
       array_push($transactions_fixed, $the_transaction);
     }
 
+    if ( $page > 0 && $per_page > 0 ) {
+      return json_encode( array( 'data' => $transactions_fixed, 'total' => $total, 'pages' => $pages ) );
+    }
+
     return json_encode($transactions_fixed);
   }
 
@@ -2609,11 +2595,11 @@ class FoodcoopRestRoutes {
     global $wpdb;
     $table = $wpdb->prefix.'foodcoop_wallet';
 
-    $user_id = $data['user'];
-    $date = $data['date'];
-    $details = $data['details'];
+    $user_id = intval($data['user']);
+    $date = sanitize_text_field($data['date']);
+    $details = sanitize_text_field($data['details']);
     $created_by = intval($data['created_by']);
-    $type = $data['type'];
+    $type = sanitize_text_field($data['type']);
 
     // amount
     $amount = $data['amount'];

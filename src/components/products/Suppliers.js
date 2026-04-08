@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react"
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { Box, Button, Divider } from "@mui/material"
@@ -18,11 +18,9 @@ function Suppliers() {
   const [supplierToEdit, setSupplierToEdit] = useState(null)
 
   useEffect(() => {
-    axios
-      .get(`${appLocalizer.apiUrl}/foodcoop/v1/getSuppliers`)
-      .then(function (response) {
-        if (response.data) {
-          const res = JSON.parse(response.data)
+    apiGet("getSuppliers")
+      .then(res => {
+        if (res) {
           console.log(res)
           setSuppliers(res)
           setLoading(false)
@@ -128,21 +126,11 @@ function Suppliers() {
         return
       }
 
-      axios
-        .post(
-          `${appLocalizer.apiUrl}/foodcoop/v1/postSupplierDelete`,
-          {
+      apiPost("postSupplierDelete", {
             name: row.getValue("name"),
             id: row.getValue("id")
-          },
-          {
-            headers: {
-              "X-WP-Nonce": appLocalizer.nonce
-            }
-          }
-        )
-        .then(function (response) {
-          const res = JSON.parse(response.data)
+          })
+        .then(res => {
         })
         .catch(error => console.log(error))
 

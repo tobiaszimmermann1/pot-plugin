@@ -1,12 +1,12 @@
-import axios from "axios"
+import { apiGet, apiPost } from "../../utils/api"
 
 let productListOverviewCache = null
 
 export async function getProductListOverview() {
   if (productListOverviewCache === null) {
-    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-    if (response.data) {
-      productListOverviewCache = JSON.parse(response.data)
+    const data = await apiPost("getProductListOverview")
+    if (data) {
+      productListOverviewCache = data
     }
   }
 
@@ -39,9 +39,9 @@ export async function getProductListOverview() {
 
 export async function getProduct(id) {
   if (productListOverviewCache === null) {
-    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-    if (response.data) {
-      productListOverviewCache = JSON.parse(response.data)
+    const data = await apiPost("getProductListOverview")
+    if (data) {
+      productListOverviewCache = data
     }
   }
   const res = productListOverviewCache
@@ -52,21 +52,21 @@ export async function getProduct(id) {
 }
 
 export async function getStockManagement() {
-  const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_manage_stock`)
-  if (response.data) {
-    return response.data === '"yes"'
+  const res = await apiGet("getOption", { option: "woocommerce_manage_stock" })
+  if (res) {
+    return res === "yes"
   } else {
     return false
   }
 }
 
 export async function getSelfCheckoutProducts() {
-  const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_self_checkout_products`)
-  if (response.data) {
+  const res = await apiGet("getOption", { option: "fc_self_checkout_products" })
+  if (res) {
     // WTF
-    if (JSON.parse(JSON.parse(response.data)) === null || JSON.parse(JSON.parse(response.data)) === undefined) {
+    if (JSON.parse(res) === null || JSON.parse(res) === undefined) {
       return []
     }
-    return JSON.parse(JSON.parse(response.data)).map(Number)
+    return JSON.parse(res).map(Number)
   }
 }

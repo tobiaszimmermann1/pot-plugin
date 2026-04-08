@@ -43,9 +43,12 @@ if(file_exists(dirname(__FILE__) . '/vendor/autoload.php') ) {
 
 /**
  * Plugin Dependencies:
- * Check if WooCommerce is activated upon plugin activation
+ * Check if WooCommerce is activated upon plugin activation.
+ * Deactivates this plugin and shows an error message if WooCommerce is not active.
+ * On successful activation, creates the wallet database table and registers user roles.
+ *
+ * @return void
  */
-// while activating the plugin
 function activate_foodcoop_plugin() {
   if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
     include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
@@ -83,7 +86,10 @@ define ('FOODCOOP_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 
 /**
- * Create Database table for Foodcoop Wallet
+ * Creates the Foodcoop Wallet database table on plugin install/activation.
+ * Uses dbDelta to safely create or upgrade the table schema.
+ *
+ * @return void
  */
 function foodcoop_wallet_install() {
   global $wpdb;
@@ -111,13 +117,21 @@ function foodcoop_wallet_install() {
 
 
 /**
- * User capabilities
+ * Registers the 'foodcoop_manager' user role on plugin activation.
+ * Inherits capabilities from the built-in WooCommerce 'shop_manager' role.
+ *
+ * @return void
  */
 function add_roles_on_plugin_activation() {
   add_role( 'foodcoop_manager', 'Foodcoop Manager', get_role( 'shop_manager' )->capabilities );
 }
 
-// Hide menu items for foodcoop_manager
+/**
+ * Removes irrelevant admin menu pages for the 'foodcoop_manager' role.
+ * Keeps the WordPress admin focused on foodcoop-relevant functionality.
+ *
+ * @return void
+ */
 add_action( 'admin_init', 'fc_remove_menu_pages' );
 function fc_remove_menu_pages() {
 
@@ -131,7 +145,6 @@ function fc_remove_menu_pages() {
    remove_menu_page('users.php');
    remove_menu_page('tools.php');
    remove_menu_page('themes.php');
-   remove_menu_page('tools.php'); 
    remove_menu_page('edit.php?post_type=product'); 
    remove_menu_page('edit.php?post_type=fc_theme_frontpage'); 
    remove_menu_page('woocommerce'); 
@@ -140,7 +153,13 @@ function fc_remove_menu_pages() {
   }
 }
 
-// Hide admin bar for foodcoop_manager
+/**
+ * Removes irrelevant admin bar nodes for the 'foodcoop_manager' role.
+ * Hides WordPress core toolbar items that are not relevant to foodcoop managers.
+ *
+ * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
+ * @return void
+ */
 function fc_remove_from_admin_bar($wp_admin_bar) {
 
   $user = wp_get_current_user();
@@ -206,7 +225,10 @@ add_action( 'admin_init', 'fc_plugin_upgrade_database' );
 
 
 /**
- * Run on deactivation of plugin
+ * Runs on plugin deactivation.
+ * Flushes rewrite rules and removes any scheduled cron events created by this plugin.
+ *
+ * @return void
  */
 function deactivate_foodcoop_plugin() {
   flush_rewrite_rules();
@@ -220,8 +242,10 @@ register_deactivation_hook( __FILE__, 'deactivate_foodcoop_plugin' );
 
 
 /**
- * Dependency Check
- * ** WooCommerce
+ * Dependency Check: Verifies WooCommerce is active after all plugins have loaded.
+ * If WooCommerce is not active, deactivates this plugin and displays an admin notice.
+ *
+ * @return void
  */
 add_action( 'plugins_loaded', 'fc_plugin_init' );
 
@@ -247,11 +271,10 @@ function fc_plugin_init() {
 
 
 /**
- * Plugin initialization:
- * ** Loading scripts
- * ** Loading styles
- * ** Loading Text Domain
- * ** Create Custom Post Type: bestellrunden
+ * Enqueues backend admin scripts and styles.
+ * Localizes the script with API URL, nonce, and current user data for the React app.
+ *
+ * @return void
  */
 add_action( 'admin_enqueue_scripts', 'fc_admin_load_scripts');
 function fc_admin_load_scripts() {
@@ -278,6 +301,12 @@ function fc_admin_load_scripts() {
   wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.9' );
 }
 
+/**
+ * Enqueues frontend scripts and styles for the customer-facing pages.
+ * Localizes the script with API URL, cart/account URLs, nonce, and current user data.
+ *
+ * @return void
+ */
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
 function fc_wp_load_scripts() {
 
@@ -316,6 +345,13 @@ function fc_wp_load_scripts() {
 }
 
 
+/**
+ * Initializes the plugin on the 'init' hook.
+ * Loads the text domain for translations and registers all custom post types
+ * (bestellrunden, expenses, suppliers, producers).
+ *
+ * @return void
+ */
 add_action( 'init', 'fc_init');
 function fc_init() {
   // text domain

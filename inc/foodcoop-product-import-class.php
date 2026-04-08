@@ -38,15 +38,12 @@ class FoodcoopProductImport {
       $file_path = null;
       if ($active_step === 1 || $active_step === 2 || $active_step === 3) {
         // sanitize file path
-        $file_path = str_replace('\\\\', '\\', $_GET['file']);
-        $file_path = str_replace('\\\\', '\\', $file_path);
-        $file_path = str_replace('\\\\', '\\', $file_path);
-        $file_path = str_replace('\\\\', '\\', $file_path);
+        $file_path = isset($_GET['file']) ? sanitize_text_field(wp_unslash($_GET['file'])) : '';
       }
 
       // in step 2, make sure that file path is correct
       if ($active_step === 2) {
-        if (!isset($_GET['file']) || !file_exists($file_path) ) {
+        if (empty($file_path) || !file_exists($file_path) ) {
           $error_msg = __("Datei wurde nicht gefunden.", "fcplugin");
           $is_error = true;
         } 
@@ -64,8 +61,8 @@ class FoodcoopProductImport {
           $data = $transient_data->data;
           $formatting_errors = $transient_data->errors;
           $rows_with_errors = $transient_data->rows_with_errors;
-          $_GET['del'] === "true" ? $foodcoop_product_import_delete = "true" : $foodcoop_product_import_delete = "false";
-          $_GET['stock'] === "true" ? $foodcoop_product_import_stock = "true" : $foodcoop_product_import_stock = "false";
+          isset($_GET['del']) && sanitize_text_field(wp_unslash($_GET['del'])) === "true" ? $foodcoop_product_import_delete = "true" : $foodcoop_product_import_delete = "false";
+          isset($_GET['stock']) && sanitize_text_field(wp_unslash($_GET['stock'])) === "true" ? $foodcoop_product_import_stock = "true" : $foodcoop_product_import_stock = "false";
         }
       }
 
@@ -273,7 +270,7 @@ class FoodcoopProductImport {
                   <input type="hidden" id="foodcoop_product_import_delete" value="<?php echo $foodcoop_product_import_delete; ?>" />
                   <input type="hidden" id="foodcoop_product_import_file" value="<?php echo $file_path; ?>" />
                   <div id="foodcoop_product_import_progress"></div>
-                  <input type="hidden" id="foodcoop_file_import_file" value="<?php echo $_GET['file']; ?>" />
+                  <input type="hidden" id="foodcoop_file_import_file" value="<?php echo esc_attr( $file_path ); ?>" />
                   <input type="hidden" id="foodcoop_product_import_stock" value="<?php echo $foodcoop_product_import_stock; ?>" />
                   <?php count($formatting_errors) > 0 ? $disabled = false : $disabled = true; ?>
                   <?php if (!$disabled) {
@@ -297,10 +294,10 @@ class FoodcoopProductImport {
 
           <?php
           if ($active_step === 4 && $is_error === false) { 
-            $totalproducts = $_GET['updatedproducts'] + $_GET['newproducts'];
-            $updatedproducts = $_GET['updatedproducts'];
-            $newproducts = $_GET['newproducts'];
-            $deletedproducts = isset($_GET['deletedproducts']) ? $_GET['deletedproducts'] : 0;
+            $totalproducts = intval($_GET['updatedproducts']) + intval($_GET['newproducts']);
+            $updatedproducts = intval($_GET['updatedproducts']);
+            $newproducts = intval($_GET['newproducts']);
+            $deletedproducts = isset($_GET['deletedproducts']) ? intval($_GET['deletedproducts']) : 0;
             ?>
 
             <form id="foodcoop_product_import_step1">
