@@ -19,6 +19,7 @@ import { cartContext } from "./components/selfCheckout/cartContext"
 import AddProductBySku from "./components/selfCheckout/AddProductBySku"
 import LoadingButton from "@mui/lab/LoadingButton"
 import QrScanner from "./components/selfCheckout/QrScanner"
+import { SmartScaleProvider } from "./contexts/SmartScaleContext.js"
 
 const __ = wp.i18n.__
 
@@ -210,152 +211,153 @@ function SelfCheckout() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <ThemeProvider theme={theme}>
-        <cartContext.Provider value={{ cart, setCart }}>
-          {active ? (
-            <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-              <AppBar sx={{ position: "relative" }} color={POSMode ? "POSModeColor" : "primary"}>
-                <Toolbar sx={{ justifyContent: "space-between" }}>
-                  <DialogTitle textAlign="left" sx={{ fontSize: "1rem" }}>
-                    {blogname} - {!POSMode ? __("Self Checkout", "fcplugin") : __("Point of Sale", "fcplugin")}
-                  </DialogTitle>
-                  <Stack justifyContent={"flex-end"} alignItems={"center"} direction={"row"}>
-                    <span style={{ marginRight: "25px" }}>{frontendLocalizer.name} </span>
-                    <IconButton edge="start" color="inherit" aria-label="close" onClick={() => (window.location.href = frontendLocalizer.homeUrl)}>
-                      <ExitToAppIcon />
-                    </IconButton>
-                  </Stack>
-                </Toolbar>
-              </AppBar>
-              {productError && (
-                <Alert sx={{ margin: 1 }} severity="warning">
-                  {productError}
-                </Alert>
-              )}
-              <DialogContent dividers={scroll === "paper"} sx={{ padding: 2, boxSizing: "content-box" }}>
-                {loading && (
-                  <Box sx={{ width: "100%", marginBottom: "10px" }}>
-                    <LinearProgress />
-                  </Box>
+        <SmartScaleProvider smartScaleURL={smartScaleURL}>
+          <cartContext.Provider value={{ cart, setCart }}>
+            {active ? (
+              <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+                <AppBar sx={{ position: "relative" }} color={POSMode ? "POSModeColor" : "primary"}>
+                  <Toolbar sx={{ justifyContent: "space-between" }}>
+                    <DialogTitle textAlign="left" sx={{ fontSize: "1rem" }}>
+                      {blogname} - {!POSMode ? __("Self Checkout", "fcplugin") : __("Point of Sale", "fcplugin")}
+                    </DialogTitle>
+                    <Stack justifyContent={"flex-end"} alignItems={"center"} direction={"row"}>
+                      <span style={{ marginRight: "25px" }}>{frontendLocalizer.name} </span>
+                      <IconButton edge="start" color="inherit" aria-label="close" onClick={() => (window.location.href = frontendLocalizer.homeUrl)}>
+                        <ExitToAppIcon />
+                      </IconButton>
+                    </Stack>
+                  </Toolbar>
+                </AppBar>
+                {productError && (
+                  <Alert sx={{ margin: 1 }} severity="warning">
+                    {productError}
+                  </Alert>
                 )}
-                {scanning && !POSMode && <QrScanner
-                  setScanning={setScanning}
-                  cart={cart}
-                  setShowCart={setShowCart}
-                  setProductError={setProductError}
-                  setCart={setCart}
-                  productError={productError}
-                  setLoading={setLoading}
-                  setSmartScaleURL={setSmartScaleURL}
-                />}
-                {adding && <AddProductBySku
-                  setShowCart={setShowCart}
-                  setAdding={setAdding}
-                  setProductError={setProductError}
-                  smartScaleURL={smartScaleURL}
-                  POSMode={POSMode}
-                />}
-                {showCart && <SelfCheckoutCart
-                  POSMode={POSMode}
-                  margin={margin}
-                  saveEinkaufsliste={saveEinkaufsliste}
-                  setSaveEinkaufsliste={setSaveEinkaufsliste}
-                  selectedMember={selectedMember}
-                  setSelectedMember={setSelectedMember}
-                  selectedPaymentGateway={selectedPaymentGateway}
-                  setSelectedPaymentGateway={setSelectedPaymentGateway}
-                />}
-              </DialogContent>
-              <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
-                
-                  { buttons.pos && (
-                    <Box sx={{ marginRight: 2 }}>
-                      <Switch checked={POSMode} onChange={event => setPOSMode(event.target.checked)} inputProps={{ "aria-label": "pos-mode" }} color={POSMode ? "POSModeColor" : "primary"} /> {__("POS Modus", "fcplugin")}
+                <DialogContent dividers={scroll === "paper"} sx={{ padding: 2, boxSizing: "content-box" }}>
+                  {loading && (
+                    <Box sx={{ width: "100%", marginBottom: "10px" }}>
+                      <LinearProgress />
                     </Box>
                   )}
-                  { buttons.scan && (
-                    <Button
-                      disabled={submitting}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      onClick={() => {
-                        setShowCart(false)
-                        setScanning(true)
-                        setAdding(false)
-                      }}
-                    >
-                      <QrCodeScannerIcon />
-                    </Button>
-                  )}
-                  { buttons.add && (
-                    <Button
-                      disabled={submitting}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      onClick={() => {
-                        setShowCart(false)
-                        setScanning(false)
-                        setAdding(true)
-                      }}
-                    >
-                      <AddShoppingCartIcon />
-                    </Button>
-                  )}
-                  { buttons.cart && (
-                    <Button
-                      disabled={submitting}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      onClick={() => {
-                        setShowCart(true)
-                        setScanning(false)
-                        setAdding(false)
-                      }}
-                    >
-                      <ShoppingCartIcon />
-                    </Button>
-                  )}
-                  { buttons.save && (
-                    <Button
-                      disabled={submitting}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      onClick={() => {
-                        setSaveEinkaufsliste(true)
-                      }}
-                    >
-                      <SaveIcon />
-                    </Button>
-                  )}
-                  { buttons.checkout && (
-                    <LoadingButton
-                      startIcon={<PointOfSaleIcon />}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      loading={submitting}
-                      onClick={() => {
-                        POSMode ? posCheckout() : checkout()
-                      }}
-                    >
-                      {!POSMode ? "Kasse" : "Einkauf abschliessen"}
-                    </LoadingButton>
-                  )}
-              </DialogActions>
-            </Dialog>
-          ) : active === null ? (
-            <Box sx={{ width: "100%", marginBottom: 4 }}>
-              <LinearProgress />
-            </Box>
-          ) : (
-            <Alert severity="error" sx={{ marginBottom: 4 }}>
-              {__("Der Self Checkout ist deaktiviert.", "fcplugin")}
-            </Alert>
-          )}
-        </cartContext.Provider>
+                  {scanning && !POSMode && <QrScanner
+                    setScanning={setScanning}
+                    cart={cart}
+                    setShowCart={setShowCart}
+                    setProductError={setProductError}
+                    setCart={setCart}
+                    productError={productError}
+                    setLoading={setLoading}
+                    setSmartScaleURL={setSmartScaleURL}
+                  />}
+                  {adding && <AddProductBySku
+                    setShowCart={setShowCart}
+                    setAdding={setAdding}
+                    setProductError={setProductError}
+                    POSMode={POSMode}
+                  />}
+                  {showCart && <SelfCheckoutCart
+                    POSMode={POSMode}
+                    margin={margin}
+                    saveEinkaufsliste={saveEinkaufsliste}
+                    setSaveEinkaufsliste={setSaveEinkaufsliste}
+                    selectedMember={selectedMember}
+                    setSelectedMember={setSelectedMember}
+                    selectedPaymentGateway={selectedPaymentGateway}
+                    setSelectedPaymentGateway={setSelectedPaymentGateway}
+                  />}
+                </DialogContent>
+                <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
+                  
+                    { buttons.pos && (
+                      <Box sx={{ marginRight: 2 }}>
+                        <Switch checked={POSMode} onChange={event => setPOSMode(event.target.checked)} inputProps={{ "aria-label": "pos-mode" }} color={POSMode ? "POSModeColor" : "primary"} /> {__("POS Modus", "fcplugin")}
+                      </Box>
+                    )}
+                    { buttons.scan && (
+                      <Button
+                        disabled={submitting}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        onClick={() => {
+                          setShowCart(false)
+                          setScanning(true)
+                          setAdding(false)
+                        }}
+                      >
+                        <QrCodeScannerIcon />
+                      </Button>
+                    )}
+                    { buttons.add && (
+                      <Button
+                        disabled={submitting}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        onClick={() => {
+                          setShowCart(false)
+                          setScanning(false)
+                          setAdding(true)
+                        }}
+                      >
+                        <AddShoppingCartIcon />
+                      </Button>
+                    )}
+                    { buttons.cart && (
+                      <Button
+                        disabled={submitting}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        onClick={() => {
+                          setShowCart(true)
+                          setScanning(false)
+                          setAdding(false)
+                        }}
+                      >
+                        <ShoppingCartIcon />
+                      </Button>
+                    )}
+                    { buttons.save && (
+                      <Button
+                        disabled={submitting}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        onClick={() => {
+                          setSaveEinkaufsliste(true)
+                        }}
+                      >
+                        <SaveIcon />
+                      </Button>
+                    )}
+                    { buttons.checkout && (
+                      <LoadingButton
+                        startIcon={<PointOfSaleIcon />}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        loading={submitting}
+                        onClick={() => {
+                          POSMode ? posCheckout() : checkout()
+                        }}
+                      >
+                        {!POSMode ? "Kasse" : "Einkauf abschliessen"}
+                      </LoadingButton>
+                    )}
+                </DialogActions>
+              </Dialog>
+            ) : active === null ? (
+              <Box sx={{ width: "100%", marginBottom: 4 }}>
+                <LinearProgress />
+              </Box>
+            ) : (
+              <Alert severity="error" sx={{ marginBottom: 4 }}>
+                {__("Der Self Checkout ist deaktiviert.", "fcplugin")}
+              </Alert>
+            )}
+          </cartContext.Provider>
+        </SmartScaleProvider>
       </ThemeProvider>
     </LocalizationProvider>
   )

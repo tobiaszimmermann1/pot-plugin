@@ -6,6 +6,7 @@ import { ListItem, ListItemText, ListItemAvatar, Avatar } from "@mui/material"
 import { Add as AddIcon, Remove as RemoveIcon, Delete as DeleteIcon } from "@mui/icons-material"
 import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
+import { SmartScaleChip } from "./SmartScaleChip"
 import { updateProductAmount } from "../products/products"
 const __ = wp.i18n.__
 
@@ -72,6 +73,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                 label={__("Totalgewicht", "fcplugin")+' ( '+ productData.weight_unit +' )'}
                 value={inputUserWeightValue}
                 onChange={e => setInputUserWeightValue(e.target.value)}
+                InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserWeightValue} /> }}
               />
             </FormControl>
             <FormControl>
@@ -79,6 +81,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                 label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.weight_unit +' )' }
                 value={inputUserTaraValue}
                 onChange={e => setInputUserTaraValue(e.target.value)}
+                InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserTaraValue} /> }}
               />
             </FormControl>
           </Stack>
