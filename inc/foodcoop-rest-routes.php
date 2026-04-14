@@ -1055,6 +1055,30 @@ class FoodcoopRestRoutes {
             }
         ],
     ]);
+
+
+    /**
+     * GET all products
+     */
+    register_rest_route( 'foodcoop/v1', 'getSmartScaleData', [
+      [
+        'methods' => WP_REST_SERVER::READABLE,
+        'callback' => array($this, 'getSmartScaleData'), 
+        'permission_callback' => function() {
+          return true;
+        }
+      ]
+    ]);
+
+    register_rest_route('foodcoop/v1', 'setSmartScaleData', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'setSmartScaleData'),
+            'permission_callback' => function(){
+              return true;
+            }
+        ],
+    ]);
     
   }
 
@@ -1222,6 +1246,31 @@ class FoodcoopRestRoutes {
 
     return [
         'userEinkaufslisten' => array_values($einkaufslisten)
+    ];
+  }
+
+  function getSmartScaleData($data) {
+    $smartScaleData = get_option("fc_smartcale_data");
+    $source = $data['source'];
+
+    if ( isset($smartScaleData[$source]) ) return $smartScaleData[$source];
+
+    return ['error'=>true,'message'=>'source does not exist'];
+  }
+
+  function setSmartScaleData($request) {
+    if ( !isset($request['source']) ) return ['error'=>true,'message'=>'no source specified'];
+    if ( !isset($request['data']) ) return ['error'=>true,'message'=>'no source data specified'];
+
+    $smartScaleData = get_option("fc_smartcale_data");
+    if ( !$smartScaleData ) $smartScaleData = [];
+
+    $smartScaleData[$request['source']] = $request['data'];
+
+    update_option('fc_smartcale_data',$smartScaleData);
+
+    return [
+        'message'=>'ok'
     ];
   }
   

@@ -9,7 +9,7 @@ import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
 
-function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, POSMode }) {
+function AddProductBySku({ setShowCart, setAdding, setProductError, smartScaleURL, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
   const [products, setProducts] = useState(null)
   const [productsLoading, setProductsLoading] = useState(true)
@@ -29,17 +29,17 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
   const [userVerpackungFormVisible, showUserVerpackungForm] = useState(false)
   const [userProduktFavoriten, setUserProduktFavoriten] = useState([])
 
-  const scaleWeightPollInterval = useRef(null);
+  const smartScaleWeightPollInterval = useRef(null);
 
   useEffect(() => {
       updateProducts();
       updateUserVerpackungen();
       updateUserProduktFavoriten();
 
-      if ( scaleURL ) pollScaleWeightValue();
+      if ( smartScaleURL ) pollSmartScaleWeightValue();
 
       return () => {
-        stopPollScaleWeightValue();
+        stopPollSmartScaleWeightValue();
       }
   }, [])
 
@@ -132,31 +132,31 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
         .catch(error => console.log(error))
   }
 
-  function stopPollScaleWeightValue() {
-    if ( scaleWeightPollInterval.current ) {
-      clearInterval(scaleWeightPollInterval.current);
-      scaleWeightPollInterval.current = null;
+  function stopPollSmartScaleWeightValue() {
+    if ( smartScaleWeightPollInterval.current ) {
+      clearInterval(smartScaleWeightPollInterval.current);
+      smartScaleWeightPollInterval.current = null;
     }
   }
 
-  function pollScaleWeightValue() {
-    if ( scaleWeightPollInterval.current ) return;
+  function pollSmartScaleWeightValue() {
+    if ( smartScaleWeightPollInterval.current ) return;
 
-    updateScaleWeightValue();
+    updateSmartScaleWeightValue();
 
-    scaleWeightPollInterval.current = setInterval(updateScaleWeightValue,1000);
+    smartScaleWeightPollInterval.current = setInterval(updateSmartScaleWeightValue,1000);
   }
 
-  function updateScaleWeightValue() {
-    if ( !scaleURL ) return;
+  function updateSmartScaleWeightValue() {
+    if ( !smartScaleURL ) return;
     
     axios
-      .get(scaleURL) //status=connected, time, unit, value, stable, negative, tara
+      .get(smartScaleURL) //status=connected, time, unit, value, stable, negative, tara
       .then(function (response) {
         if ( response.data.status == 'connected' ) {
-          setScaleWeightValue(response.data.value / 1000);
+          setSmartScaleWeightValue(response.data.value / 1000);
         } else {
-          setScaleWeightValue(0);
+          setSmartScaleWeightValue(0);
         }
       })
       .catch(error => console.log(error))
@@ -228,17 +228,17 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
     !POSMode && setFreeEntry(false)
   }, [POSMode])
 
-  function scaleWeightChip(cb){
-    if ( !scaleURL ) return null;
+  function smartScaleWeightChip(cb){
+    if ( !smartScaleURL ) return null;
 
     return <>
       <InputAdornment position="end">
         <Chip
           sx={{width:'100px'}}
           variant="outlined"
-          label={`${scaleWeightValue} kg`}
-          onClick={() => cb(scaleWeightValue)}
-          onDelete={() => cb(scaleWeightValue)}
+          label={`${smartScaleWeightValue} kg`}
+          onClick={() => cb(smartScaleWeightValue)}
+          onDelete={() => cb(smartScaleWeightValue)}
           deleteIcon={<ScaleIcon />}
         />
       </InputAdornment>
@@ -278,7 +278,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
                         variant="outlined"
                         type="number"
                         label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'}
-                        InputProps={{ endAdornment: scaleWeightChip(setUserTaraValue) }}
+                        InputProps={{ endAdornment: smartScaleWeightChip(setUserTaraValue) }}
                       />
                       {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
                     </FormControl>
@@ -335,7 +335,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
                                 variant="outlined"
                                 type="number"
                                 label={__("Totalgewicht", "fcplugin") +' ( '+ product.weight_unit +' )' }
-                                InputProps={{ endAdornment: scaleWeightChip(setUserWeightValue) }}
+                                InputProps={{ endAdornment: smartScaleWeightChip(setUserWeightValue) }}
                               />
                             </FormControl>
                             <FormControl>
@@ -346,7 +346,7 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, scaleURL, PO
                                 variant="outlined"
                                 type="number"
                                 label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'}
-                                InputProps={{ endAdornment: scaleWeightChip(setUserTaraValue) }}
+                                InputProps={{ endAdornment: smartScaleWeightChip(setUserTaraValue) }}
                               />
                               {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
                             </FormControl>

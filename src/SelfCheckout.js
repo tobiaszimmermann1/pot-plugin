@@ -51,7 +51,7 @@ function SelfCheckout() {
   const [productError, setProductError] = useState(null)
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(true)
-  const [scaleURL, setScaleURL] = useState(true)
+  const [smartScaleURL, setSmartScaleURL] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [active, setActive] = useState(null)
@@ -63,7 +63,7 @@ function SelfCheckout() {
   const [saveEinkaufsliste, setSaveEinkaufsliste] = useState(false)
 
   useEffect(() => {
-    setScaleURL(localStorage.getItem("fc_selfcheckout_scale_url"));
+    setSmartScaleURL(localStorage.getItem("fc_selfcheckout_smartscale_url"));
 
     axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=blogname`)
@@ -105,8 +105,8 @@ function SelfCheckout() {
   }, [scanning])
 
   useEffect(() => {
-    localStorage.setItem("fc_selfcheckout_scale_url",scaleURL);
-  }, [scaleURL])
+    localStorage.setItem("fc_selfcheckout_smartscale_url",smartScaleURL);
+  }, [smartScaleURL])
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -245,13 +245,13 @@ function SelfCheckout() {
                   setCart={setCart}
                   productError={productError}
                   setLoading={setLoading}
-                  setScaleURL={setScaleURL}
+                  setSmartScaleURL={setSmartScaleURL}
                 />}
                 {adding && <AddProductBySku
                   setShowCart={setShowCart}
                   setAdding={setAdding}
                   setProductError={setProductError}
-                  scaleURL={scaleURL}
+                  smartScaleURL={smartScaleURL}
                   POSMode={POSMode}
                 />}
                 {showCart && <SelfCheckoutCart
