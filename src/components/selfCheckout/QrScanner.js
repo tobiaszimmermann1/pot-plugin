@@ -3,6 +3,7 @@ import { QrReader } from "react-qr-reader"
 import { Stack } from "@mui/material"
 import axios from "axios"
 import WeightDialog from "./WeightDialog"
+import { updateProductAmount } from "../products/products"
 
 const __ = wp.i18n.__
 
@@ -18,13 +19,6 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
   const [isEneteringWeight, setIsEnteringWeight] = useState(false)
   const [scanActive, setScanActive] = useState(true)
 
-  const wc_weight_units = {
-    kg: 1000,
-    g: 1,
-    lbs: 453.592,
-    oz: 28.3495
-  }
-
   function scanResultFunction(decodedText) {
     setScanActive(false)
 
@@ -32,17 +26,17 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
       let execute = 1
 
       try {
-        var data = JSON.parse(decodedText);
-        
-        if ( data.smartscale ) {
-          setSmartScaleURL(data.smartscale);
+        var data = JSON.parse(decodedText)
+
+        if (data.smartscale) {
+          setSmartScaleURL(data.smartscale)
           setShowCart(true)
           setScanning(false)
           setLoading(false)
-          return;
+          return
         }
-      } catch ( e ) {
-        console.error(e);
+      } catch (e) {
+        console.error(e)
       }
 
       cart.map(cartItem => {
@@ -97,18 +91,13 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
   useEffect(() => {
     // add item to cart after the user has entered the weight
     if (userWeightValue !== 0 && weightProd) {
-      const prodWeightInG = weightProd.weight * wc_weight_units[weightProd.weight_unit]
-      weightProd.amount = (userWeightValue * 1000) / prodWeightInG
-      weightProd.userWeightValue = userWeightValue
-      // prepare cart
-      let newCart = cart
-      weightProd.id = newCart.length
-      weightProd.order_type = "self_checkout"
-      newCart.push(weightProd)
+      const cartItem = { ...weightProd }
+      cartItem.id = cart.length
+      cartItem.order_type = "self_checkout"
+      updateProductAmount(cartItem, userWeightValue, 0)
+      const newCart = [...cart, cartItem]
       setCart(newCart)
-      if (newCart.length > 0) {
-        localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
-      }
+      localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
       setScanResult(0)
       setScanning(false)
       setShowCart(true)

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react"
 import { Stack, Button, TextField, Dialog, DialogContent, DialogTitle } from "@mui/material"
 import Toolbar from "@mui/material/Toolbar"
 import { Alert } from "@mui/material"
+import { SmartScaleChip } from "./SmartScaleChip"
 const __ = wp.i18n.__
 
 function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWeight, amount }) {
@@ -74,6 +75,15 @@ function WeightDialog({ setModalClose, prod, setUserWeightValue, setIsEnteringWe
               onBlur={handleBlur}
               error={error}
               sx={{ width: "100%" }}
+              InputProps={{
+                endAdornment: (
+                  <SmartScaleChip
+                    onApply={v => {
+                      setWeight(String(v))
+                    }}
+                  />
+                )
+              }}
               helperText={error ? __("Ungültiges Format: Nur Zahlen mit max. drei Dezimalstellen erlaubt.", "fcplugin") : __("Gewicht in kg, z.B. 0.250", "fcplugin")}
             />
             <Button onClick={handleSubmit} variant="contained" size="large" color="primary">
