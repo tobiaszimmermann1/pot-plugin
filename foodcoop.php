@@ -1010,7 +1010,7 @@ function custom_order_button_text( $order_button_text ) {
       $active = false;
       $bestellrunde_ids_in_cart = array();
       foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-          $bestellrunde_id = $cart_item['bestellrunde'];
+          $bestellrunde_id = $cart_item['bestellrunde'] ?? '';
           if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
               array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
           }

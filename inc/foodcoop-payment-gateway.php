@@ -110,10 +110,16 @@ function fc_init_gateway_class() {
             // get cart items to fetch bestellrunde_id
             $active = false;
             $bestellrunde_ids_in_cart = array();
-            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-                $bestellrunde_id = $cart_item['bestellrunde'];
-                if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
-                    array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
+            foreach ( WC()->cart->get_cart() as $cart_item ) {
+
+                if (isset($cart_item['bestellrunde']) && !empty($cart_item['bestellrunde'])) {
+
+                    $bestellrunde_id = $cart_item['bestellrunde'];
+
+                    if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart, true)) {
+                        $bestellrunde_ids_in_cart[] = $bestellrunde_id;
+                    }
+
                 }
             }
             
