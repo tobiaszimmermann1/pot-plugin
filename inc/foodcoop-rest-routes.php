@@ -873,7 +873,7 @@ class FoodcoopRestRoutes {
      * GET Product List for Overview
      */
     register_rest_route( 'foodcoop/v1', 'getProductListOverview', array(
-      'methods' => WP_REST_SERVER::CREATABLE,
+      'methods' => WP_REST_SERVER::READABLE,
       'callback' => array($this, 'getProductListOverview'), 
       'permission_callback' => function() {
         return true;
@@ -976,15 +976,304 @@ class FoodcoopRestRoutes {
     ));
 
 
+    register_rest_route('foodcoop/v1', 'getUserProduktFavoriten', [
+        [
+            'methods' => WP_REST_SERVER::READABLE,
+            'callback' => array($this,'getUserProduktFavoriten'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+    register_rest_route('foodcoop/v1', 'toggleUserProduktFavorit', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'toggleUserProduktFavorit'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
     
+    register_rest_route('foodcoop/v1', 'getUserVerpackungen', [
+        [
+            'methods' => WP_REST_SERVER::READABLE,
+            'callback' => array($this,'getUserVerpackungen'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+    register_rest_route('foodcoop/v1', 'addUserVerpackung', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'addUserVerpackung'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+    
+    register_rest_route('foodcoop/v1', 'removeUserVerpackung', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'removeUserVerpackung'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+    register_rest_route('foodcoop/v1', 'getUserEinkaufslisten', [
+        [
+            'methods' => WP_REST_SERVER::READABLE,
+            'callback' => array($this,'getUserEinkaufslisten'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+    register_rest_route('foodcoop/v1', 'addUserEinkaufsliste', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'addUserEinkaufsliste'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+    
+    register_rest_route('foodcoop/v1', 'removeUserEinkaufsliste', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'removeUserEinkaufsliste'),
+            'permission_callback' => function(){
+              return is_user_logged_in();
+            }
+        ],
+    ]);
+
+
+    /**
+     * GET all products
+     */
+    register_rest_route( 'foodcoop/v1', 'getSmartScaleData', [
+      [
+        'methods' => WP_REST_SERVER::READABLE,
+        'callback' => array($this, 'getSmartScaleData'), 
+        'permission_callback' => function() {
+          return true;
+        }
+      ]
+    ]);
+
+    register_rest_route('foodcoop/v1', 'setSmartScaleData', [
+        [
+            'methods' => WP_REST_SERVER::CREATABLE,
+            'callback' => array($this,'setSmartScaleData'),
+            'permission_callback' => function(){
+              return true;
+            }
+        ],
+    ]);
     
   }
 
   
   
+  function getUserProduktFavoriten() {
+    $user_id = get_current_user_id();
+    $favoriten = get_user_meta($user_id, 'fc_produkt_favoriten', true);
+    if ( !is_array($favoriten) ) $favoriten = [];
+
+    return [
+        'userProduktFavoriten' => array_values($favoriten)
+    ];
+  }
+
+  function toggleUserProduktFavorit($request) {
+      $user_id = get_current_user_id();
+      $sku = (string)$request['sku'];
+
+      $favoriten = get_user_meta($user_id, 'fc_produkt_favoriten', true);
+      if ( !$favoriten ) $favoriten = [];
+
+      $favorit = null;
+
+      if ( !in_array($sku, $favoriten) ) {
+        $favoriten[] = $sku;
+        $favorit = true;
+      } else {
+        $favoriten = array_values(array_filter($favoriten,fn($id) => $id != $sku ));
+        $favorit = false;
+      }
+
+      update_user_meta($user_id, 'fc_produkt_favoriten', $favoriten);
+
+      return [
+          'userFavorit' => $favorit,
+          'userProduktFavoriten' => $favoriten,
+      ];
+  }
+
+  function getUserVerpackungen() {
+    $user_id = get_current_user_id();
+    $verpackungen = get_user_meta($user_id, 'fc_verpackungen', true);
+    if (!$verpackungen) $verpackungen = [];
+
+    return [
+        'userVerpackungen' => array_values($verpackungen)
+    ];
+  }
+
+  function removeUserVerpackung($request) {
+    $user_id = get_current_user_id();
+    $name = $request['name'];
+
+    $verpackungen = get_user_meta($user_id, 'fc_verpackungen', true);
+    if ( !$verpackungen ) $verpackungen = [];
+
+    $verpackungen = array_filter($verpackungen,fn($verpackung) => $verpackung['name'] != $name );
+
+    update_user_meta($user_id, 'fc_verpackungen', array_values($verpackungen));
+
+    return [
+        'userVerpackungen' => array_values($verpackungen)
+    ];
+  }
+
+  function addUserVerpackung($request) {
+    $user_id = get_current_user_id();
+    $name = $request['name'];
+    $gewicht = floatval($request['gewicht']);
+
+    $verpackungen = get_user_meta($user_id, 'fc_verpackungen', true);
+    if ( !$verpackungen ) $verpackungen = [];
+
+    $verpackungen[] = ['name'=>$name,'gewicht'=>$gewicht];
+
+    update_user_meta($user_id, 'fc_verpackungen', $verpackungen);
+
+    return [
+        'userVerpackungen' => array_values($verpackungen)
+    ];
+  }
+
+  function getUserEinkaufslisten() {
+    $user_id = get_current_user_id();
+    $einkaufslisten = get_user_meta($user_id, 'fc_einkaufslisten', true);
+    if (!$einkaufslisten) $einkaufslisten = [];
+
+    return [
+        'userEinkaufslisten' => array_values($einkaufslisten)
+    ];
+  }
+
+  function removeUserEinkaufsliste($request) {
+    $user_id = get_current_user_id();
+    $id = $request['id'];
+
+    $einkaufslisten = get_user_meta($user_id, 'fc_einkaufslisten', true);
+    if ( !$einkaufslisten ) $einkaufslisten = [];
+
+    $einkaufslisten = array_filter($einkaufslisten,fn($einkaufsliste) => $einkaufsliste['id'] != $id );
+
+    update_user_meta($user_id, 'fc_einkaufslisten', array_values($einkaufslisten));
+
+    return [
+        'userEinkaufslisten' => array_values($einkaufslisten)
+    ];
+  }
+
+  function addUserEinkaufsliste($request) {
+    $user_id = get_current_user_id();
+
+    $einkaufslisten = get_user_meta($user_id, 'fc_einkaufslisten', true);
+    if ( !$einkaufslisten ) $einkaufslisten = [];
+
+    $id = $request['id'];
+    $date = $request['date'];
+    $auto = (bool)$request['auto']??false;
+    $produkte = [];
+    foreach( $request['produkte']??[] as $produkt ) {
+      if ( empty($produkt['sku']) ) continue;
+
+      $produkte[] = [
+        'sku'=>(string)$produkt['sku'],
+        'amount'=>floatval($produkt['amount']),
+        'weight'=>floatval($produkt['weight']),
+        'tara'=>floatval($produkt['tara']),
+      ];
+    }
+
+    $neueListe = [
+      'id'=>$id,
+      'auto'=>$auto,
+      'date'=>$date,
+      'produkte'=>$produkte
+    ];
+
+    if ( $auto ) {
+      foreach( $einkaufslisten as $einkaufsliste ) {
+        if ( $einkaufsliste['auto'] ) $autoListen[] = $einkaufsliste;
+        else $namedListen[] = $einkaufsliste;
+      }
+
+      $autoListen[] = $neueListe;
+
+      $autoListen = array_slice($autoListen,-5); //only keep last 5 auto listen
+
+      $einkaufslisten = array_merge($autoListen,$namedListen);
+
+    } else {
+      foreach( $einkaufslisten as $idx => $liste ) {
+        if ( $liste['id'] === $id ) {
+          $einkaufslisten[$idx] = $neueListe;
+          $neueListe = null;
+          break;
+        }
+      }
+
+      if ( $neueListe ) $einkaufslisten[] = $neueListe;
+    }
+
+    
+
+    update_user_meta($user_id, 'fc_einkaufslisten', $einkaufslisten);
+
+    return [
+        'userEinkaufslisten' => array_values($einkaufslisten)
+    ];
+  }
+
+  function getSmartScaleData($data) {
+    $smartScaleData = get_option("fc_smartcale_data");
+    $source = $data['source'];
+
+    if ( isset($smartScaleData[$source]) ) return $smartScaleData[$source];
+
+    return ['error'=>true,'message'=>'source does not exist'];
+  }
+
+  function setSmartScaleData($request) {
+    if ( !isset($request['source']) ) return ['error'=>true,'message'=>'no source specified'];
+    if ( !isset($request['data']) ) return ['error'=>true,'message'=>'no source data specified'];
+
+    $smartScaleData = get_option("fc_smartcale_data");
+    if ( !$smartScaleData ) $smartScaleData = [];
+
+    $smartScaleData[$request['source']] = $request['data'];
+
+    update_option('fc_smartcale_data',$smartScaleData);
+
+    return [
+        'message'=>'ok'
+    ];
+  }
   
-
-
   /**
    * API Routes Functions
    */
@@ -3104,6 +3393,8 @@ class FoodcoopRestRoutes {
     $self_checkout_products = json_decode(get_option( 'fc_self_checkout_products' ));
     $weighed_products = json_decode(get_option( 'fc_weighed_products' )) ?: [];
 
+    $user_id = get_current_user_id();
+
     if (in_array($product_id, $self_checkout_products)) {
       $product = wc_get_product($product_id);
 
@@ -3112,13 +3403,18 @@ class FoodcoopRestRoutes {
         $quantity = $product->get_stock_quantity();
         $stock_status = $product->get_stock_status();
 
+        $pimg = wp_get_attachment_url( $product->get_image_id(), 'thumbnail');
+        if (!$pimg) {
+          $pimg = plugin_dir_url( __FILE__ ).'../images/placeholder.png';
+        }
+
         if ($quantity > 0 || $stock_setting == "no" || $stock_status == "instock") {
           $product_data = array(
             'name' => $product->get_name(),
             'price' => $product->get_price(),
             'unit' => $product->get_meta('_einheit'),
             'weight' => floatval($product->get_weight()),
-            'img' => wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'thumbnail', 50, 50, true )[0],
+            'img' => $pimg,
             'amount' => 1, 
             'sku' => $sku,
             'product_id' => $product->get_id(),
@@ -3917,6 +4213,8 @@ class FoodcoopRestRoutes {
       'order'             => 'ASC'
     ));
 
+    $weighed_products = json_decode(get_option( 'fc_weighed_products' )) ?: [];
+
     $products = array();
     foreach ($p as $product) {
       $sku = $product->get_sku();
@@ -3933,10 +4231,13 @@ class FoodcoopRestRoutes {
           "name" => $product->get_name(),
           "price" => $product->get_price(),
           "category_id" => $product->get_category_ids()[0],
-          "image" => $pimg,
+          'weight' => floatval($product->get_weight()),
+          "img" => $pimg,
           "description" => $product->get_description(),
           "stock" => $product->get_stock_quantity(),
           "stock_status" => $product->get_stock_status(),
+          'is_weighed' => in_array($product->get_id(), $weighed_products),
+          "weight_unit" => get_option('woocommerce_weight_unit'),
           "sku" => $sku,
         );
       

@@ -10,7 +10,7 @@ const containerStyle = {
   marginTop: "25px"
 }
 
-function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, setLoading }) {
+function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, setLoading, setSmartScaleURL }) {
   const [scanResult, setScanResult] = useState(0)
   const [weightModalOpen, setWeightModalOpen] = useState(false)
   const [weightProd, setWeightProd] = useState(false)
@@ -30,6 +30,20 @@ function QrScanner({ setScanning, cart, setProductError, setShowCart, setCart, s
 
     if (scanResult === 0) {
       let execute = 1
+
+      try {
+        var data = JSON.parse(decodedText);
+        
+        if ( data.smartscale ) {
+          setSmartScaleURL(data.smartscale);
+          setShowCart(true)
+          setScanning(false)
+          setLoading(false)
+          return;
+        }
+      } catch ( e ) {
+        console.error(e);
+      }
 
       cart.map(cartItem => {
         if (decodedText.toString() === cartItem.sku.toString()) {

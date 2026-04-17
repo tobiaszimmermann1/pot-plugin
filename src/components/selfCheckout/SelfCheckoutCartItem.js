@@ -1,24 +1,37 @@
 import React, { useState, useEffect, useContext } from "react"
 import Grid from "@mui/material/Grid"
-import { Divider, FormControl } from "@mui/material"
+import { Divider, FormControl, ListItemButton } from "@mui/material"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, TextField } from "@mui/material"
-import ListItem from "@mui/material/ListItem"
-import AddIcon from "@mui/icons-material/Add"
-import RemoveIcon from "@mui/icons-material/Remove"
+import { ListItem, ListItemText, ListItemAvatar, Avatar } from "@mui/material"
+import { Add as AddIcon, Remove as RemoveIcon, Delete as DeleteIcon } from "@mui/icons-material"
 import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
-import PhotoIcon from "@mui/icons-material/Photo"
-import DeleteIcon from "@mui/icons-material/Delete"
+import { SmartScaleChip } from "./SmartScaleChip"
+import { updateProductAmount } from "../products/products"
 const __ = wp.i18n.__
 
 function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
 
   const [amount, setAmount] = useState(productData.amount)
+  const [userWeightValue, setUserWeightValue] = useState(productData.userWeightValue)
+  const [userTaraValue, setUserTaraValue] = useState(productData.userTaraValue)
+  const [amountWeight, setAmountWeight] = useState(productData.amountWeight)
   const [totalPrice, setTotalPrice] = useState(0)
-  const [inputAmount, setInputAmount] = useState(false)
-  const [inputAmountValue, setInputAmountValue] = useState(0)
-  const [disableMinus, setDisableMinus] = useState(false)
+  
+  const [inputUserWeight, setInputUserWeight] = useState(false)
+  const [inputUserWeightValue, setInputUserWeightValue] = useState(0)
+  const [inputUserTaraValue, setInputUserTaraValue] = useState(0)
+
+  function removeItem(){
+    updateCart(cart.filter( (cartItem,cartItemIndex) => itemIndex != cartItemIndex ));
+  }
+
+  function updateCart(newCart){    
+    setCart(newCart)
+
+    localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
+  }
 
   useEffect(() => {
     if (productData) {
@@ -28,118 +41,127 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   }, [productData, amount])
 
   useEffect(() => {
-    let newAmount = amount
-    const newCart = cart.map(cartItem => {
-      if (cartItem.product_id === productData.product_id) {
-        return { ...cartItem, amount: newAmount }
+    updateCart(cart.map( (cartItem, cartItemIndex) => {
+      if (itemIndex === cartItemIndex) {
+        return { ...cartItem, amount, amountWeight, userWeightValue, userTaraValue }
       } else {
         return cartItem
       }
-    })
-    setCart(newCart)
-
-    localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(newCart))
+    }));
   }, [amount])
 
-  function setNewAmount() {
-    setAmount(parseFloat(inputAmountValue))
-    setInputAmount(false)
+  useEffect(() => {
+    updateProductAmount(productData,userWeightValue,userTaraValue);
+    setAmountWeight(productData.amountWeight);
+    setAmount(productData.amount);
+  }, [userWeightValue,userTaraValue])
+
+  function setNewUserWeight() {
+    setUserWeightValue(inputUserWeightValue);
+    setUserTaraValue(inputUserTaraValue);
+    setInputUserWeight(false)
   }
 
-  return productData ? (
-    <>
-      <Dialog open={inputAmount} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle id="alert-dialog-title">{__("Menge eingeben", "fcplugin")}</DialogTitle>
+  function renderWeightDialog(){
+    return <Dialog open={inputUserWeight} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <DialogTitle id="alert-dialog-title">{__("Gewicht ändern", "fcplugin")}</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
-            <Box sx={{ padding: "10px", borderRadius: "5px", backgroundColor: "#f0f0f0" }}>
-              {__("Einheit", "fcplugin")}: {productData.unit} <br />
-              {__("Menge x Einheit = Gesamtmenge", "fcplugin")}
-            </Box>
             <FormControl>
-              <TextField type="number" size="normal" id="amount" label={__("Menge", "fcplugin")} name="amount" variant="outlined" value={inputAmountValue} onChange={e => setInputAmountValue(e.target.value)} />
+              <TextField type="number" size="normal" id="userWeightValue" name="userWeightValue" variant="outlined"
+                label={__("Totalgewicht", "fcplugin")+' ( '+ productData.weight_unit +' )'}
+                value={inputUserWeightValue}
+                onChange={e => setInputUserWeightValue(e.target.value)}
+                InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserWeightValue} /> }}
+              />
+            </FormControl>
+            <FormControl>
+              <TextField type="number" size="normal" id="userTaraValue" name="userTaraValue" variant="outlined"
+                label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.weight_unit +' )' }
+                value={inputUserTaraValue}
+                onChange={e => setInputUserTaraValue(e.target.value)}
+                InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserTaraValue} /> }}
+              />
             </FormControl>
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={setNewAmount} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
-            {__("Menge Übernehmen", "fcplugin")}
+          <Button onClick={setNewUserWeight} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
+            {__("Gewicht übernehmen", "fcplugin")}
           </Button>
         </DialogActions>
       </Dialog>
-      <ListItem sx={{ margin: "5px 0", padding: 1 }}>
-        <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
-          <Grid item xs={3}>
-            {!productData.is_weighed ? (
-              <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-start" sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}>
-                <AddIcon onClick={() => setAmount(productData.amount + 1)} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", cursor: "pointer" }} />
-                <Chip
-                  label={productData.amount}
-                  sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }}
-                  onClick={() => {
-                    setInputAmount(true)
-                    setInputAmountValue(amount)
-                  }}
-                />
-                <RemoveIcon
-                  sx={{ fontSize: POSMode ? "1.5rem" : "1rem", cursor: "pointer" }}
-                  onClick={() => {
-                    productData.amount > 0 && setAmount(productData.amount - 1)
-                  }}
-                />
-              </Stack>
-            ) : (
-              <Stack direction="column" gap={2} sx={{ alignItems: "flex-start" }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                  <Chip label={`${productData.userWeightValue} kg`} sx={{ fontSize: POSMode ? "1.5rem" : "1rem", fontWeight: "bold" }} />
-                  <DeleteIcon
-                    sx={{ cursor: "pointer", "&:hover": { color: "red" } }}
-                    onClick={() => {
-                      setAmount(0)
-                    }}
-                  />
-                </div>
-              </Stack>
-            )}
-          </Grid>
-          <Grid item xs={7} sx={{ fontWeight: "bold", fontSize: POSMode ? "1.5rem" : "1rem" }}>
-            <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start">
-              <Grid item xs={12}>
-                <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
-                  <Grid item xs={4}>
-                    {productData.img ? <img src={productData.img} width={"50px"} height={"50px"} /> : <PhotoIcon />}
-                  </Grid>
-                  <Grid item xs={8}>
-                    {productData.name} <span style={{ fontWeight: "normal" }}>({productData.sku})</span>
-                    <Grid container spacing={1} alignItems="flex-start" justifyContent="flex-start" sx={{ marginTop: "0px" }}>
-                      {POSMode ? (
-                        <Grid item xs={12}>
-                          <Chip label={productData.unit} sx={{ marginRight: 1, fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
-                          <Chip label={`CHF ${parseFloat(productData.price).toFixed(2)}`} sx={{ marginRight: 1, fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
-                          <Chip label={`Artikel-Nr.: ${productData.sku}`} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }} />
-                        </Grid>
-                      ) : (
-                        <Grid item xs={12} sx={{ fontSize: POSMode ? "1.25rem" : "0.8rem", fontWeight: "normal" }}>
-                          {!productData.is_weighed && productData.unit}
-                        </Grid>
-                      )}
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={2} sx={{ fontWeight: "bold", textAlign: "right", fontSize: POSMode ? "1.5rem" : "1rem" }}>
-            {parseFloat(totalPrice).toFixed(2)}
-          </Grid>
-        </Grid>
+  }
+
+  function renderWeighedItemContent(){
+    return <Chip
+      sx={{width:'100px'}}
+      variant="outlined"
+      label={`${productData.amountWeight} ${productData.weight_unit}`}
+      onClick={() => {
+        setInputUserWeight(true)
+        setInputUserWeightValue(userWeightValue)
+        setInputUserTaraValue(userTaraValue)
+      }}
+      onDelete={removeItem}
+      deleteIcon={<DeleteIcon />}
+    />
+  }
+
+  function decreaseAmount(){
+    if ( productData.amount > 1 ) {
+      setAmount(productData.amount - 1);
+    } else {
+      removeItem();
+    }
+  }
+
+  function increaseAmount(){
+    setAmount(productData.amount + 1);
+  }
+
+  function renderItemContent(){
+    return <Chip
+      sx={{width:'100px'}}
+      avatar={<AddIcon onClick={increaseAmount} sx={{ cursor: "pointer" }} />}
+      variant="outlined"
+      label={productData.amount}
+      onDelete={decreaseAmount}
+      deleteIcon={productData.amount>1?<RemoveIcon/>:<DeleteIcon/>}
+    />
+  }
+
+  if ( !productData ) return "";
+
+  //productData.is_weighed = false;
+
+  return <>
+      { renderWeightDialog() }
+      <ListItem
+        disableGutters dense
+        sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
+        secondaryAction={
+          <Box sx={{ minWidth: '120px', textAlign: 'right' }}>
+            <span style={{float:'left'}}>CHF</span>{parseFloat(totalPrice).toFixed(2)}
+          </Box>
+        }
+      >
+        <ListItemAvatar sx={{marginRight:'10px'}}>
+          {productData.img ? <img src={productData.img} width="60px" height="60px"/> : ""}
+        </ListItemAvatar>
+        <ListItemText
+          sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}
+          primary={<strong>{productData.name}</strong>}
+          secondary={productData.is_weighed
+            ? renderWeighedItemContent()
+            : renderItemContent()
+          }
+        />
       </ListItem>
       <Divider />
     </>
-  ) : (
-    ""
-  )
+  ;
 }
 
 export default SelfCheckoutCartItem
