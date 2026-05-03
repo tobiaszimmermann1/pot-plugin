@@ -207,6 +207,12 @@ function before_checkout_create_order_legacy( $order ) {
     // Iterate through each order item and update the balance of the product owner (fc_owner)
     foreach ($order->get_items() as $item_id => $item_obj) {
       $product = $item_obj->get_product();
+
+      // Skip if the product was deleted between order time and payout, or has no
+      // sane price — both would fatal the loop and (because _payout_done is now
+      // claimed up-front) leave subsequent items in the same order unpaid.
+      if ( ! $product || $product->get_price() <= 0 ) continue;
+
       $fc_owner = $product->get_meta('fc_owner');
 
       if ($fc_owner){

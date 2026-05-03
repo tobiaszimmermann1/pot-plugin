@@ -4695,7 +4695,10 @@ class FoodcoopRestRoutes {
 
    foreach($orders as $order_id) {
     $order = wc_get_order($order_id);
-    $order->set_status('wc-completed');
+    // update_status (not set_status) so woocommerce_order_status_completed fires
+    // and update_member_balance pays out any orders that didn't already pay out
+    // via woocommerce_thankyou.
+    $order->update_status('wc-completed');
     $order->save();
    }
 
