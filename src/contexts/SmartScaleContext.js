@@ -3,13 +3,13 @@ import axios from "axios"
 
 const SmartScaleContext = createContext(null)
 
-const STORAGE_KEY = "fc_selfcheckout_smartscale_url"
+export const STORAGE_KEY = "fc_selfcheckout_smartscale_url"
 
 export function SmartScaleProvider({ children }) {
   const [weightValue, setWeightValue] = useState(0)
   const subscriberCount = useRef(0)
   const pollInterval = useRef(null)
-  const smartScaleURL = useRef(localStorage.getItem(STORAGE_KEY))
+  const smartScaleURL = useRef(null)
 
   // URL-Änderungen im localStorage beobachten
   useEffect(() => {
@@ -34,8 +34,25 @@ export function SmartScaleProvider({ children }) {
     return () => window.removeEventListener("storage", handleStorageChange)
   }, [])
 
+  function pair(url) {
+    localStorage.setItem(STORAGE_KEY,url);
+  }
+
+  function isPaired() {
+    let url = localStorage.getItem(STORAGE_KEY);
+    if ( !url || url == 'null' ) {
+      return false;
+    }
+
+    smartScaleURL.current = url;
+
+    if (!smartScaleURL.current) return false;
+
+    return true;
+  }
+
   function fetchWeight() {
-    if (!smartScaleURL.current) return
+    if ( !isPaired() ) return
 
     axios.get(smartScaleURL.current)
       .then(response => {
@@ -49,7 +66,9 @@ export function SmartScaleProvider({ children }) {
   }
 
   function startPolling() {
+    if ( !isPaired() ) return
     if (pollInterval.current) return
+
     fetchWeight()
     pollInterval.current = setInterval(fetchWeight, 1000)
   }
@@ -63,7 +82,7 @@ export function SmartScaleProvider({ children }) {
 
   function subscribe() {
     subscriberCount.current += 1
-    if (subscriberCount.current === 1 && smartScaleURL.current) startPolling()
+    if (subscriberCount.current === 1 && isPaired() ) startPolling()
   }
 
   function unsubscribe() {
@@ -76,7 +95,7 @@ export function SmartScaleProvider({ children }) {
   }, [])
 
   return (
-    <SmartScaleContext.Provider value={{ weightValue, subscribe, unsubscribe }}>
+    <SmartScaleContext.Provider value={{ weightValue, subscribe, unsubscribe, isPaired, pair }}>
       {children}
     </SmartScaleContext.Provider>
   )
