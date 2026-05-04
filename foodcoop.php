@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.7.9
+Version: 1.8.0
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -258,7 +258,7 @@ function fc_admin_load_scripts() {
   // Load built file
   wp_enqueue_script(
     'fc-script',
-    plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.7.9',
+    plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.8.0',
     [ 'wp-element', 'wp-i18n' ],
     '1.0',
     true
@@ -271,11 +271,11 @@ function fc_admin_load_scripts() {
     'pluginUrl'   => plugin_dir_url(__FILE__),
     'nonce'       => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version'     => "1.7.9"
+    'version'     => "1.8.0"
   ]);
 
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.9' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.0' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
@@ -284,7 +284,7 @@ function fc_wp_load_scripts() {
   if ( get_option('fc_enable_rounds_storewide') ) {
     wp_enqueue_script(
       'fc-script-sitewide-bestellrunden',
-      plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.7.9',
+      plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.8.0',
       [ 'jquery' ],
       '1.0',
       true
@@ -293,7 +293,7 @@ function fc_wp_load_scripts() {
 
     wp_enqueue_script(
       'fc-script-frontend',
-      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.7.9',
+      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.8.0',
       [ 'wp-element', 'wp-i18n' ],
       '1.0',
       true
@@ -312,7 +312,7 @@ function fc_wp_load_scripts() {
   ]);
 
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.7.9' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.0' );
 }
 
 
