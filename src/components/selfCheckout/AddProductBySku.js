@@ -10,7 +10,7 @@ import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
 
-function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
+function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
   const { cart, setCart } = useContext(cartContext)
   const [products, setProducts] = useState(null)
   const [productsLoading, setProductsLoading] = useState(true)
@@ -80,13 +80,18 @@ function AddProductBySku({ setShowCart, setAdding, setProductError, POSMode }) {
           .then(function (response) {
             if (response.products) {
               const prod = response.products
-              Object.keys(prod).forEach(function (key, index) {
+              Object.keys(prod).forEach(function (key) {
                 let product = prod[key];
 
                 if (scProds.includes(product.id)) {
                   product.label = product.name;// + " ( #" + product.sku + " )"
                   
                   reArrangeProductData.push(product)
+
+                  if ( product.sku == scanResult ) {
+                    setProduct(product);
+                    setSku(product.sku);
+                  }
                 }
               })
               setProducts(reArrangeProductData)

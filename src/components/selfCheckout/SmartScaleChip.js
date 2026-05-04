@@ -12,7 +12,7 @@ export function SmartScaleChip({ onApply }) {
     return () => scale.unsubscribe()
   }, [])
 
-  if (!scale) return null
+  if ( !scale || !scale.isPaired() ) return null
 
   return (
     <InputAdornment position="end">

@@ -19,7 +19,7 @@ import { cartContext } from "./components/selfCheckout/cartContext"
 import AddProductBySku from "./components/selfCheckout/AddProductBySku"
 import LoadingButton from "@mui/lab/LoadingButton"
 import QrScanner from "./components/selfCheckout/QrScanner"
-import { SmartScaleProvider } from "./contexts/SmartScaleContext.js"
+import { SmartScaleProvider, STORAGE_KEY as SMARTSCALE_STORAGE_KEY } from "./contexts/SmartScaleContext.js"
 
 const __ = wp.i18n.__
 
@@ -48,11 +48,12 @@ const theme = createTheme({
 function SelfCheckout() {
   const [blogname, setBlogname] = useState(null)
   const [scanning, setScanning] = useState(false)
+  const [scanResult, setScanResult] = useState(null)
   const [adding, setAdding] = useState(false)
   const [productError, setProductError] = useState(null)
+  const [productErrorSeverity, setProductErrorSeverity] = useState('warning')
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(true)
-  const [smartScaleURL, setSmartScaleURL] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [active, setActive] = useState(null)
@@ -64,8 +65,6 @@ function SelfCheckout() {
   const [saveEinkaufsliste, setSaveEinkaufsliste] = useState(false)
 
   useEffect(() => {
-    setSmartScaleURL(localStorage.getItem("fc_selfcheckout_smartscale_url"));
-
     axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=blogname`)
       .then(function (response) {
@@ -106,10 +105,6 @@ function SelfCheckout() {
   }, [scanning])
 
   useEffect(() => {
-    localStorage.setItem("fc_selfcheckout_smartscale_url",smartScaleURL);
-  }, [smartScaleURL])
-
-  useEffect(() => {
     if (cart.length === 0) {
       let localStorageCart = localStorage.getItem("fc_selfcheckout_cart")
       if (localStorageCart) {
@@ -121,7 +116,8 @@ function SelfCheckout() {
   useEffect(() => {
     if (productError !== null) {
       setTimeout(() => {
-        setProductError(null)
+        setProductError(null);
+        setProductErrorSeverity('warning');
       }, 5000)
     }
   }, [productError])
@@ -152,6 +148,32 @@ function SelfCheckout() {
       setProductError("Warenkorb leer.")
       setSubmitting(false)
     }
+  }
+
+  function updateScanResult(text) {
+    try {
+      var data = JSON.parse(text);
+      
+      if ( data.smartscale ) {
+        localStorage.setItem(SMARTSCALE_STORAGE_KEY,data.smartscale);
+        //const scale = useSmartScale()
+        //scale.pair(data.smartscale);
+
+        setProductError('Mit Waage verbunden');
+        setProductErrorSeverity('success');
+
+        setShowCart(true)
+        setScanning(false)
+        return;
+      }
+    } catch ( e ) {
+      
+    }
+
+    setScanResult(text);
+
+    setAdding(true);
+    setScanning(false);
   }
 
   function posCheckout() {
@@ -211,7 +233,7 @@ function SelfCheckout() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <ThemeProvider theme={theme}>
-        <SmartScaleProvider smartScaleURL={smartScaleURL}>
+        <SmartScaleProvider>
           <cartContext.Provider value={{ cart, setCart }}>
             {active ? (
               <Dialog fullScreen open={true} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -229,7 +251,7 @@ function SelfCheckout() {
                   </Toolbar>
                 </AppBar>
                 {productError && (
-                  <Alert sx={{ margin: 1 }} severity="warning">
+                  <Alert sx={{ margin: 1 }} severity={productErrorSeverity}>
                     {productError}
                   </Alert>
                 )}
@@ -240,19 +262,12 @@ function SelfCheckout() {
                     </Box>
                   )}
                   {scanning && !POSMode && <QrScanner
-                    setScanning={setScanning}
-                    cart={cart}
-                    setShowCart={setShowCart}
-                    setProductError={setProductError}
-                    setCart={setCart}
-                    productError={productError}
-                    setLoading={setLoading}
-                    setSmartScaleURL={setSmartScaleURL}
+                    updateScanResult={updateScanResult}
                   />}
                   {adding && <AddProductBySku
                     setShowCart={setShowCart}
                     setAdding={setAdding}
-                    setProductError={setProductError}
+                    scanResult={scanResult}
                     POSMode={POSMode}
                   />}
                   {showCart && <SelfCheckoutCart
