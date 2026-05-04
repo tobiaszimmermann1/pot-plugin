@@ -12,6 +12,7 @@ $stock_import = $data['stock'];
 
 $product_array = array();
 $formatting_errors = array();
+$formatting_warnings = array();
 $rows_with_errors = array();
 $all_skus = array();
 $all_ids = array();
@@ -33,8 +34,16 @@ try {
       if ($value instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
           $value = $value->getPlainText();
       }
+      // Normalise truly empty cells to null — PhpSpreadsheet may return 0 for
+      // cells that have a numeric format applied but no actual value.
+      if ($cell->getDataType() === \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NULL) {
+          $value = null;
+      }
       $rowData[] = $value;
     }
+    // Pad to the expected 17 columns so all indices (0–16) always exist,
+    // even when trailing empty cells are not written to the file.
+    $rowData = array_pad($rowData, 17, null);
 
 
     // check if header row has correct names
@@ -133,6 +142,37 @@ try {
       }
       array_push($all_pot_ids, $pot_id);
 
+      // validate id + sku relationship against the database
+      $has_id  = !empty($rowData[7]);
+      $has_sku = !empty($rowData[11]);
+
+      if ($has_id && $has_sku) {
+        // Both present: id must match a real product AND its SKU must match
+        $existing_product = wc_get_product(intval($rowData[7]));
+        if (!($existing_product instanceof WC_Product)) {
+          array_push($formatting_errors, array($i, "ID " . $rowData[7] . " wurde in der Datenbank nicht gefunden."));
+          $row_has_error = true;
+        } elseif ($existing_product->get_sku() !== sanitize_text_field($rowData[11])) {
+          array_push($formatting_errors, array($i, "ID " . $rowData[7] . " und Artikelnummer '" . $rowData[11] . "' stimmen nicht überein. Das Produkt hat die Artikelnummer '" . $existing_product->get_sku() . "'."));
+          $row_has_error = true;
+        }
+      } elseif ($has_id && !$has_sku) {
+        // ID only: must match an existing product
+        $existing_product = wc_get_product(intval($rowData[7]));
+        if (!($existing_product instanceof WC_Product)) {
+          array_push($formatting_errors, array($i, "ID " . $rowData[7] . " wurde in der Datenbank nicht gefunden."));
+          $row_has_error = true;
+        }
+      } elseif (!$has_id && $has_sku) {
+        // SKU without ID: check if a product with this SKU already exists in the DB
+        $sku_product_id = wc_get_product_id_by_sku(sanitize_text_field($rowData[11]));
+        if ($sku_product_id) {
+          // Existing product found via SKU — import will overwrite it, show warning
+          array_push($formatting_warnings, array($i, "Artikelnummer '" . $rowData[11] . "' existiert bereits (Produkt-ID " . $sku_product_id . "). Das Produkt wird überschrieben."));
+        }
+        // No existing product with this SKU — import as new product, no warning needed
+      }
+
       if ($row_has_error === true) array_push($rows_with_errors, $i);
 
       array_push($product_array, $rowData);
@@ -145,13 +185,14 @@ try {
 
 if ($data) {
 
-  set_transient( "foodcoop_import_".$file, json_encode(array('data' => $product_array, 'errors' => $formatting_errors, 'rows_with_errors' => $rows_with_errors)), 3600 );
+  set_transient( "foodcoop_import_".$file, json_encode(array('data' => $product_array, 'errors' => $formatting_errors, 'warnings' => $formatting_warnings, 'rows_with_errors' => $rows_with_errors)), 3600 );
 
   $response = [
     'success' => true,
     'message' => 'File checked successfully',
     'data' => $product_array, 
     'errors' => $formatting_errors, 
+    'warnings' => $formatting_warnings,
     'rows_with_errors' => $rows_with_errors, 
     'file' => $file, 
     'transient' => "foodcoop_import_$file", 

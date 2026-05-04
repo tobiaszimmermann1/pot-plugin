@@ -63,6 +63,7 @@ class FoodcoopProductImport {
         } else {
           $data = $transient_data->data;
           $formatting_errors = $transient_data->errors;
+          $formatting_warnings = isset($transient_data->warnings) ? (array) $transient_data->warnings : array();
           $rows_with_errors = $transient_data->rows_with_errors;
           $_GET['del'] === "true" ? $foodcoop_product_import_delete = "true" : $foodcoop_product_import_delete = "false";
           $_GET['stock'] === "true" ? $foodcoop_product_import_stock = "true" : $foodcoop_product_import_stock = "false";
@@ -237,6 +238,17 @@ class FoodcoopProductImport {
                   ?>
                         </ul>
                 </div>
+
+                <?php if (!empty($formatting_warnings)) { ?>
+                  <div class="notice notice-warning inline">
+                    <p><strong><?php echo __( "Hinweise:", "fcplugin" ); ?></strong></p>
+                    <ul>
+                      <?php foreach ($formatting_warnings as $warning) { ?>
+                        <li><?php echo "Zeile " . $warning[0] . ": " . $warning[1]; ?></li>
+                      <?php } ?>
+                    </ul>
+                  </div>
+                <?php } ?>
 
                 <?php 
                 if (count($data) > 0) {

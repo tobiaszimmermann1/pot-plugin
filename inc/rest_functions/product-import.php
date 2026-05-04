@@ -8,6 +8,13 @@ if (empty($file)) {
   exit;
 }
 
+$allowed_extensions = ['xlsx'];
+$file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+if (!in_array($file_ext, $allowed_extensions, true)) {
+  $response = new WP_Error('invalid_file_type', 'Only XLSX files are allowed.', ['status' => 400]);
+  return $response;
+}
+
 $upload_dir = wp_upload_dir();
 $foodcoop_dir = $upload_dir['basedir'] . '/foodcoop_import';
 if (!file_exists($foodcoop_dir)) {
