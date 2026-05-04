@@ -28,6 +28,15 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.8.0
+
+- Added support for BLE scale to fetch product weights in Self Checkout
+- Improved QR Code reading in Self Checkout
+- Added favourites list in Self Checkout
+- Added containers in Self Checkout
+- Added support for saving carts in Self Checkout
+- Improved product import (fixed stock import, improved duplicate detection)
+
 ### 1.7.9
 
 - Improved product import
