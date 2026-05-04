@@ -260,100 +260,93 @@ function OrdersOfBestellrundeModal({ id, open, setModalClose }) {
   const [exportData, setExportData] = useState()
 
   useEffect(() => {
-    if (orders) {
-      let lieferanten = []
-      let products = []
-      let productsData = {}
-      let users = []
-      let orderItems = []
+    if (!orders) return
 
-      orders.map(order => {
-        // add user to array, if it is not already
-        !users.includes(order.customer_name) && users.push(order.customer_name)
-        // map line_items of order
-        order.line_items.map(lineItem => {
-          const supplier = lineItem.allmeta[0]?.value
-          const unit = lineItem.allmeta[1]?.value
-          const sku = typeof lineItem.product_sku !== "undefined" ? lineItem.product_sku : lineItem.allmeta?.[5]?.value ?? "-"
-          const productKey = sku !== "-" ? sku : `${lineItem.product_name}::${lineItem.item_id}`
+    const lieferantenSet = new Set()
+    const productsSet = new Set()
+    const usersSet = new Set()
+    const productsData = {}
+    const orderItems = []
 
-          // add line_item to array
-          orderItems.push({
-            user: order.customer_name,
-            itemId: lineItem.item_id,
+    orders.forEach(order => {
+      usersSet.add(order.customer_name)
+
+      order.line_items.forEach(lineItem => {
+        const supplier = lineItem.allmeta?.[0]?.value ?? ""
+        const unit = lineItem.allmeta?.[1]?.value ?? ""
+        const rawSku = lineItem.product_sku ?? lineItem.allmeta?.[5]?.value ?? null
+
+        const productKey = rawSku ? rawSku : `${lineItem.product_name}::${lineItem.item_id}`
+
+        orderItems.push({
+          user: order.customer_name,
+          productKey,
+          quantity: Number(lineItem.quantity) || 0,
+          supplier
+        })
+
+        if (!productsSet.has(productKey)) {
+          productsSet.add(productKey)
+          productsData[productKey] = {
             name: lineItem.product_name,
-            sku: sku !== "-" ? sku : null,
-            productKey,
-            quantity: lineItem.quantity,
-            lieferant: supplier,
-            einheit: unit
-          })
-
-          // register product (use productKey to avoid merging different SKUs with same name)
-          if (!products.includes(productKey)) {
-            products.push(productKey)
-            productsData[productKey] = [lineItem.product_name, sku, supplier, unit]
+            sku: rawSku,
+            supplier,
+            unit
           }
+        }
 
-          // register supplier
-          if (!lieferanten.includes(supplier)) {
-            lieferanten.push(supplier)
+        lieferantenSet.add(supplier)
+      })
+    })
+
+    const lieferanten = Array.from(lieferantenSet)
+    const users = Array.from(usersSet)
+
+    const dataMatrix = {}
+    const usedSheetNames = new Set()
+
+    lieferanten.forEach(lieferant => {
+      const rows = []
+
+      const productsBySupplier = Array.from(productsSet).filter(pk => productsData[pk]?.supplier === lieferant)
+
+      const usersBySupplier = [...new Set(orderItems.filter(oi => oi.supplier === lieferant).map(oi => oi.user))]
+
+      productsBySupplier.forEach(productKey => {
+        const pd = productsData[productKey]
+
+        const row = {
+          product: pd.name,
+          sku: pd.sku,
+          supplier: pd.supplier,
+          unit: pd.unit
+        }
+
+        usersBySupplier.forEach(user => {
+          const qty = orderItems.filter(oi => oi.user === user && oi.supplier === lieferant && oi.productKey === productKey).reduce((sum, oi) => sum + oi.quantity, 0)
+
+          if (qty > 0) {
+            row[user] = qty.toString()
           }
         })
+
+        rows.push(row)
       })
 
-      // structure the products data (products now holds productKey strings)
-      let productsByLieferant = {}
-      lieferanten.forEach(lieferant => {
-        productsByLieferant[lieferant] = products.filter(pk => (productsData[pk] && productsData[pk][2]) === lieferant)
-      })
+      // --- SAFE sheet name ---
+      let sheetName = (lieferant || "").substring(0, 31)
+      let counter = 1
+      while (usedSheetNames.has(sheetName)) {
+        const suffix = `_${counter}`
+        sheetName = sheetName.substring(0, 31 - suffix.length) + suffix
+        counter++
+      }
+      usedSheetNames.add(sheetName)
 
-      // structure the users data
-      let usersByLieferant = {}
-      lieferanten.forEach(lieferant => {
-        usersByLieferant[lieferant] = [...new Set(orderItems.filter(oi => oi.lieferant === lieferant).map(oi => oi.user))]
-      })
+      dataMatrix[sheetName] = rows
+    })
 
-      // create xlsx data matrix
-      let dataMatrix = {}
-      lieferanten.forEach(lieferant => {
-        let rows = []
-
-        ;(productsByLieferant[lieferant] || []).forEach(productKey => {
-          const pd = productsData[productKey] || [productKey, "-", lieferant, "-"]
-          const displayName = pd[0]
-          const sku = pd[1]
-          const supplier = pd[2]
-          const unit = pd[3]
-
-          let row = { product: displayName, sku: sku, supplier: supplier, unit: unit }
-
-          ;(usersByLieferant[lieferant] || []).forEach(user => {
-            let qty = 0
-            let matched = false
-            orderItems.forEach(orderItem => {
-              const matchesSku = orderItem.sku && orderItem.sku === productKey
-              const matchesFallback = !orderItem.sku && orderItem.name === displayName
-              if (orderItem.user === user && orderItem.lieferant === lieferant && (matchesSku || matchesFallback)) {
-                matched = true
-                qty += Number(orderItem.quantity) || 0
-              }
-            })
-            if (matched) {
-              row[user] = qty === 0 ? "0" : qty.toString()
-            }
-          })
-
-          rows.push(row)
-        })
-
-        let lieferantString = lieferant || ""
-        if (lieferantString.length > 30) lieferantString = lieferantString.substring(0, 29)
-        dataMatrix[lieferantString] = rows
-      })
-
-      setExportData(dataMatrix)
-    }
+    setExportData(dataMatrix)
   }, [orders, id])
 
   return (

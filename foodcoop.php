@@ -1010,7 +1010,7 @@ function custom_order_button_text( $order_button_text ) {
       $active = false;
       $bestellrunde_ids_in_cart = array();
       foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-          $bestellrunde_id = $cart_item['bestellrunde'];
+          $bestellrunde_id = $cart_item['bestellrunde'] ?? '';
           if (!in_array($bestellrunde_id, $bestellrunde_ids_in_cart) && $bestellrunde_id != '') {
               array_push($bestellrunde_ids_in_cart, $bestellrunde_id);
           }
@@ -1210,9 +1210,11 @@ add_filter( 'woocommerce_add_cart_item_data', 'fc_add_to_cart_shopwide_bestellru
 function fc_add_to_cart_shopwide_bestellrunde($cartItemData, $productId, $variationId ) { 
   if (get_option('fc_enable_rounds_storewide') == '1') {
     if (isset($_COOKIE['fc_selected_bestellrunde'])) {
-      $bestellrunde = json_decode(stripslashes($_COOKIE['fc_selected_bestellrunde']));
-      $cartItemData['bestellrunde'] = $bestellrunde->ID;
-      $cartItemData['order_type'] = 'bestellrunde';
+      $bestellrunde = json_decode(stripslashes(urldecode($_COOKIE['fc_selected_bestellrunde'])));
+      if ($bestellrunde && !empty($bestellrunde->ID)) {
+        $cartItemData['bestellrunde'] = $bestellrunde->ID;
+        $cartItemData['order_type'] = 'bestellrunde';
+      }
     }
   }
   return $cartItemData;

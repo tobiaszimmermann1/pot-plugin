@@ -2,20 +2,32 @@ import axios from "axios"
 
 let productListOverviewCache = null
 
-export async function getProductListOverview() {
+const wc_weight_units = {
+    kg: 1000,
+    g: 1,
+    lbs: 453.592,
+    oz: 28.3495
+}
+
+async function updateProductListOverview() {
   if (productListOverviewCache === null) {
-    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
+    const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
     if (response.data) {
       productListOverviewCache = JSON.parse(response.data)
     }
   }
 
-  const res = productListOverviewCache
+  return productListOverviewCache;
+}
+
+export async function getProductListOverview() {
+  const res = await updateProductListOverview();
   const products = res[0]
   const categories = res[1]
   const currency = res[2]
+
   let productsByCategory = {}
-  res[1].map(category => {
+  categories.map(category => {
     productsByCategory[category.name] = []
   })
 
@@ -37,14 +49,15 @@ export async function getProductListOverview() {
   }
 }
 
+export async function getProductBySku(sku) {
+  const res = await updateProductListOverview();
+  let product = res[0].find(product => product.sku == sku)
+
+  return product;
+}
+
 export async function getProduct(id) {
-  if (productListOverviewCache === null) {
-    const response = await axios.post(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
-    if (response.data) {
-      productListOverviewCache = JSON.parse(response.data)
-    }
-  }
-  const res = productListOverviewCache
+  const res = await updateProductListOverview();
   let product = res[0].find(product => product.id == id)
 
   const currency = res[2]
@@ -69,4 +82,54 @@ export async function getSelfCheckoutProducts() {
     }
     return JSON.parse(JSON.parse(response.data)).map(Number)
   }
+}
+
+export function updateProductAmount(product,w,t){
+    if ( product.is_weighed ) {
+      const prodWeightInG = product.weight * wc_weight_units[product.weight_unit];
+
+      product.userWeightValue = formatProductWeight(w);
+      product.userTaraValue = formatProductWeight(t);
+      product.amountWeight = w > t
+        ? formatProductWeight(w - t)
+        : 0
+      ;
+
+      product.amount = w > t
+        ? formatProductWeight((w - t) / prodWeightInG * 1000)
+        : 0
+      ;
+    } else {
+      product.userWeightValue = null;
+      product.userTaraValue = null;
+    }
+}
+
+export function formatProductWeight(w){
+  w = parseFloat(w);
+
+  return Math.round(w*1000)/1000;
+}
+
+export async function addUserEinkaufsliste(cart,id) {
+  const produkte = cart.map(( item ) => ({
+    sku:item.sku,
+    amount:item.amount,
+    weight:item.userWeightValue,
+    tara:item.userTaraValue
+  }) );
+
+  const auto = !id;
+  if ( auto ) id = self.crypto.randomUUID();
+  
+  const response = await axios
+    .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/addUserEinkaufsliste`,{
+      id:id,
+      auto:auto?true:false,
+      date:Date.now(),
+      produkte:produkte,
+    },{headers: { "X-WP-Nonce": frontendLocalizer.nonce}}
+  )
+
+  return response;
 }

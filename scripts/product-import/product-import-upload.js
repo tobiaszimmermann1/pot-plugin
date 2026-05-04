@@ -19,6 +19,16 @@ jQuery("document").ready(function () {
         return
       }
 
+      const allowedExtensions = ["xlsx"]
+      const fileName = file[0].name
+      const fileExt = fileName.split(".").pop().toLowerCase()
+      if (!allowedExtensions.includes(fileExt)) {
+        alert("Ungültiges Dateiformat. Bitte lade eine XLSX-Datei hoch.")
+        jQuery("#foodcoop_product_import_step1-submit").prop("disabled", false)
+        jQuery(".waiting").addClass("hidden")
+        return
+      }
+
       const formData = new FormData()
       formData.append("file", file[0])
 

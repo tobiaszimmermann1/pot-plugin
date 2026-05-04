@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useContext } from "react"
 import Grid from "@mui/material/Grid"
 import axios from "axios"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Stack, TextField, Switch, Box, Divider, FormControl, InputLabel, Select, MenuItem, LinearProgress } from "@mui/material"
+import { Switch, Box, FormControl, InputLabel, Select, MenuItem, LinearProgress } from "@mui/material"
 import ListItem from "@mui/material/ListItem"
-import AddIcon from "@mui/icons-material/Add"
-import RemoveIcon from "@mui/icons-material/Remove"
-import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
-import PhotoIcon from "@mui/icons-material/Photo"
-import DeleteIcon from "@mui/icons-material/Delete"
 const __ = wp.i18n.__
 
 function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
@@ -25,10 +20,6 @@ function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, select
         let newTotal = 0
         cart.map(cartItem => {
           newTotal += cartItem.price * cartItem.amount
-
-          if (cartItem.amount === 0) {
-            setRemoveProduct(cartItem)
-          }
         })
         setCartMargin(newTotal * (margin / 100))
       }
