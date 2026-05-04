@@ -3613,16 +3613,17 @@ class FoodcoopRestRoutes {
     $message = $data['message'];
     $subject = $data['subject'];
     $number = 0;
+
+    $headers = array(
+      'From: ' . get_option('admin_email'),
+      'Reply-To: ' . get_option('admin_email'),
+      'Content-Type: text/html; charset=UTF-8',
+    );
     
     // loop through orders to get users email and name
     foreach($orders as $order) {
       $email = $order->customer_email;
-
       $message_to_send = $message;      
-
-      $headers[] = 'From: '. get_option('admin_email');
-      $headers[] = 'Reply-To: ' . get_option('admin_email');
-      $headers[] = 'Content-Type: text/html; charset=UTF-8';
 
       if ($email) {
         wp_mail( $email, $subject, $message_to_send, $headers);
@@ -3646,10 +3647,12 @@ class FoodcoopRestRoutes {
     $number = 0;
     
     $email = $emailaddress;
-    $message_to_send .= $message;      
-    $headers[] = 'From: '. get_option('admin_email');
-    $headers[] = 'Reply-To: ' . get_option('admin_email');
-    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+    $message_to_send = $message;      
+    $headers = array(
+      'From: ' . get_option('admin_email'),
+      'Reply-To: ' . get_option('admin_email'),
+      'Content-Type: text/html; charset=UTF-8',
+    );
 
     if ($email) {
       wp_mail( $email, $subject, $message_to_send, $headers);

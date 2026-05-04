@@ -7,7 +7,8 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start",
     "start:hot": "wp-scripts start --hot",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "npm run build && node release.js"
   },
   "repository": {
     "type": "git",
