@@ -23,32 +23,35 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
   const [userWeightValue, setUserWeightValue] = useState(0)
   const [userFavorit, setUserFavorit] = useState(false)
   const [userTaraValue, setUserTaraValue] = useState(0)
-  const [userTaraError, setUserTaraError] = useState('')
+  const [userTaraError, setUserTaraError] = useState("")
   const [userVerpackungen, setUserVerpackungen] = useState([])
-  const [userVerpackungName, setUserVerpackungName] = useState('')
+  const [userVerpackungName, setUserVerpackungName] = useState("")
   const [userVerpackungFormVisible, showUserVerpackungForm] = useState(false)
   const [userProduktFavoriten, setUserProduktFavoriten] = useState([])
 
   useEffect(() => {
-      updateProducts();
-      updateUserVerpackungen();
-      updateUserProduktFavoriten();
+    updateProducts()
+    updateUserVerpackungen()
+    updateUserProduktFavoriten()
   }, [])
 
   useEffect(() => {
-      setUserFavorit(product?isUserFavorit(product.sku):false);
-    }, [product])
+    setUserFavorit(product ? isUserFavorit(product.sku) : false)
+  }, [product])
 
   function addUserVerpackung() {
     axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/addUserVerpackung`,{
-        name:userVerpackungName,
-        gewicht:userTaraValue
-      },{headers: { "X-WP-Nonce": frontendLocalizer.nonce}}
-    )
+      .post(
+        `${frontendLocalizer.apiUrl}/foodcoop/v1/addUserVerpackung`,
+        {
+          name: userVerpackungName,
+          gewicht: userTaraValue
+        },
+        { headers: { "X-WP-Nonce": frontendLocalizer.nonce } }
+      )
       .then(function (response) {
-        showUserVerpackungForm(false);
-        setUserVerpackungName(null);
+        showUserVerpackungForm(false)
+        setUserVerpackungName(null)
 
         if (response.data.userVerpackungen) {
           setUserVerpackungen(response.data.userVerpackungen)
@@ -59,11 +62,13 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
 
   function removeUserVerpackung(name) {
     axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/removeUserVerpackung`,{
-        name:name,
-      },
-      {headers: { "X-WP-Nonce": frontendLocalizer.nonce}}
-    )
+      .post(
+        `${frontendLocalizer.apiUrl}/foodcoop/v1/removeUserVerpackung`,
+        {
+          name: name
+        },
+        { headers: { "X-WP-Nonce": frontendLocalizer.nonce } }
+      )
       .then(function (response) {
         if (response.data.userVerpackungen) {
           setUserVerpackungen(response.data.userVerpackungen)
@@ -81,16 +86,16 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
             if (response.products) {
               const prod = response.products
               Object.keys(prod).forEach(function (key) {
-                let product = prod[key];
+                let product = prod[key]
 
                 if (scProds.includes(product.id)) {
-                  product.label = product.name;// + " ( #" + product.sku + " )"
-                  
+                  product.label = product.name + " (" + product.sku + ") — CHF " + parseFloat(product.price).toFixed(2) + (product.weight ? " / " + product.weight + " " + product.weight_unit : "")
+
                   reArrangeProductData.push(product)
 
-                  if ( product.sku == scanResult ) {
-                    setProduct(product);
-                    setSku(product.sku);
+                  if (product.sku == scanResult) {
+                    setProduct(product)
+                    setSku(product.sku)
                   }
                 }
               })
@@ -105,8 +110,8 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
 
   function updateUserVerpackungen() {
     axios
-      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserVerpackungen`,{
-        headers: {"X-WP-Nonce": frontendLocalizer.nonce}
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserVerpackungen`, {
+        headers: { "X-WP-Nonce": frontendLocalizer.nonce }
       })
       .then(function (response) {
         if (response.data.userVerpackungen) {
@@ -117,38 +122,38 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
   }
 
   function updateUserProduktFavoriten() {
-      axios
-        .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserProduktFavoriten`,{
-          headers: {"X-WP-Nonce": frontendLocalizer.nonce}
-        })
-        .then(function (response) {
-          if (response.data.userProduktFavoriten) {
-            setUserProduktFavoriten(response.data.userProduktFavoriten)
-          }
-        })
-        .catch(error => console.log(error))
+    axios
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getUserProduktFavoriten`, {
+        headers: { "X-WP-Nonce": frontendLocalizer.nonce }
+      })
+      .then(function (response) {
+        if (response.data.userProduktFavoriten) {
+          setUserProduktFavoriten(response.data.userProduktFavoriten)
+        }
+      })
+      .catch(error => console.log(error))
   }
 
   function addProduct() {
-    getProductBySku(sku).then( (product) => {
-        const cartItem = JSON.parse(JSON.stringify(product));
+    getProductBySku(sku).then(product => {
+      const cartItem = JSON.parse(JSON.stringify(product))
 
-        cartItem.order_type = "self_checkout"
-        cartItem.amount = amount;
-        
-        updateProductAmount(cartItem,userWeightValue,userTaraValue);
+      cartItem.order_type = "self_checkout"
+      cartItem.amount = amount
 
-        cart.push(cartItem);
+      updateProductAmount(cartItem, userWeightValue, userTaraValue)
 
-        localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(cart))
+      cart.push(cartItem)
 
-        setAdding(false)
-        setShowCart(true)
-    });
+      localStorage.setItem("fc_selfcheckout_cart", JSON.stringify(cart))
+
+      setAdding(false)
+      setShowCart(true)
+    })
   }
 
-  function isUserFavorit(id){
-    return userProduktFavoriten?userProduktFavoriten.indexOf(id) >= 0:false
+  function isUserFavorit(id) {
+    return userProduktFavoriten ? userProduktFavoriten.indexOf(id) >= 0 : false
   }
 
   function addFreeProduct() {
@@ -170,23 +175,25 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
     setFreePosition("")
     setFreePositionPrice(0)
   }
-  
-  function resetProduct(){
-    setProduct(null);
+
+  function resetProduct() {
+    setProduct(null)
   }
 
   function toggleUserFavorit() {
     axios
-      .post(`${frontendLocalizer.apiUrl}/foodcoop/v1/toggleUserProduktFavorit`,{
-        sku:product.sku
-      },
-      {
-        headers: { "X-WP-Nonce": frontendLocalizer.nonce
+      .post(
+        `${frontendLocalizer.apiUrl}/foodcoop/v1/toggleUserProduktFavorit`,
+        {
+          sku: product.sku
+        },
+        {
+          headers: { "X-WP-Nonce": frontendLocalizer.nonce }
         }
-      })
+      )
       .then(function (response) {
-        setUserFavorit(response.data.userFavorit);
-        setUserProduktFavoriten(response.data.userProduktFavoriten);
+        setUserFavorit(response.data.userFavorit)
+        setUserProduktFavoriten(response.data.userProduktFavoriten)
       })
       .catch(error => console.log(error))
   }
@@ -218,19 +225,11 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
               </>
             ) : (
               <>
-                { userVerpackungFormVisible ? (
+                {userVerpackungFormVisible ? (
                   <>
                     <FormControl>
-                      <TextField
-                        id="userTaraValue"
-                        value={userTaraValue}
-                        onChange={e => setUserTaraValue(e.target.value)}
-                        variant="outlined"
-                        type="number"
-                        label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'}
-                        InputProps={{ endAdornment: <SmartScaleChip onApply={setUserTaraValue} /> }}
-                      />
-                      {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
+                      <TextField id="userTaraValue" value={userTaraValue} onChange={e => setUserTaraValue(e.target.value)} variant="outlined" type="number" label={__("Verpackungsgewicht", "fcplugin") + " ( kg )"} InputProps={{ endAdornment: <SmartScaleChip onApply={setUserTaraValue} /> }} />
+                      {userTaraError ? <span> {__(userTaraError, "fcplugin")}</span> : <span />}
                     </FormControl>
                     <FormControl>
                       <TextField id="userVerpackungName" value={userVerpackungName} onChange={e => setUserVerpackungName(e.target.value)} variant="outlined" type="text" label={__("Name der Verpackung", "fcplugin")} />
@@ -239,90 +238,93 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                       {__("Verpackung speichern", "fcplugin")}
                     </Button>
                   </>
-                ) : ( 
+                ) : (
                   <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
                     {products && (
                       <Autocomplete
                         sx={{ width: "100%" }}
                         value={product}
-                        isOptionEqualToValue={(option, value) => option.id === value.id} 
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
                         onChange={(event, newValue) => {
                           setProduct(newValue)
-                          setSku(newValue?newValue.sku:null)
+                          setSku(newValue ? newValue.sku : null)
                         }}
                         id="product"
                         options={products}
                         disablePortal
-                        renderInput={params => 
-                          <TextField {...params}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
                             label={__("Produkt", "fcplugin")}
                             className="autocompleteField"
                             InputProps={{
                               ...params.InputProps,
-                              endAdornment: product?(
+                              endAdornment: product ? (
                                 <>
-                                <InputAdornment position="end">
-                                  <IconButton onClick={ toggleUserFavorit }><FavoriteIcon sx={{ color: (userFavorit?"red":"black")}} /></IconButton>
-                                </InputAdornment>
-                                {params.InputProps.endAdornment}
+                                  <InputAdornment position="end">
+                                    <IconButton onClick={toggleUserFavorit}>
+                                      <FavoriteIcon sx={{ color: userFavorit ? "red" : "black" }} />
+                                    </IconButton>
+                                  </InputAdornment>
+                                  {params.InputProps.endAdornment}
                                 </>
-                              ):null
+                              ) : null
                             }}
                           />
-                        }
+                        )}
                       />
                     )}
 
-                    { product ? (
+                    {product ? (
                       <>
-                        { product.is_weighed ? (
+                        {product.is_weighed ? (
                           <>
                             <FormControl>
-                              <TextField
-                                id="userWeightValue"
-                                value={userWeightValue}
-                                onChange={e => setUserWeightValue(e.target.value)}
-                                variant="outlined"
-                                type="number"
-                                label={__("Totalgewicht", "fcplugin") +' ( '+ product.weight_unit +' )' }
-                                InputProps={{ endAdornment: <SmartScaleChip onApply={setUserWeightValue} /> }}
-                              />
+                              <TextField id="userWeightValue" value={userWeightValue} onChange={e => setUserWeightValue(e.target.value)} variant="outlined" type="number" label={__("Totalgewicht", "fcplugin") + " ( " + product.weight_unit + " )"} InputProps={{ endAdornment: <SmartScaleChip onApply={setUserWeightValue} /> }} />
                             </FormControl>
                             <FormControl>
-                              <TextField
-                                id="userTaraValue"
-                                value={userTaraValue}
-                                onChange={e => setUserTaraValue(e.target.value)}
-                                variant="outlined"
-                                type="number"
-                                label={__("Verpackungsgewicht", "fcplugin") +' ( kg )'}
-                                InputProps={{ endAdornment: <SmartScaleChip onApply={setUserTaraValue} /> }}
-                              />
-                              {userTaraError? (<span> {__(userTaraError, "fcplugin")}</span>):(<span/>)}
+                              <TextField id="userTaraValue" value={userTaraValue} onChange={e => setUserTaraValue(e.target.value)} variant="outlined" type="number" label={__("Verpackungsgewicht", "fcplugin") + " ( kg )"} InputProps={{ endAdornment: <SmartScaleChip onApply={setUserTaraValue} /> }} />
+                              {userTaraError ? <span> {__(userTaraError, "fcplugin")}</span> : <span />}
                             </FormControl>
                             <Button onClick={addProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
                               {__("Zum Warenkorb hinzufügen", "fcplugin")}
                             </Button>
                             <List dense={true}>
-                              <ListItem disableGutters
+                              <ListItem
+                                disableGutters
                                 secondaryAction={
-                                  <IconButton onClick={() => { showUserVerpackungForm(true) }}>
-                                    <AddIcon/>
+                                  <IconButton
+                                    onClick={() => {
+                                      showUserVerpackungForm(true)
+                                    }}
+                                  >
+                                    <AddIcon />
                                   </IconButton>
                                 }
                               >
-                                <ListItemText><strong>{__(userVerpackungen.length > 0 ?"Gespeicherte Verpackungen":"Verpackung speichern", "fcplugin")}</strong></ListItemText>
+                                <ListItemText>
+                                  <strong>{__(userVerpackungen.length > 0 ? "Gespeicherte Verpackungen" : "Verpackung speichern", "fcplugin")}</strong>
+                                </ListItemText>
                               </ListItem>
-                              {userVerpackungen.map((verpackung) => (
-                                <ListItem disableGutters
+                              {userVerpackungen.map(verpackung => (
+                                <ListItem
+                                  disableGutters
                                   secondaryAction={
-                                    <IconButton onClick={() => { removeUserVerpackung(verpackung.name) }}>
-                                      <DeleteIcon/>
+                                    <IconButton
+                                      onClick={() => {
+                                        removeUserVerpackung(verpackung.name)
+                                      }}
+                                    >
+                                      <DeleteIcon />
                                     </IconButton>
                                   }
                                 >
-                                  <ListItemButton onClick={() => { setUserTaraValue(verpackung.gewicht) }}>
-                                    <ListItemText primary={verpackung.name + ' ( '+ verpackung.gewicht +' kg)'} />
+                                  <ListItemButton
+                                    onClick={() => {
+                                      setUserTaraValue(verpackung.gewicht)
+                                    }}
+                                  >
+                                    <ListItemText primary={verpackung.name + " ( " + verpackung.gewicht + " kg)"} />
                                   </ListItemButton>
                                 </ListItem>
                               ))}
@@ -341,35 +343,41 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                       </>
                     ) : (
                       <>
-                      <List>
-                        <ListItem disableGutters>
-                          <ListItemAvatar>
-                            <Avatar><FavoriteIcon/></Avatar>
-                          </ListItemAvatar>
-                          <ListItemText><strong>{__("Deine Favoriten", "fcplugin")}</strong></ListItemText>
-                        </ListItem>
-                        {products.filter( function(product) {
-                          const productExists = cart.some(cartItem => {
-                            return product.sku === cartItem.sku
-                          })
-                          
-                          return !productExists && isUserFavorit(product.sku);
-                        } ).map((product) => (
-                          <ListItem disableGutters key={product.sku}>
-                            <ListItemButton onClick={() => {
-                              setProduct(product)
-                              setSku(product?product.sku:null)
-                            }}>
-                              <ListItemAvatar>
-                                <Avatar>
-                                  {product.img ? <img src={product.img} width={"50px"} height={"50px"} /> : <span/>}
-                                </Avatar>
-                              </ListItemAvatar>
-                              <ListItemText primary={product.label} />
-                            </ListItemButton>
+                        <List>
+                          <ListItem disableGutters>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <FavoriteIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText>
+                              <strong>{__("Deine Favoriten", "fcplugin")}</strong>
+                            </ListItemText>
                           </ListItem>
-                        ))}
-                      </List>
+                          {products
+                            .filter(function (product) {
+                              const productExists = cart.some(cartItem => {
+                                return product.sku === cartItem.sku
+                              })
+
+                              return !productExists && isUserFavorit(product.sku)
+                            })
+                            .map(product => (
+                              <ListItem disableGutters key={product.sku}>
+                                <ListItemButton
+                                  onClick={() => {
+                                    setProduct(product)
+                                    setSku(product ? product.sku : null)
+                                  }}
+                                >
+                                  <ListItemAvatar>
+                                    <Avatar>{product.img ? <img src={product.img} width={"50px"} height={"50px"} /> : <span />}</Avatar>
+                                  </ListItemAvatar>
+                                  <ListItemText primary={product.label} />
+                                </ListItemButton>
+                              </ListItem>
+                            ))}
+                        </List>
                       </>
                     )}
                   </Stack>

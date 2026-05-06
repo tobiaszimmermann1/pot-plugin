@@ -1217,6 +1217,8 @@ class FoodcoopRestRoutes {
     ];
 
     if ( $auto ) {
+      $autoListen = [];
+      $namedListen = [];
       foreach( $einkaufslisten as $einkaufsliste ) {
         if ( $einkaufsliste['auto'] ) $autoListen[] = $einkaufsliste;
         else $namedListen[] = $einkaufsliste;
@@ -3479,7 +3481,7 @@ class FoodcoopRestRoutes {
         $cart_item_data['order_type'] = 'bestellrunde';
         $cart_item_data['bestellrunde'] = $item->bestellrunde;
       }
-      $result = WC()->cart->add_to_cart( $item->product_id, $item->amount, NULL, array(), $cart_item_data );
+      $result = WC()->cart->add_to_cart( $item->product_id ?? $item->id, $item->amount, NULL, array(), $cart_item_data );
     }
 
     if ($result) {
