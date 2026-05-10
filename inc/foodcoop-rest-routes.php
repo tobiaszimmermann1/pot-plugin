@@ -4335,7 +4335,7 @@ class FoodcoopRestRoutes {
           'total'        => floatval($cart_item->price) * floatval($cart_item->amount)
         ));
       } else {
-        $order->add_product( wc_get_product( $cart_item->product_id ), $cart_item->amount );
+        $order->add_product( wc_get_product( $cart_item->product_id ?? $cart_item->id ), $cart_item->amount );
       }
     }
 

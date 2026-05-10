@@ -147,14 +147,21 @@ try {
       $has_sku = !empty($rowData[11]);
 
       if ($has_id && $has_sku) {
-        // Both present: id must match a real product AND its SKU must match
+        // Both present: id must match a real product; the SKU will be overwritten,
+        // but must not already belong to a different product.
         $existing_product = wc_get_product(intval($rowData[7]));
         if (!($existing_product instanceof WC_Product)) {
           array_push($formatting_errors, array($i, "ID " . $rowData[7] . " wurde in der Datenbank nicht gefunden."));
           $row_has_error = true;
-        } elseif ($existing_product->get_sku() !== sanitize_text_field($rowData[11])) {
-          array_push($formatting_errors, array($i, "ID " . $rowData[7] . " und Artikelnummer '" . $rowData[11] . "' stimmen nicht überein. Das Produkt hat die Artikelnummer '" . $existing_product->get_sku() . "'."));
-          $row_has_error = true;
+        } else {
+          $sanitized_sku   = sanitize_text_field($rowData[11]);
+          $sku_product_id  = wc_get_product_id_by_sku($sanitized_sku);
+          if ($sku_product_id && $sku_product_id !== intval($rowData[7])) {
+            array_push($formatting_errors, array($i, "Artikelnummer '" . $rowData[11] . "' gehört bereits zu einem anderen Produkt (ID " . $sku_product_id . ")."));
+            $row_has_error = true;
+          } elseif ($existing_product->get_sku() !== $sanitized_sku) {
+            array_push($formatting_warnings, array($i, "Artikelnummer von Produkt ID " . $rowData[7] . " wird von '" . $existing_product->get_sku() . "' auf '" . $sanitized_sku . "' geändert."));
+          }
         }
       } elseif ($has_id && !$has_sku) {
         // ID only: must match an existing product
