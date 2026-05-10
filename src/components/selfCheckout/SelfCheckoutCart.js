@@ -117,7 +117,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   }
 
   function renderPOSFinish() {
-    ;<>
+    return <>
       <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
         <SelfCheckoutCartItemPOSUser setCartMargin={setCartMargin} cartMargin={cartMargin} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
       </List>
