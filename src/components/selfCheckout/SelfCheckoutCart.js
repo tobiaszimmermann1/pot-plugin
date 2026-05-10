@@ -117,31 +117,33 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   }
 
   function renderPOSFinish() {
-    return <>
-      <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
-        <SelfCheckoutCartItemPOSUser setCartMargin={setCartMargin} cartMargin={cartMargin} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
-      </List>
-      {selectedMember ? (
+    return (
+      <>
         <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
-          <SelfCheckoutPaymentGateway selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
+          <SelfCheckoutCartItemPOSUser setCartMargin={setCartMargin} cartMargin={cartMargin} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
         </List>
-      ) : (
-        <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
-          <ListItem sx={{ margin: "5px 0" }}>
-            <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
-              <Grid item xs={6} sx={{ fontSize: "1.5rem", padding: 2 }}>
-                <Grid item xs={12}>
-                  <Box sx={{ marginRight: 2 }}>{__("Zahlungsart", "fcplugin")}</Box>
+        {selectedMember ? (
+          <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
+            <SelfCheckoutPaymentGateway selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
+          </List>
+        ) : (
+          <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
+            <ListItem sx={{ margin: "5px 0" }}>
+              <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
+                <Grid item xs={6} sx={{ fontSize: "1.5rem", padding: 2 }}>
+                  <Grid item xs={12}>
+                    <Box sx={{ marginRight: 2 }}>{__("Zahlungsart", "fcplugin")}</Box>
+                  </Grid>
+                </Grid>
+                <Grid item xs={6} sx={{ textAlign: "right", fontSize: "1.5rem" }}>
+                  Barzahlung
                 </Grid>
               </Grid>
-              <Grid item xs={6} sx={{ textAlign: "right", fontSize: "1.5rem" }}>
-                Barzahlung
-              </Grid>
-            </Grid>
-          </ListItem>
-        </List>
-      )}
-    </>
+            </ListItem>
+          </List>
+        )}
+      </>
+    )
   }
 
   function renderTotal() {
