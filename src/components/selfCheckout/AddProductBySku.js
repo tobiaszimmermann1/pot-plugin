@@ -255,6 +255,7 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                         renderInput={params => (
                           <TextField
                             {...params}
+                            autoFocus
                             label={__("Produkt", "fcplugin")}
                             className="autocompleteField"
                             InputProps={{
@@ -333,7 +334,7 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                         ) : (
                           <>
                             <FormControl>
-                              <TextField id="amount" value={amount} onChange={e => setAmount(e.target.value)} variant="outlined" type="number" label={__("Menge", "fcplugin")} />
+                              <TextField id="amount" autoFocus value={amount} onChange={e => setAmount(e.target.value)} onKeyDown={e => e.key === "Enter" && addProduct()} variant="outlined" type="number" label={__("Menge", "fcplugin")} />
                             </FormControl>
                             <Button onClick={addProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
                               {__("Zum Warenkorb hinzufügen", "fcplugin")}

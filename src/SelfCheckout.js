@@ -3,7 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import axios from "axios"
 import { addUserEinkaufsliste } from "./components/products/products"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch, Tooltip } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
@@ -231,6 +231,25 @@ function SelfCheckout() {
     }
   }, [POSMode])
 
+  useEffect(() => {
+    if (!showCart || confirming) return
+
+    const onKeyDown = e => {
+      if (e.target.closest?.("input, textarea, [contenteditable]")) return
+
+      if (e.key === "n") {
+        setShowCart(false)
+        setScanning(false)
+        setAdding(true)
+      } else if (e.key === "a" && cart.length > 0 && !submitting) {
+        POSMode ? setConfirming(true) : checkout()
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [showCart, confirming, cart, submitting, POSMode])
+
   function renderPOSConfirmation() {
     const total = cart.reduce((sum, item) => sum + item.price * item.amount, 0)
     const cartMargin = selectedMember ? 0 : total * (margin / 100)
@@ -366,19 +385,21 @@ function SelfCheckout() {
                     </Button>
                   )}
                   {buttons.add && (
-                    <Button
-                      disabled={submitting}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      onClick={() => {
-                        setShowCart(false)
-                        setScanning(false)
-                        setAdding(true)
-                      }}
-                    >
-                      <AddShoppingCartIcon />
-                    </Button>
+                    <Tooltip title={__("Produkt hinzufügen", "fcplugin") + " (n)"}>
+                      <Button
+                        disabled={submitting}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        onClick={() => {
+                          setShowCart(false)
+                          setScanning(false)
+                          setAdding(true)
+                        }}
+                      >
+                        <AddShoppingCartIcon />
+                      </Button>
+                    </Tooltip>
                   )}
                   {buttons.cart && (
                     <Button
@@ -409,18 +430,20 @@ function SelfCheckout() {
                     </Button>
                   )}
                   {buttons.checkout && (
-                    <LoadingButton
-                      startIcon={<PointOfSaleIcon />}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      loading={submitting}
-                      onClick={() => {
-                        POSMode ? setConfirming(true) : checkout()
-                      }}
-                    >
-                      {!POSMode ? "Kasse" : "Einkauf abschliessen"}
-                    </LoadingButton>
+                    <Tooltip title={(!POSMode ? __("Kasse", "fcplugin") : __("Einkauf abschliessen", "fcplugin")) + " (a)"}>
+                      <LoadingButton
+                        startIcon={<PointOfSaleIcon />}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        loading={submitting}
+                        onClick={() => {
+                          POSMode ? setConfirming(true) : checkout()
+                        }}
+                      >
+                        {!POSMode ? "Kasse" : "Einkauf abschliessen"}
+                      </LoadingButton>
+                    </Tooltip>
                   )}
                 </DialogActions>
               </Dialog>

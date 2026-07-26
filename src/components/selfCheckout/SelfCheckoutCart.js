@@ -244,6 +244,9 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           </Stack>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setSaveEinkaufsliste(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
           <Button onClick={saveUserEinkaufsliste} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Einkaufsliste speichern", "fcplugin")}
           </Button>
