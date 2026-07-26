@@ -71,6 +71,7 @@ function SelfCheckout() {
   }, [selectedMember])
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
   const [saveEinkaufsliste, setSaveEinkaufsliste] = useState(false)
+  const [confirming, setConfirming] = useState(false)
 
   useEffect(() => {
     axios
@@ -230,8 +231,76 @@ function SelfCheckout() {
     }
   }, [POSMode])
 
+  function renderPOSConfirmation() {
+    const total = cart.reduce((sum, item) => sum + item.price * item.amount, 0)
+    const cartMargin = selectedMember ? 0 : total * (margin / 100)
+
+    return (
+      <Dialog open={confirming} fullWidth maxWidth="md" scroll="paper">
+        <DialogTitle>{__("Einkauf bestätigen", "fcplugin")}</DialogTitle>
+        <DialogContent dividers>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "1.25rem" }}>
+            <tbody>
+              {cart.map((item, index) => (
+                <tr key={index} style={{ borderBottom: "1px solid #e3e3e3" }}>
+                  <td style={{ padding: "8px 0" }}>{item.name}</td>
+                  <td style={{ textAlign: "right" }}>
+                    {item.amount} x {parseFloat(item.price).toFixed(2)}
+                  </td>
+                  <td style={{ textAlign: "right", minWidth: "100px" }}>CHF {(item.price * item.amount).toFixed(2)}</td>
+                </tr>
+              ))}
+              {cartMargin !== 0 && (
+                <tr style={{ borderBottom: "1px solid #e3e3e3" }}>
+                  <td colSpan={2} style={{ padding: "8px 0" }}>
+                    + {margin}% {__("Marge für Nicht-Mitglieder", "fcplugin")}
+                  </td>
+                  <td style={{ textAlign: "right" }}>CHF {cartMargin.toFixed(2)}</td>
+                </tr>
+              )}
+              <tr style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+                <td colSpan={2} style={{ padding: "8px 0" }}>
+                  {__("Total", "fcplugin")}
+                </td>
+                <td style={{ textAlign: "right" }}>CHF {(total + cartMargin).toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colSpan={2} style={{ padding: "8px 0" }}>
+                  {__("Mitglied", "fcplugin")}
+                </td>
+                <td style={{ textAlign: "right" }}>{selectedMember ? selectedMember.name : __("Gast", "fcplugin")}</td>
+              </tr>
+              <tr>
+                <td colSpan={2} style={{ padding: "8px 0" }}>
+                  {__("Zahlungsart", "fcplugin")}
+                </td>
+                <td style={{ textAlign: "right" }}>{selectedMember ? selectedPaymentGateway && selectedPaymentGateway.name : "Barzahlung"}</td>
+              </tr>
+            </tbody>
+          </table>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" size="large" color="error" onClick={() => setConfirming(false)}>
+            {__("Abbrechen", "fcplugin")}
+          </Button>
+          <Button
+            variant="contained"
+            size="large"
+            color="POSModeColor"
+            onClick={() => {
+              setConfirming(false)
+              posCheckout()
+            }}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
   let buttons = {
-    pos: isPOSAdmin && showCart,
+    pos: isPOSAdmin,
     scan: !POSMode && showCart,
     add: showCart,
     cart: !showCart,
@@ -272,6 +341,7 @@ function SelfCheckout() {
                   )}
                   {scanning && !POSMode && <QrScanner updateScanResult={updateScanResult} />}
                   {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} scanResult={scanResult} POSMode={POSMode} />}
+                  {POSMode && renderPOSConfirmation()}
                   {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} saveEinkaufsliste={saveEinkaufsliste} setSaveEinkaufsliste={setSaveEinkaufsliste} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
                 </DialogContent>
                 <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
@@ -346,7 +416,7 @@ function SelfCheckout() {
                       color={POSMode ? "POSModeColor" : "primary"}
                       loading={submitting}
                       onClick={() => {
-                        POSMode ? posCheckout() : checkout()
+                        POSMode ? setConfirming(true) : checkout()
                       }}
                     >
                       {!POSMode ? "Kasse" : "Einkauf abschliessen"}
