@@ -35,9 +35,11 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
       })
 
       setTotal(newTotal)
-      setCartMargin(newTotal * (margin / 100))
+      // no margin on member purchases — also on remount/reload, when the
+      // POSUser row hides the member select as long as cartMargin !== 0
+      setCartMargin(selectedMember ? 0 : newTotal * (margin / 100))
     }
-  }, [cart, margin])
+  }, [cart, margin, selectedMember])
 
   useEffect(() => {
     POSMode ? setFinalTotal(total + cartMargin) : setFinalTotal(total)
