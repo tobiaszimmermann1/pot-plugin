@@ -207,7 +207,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
         </ListItemAvatar>
         <ListItemText
           sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}
-          primary={<strong>{productData.name}</strong>}
+          primary={<><strong>{productData.name}</strong>{productData.unit ? " (" + productData.unit + ")" : ""}</>}
           secondary={productData.is_weighed
             ? renderWeighedItemContent()
             : renderItemContent()
