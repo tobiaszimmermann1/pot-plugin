@@ -65,17 +65,25 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
     setInputUserWeight(false)
   }
 
+  function weightDialogKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      setNewUserWeight()
+    }
+  }
+
   function renderWeightDialog(){
-    return <Dialog open={inputUserWeight} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+    return <Dialog open={inputUserWeight} onClose={() => setInputUserWeight(false)} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <DialogTitle id="alert-dialog-title">{__("Gewicht ändern", "fcplugin")}</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
             <FormControl>
-              <TextField type="number" size="normal" id="userWeightValue" name="userWeightValue" variant="outlined"
+              <TextField type="number" size="normal" id="userWeightValue" name="userWeightValue" variant="outlined" autoFocus
                 label={__("Totalgewicht", "fcplugin")+' ( '+ productData.weight_unit +' )'}
                 value={inputUserWeightValue}
                 onChange={e => setInputUserWeightValue(e.target.value)}
+                onKeyDown={weightDialogKeyDown}
                 InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserWeightValue} /> }}
               />
             </FormControl>
@@ -84,12 +92,16 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                 label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.weight_unit +' )' }
                 value={inputUserTaraValue}
                 onChange={e => setInputUserTaraValue(e.target.value)}
+                onKeyDown={weightDialogKeyDown}
                 InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserTaraValue} /> }}
               />
             </FormControl>
           </Stack>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setInputUserWeight(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
           <Button onClick={setNewUserWeight} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Gewicht übernehmen", "fcplugin")}
           </Button>
