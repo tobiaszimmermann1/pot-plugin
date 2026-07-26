@@ -61,7 +61,11 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
 
   useEffect(() => {
     setUserFavorit(product ? isUserFavorit(product.sku) : false)
+    // "offen" (loose goods): no default amount, the customer must enter it
+    setAmount(product && String(product.lot).trim().toLowerCase() === "offen" ? "" : 1)
   }, [product])
+
+  const amountValid = amount !== "" && isFinite(amount) && parseFloat(amount) > 0
 
   function addUserVerpackung() {
     axios
@@ -363,11 +367,11 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                                 autoFocus
                                 value={amount}
                                 onChange={e => setAmount(e.target.value.replace(",", "."))}
-                                onKeyDown={e => e.key === "Enter" && addProduct()}
+                                onKeyDown={e => e.key === "Enter" && amountValid && addProduct()}
                                 variant="outlined"
                                 type="text"
                                 inputProps={{ inputMode: "decimal" }}
-                                label={__("Menge", "fcplugin")}
+                                label={__("Menge", "fcplugin") + (product.unit ? " ( " + product.unit + " )" : "")}
                                 InputProps={{
                                   endAdornment: (
                                     <InputAdornment position="end">
@@ -405,7 +409,7 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                                 </Button>
                               </DialogActions>
                             </Dialog>
-                            <Button onClick={addProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
+                            <Button onClick={addProduct} disabled={!amountValid} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
                               {__("Zum Warenkorb hinzufügen", "fcplugin")}
                             </Button>
                           </>
