@@ -2,7 +2,8 @@ import React, { useState, useContext, useEffect, useRef } from "react"
 import axios from "axios"
 import { Button, Stack, TextField, Switch, Box, LinearProgress, Autocomplete, IconButton, InputAdornment, Chip } from "@mui/material"
 import { List, ListItem, ListItemText, ListItemButton, ListItemAvatar, Avatar } from "@mui/material"
-import { Delete as DeleteIcon, Add as AddIcon, Scale as ScaleIcon } from "@mui/icons-material"
+import { Dialog, DialogActions, DialogContent, DialogTitle, Divider } from "@mui/material"
+import { Delete as DeleteIcon, Add as AddIcon, Scale as ScaleIcon, Calculate as CalculateIcon } from "@mui/icons-material"
 import { cartContext } from "./cartContext"
 import { SmartScaleChip } from "./SmartScaleChip"
 import { getProductListOverview, getProductBySku, getSelfCheckoutProducts, updateProductAmount, formatWeightDisplay } from "../products/products"
@@ -28,6 +29,29 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
   const [userVerpackungName, setUserVerpackungName] = useState("")
   const [userVerpackungFormVisible, showUserVerpackungForm] = useState(false)
   const [userProduktFavoriten, setUserProduktFavoriten] = useState([])
+  const [calcOpen, setCalcOpen] = useState(false)
+  const [calcWeight, setCalcWeight] = useState("")
+  const [calcPrice, setCalcPrice] = useState("")
+
+  const calcWeightValid = calcWeight !== "" && isFinite(calcWeight) && parseFloat(calcWeight) > 0
+  const calcPriceValid = calcPrice !== "" && isFinite(calcPrice) && parseFloat(calcPrice) > 0
+  const calcValid = calcWeightValid && calcPriceValid
+  const calcResult = Math.round(parseFloat(calcWeight) * parseFloat(calcPrice) * 100) / 100
+
+  function applyCalc() {
+    if (!calcValid) return
+    setAmount(calcResult)
+    setCalcOpen(false)
+  }
+
+  // Enter must be preventDefault'ed: the browser's pending default action would
+  // click the calculator icon button once MUI restores focus to it, reopening the popup
+  function calcKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      applyCalc()
+    }
+  }
 
   useEffect(() => {
     updateProducts()
@@ -334,8 +358,53 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                         ) : (
                           <>
                             <FormControl>
-                              <TextField id="amount" autoFocus value={amount} onChange={e => setAmount(e.target.value)} onKeyDown={e => e.key === "Enter" && addProduct()} variant="outlined" type="number" label={__("Menge", "fcplugin")} />
+                              <TextField
+                                id="amount"
+                                autoFocus
+                                value={amount}
+                                onChange={e => setAmount(e.target.value.replace(",", "."))}
+                                onKeyDown={e => e.key === "Enter" && addProduct()}
+                                variant="outlined"
+                                type="text"
+                                inputProps={{ inputMode: "decimal" }}
+                                label={__("Menge", "fcplugin")}
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <IconButton
+                                        onClick={() => {
+                                          setCalcWeight("")
+                                          setCalcPrice("")
+                                          setCalcOpen(true)
+                                        }}
+                                      >
+                                        <CalculateIcon />
+                                      </IconButton>
+                                    </InputAdornment>
+                                  )
+                                }}
+                              />
                             </FormControl>
+                            <Dialog open={calcOpen} maxWidth="lg" scroll="paper">
+                              <DialogTitle>{__("Menge berechnen", "fcplugin")}</DialogTitle>
+                              <Divider />
+                              <DialogContent>
+                                <Stack direction="row" spacing={2} alignItems="center" sx={{ paddingTop: "10px" }}>
+                                  <TextField autoFocus type="text" inputProps={{ inputMode: "decimal" }} variant="outlined" label={__("Gewicht", "fcplugin")} value={calcWeight} onChange={e => setCalcWeight(e.target.value.replace(",", "."))} onKeyDown={calcKeyDown} error={calcWeight !== "" && !calcWeightValid} helperText={calcWeight !== "" && !calcWeightValid ? __("Ungültige Zahl", "fcplugin") : " "} />
+                                  <span>&times;</span>
+                                  <TextField type="text" inputProps={{ inputMode: "decimal" }} variant="outlined" label={__("Preis", "fcplugin")} value={calcPrice} onChange={e => setCalcPrice(e.target.value.replace(",", "."))} onKeyDown={calcKeyDown} error={calcPrice !== "" && !calcPriceValid} helperText={calcPrice !== "" && !calcPriceValid ? __("Ungültige Zahl", "fcplugin") : " "} />
+                                  <span>= {calcValid ? calcResult.toFixed(2) : "–"}</span>
+                                </Stack>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={() => setCalcOpen(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+                                  {__("Abbrechen", "fcplugin")}
+                                </Button>
+                                <Button onClick={applyCalc} disabled={!calcValid} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
+                                  OK
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                             <Button onClick={addProduct} variant="contained" size="large" color={POSMode ? "POSModeColor" : "primary"}>
                               {__("Zum Warenkorb hinzufügen", "fcplugin")}
                             </Button>

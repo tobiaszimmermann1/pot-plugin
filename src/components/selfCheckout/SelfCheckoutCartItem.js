@@ -121,21 +121,25 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   }
 
   function renderAmountDialog(){
-    return <Dialog open={inputAmount} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+    return <Dialog open={inputAmount} onClose={() => setInputAmount(false)} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <DialogTitle id="alert-dialog-title">{__("Menge eingeben", "fcplugin")}</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
             <FormControl>
-              <TextField type="number" size="normal" id="amount" name="amount" variant="outlined"
+              <TextField type="number" size="normal" id="amount" name="amount" variant="outlined" autoFocus
                 label={__("Menge", "fcplugin")+' ( '+ productData.unit +' )'}
                 value={inputAmountValue}
                 onChange={e => setInputAmountValue(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); setNewAmount() } }}
               />
             </FormControl>
           </Stack>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setInputAmount(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
           <Button onClick={setNewAmount} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Menge Übernehmen", "fcplugin")}
           </Button>
