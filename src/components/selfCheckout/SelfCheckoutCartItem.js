@@ -7,7 +7,7 @@ import { Add as AddIcon, Remove as RemoveIcon, Delete as DeleteIcon } from "@mui
 import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
 import { SmartScaleChip } from "./SmartScaleChip"
-import { updateProductAmount } from "../products/products"
+import { updateProductAmount, formatWeightDisplay } from "../products/products"
 const __ = wp.i18n.__
 
 function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
@@ -101,7 +101,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
     return <Chip
       sx={{width:'100px'}}
       variant="outlined"
-      label={`${productData.amountWeight} ${productData.weight_unit}`}
+      label={formatWeightDisplay(productData.amountWeight, productData.weight_unit)}
       onClick={() => {
         setInputUserWeight(true)
         setInputUserWeightValue(userWeightValue)

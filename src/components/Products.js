@@ -230,6 +230,9 @@ const Products = () => {
       {
         accessorKey: "weight",
         header: __("Gewicht", "fcplugin"),
+        muiTableBodyCellEditTextFieldProps: {
+          label: __("Gewicht (in kg)", "fcplugin")
+        },
         Cell: ({ cell }) => (cell.getValue() !== "" ? cell.getValue() + " " + cell.row.original.weight_unit : "")
       },
       {

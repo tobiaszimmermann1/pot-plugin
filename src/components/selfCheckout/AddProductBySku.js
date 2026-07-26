@@ -5,7 +5,7 @@ import { List, ListItem, ListItemText, ListItemButton, ListItemAvatar, Avatar } 
 import { Delete as DeleteIcon, Add as AddIcon, Scale as ScaleIcon } from "@mui/icons-material"
 import { cartContext } from "./cartContext"
 import { SmartScaleChip } from "./SmartScaleChip"
-import { getProductListOverview, getProductBySku, getSelfCheckoutProducts, updateProductAmount } from "../products/products"
+import { getProductListOverview, getProductBySku, getSelfCheckoutProducts, updateProductAmount, formatWeightDisplay } from "../products/products"
 import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
@@ -89,7 +89,7 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
                 let product = prod[key]
 
                 if (scProds.includes(product.id)) {
-                  product.label = product.name + " (" + product.sku + ") — CHF " + parseFloat(product.price).toFixed(2) + (product.weight ? " / " + product.weight + " " + product.weight_unit : "")
+                  product.label = product.name + " (" + product.sku + ") — CHF " + parseFloat(product.price).toFixed(2) + (product.weight ? " / " + formatWeightDisplay(product.weight, product.weight_unit) : "")
 
                   reArrangeProductData.push(product)
 
