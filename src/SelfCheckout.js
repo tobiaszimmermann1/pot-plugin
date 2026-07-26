@@ -235,7 +235,7 @@ function SelfCheckout() {
     if (!showCart || confirming) return
 
     const onKeyDown = e => {
-      if (e.target.closest?.("input, textarea, [contenteditable]")) return
+      if (e.target.closest?.("input, textarea, [contenteditable], [role='listbox'], [role='option']")) return
 
       if (e.key === "n") {
         setShowCart(false)
