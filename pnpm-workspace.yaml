@@ -1,0 +1,8 @@
+# hoisted = npm-style flat node_modules; wp-scripts and several imports
+# (react, @mui/icons-material) rely on undeclared hoisted packages
+nodeLinker: hoisted
+
+allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  core-js-pure: true
