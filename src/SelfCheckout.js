@@ -293,7 +293,7 @@ function SelfCheckout() {
                 <td colSpan={2} style={{ padding: "8px 0" }}>
                   {__("Zahlungsart", "fcplugin")}
                 </td>
-                <td style={{ textAlign: "right" }}>{selectedMember ? selectedPaymentGateway && selectedPaymentGateway.name : "Barzahlung"}</td>
+                <td style={{ textAlign: "right" }}>{selectedMember ? selectedPaymentGateway ? selectedPaymentGateway.name : <span style={{ color: "red" }}>{__("Bitte Zahlungsart wählen", "fcplugin")}</span> : "Barzahlung"}</td>
               </tr>
             </tbody>
           </table>
@@ -306,6 +306,7 @@ function SelfCheckout() {
             variant="contained"
             size="large"
             color="POSModeColor"
+            disabled={!!(selectedMember && !selectedPaymentGateway)}
             onClick={() => {
               setConfirming(false)
               posCheckout()
