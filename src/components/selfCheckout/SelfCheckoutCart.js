@@ -21,6 +21,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   const [cartMargin, setCartMargin] = useState(0)
   const [userEinkaufslisten, setUserEinkaufslisten] = useState([])
   const [userEinkaufslisteName, setUserEinkaufslisteName] = useState("")
+  const [confirmClear, setConfirmClear] = useState(false)
 
   useEffect(() => {
     updateUserEinkaufslisten()
@@ -173,14 +174,32 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           variant="text"
           startIcon={<DeleteIcon />}
           sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
-          onClick={() => {
-            setCart([])
-            localStorage.removeItem("fc_selfcheckout_cart")
-          }}
+          onClick={() => setConfirmClear(true)}
           color={"secondary"}
         >
           {__("Warenkorb leeren", "fcplugin")}
         </Button>
+
+        <Dialog open={confirmClear} onClose={() => setConfirmClear(false)} maxWidth="lg" scroll="paper">
+          <DialogTitle>{__("Warenkorb leeren?", "fcplugin")}</DialogTitle>
+          <DialogActions>
+            <Button onClick={() => setConfirmClear(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+              {__("Abbrechen", "fcplugin")}
+            </Button>
+            <Button
+              onClick={() => {
+                setCart([])
+                localStorage.removeItem("fc_selfcheckout_cart")
+                setConfirmClear(false)
+              }}
+              variant="contained"
+              sx={{ marginBottom: "15px", marginRight: "10px" }}
+              size="large"
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Stack>
     )
   }
@@ -244,6 +263,9 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           </Stack>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setSaveEinkaufsliste(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
           <Button onClick={saveUserEinkaufsliste} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Einkaufsliste speichern", "fcplugin")}
           </Button>

@@ -202,6 +202,33 @@ function fc_plugin_upgrade_database() {
 add_action( 'admin_init', 'fc_plugin_upgrade_database' );
 
 
+/**
+ * One-time backfill: payout rows written before `reported` was populated
+ * (see update_member_balance) have reported = NULL, and rows migrated by
+ * fc_plugin_upgrade_database carry the migration run time — both make
+ * "Fehlende Gutschriften" flag them as missing forever. The order id is
+ * embedded in the details text ('... Bestellung #123'), so copy the
+ * order's GMT creation date from the orders table for all payout rows.
+ * `date` is ON UPDATE current_timestamp(), so it must be re-assigned
+ * explicitly or this UPDATE would rewrite every ledger date to now.
+ */
+function fc_backfill_wallet_reported() {
+  global $wpdb;
+  if ( get_option('fc_wallet_reported_backfill') === '1' ) return;
+
+  $wpdb->query(
+    "UPDATE {$wpdb->prefix}foodcoop_wallet w
+     JOIN {$wpdb->prefix}wc_orders o
+       ON o.id = CAST(SUBSTRING_INDEX(w.details, 'Bestellung #', -1) AS UNSIGNED)
+     SET w.reported = o.date_created_gmt, w.date = w.date
+     WHERE w.details LIKE 'Neuer Verkauf%Bestellung #%'"
+  );
+
+  update_option('fc_wallet_reported_backfill', '1');
+}
+add_action( 'admin_init', 'fc_backfill_wallet_reported', 11 );
+
+
 
 
 

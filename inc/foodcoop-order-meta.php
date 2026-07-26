@@ -204,6 +204,12 @@ function before_checkout_create_order_legacy( $order ) {
     date_default_timezone_set('Europe/Zurich');
     $date = date("Y-m-d H:i:s");
 
+    // "Fehlende Gutschriften" matches wallet rows to orders by comparing `reported`
+    // against the order's date_created_gmt — so this must be the GMT order date,
+    // not the (possibly days later) payout time and not local time.
+    $created = $order->get_date_created();
+    $reported = gmdate("Y-m-d H:i:s", $created ? $created->getTimestamp() : time());
+
     // Iterate through each order item and update the balance of the product owner (fc_owner)
     foreach ($order->get_items() as $item_id => $item_obj) {
       $product = $item_obj->get_product();
@@ -239,7 +245,7 @@ function before_checkout_create_order_legacy( $order ) {
         $new_balance = $current_balance + $balance;
         $new_balance = number_format($new_balance, 2, '.', '');
 
-        $data = array('user_id' => $fc_owner, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+        $data = array('user_id' => $fc_owner, 'amount' => $balance, 'date' => $date, 'reported' => $reported, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
 
         $wpdb->insert($table, $data);
       }

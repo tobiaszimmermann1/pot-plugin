@@ -3,7 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import axios from "axios"
 import { addUserEinkaufsliste } from "./components/products/products"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch, Tooltip } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
@@ -71,6 +71,7 @@ function SelfCheckout() {
   }, [selectedMember])
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
   const [saveEinkaufsliste, setSaveEinkaufsliste] = useState(false)
+  const [confirming, setConfirming] = useState(false)
 
   useEffect(() => {
     axios
@@ -230,8 +231,96 @@ function SelfCheckout() {
     }
   }, [POSMode])
 
+  useEffect(() => {
+    if (!showCart || confirming) return
+
+    const onKeyDown = e => {
+      if (e.target.closest?.("input, textarea, [contenteditable], [role='listbox'], [role='option']")) return
+
+      if (e.key === "n") {
+        setShowCart(false)
+        setScanning(false)
+        setAdding(true)
+      } else if (e.key === "a" && cart.length > 0 && !submitting) {
+        POSMode ? setConfirming(true) : checkout()
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [showCart, confirming, cart, submitting, POSMode])
+
+  function renderPOSConfirmation() {
+    const total = cart.reduce((sum, item) => sum + item.price * item.amount, 0)
+    const cartMargin = selectedMember ? 0 : total * (margin / 100)
+
+    return (
+      <Dialog open={confirming} fullWidth maxWidth="md" scroll="paper">
+        <DialogTitle>{__("Einkauf bestätigen", "fcplugin")}</DialogTitle>
+        <DialogContent dividers>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "1.25rem" }}>
+            <tbody>
+              {cart.map((item, index) => (
+                <tr key={index} style={{ borderBottom: "1px solid #e3e3e3" }}>
+                  <td style={{ padding: "8px 0" }}>{item.name}</td>
+                  <td style={{ textAlign: "right" }}>
+                    {item.amount} x {parseFloat(item.price).toFixed(2)}
+                  </td>
+                  <td style={{ textAlign: "right", minWidth: "100px" }}>CHF {(item.price * item.amount).toFixed(2)}</td>
+                </tr>
+              ))}
+              {cartMargin !== 0 && (
+                <tr style={{ borderBottom: "1px solid #e3e3e3" }}>
+                  <td colSpan={2} style={{ padding: "8px 0" }}>
+                    + {margin}% {__("Marge für Nicht-Mitglieder", "fcplugin")}
+                  </td>
+                  <td style={{ textAlign: "right" }}>CHF {cartMargin.toFixed(2)}</td>
+                </tr>
+              )}
+              <tr style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+                <td colSpan={2} style={{ padding: "8px 0" }}>
+                  {__("Total", "fcplugin")}
+                </td>
+                <td style={{ textAlign: "right" }}>CHF {(total + cartMargin).toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colSpan={2} style={{ padding: "8px 0" }}>
+                  {__("Mitglied", "fcplugin")}
+                </td>
+                <td style={{ textAlign: "right" }}>{selectedMember ? selectedMember.name : __("Gast", "fcplugin")}</td>
+              </tr>
+              <tr>
+                <td colSpan={2} style={{ padding: "8px 0" }}>
+                  {__("Zahlungsart", "fcplugin")}
+                </td>
+                <td style={{ textAlign: "right" }}>{selectedMember ? selectedPaymentGateway ? selectedPaymentGateway.name : <span style={{ color: "red" }}>{__("Bitte Zahlungsart wählen", "fcplugin")}</span> : "Barzahlung"}</td>
+              </tr>
+            </tbody>
+          </table>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" size="large" color="error" onClick={() => setConfirming(false)}>
+            {__("Abbrechen", "fcplugin")}
+          </Button>
+          <Button
+            variant="contained"
+            size="large"
+            color="POSModeColor"
+            disabled={!!(selectedMember && !selectedPaymentGateway)}
+            onClick={() => {
+              setConfirming(false)
+              posCheckout()
+            }}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
   let buttons = {
-    pos: isPOSAdmin && showCart,
+    pos: isPOSAdmin,
     scan: !POSMode && showCart,
     add: showCart,
     cart: !showCart,
@@ -272,6 +361,7 @@ function SelfCheckout() {
                   )}
                   {scanning && !POSMode && <QrScanner updateScanResult={updateScanResult} />}
                   {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} scanResult={scanResult} POSMode={POSMode} />}
+                  {POSMode && renderPOSConfirmation()}
                   {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} saveEinkaufsliste={saveEinkaufsliste} setSaveEinkaufsliste={setSaveEinkaufsliste} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
                 </DialogContent>
                 <DialogActions sx={{ backgroundColor: "#f0f0f0" }}>
@@ -296,19 +386,21 @@ function SelfCheckout() {
                     </Button>
                   )}
                   {buttons.add && (
-                    <Button
-                      disabled={submitting}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      onClick={() => {
-                        setShowCart(false)
-                        setScanning(false)
-                        setAdding(true)
-                      }}
-                    >
-                      <AddShoppingCartIcon />
-                    </Button>
+                    <Tooltip title={__("Produkt hinzufügen", "fcplugin") + " (n)"}>
+                      <Button
+                        disabled={submitting}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        onClick={() => {
+                          setShowCart(false)
+                          setScanning(false)
+                          setAdding(true)
+                        }}
+                      >
+                        <AddShoppingCartIcon />
+                      </Button>
+                    </Tooltip>
                   )}
                   {buttons.cart && (
                     <Button
@@ -339,18 +431,20 @@ function SelfCheckout() {
                     </Button>
                   )}
                   {buttons.checkout && (
-                    <LoadingButton
-                      startIcon={<PointOfSaleIcon />}
-                      variant="contained"
-                      size="large"
-                      color={POSMode ? "POSModeColor" : "primary"}
-                      loading={submitting}
-                      onClick={() => {
-                        POSMode ? posCheckout() : checkout()
-                      }}
-                    >
-                      {!POSMode ? "Kasse" : "Einkauf abschliessen"}
-                    </LoadingButton>
+                    <Tooltip title={(!POSMode ? __("Kasse", "fcplugin") : __("Einkauf abschliessen", "fcplugin")) + " (a)"}>
+                      <LoadingButton
+                        startIcon={<PointOfSaleIcon />}
+                        variant="contained"
+                        size="large"
+                        color={POSMode ? "POSModeColor" : "primary"}
+                        loading={submitting}
+                        onClick={() => {
+                          POSMode ? setConfirming(true) : checkout()
+                        }}
+                      >
+                        {!POSMode ? "Kasse" : "Einkauf abschliessen"}
+                      </LoadingButton>
+                    </Tooltip>
                   )}
                 </DialogActions>
               </Dialog>
