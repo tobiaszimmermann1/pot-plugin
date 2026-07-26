@@ -23,6 +23,9 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   const [inputUserWeightValue, setInputUserWeightValue] = useState(0)
   const [inputUserTaraValue, setInputUserTaraValue] = useState(0)
 
+  const [inputAmount, setInputAmount] = useState(false)
+  const [inputAmountValue, setInputAmountValue] = useState(0)
+
   function removeItem(){
     updateCart(cart.filter( (cartItem,cartItemIndex) => itemIndex != cartItemIndex ));
   }
@@ -109,6 +112,37 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
     />
   }
 
+  function setNewAmount() {
+    const newAmount = parseFloat(inputAmountValue)
+    if (newAmount > 0) {
+      setAmount(newAmount)
+    }
+    setInputAmount(false)
+  }
+
+  function renderAmountDialog(){
+    return <Dialog open={inputAmount} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <DialogTitle id="alert-dialog-title">{__("Menge eingeben", "fcplugin")}</DialogTitle>
+        <Divider />
+        <DialogContent>
+          <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
+            <FormControl>
+              <TextField type="number" size="normal" id="amount" name="amount" variant="outlined"
+                label={__("Menge", "fcplugin")+' ( '+ productData.unit +' )'}
+                value={inputAmountValue}
+                onChange={e => setInputAmountValue(e.target.value)}
+              />
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={setNewAmount} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
+            {__("Menge Übernehmen", "fcplugin")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+  }
+
   function decreaseAmount(){
     if ( productData.amount > 1 ) {
       setAmount(productData.amount - 1);
@@ -124,9 +158,13 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   function renderItemContent(){
     return <Chip
       sx={{width:'100px'}}
-      avatar={<AddIcon onClick={increaseAmount} sx={{ cursor: "pointer" }} />}
+      avatar={<AddIcon onClick={e => { e.stopPropagation(); increaseAmount() }} sx={{ cursor: "pointer" }} />}
       variant="outlined"
       label={productData.amount}
+      onClick={() => {
+        setInputAmount(true)
+        setInputAmountValue(productData.amount)
+      }}
       onDelete={decreaseAmount}
       deleteIcon={productData.amount>1?<RemoveIcon/>:<DeleteIcon/>}
     />
@@ -138,6 +176,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
 
   return <>
       { renderWeightDialog() }
+      { renderAmountDialog() }
       <ListItem
         disableGutters dense
         sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}

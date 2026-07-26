@@ -58,9 +58,17 @@ function SelfCheckout() {
   const [loading, setLoading] = useState(false)
   const [active, setActive] = useState(null)
   const [isPOSAdmin, setIsPOSAdmin] = useState(false)
-  const [POSMode, setPOSMode] = useState(false)
+  const [POSMode, setPOSMode] = useState(localStorage.getItem("fc_selfcheckout_posmode") === "1")
+
+  useEffect(() => {
+    localStorage.setItem("fc_selfcheckout_posmode", POSMode ? "1" : "0")
+  }, [POSMode])
   const [margin, setMargin] = useState(0)
-  const [selectedMember, setSelectedMember] = useState(null)
+  const [selectedMember, setSelectedMember] = useState(JSON.parse(localStorage.getItem("fc_selfcheckout_member")))
+
+  useEffect(() => {
+    selectedMember ? localStorage.setItem("fc_selfcheckout_member", JSON.stringify(selectedMember)) : localStorage.removeItem("fc_selfcheckout_member")
+  }, [selectedMember])
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)
   const [saveEinkaufsliste, setSaveEinkaufsliste] = useState(false)
 
@@ -198,6 +206,8 @@ function SelfCheckout() {
         .then(function (response) {
           setCart([])
           localStorage.removeItem("fc_selfcheckout_cart")
+          // next customer must not inherit the previous member
+          setSelectedMember(null)
         })
         .catch(error => console.log(error.message))
         .finally(response => {
