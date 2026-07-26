@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react"
+import React from "react"
+import { Routes, Route, NavLink, Navigate } from "react-router-dom"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import MyBalance from "./components/membersDashboard/MyBalance"
@@ -27,31 +28,30 @@ const theme = createTheme({
 })
 
 function FoodcoopMemberDashboard() {
-  const [activeTab, setActiveTab] = useState("balance")
-
-  const pluginMenu = useRef()
-
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <>
           <div className="fc_members_dashboard_header">
-            <div className="pluginMenu" ref={pluginMenu}>
-              <span id="dashboard" className="menuItemDashboard firstMenuItem" onClick={() => setActiveTab("balance")}>
-                <strong style={{ fontWeight: activeTab === "balance" ? "bold" : "normal" }}>{__("Mein Guthaben", "fcplugin")}</strong>
-              </span>
-              <span id="orderingRounds" className="menuItemDashboard" onClick={() => setActiveTab("transactions")}>
-                <strong style={{ fontWeight: activeTab === "transactions" ? "bold" : "normal" }}>{__("Meine Transaktionen", "fcplugin")}</strong>
-              </span>
-              <span id="products" className="menuItemDashboard" onClick={() => setActiveTab("products")}>
-                <strong style={{ fontWeight: activeTab === "products" ? "bold" : "normal" }}>{__("Meine Produkte", "fcplugin")}</strong>
-              </span>
+            <div className="pluginMenu">
+              <NavLink to="/" end className="menuItemDashboard firstMenuItem">
+                {({ isActive }) => <strong style={{ fontWeight: isActive ? "bold" : "normal" }}>{__("Mein Guthaben", "fcplugin")}</strong>}
+              </NavLink>
+              <NavLink to="/transactions" className="menuItemDashboard">
+                {({ isActive }) => <strong style={{ fontWeight: isActive ? "bold" : "normal" }}>{__("Meine Transaktionen", "fcplugin")}</strong>}
+              </NavLink>
+              <NavLink to="/products" className="menuItemDashboard">
+                {({ isActive }) => <strong style={{ fontWeight: isActive ? "bold" : "normal" }}>{__("Meine Produkte", "fcplugin")}</strong>}
+              </NavLink>
             </div>
           </div>
           <div className="fc_members_dashboard_body">
-            {activeTab === "balance" && <MyBalance />}
-            {activeTab === "transactions" && <MyTransactions />}
-            {activeTab === "products" && <MyProducts />}
+            <Routes>
+              <Route path="/" element={<MyBalance />} />
+              <Route path="/transactions" element={<MyTransactions />} />
+              <Route path="/products" element={<MyProducts />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           </div>
         </>
       </LocalizationProvider>

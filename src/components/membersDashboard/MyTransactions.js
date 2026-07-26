@@ -62,7 +62,7 @@ function MyTransactions() {
     <Box sx={{ width: "100%", marginBottom: 4 }}>
       <LinearProgress />
     </Box>
-  ) : products ? (
+  ) : walletData ? (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -91,7 +91,7 @@ function MyTransactions() {
   ) : (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <strong>{__("Du verwaltest keine Produkte.", "fcplugin")}</strong>
+        <strong>{__("Keine Transaktionen vorhanden.", "fcplugin")}</strong>
       </Grid>
     </Grid>
   )

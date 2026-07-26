@@ -2,7 +2,8 @@ import React from "react"
 import ReactDOM from "react-dom"
 import {
   createHashRouter,
-  RouterProvider
+  RouterProvider,
+  HashRouter
 } from "react-router-dom";
 import FrontendApp from "./FrontendApp"
 import FoodcoopMemberDashboard from "./FoodcoopMemberDashboard"
@@ -37,7 +38,12 @@ const productRouter = createHashRouter([{
 document.addEventListener("DOMContentLoaded", function () {
   const element = document.getElementById("fc_members_dashboard");
   if (typeof element !== "undefined" && element !== null) {
-    ReactDOM.render(<FoodcoopMemberDashboard/>, document.getElementById("fc_members_dashboard"))
+    ReactDOM.render(
+      <HashRouter>
+        <FoodcoopMemberDashboard/>
+      </HashRouter>,
+      document.getElementById("fc_members_dashboard")
+    )
   }
 })
 

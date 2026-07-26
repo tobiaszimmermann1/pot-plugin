@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
+import { Routes, Route, NavLink, Navigate } from "react-router-dom"
 import axios from "axios"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
@@ -33,6 +34,8 @@ import TextSnippetIcon from "@mui/icons-material/TextSnippet"
 import EditDescription from "./products/EditDescription"
 import ScaleIcon from "@mui/icons-material/Scale"
 const __ = wp.i18n.__
+
+const menuClass = ({ isActive }) => "menuItem" + (isActive ? " menuItemActive" : "")
 
 const Products = () => {
   const [products, setProducts] = useState()
@@ -440,17 +443,6 @@ const Products = () => {
       })
   }
 
-  const [activeTab, setActiveTab] = useState("products")
-  const pluginMenu = useRef()
-
-  useEffect(() => {
-    let menuItems = pluginMenu.current.children
-    for (const menuItem of menuItems) {
-      menuItem.classList.remove("menuItemActive")
-    }
-    pluginMenu.current.querySelector("#" + activeTab).classList.add("menuItemActive")
-  }, [activeTab])
-
   return (
     <>
       <Box>
@@ -459,22 +451,22 @@ const Products = () => {
             <Card sx={{ minWidth: 275, borderRadius: 0 }}>
               <CardContent sx={{ paddingBottom: "16px !important" }}>
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  <span className="pluginMenu" ref={pluginMenu}>
-                    <span id="products" className="menuItem firstMenuItem" onClick={() => setActiveTab("products")}>
+                  <span className="pluginMenu">
+                    <NavLink to="/products" end className={props => menuClass(props) + " firstMenuItem"}>
                       <WidgetsIcon sx={{ marginRight: "10px" }} /> {__("Produkte", "fcplugin")}
-                    </span>
-                    <span id="categories" className="menuItem" onClick={() => setActiveTab("categories")}>
+                    </NavLink>
+                    <NavLink to="/products/categories" className={menuClass}>
                       <CategoryIcon sx={{ marginRight: "10px" }} />
                       {__("Kategorien", "fcplugin")}
-                    </span>
-                    <span id="producers" className="menuItem" onClick={() => setActiveTab("producers")}>
+                    </NavLink>
+                    <NavLink to="/products/producers" className={menuClass}>
                       <AgricultureIcon sx={{ marginRight: "10px" }} />
                       {__("Produzenten", "fcplugin")}
-                    </span>
-                    <span id="suppliers" className="menuItem" onClick={() => setActiveTab("suppliers")}>
+                    </NavLink>
+                    <NavLink to="/products/suppliers" className={menuClass}>
                       <LocalShippingIcon sx={{ marginRight: "10px" }} />
                       {__("Lieferanten", "fcplugin")}
-                    </span>
+                    </NavLink>
                   </span>
                 </Typography>
               </CardContent>
@@ -484,11 +476,15 @@ const Products = () => {
       </Box>
 
       <div className="pluginBody">
-        {activeTab === "categories" && <Categories />}
-        {activeTab === "suppliers" && <Suppliers />}
-        {activeTab === "producers" && <Producers />}
-        {activeTab === "products" && (
-          <>
+        <Routes>
+          <Route path="categories" element={<Categories />} />
+          <Route path="suppliers" element={<Suppliers />} />
+          <Route path="producers" element={<Producers />} />
+          <Route path="*" element={<Navigate to="/products" replace />} />
+          <Route
+            index
+            element={
+              <>
             {statusMessage.active && <div className={`statusMessage ${statusMessage.type}`}>{statusMessage.message}</div>}
             {!inventoryMode ? (
               <MaterialReactTable
@@ -591,8 +587,10 @@ const Products = () => {
             {weighedProducts && <WeighedProducts setModalClose={setWeighedProducts} prods={products} />}
             {ownerModalOpen && <ProductOwnerModal setModalClose={setOwnerModalOpen} product={ownerModalProduct} reload={reload} setReload={setReload} />}
             <EditDescription open={descriptionModalOpen} id={selectedProductDescriptionId} description={selectedProductDescription} title={selectedProductEditTitle} setModalClose={setDescriptionModalOpen} setReload={setReload} reload={reload} />
-          </>
-        )}
+              </>
+            }
+          />
+        </Routes>
       </div>
     </>
   )
