@@ -58,7 +58,11 @@ function SelfCheckout() {
   const [loading, setLoading] = useState(false)
   const [active, setActive] = useState(null)
   const [isPOSAdmin, setIsPOSAdmin] = useState(false)
-  const [POSMode, setPOSMode] = useState(false)
+  const [POSMode, setPOSMode] = useState(localStorage.getItem("fc_selfcheckout_posmode") === "1")
+
+  useEffect(() => {
+    localStorage.setItem("fc_selfcheckout_posmode", POSMode ? "1" : "0")
+  }, [POSMode])
   const [margin, setMargin] = useState(0)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState(null)

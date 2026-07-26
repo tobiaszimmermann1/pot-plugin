@@ -161,7 +161,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           }}
         >
           <div>{__("Total", "fcplugin")}</div>
-          <div style={{ minWidth: "120px", textAlign: "right" }}>
+          <div style={{ minWidth: "140px", textAlign: "right" }}>
             <div style={{ float: "left" }}>CHF</div>
             <div>{finalTotal.toFixed(2)}</div>
           </div>
