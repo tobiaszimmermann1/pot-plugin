@@ -92,27 +92,8 @@ const Orders = () => {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          console.log(res)
-
-          let ordersReArranged = []
-          res.map(order => {
-            let theOrder = {}
-            theOrder["id"] = order.id
-            theOrder["date_created"] = order.date_created.date
-            theOrder["customer_name"] = order.billing.first_name + " " + order.billing.last_name
-            theOrder["payment_method_title"] = order.payment_method_title
-            // bestellrunde id
-            order.meta_data.map(meta => {
-              if (meta.key === "bestellrunde_id") {
-                theOrder["bestellrunde_id"] = meta.value
-              }
-            })
-            theOrder["total"] = parseFloat(order.total).toFixed(2)
-            ordersReArranged.push(theOrder)
-          })
-
-          setOrders(ordersReArranged)
-          setAllOrders(ordersReArranged)
+          setOrders(res)
+          setAllOrders(res)
         }
       })
       .catch(error => {
