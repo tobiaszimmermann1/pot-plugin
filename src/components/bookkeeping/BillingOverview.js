@@ -49,16 +49,12 @@ function BillingOverview() {
             let revenueInYear = 0.0
             res.map(order => {
               // bestellrunden
-              order.meta_data.map(meta => {
-                if (meta.key === "bestellrunde_id") {
-                  if (bestellrundenInYear.filter(e => e.id === parseInt(meta.value)).length === 0) {
-                    bestellrundenInYear.push({ id: parseInt(meta.value) })
-                  }
-                }
-              })
+              if (order.bestellrunde_id && bestellrundenInYear.filter(e => e.id === parseInt(order.bestellrunde_id)).length === 0) {
+                bestellrundenInYear.push({ id: parseInt(order.bestellrunde_id) })
+              }
               // users
               if (usersInYear.filter(e => e.user_id === order.customer_id).length === 0) {
-                usersInYear.push({ user_id: order.customer_id, billing_first_name: order.billing.first_name, billing_last_name: order.billing.last_name })
+                usersInYear.push({ user_id: order.customer_id, name: order.customer_name })
               }
               // revenue
               revenueInYear = revenueInYear + parseFloat(order.total)
