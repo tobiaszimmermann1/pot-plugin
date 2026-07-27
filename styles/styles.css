@@ -74,7 +74,8 @@ html {
   padding-left: 0 !important;
 }
 
-.pluginMenu span {
+.pluginMenu span,
+.pluginMenu a {
   margin-left: 10px;
   padding-left: 10px;
   border-left: 1px solid #ccc;
@@ -83,9 +84,11 @@ html {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  text-decoration: none;
 }
 
-.pluginMenu span:hover {
+.pluginMenu span:hover,
+.pluginMenu a:hover {
   color: #000;
   cursor: pointer;
 }

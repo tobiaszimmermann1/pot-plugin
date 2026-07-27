@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
+import { Routes, Route, NavLink, Navigate } from "react-router-dom"
 import Dashboard from "./components/Dashboard"
 import Members from "./components/Members"
 import Bestellrunden from "./components/Bestellrunden"
@@ -40,8 +41,9 @@ const theme = createTheme({
   }
 })
 
+const menuClass = ({ isActive }) => "menuItem" + (isActive ? " menuItemActive" : "")
+
 function App() {
-  const [activeTab, setActiveTab] = useState("dashboard")
   const [name, setName] = useState()
   const [permissions, setPermissions] = useState([])
   const [role, setRole] = useState([])
@@ -76,25 +78,11 @@ function App() {
       .catch(error => console.log(error))
   }, [])
 
-  const pluginMenu = useRef()
-
-  useEffect(() => {
-    if (pluginMenu.current) {
-      let menuItems = pluginMenu.current.children
-      for (const menuItem of menuItems) {
-        menuItem.classList.remove("menuItemActive")
-      }
-      let currentMenuItem = pluginMenu.current.querySelector("#" + activeTab)
-      if (currentMenuItem) {
-        currentMenuItem.classList.add("menuItemActive")
-      }
-    }
-  }, [activeTab])
+  const allowed = permission => permissions.includes(permission) || role === "administrator"
 
   document.getElementById("adminmenuwrap").style.display = "none"
 
   return (
-    activeTab && (
       <>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -102,31 +90,31 @@ function App() {
               {!loading ? (
                 <>
                   <div className="pluginHeader">
-                    <div className="pluginMenu" ref={pluginMenu}>
+                    <div className="pluginMenu">
                       {permissions && role && (
-                        <span id="dashboard" className="menuItem firstMenuItem" onClick={() => setActiveTab("dashboard")}>
+                        <NavLink to="/" end className={props => menuClass(props) + " firstMenuItem"}>
                           <DashboardIcon sx={{ marginRight: "10px" }} /> {__("Dashboard", "fcplugin")}
-                        </span>
+                        </NavLink>
                       )}
-                      {(permissions.includes("bestellrunden") || role === "administrator") && (
-                        <span id="orderingRounds" className="menuItem" onClick={() => setActiveTab("orderingRounds")}>
+                      {allowed("bestellrunden") && (
+                        <NavLink to="/orderingRounds" className={menuClass}>
                           <ShoppingBasketIcon sx={{ marginRight: "10px" }} /> {__("Bestellrunden", "fcplugin")}
-                        </span>
+                        </NavLink>
                       )}
-                      {(permissions.includes("products") || role === "administrator") && (
-                        <span id="products" className="menuItem" onClick={() => setActiveTab("products")}>
+                      {allowed("products") && (
+                        <NavLink to="/products" className={menuClass}>
                           <WidgetsIcon sx={{ marginRight: "10px" }} /> {__("Produkte", "fcplugin")}
-                        </span>
+                        </NavLink>
                       )}
-                      {(permissions.includes("members") || role === "administrator") && (
-                        <span id="members" className="menuItem " onClick={() => setActiveTab("members")}>
+                      {allowed("members") && (
+                        <NavLink to="/members" className={menuClass}>
                           <PeopleIcon sx={{ marginRight: "10px" }} /> {__("Mitglieder", "fcplugin")}
-                        </span>
+                        </NavLink>
                       )}
-                      {(permissions.includes("bookkeeping") || role === "administrator") && (
-                        <span id="bookkeeping" className="menuItem" onClick={() => setActiveTab("bookkeeping")}>
+                      {allowed("bookkeeping") && (
+                        <NavLink to="/bookkeeping" className={menuClass}>
                           <AccountBalanceIcon sx={{ marginRight: "10px" }} /> {__("Buchhaltung", "fcplugin")}
-                        </span>
+                        </NavLink>
                       )}
                     </div>
                     <div className="pluginMenu">
@@ -136,10 +124,10 @@ function App() {
                       <span className="menuItem">
                         <small> v. {appLocalizer.version}</small>
                       </span>
-                      {(permissions.includes("settings") || role === "administrator") && (
-                        <span id="settings" className="menuItem" onClick={() => setActiveTab("settings")}>
+                      {allowed("settings") && (
+                        <NavLink to="/settings" className={menuClass}>
                           <SettingsIcon />
-                        </span>
+                        </NavLink>
                       )}
                       <span
                         id="help"
@@ -156,12 +144,15 @@ function App() {
                     </div>
                   </div>
                   <div className="pluginBody">
-                    {activeTab === "dashboard" && <Dashboard />}
-                    {activeTab === "orderingRounds" && <Bestellrunden />}
-                    {activeTab === "products" && <Products />}
-                    {activeTab === "members" && <Members />}
-                    {activeTab === "bookkeeping" && <Bookkeeping />}
-                    {activeTab === "settings" && <Settings />}
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/orderingRounds" element={allowed("bestellrunden") ? <Bestellrunden /> : <Navigate to="/" replace />} />
+                      <Route path="/products/*" element={allowed("products") ? <Products /> : <Navigate to="/" replace />} />
+                      <Route path="/members" element={allowed("members") ? <Members /> : <Navigate to="/" replace />} />
+                      <Route path="/bookkeeping/*" element={allowed("bookkeeping") ? <Bookkeeping /> : <Navigate to="/" replace />} />
+                      <Route path="/settings" element={allowed("settings") ? <Settings /> : <Navigate to="/" replace />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
                   </div>
                 </>
               ) : (
@@ -175,7 +166,6 @@ function App() {
           </LocalizationProvider>
         </ThemeProvider>
       </>
-    )
   )
 }
 
