@@ -1,29 +1,36 @@
 import React, { useState, useEffect, useMemo } from "react"
-import { Box, Typography, Button } from "@mui/material"
+import { Box, Typography, Button, TextField } from "@mui/material"
 import axios from "axios"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
+import RestartAltIcon from "@mui/icons-material/RestartAlt"
 import MaterialReactTable from "material-react-table"
 import { MRT_Localization_DE } from "material-react-table/locales/de"
 import { ExportToCsv } from "export-to-csv"
-import { format } from "date-fns"
+import { endOfDay, format, isValid, startOfDay } from "date-fns"
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
 import FormControl from "@mui/material/FormControl"
 import Select from "@mui/material/Select"
 const __ = wp.i18n.__
 
+const getOrderTime = order => new Date(order.date_created.replace(" ", "T")).getTime()
+const hasValidDate = date => date && isValid(new Date(date))
+const getOrdersTotal = orders =>
+  orders.reduce((total, order) => {
+    const orderTotal = parseFloat(order.total)
+    return total + (Number.isFinite(orderTotal) ? orderTotal : 0)
+  }, 0)
+
 const Orders = () => {
-  const [orders, setOrders] = useState()
   const [loading, setLoading] = useState(true)
   const [allOrders, setAllOrders] = useState(null)
   const [users, setUsers] = useState(null)
-  const [totalBalance, setTotalBalance] = useState(null)
   const [selectedUserId, setSelectedUserId] = useState(0)
-  const [selectedUser, setSelectedUser] = useState(null)
-  const [selectedUserTotal, setSelectedUserTotal] = useState(0)
   const [bestellrunden, setBestellrunden] = useState(null)
   const [selectedBestellrunde, setSelectedBestellrunde] = useState(0)
-  const [selectedBestellrundeTotal, setSelectedBestellrundeTotal] = useState(null)
+  const [dateStart, setDateStart] = useState(null)
+  const [dateEnd, setDateEnd] = useState(null)
 
   /**
    * Orders Table
@@ -92,7 +99,6 @@ const Orders = () => {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          setOrders(res)
           setAllOrders(res)
         }
       })
@@ -152,21 +158,57 @@ const Orders = () => {
   }, [])
 
   /**
-   * get total order value
    * Handle loading state
    */
   useEffect(() => {
     if (allOrders && users && bestellrunden) {
       setLoading(false)
-
-      let totalBalance = 0
-      allOrders.map(order => {
-        totalBalance += parseFloat(order.total)
-      })
-
-      setTotalBalance(totalBalance)
     }
   }, [allOrders, users, bestellrunden])
+
+  const selectedUser = useMemo(() => {
+    if (!users || selectedUserId === 0) {
+      return null
+    }
+
+    return users.find(user => parseInt(user.id) === parseInt(selectedUserId)) ?? null
+  }, [selectedUserId, users])
+
+  const timeStart = hasValidDate(dateStart) ? startOfDay(new Date(dateStart)).getTime() : null
+  const timeEnd = hasValidDate(dateEnd) ? endOfDay(new Date(dateEnd)).getTime() : null
+
+  /**
+   * Apply the inclusive calendar range before the optional ordering-round or
+   * member filter so all displayed totals share the same time period.
+   */
+  const ordersWithinDateRange = useMemo(() => {
+    if (!allOrders || (timeStart !== null && timeEnd !== null && timeStart > timeEnd)) {
+      return []
+    }
+
+    return allOrders.filter(order => {
+      const orderTime = getOrderTime(order)
+      const isAfterStart = timeStart === null || orderTime >= timeStart
+      const isBeforeEnd = timeEnd === null || orderTime <= timeEnd
+
+      return isAfterStart && isBeforeEnd
+    })
+  }, [allOrders, timeEnd, timeStart])
+
+  const orders = useMemo(
+    () =>
+      ordersWithinDateRange.filter(order => {
+        const isSelectedUser = selectedUserId === 0 || parseInt(order.customer_id) === parseInt(selectedUserId)
+        const isSelectedBestellrunde = selectedBestellrunde === 0 || parseInt(order.bestellrunde_id) === parseInt(selectedBestellrunde)
+
+        return isSelectedUser && isSelectedBestellrunde
+      }),
+    [ordersWithinDateRange, selectedBestellrunde, selectedUserId]
+  )
+
+  const totalBalance = useMemo(() => getOrdersTotal(ordersWithinDateRange), [ordersWithinDateRange])
+  const selectedUserTotal = useMemo(() => getOrdersTotal(orders), [orders])
+  const selectedBestellrundeTotal = selectedUserTotal
 
   /**
    * Export to CSV
@@ -188,65 +230,17 @@ const Orders = () => {
   }
 
   /**
-   * Change table to only the orders of selected user
-   */
-  const handleChange = event => {
-    setSelectedUserId(event.target.value)
-    users.map(user => {
-      if (event.target.value === user.id) {
-        setSelectedUser(user)
-      }
-    })
-  }
-
-  useEffect(() => {
-    if (selectedUserId !== 0) {
-      let newOrderData = []
-      let userTotal = 0
-      allOrders.map(row => {
-        if (parseInt(row.customer_id) === parseInt(selectedUserId)) {
-          newOrderData.push(row)
-          userTotal += parseFloat(row.total)
-        }
-      })
-      setSelectedUserTotal(userTotal)
-      setOrders(newOrderData)
-      setSelectedBestellrunde(0)
-    } else {
-      setSelectedUserTotal(0)
-      setOrders(allOrders)
-      setSelectedBestellrunde(0)
-    }
-  }, [selectedUserId])
-
-  /**
    * Change table to only the orders of selected bestellrunde
    */
   const handleChangeBestellrunde = event => {
     setSelectedBestellrunde(event.target.value)
+    setSelectedUserId(0)
   }
 
-  useEffect(() => {
-    if (selectedBestellrunde !== 0) {
-      let newOrderData = []
-      let bestellrundeTotal = 0
-      allOrders.map(row => {
-        if (parseInt(row.bestellrunde_id) === parseInt(selectedBestellrunde)) {
-          newOrderData.push(row)
-          bestellrundeTotal += parseFloat(row.total)
-        }
-      })
-      setSelectedBestellrundeTotal(bestellrundeTotal)
-      setOrders(newOrderData)
-      setSelectedUserId(0)
-      setSelectedUser(null)
-    } else {
-      setSelectedBestellrundeTotal(0)
-      setOrders(allOrders)
-      setSelectedUserId(0)
-      setSelectedUser(null)
-    }
-  }, [selectedBestellrunde])
+  const resetDateRange = () => {
+    setDateStart(null)
+    setDateEnd(null)
+  }
 
   return (
     <>
@@ -263,9 +257,30 @@ const Orders = () => {
         }}
         enableFullScreenToggle={false}
         initialState={{ density: "compact", pagination: { pageSize: 25 } }}
-        renderTopToolbarCustomActions={({ table }) => (
+        renderTopToolbarCustomActions={() => (
           <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
-            <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "nowrap", flexDirection: "row", justifyContent: "flex-start" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap", flexDirection: "row", justifyContent: "flex-start" }}>
+              <DesktopDatePicker
+                label={__("Eingrenzen von", "fcplugin")}
+                className="fc_datepicker"
+                inputFormat="dd.MM.yyyy"
+                value={dateStart}
+                maxDate={hasValidDate(dateEnd) ? dateEnd : undefined}
+                onChange={setDateStart}
+                renderInput={params => <TextField {...params} size="small" />}
+              />
+              <DesktopDatePicker
+                label={__("Eingrenzen bis", "fcplugin")}
+                className="fc_datepicker"
+                inputFormat="dd.MM.yyyy"
+                value={dateEnd}
+                minDate={hasValidDate(dateStart) ? dateStart : undefined}
+                onChange={setDateEnd}
+                renderInput={params => <TextField {...params} size="small" />}
+              />
+              <Button color="primary" onClick={resetDateRange} startIcon={<RestartAltIcon />} variant="outlined" size="small" disabled={loading || (!dateStart && !dateEnd)}>
+                {__("Zurücksetzen", "fcplugin")}
+              </Button>
               {bestellrunden && (
                 <FormControl size="small">
                   <InputLabel>{__("Bestellrunde", "fcplugin")}</InputLabel>
@@ -313,7 +328,7 @@ const Orders = () => {
                 {__("Ansicht exportieren", "fcplugin")}
               </Button>
             </Box>
-            <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "nowrap", flexDirection: "row", justifyContent: "flex-start" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap", flexDirection: "row", justifyContent: "flex-start" }}>
               {selectedUser && (
                 <Typography variant="body2" sx={{ padding: "8px 15px", backgroundColor: "#e3e3e3", borderRadius: "4px" }}>
                   {__("Wert der Bestellungen von", "fcplugin")} {selectedUser.name}: <strong>{parseFloat(selectedUserTotal).toFixed(2)}</strong>
@@ -325,7 +340,7 @@ const Orders = () => {
                 </Typography>
               )}
               <Typography variant="body2" sx={{ padding: "8px 15px", backgroundColor: "#e3e3e3", borderRadius: "4px" }}>
-                {__("Wert aller Bestellungen", "fcplugin")}: <strong>{totalBalance ? parseFloat(totalBalance).toFixed(2) : "0.00"}</strong>
+                {__("Wert aller Bestellungen", "fcplugin")}: <strong>{totalBalance.toFixed(2)}</strong>
               </Typography>
             </Box>
           </Box>
