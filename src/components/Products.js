@@ -276,7 +276,6 @@ const Products = () => {
   )
 
   async function handleSaveRow({ exitEditingMode, row, values }) {
-    products[row.index] = values
     axios
       .post(
         `${appLocalizer.apiUrl}/foodcoop/v1/postProductUpdate`,
@@ -300,8 +299,10 @@ const Products = () => {
       })
       .catch(error => console.log(error))
 
-    // update table values
-    setProducts([...products])
+    // Preserve fields that are not included in the edit form, such as weight_unit.
+    setProducts(currentProducts =>
+      currentProducts.map(product => (product.id === row.original.id ? { ...product, ...values } : product))
+    )
     exitEditingMode() //required to exit editing mode
   }
 
@@ -490,6 +491,7 @@ const Products = () => {
               <MaterialReactTable
                 columns={columns}
                 data={products ?? []}
+                autoResetPageIndex={false}
                 state={{ isLoading: productsLoading, columnVisibility: visibilityOptions }}
                 onColumnVisibilityChange={setVisibilityOptions}
                 localization={MRT_Localization_DE}
