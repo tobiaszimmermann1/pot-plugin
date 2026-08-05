@@ -40,7 +40,7 @@
 
     // price html string
     if (get_option('price_on_labels') == '0') {
-      $price_html = 'CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').'<br /><br />';
+      $price_html = 'CHF '.number_format((float)$product->get_regular_price(), 2, '.', '').' / '.esc_html($product->get_meta('_einheit')).'<br /><br />';
     } else {
       $price_html = '';
     }
@@ -77,4 +77,3 @@
 
     $pdf = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
   }
-
