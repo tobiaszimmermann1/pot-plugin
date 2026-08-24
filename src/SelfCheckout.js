@@ -137,7 +137,11 @@ function SelfCheckout() {
       .then(function (response) {
         if (response.data) {
           const res = JSON.parse(response.data)
-          setMargin(parseFloat(res))
+          if (res) {
+            setMargin(parseFloat(res))
+          } else {
+            setMargin(0)
+          }
         }
       })
       .catch(error => console.log(error))

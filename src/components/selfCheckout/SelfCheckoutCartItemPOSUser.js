@@ -13,6 +13,11 @@ function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, select
   const [users, setUsers] = useState(null)
 
   useEffect(() => {
+    console.log(cartMargin)
+  }, [cartMargin])
+
+  useEffect(() => {
+    console.log("margin: ", margin)
     if (memberCheckout) {
       setCartMargin(0)
     } else {
