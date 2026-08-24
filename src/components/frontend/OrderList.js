@@ -41,6 +41,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
   const [order, setOrder] = useState(null)
   const [currency, setCurrency] = useState(null)
   const [showTaxes, setShowTaxes] = useState(false)
+  const [taxStyle, setTaxStyle] = useState(null)
 
   useEffect(() => {
     axios
@@ -188,6 +189,15 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
       .catch(error => console.log(error))
 
     axios
+      .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=woocommerce_prices_include_tax`)
+      .then(function (response) {
+        if (response.data) {
+          response.data === '"yes"' ? setTaxStyle(true) : setTaxStyle(false)
+        }
+      })
+      .catch(error => console.log(error))
+
+    axios
       .get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getOption?option=fc_taxes`)
       .then(function (response) {
         if (response.data) {
@@ -318,7 +328,7 @@ const OrderList = ({ activeBestellrunde, activeOrderRoundData, setActiveOrderRou
             </Grid>
           </Box>
         )}
-        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory showTaxes={showTaxes} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
+        <Box sx={{ marginBottom: "200px" }}>{categories.map(cat => products[cat].length > 0 && <ProductCategory showTaxes={showTaxes} taxStyle={taxStyle} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} setTrigger={setTrigger} setShoppingList={setShoppingList} products={products[cat]} title={cat} key={cat} activeState={activeState} />)}</Box>
       </ShoppingContext.Provider>
     </TriggerContext.Provider>
   ) : (
