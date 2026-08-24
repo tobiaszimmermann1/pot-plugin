@@ -8,11 +8,16 @@ const __ = wp.i18n.__
 
 function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
   const { cart, setCart } = useContext(cartContext)
-  const [memberCheckout, setMemberCheckout] = useState(false)
+  const [memberCheckout, setMemberCheckout] = useState(!!selectedMember)
   const [loading, setLoading] = useState(false)
   const [users, setUsers] = useState(null)
 
   useEffect(() => {
+    console.log(cartMargin)
+  }, [cartMargin])
+
+  useEffect(() => {
+    console.log("margin: ", margin)
     if (memberCheckout) {
       setCartMargin(0)
     } else {
@@ -38,9 +43,11 @@ function SelfCheckoutCartItemPOSUser({ cartMargin, setCartMargin, margin, select
         .then(function (response) {
           if (response.data) {
             const res = JSON.parse(response.data).sort((a, b) => a.name.localeCompare(b.name))
-            console.log(res)
             setUsers(res)
-            setSelectedMember(res[0])
+            // keep a persisted/previous selection: re-match by id so the Select
+            // gets a reference-equal option and the balance is fresh
+            const previous = selectedMember && res.find(user => user.id === selectedMember.id)
+            setSelectedMember(previous || res[0])
             setLoading(false)
           }
         })

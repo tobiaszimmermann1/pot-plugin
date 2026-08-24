@@ -21,6 +21,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   const [cartMargin, setCartMargin] = useState(0)
   const [userEinkaufslisten, setUserEinkaufslisten] = useState([])
   const [userEinkaufslisteName, setUserEinkaufslisteName] = useState("")
+  const [confirmClear, setConfirmClear] = useState(false)
 
   useEffect(() => {
     updateUserEinkaufslisten()
@@ -35,9 +36,11 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
       })
 
       setTotal(newTotal)
-      setCartMargin(newTotal * (margin / 100))
+      // no margin on member purchases — also on remount/reload, when the
+      // POSUser row hides the member select as long as cartMargin !== 0
+      setCartMargin(selectedMember ? 0 : newTotal * (margin / 100))
     }
-  }, [cart, margin])
+  }, [cart, margin, selectedMember])
 
   useEffect(() => {
     POSMode ? setFinalTotal(total + cartMargin) : setFinalTotal(total)
@@ -117,31 +120,33 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   }
 
   function renderPOSFinish() {
-    ;<>
-      <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
-        <SelfCheckoutCartItemPOSUser setCartMargin={setCartMargin} cartMargin={cartMargin} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
-      </List>
-      {selectedMember ? (
+    return (
+      <>
         <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
-          <SelfCheckoutPaymentGateway selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
+          <SelfCheckoutCartItemPOSUser setCartMargin={setCartMargin} cartMargin={cartMargin} margin={margin} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
         </List>
-      ) : (
-        <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
-          <ListItem sx={{ margin: "5px 0" }}>
-            <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
-              <Grid item xs={6} sx={{ fontSize: "1.5rem", padding: 2 }}>
-                <Grid item xs={12}>
-                  <Box sx={{ marginRight: 2 }}>{__("Zahlungsart", "fcplugin")}</Box>
+        {selectedMember ? (
+          <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
+            <SelfCheckoutPaymentGateway selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />
+          </List>
+        ) : (
+          <List dense={true} sx={{ border: "1px solid #e3e3e3", margin: "10px 0", backgroundColor: "#f0f0f0" }}>
+            <ListItem sx={{ margin: "5px 0" }}>
+              <Grid container spacing={2} alignItems="flex-start" justifyContent="flex-start">
+                <Grid item xs={6} sx={{ fontSize: "1.5rem", padding: 2 }}>
+                  <Grid item xs={12}>
+                    <Box sx={{ marginRight: 2 }}>{__("Zahlungsart", "fcplugin")}</Box>
+                  </Grid>
+                </Grid>
+                <Grid item xs={6} sx={{ textAlign: "right", fontSize: "1.5rem" }}>
+                  Barzahlung
                 </Grid>
               </Grid>
-              <Grid item xs={6} sx={{ textAlign: "right", fontSize: "1.5rem" }}>
-                Barzahlung
-              </Grid>
-            </Grid>
-          </ListItem>
-        </List>
-      )}
-    </>
+            </ListItem>
+          </List>
+        )}
+      </>
+    )
   }
 
   function renderTotal() {
@@ -159,7 +164,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           }}
         >
           <div>{__("Total", "fcplugin")}</div>
-          <div style={{ minWidth: "120px", textAlign: "right" }}>
+          <div style={{ minWidth: "140px", textAlign: "right" }}>
             <div style={{ float: "left" }}>CHF</div>
             <div>{finalTotal.toFixed(2)}</div>
           </div>
@@ -169,14 +174,32 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           variant="text"
           startIcon={<DeleteIcon />}
           sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
-          onClick={() => {
-            setCart([])
-            localStorage.removeItem("fc_selfcheckout_cart")
-          }}
+          onClick={() => setConfirmClear(true)}
           color={"secondary"}
         >
           {__("Warenkorb leeren", "fcplugin")}
         </Button>
+
+        <Dialog open={confirmClear} onClose={() => setConfirmClear(false)} maxWidth="lg" scroll="paper">
+          <DialogTitle>{__("Warenkorb leeren?", "fcplugin")}</DialogTitle>
+          <DialogActions>
+            <Button onClick={() => setConfirmClear(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+              {__("Abbrechen", "fcplugin")}
+            </Button>
+            <Button
+              onClick={() => {
+                setCart([])
+                localStorage.removeItem("fc_selfcheckout_cart")
+                setConfirmClear(false)
+              }}
+              variant="contained"
+              sx={{ marginBottom: "15px", marginRight: "10px" }}
+              size="large"
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Stack>
     )
   }
@@ -240,6 +263,9 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
           </Stack>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setSaveEinkaufsliste(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
           <Button onClick={saveUserEinkaufsliste} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Einkaufsliste speichern", "fcplugin")}
           </Button>

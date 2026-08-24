@@ -111,6 +111,17 @@ export function formatProductWeight(w){
   return Math.round(w*1000)/1000;
 }
 
+// display only: weights below 1 kg read better in grams
+export function formatWeightDisplay(w, unit){
+  w = parseFloat(w);
+
+  if ( unit === "kg" && w < 1 ) {
+    return formatProductWeight(w * 1000) + " g";
+  }
+
+  return formatProductWeight(w) + " " + unit;
+}
+
 export async function addUserEinkaufsliste(cart,id) {
   const produkte = cart.map(( item ) => ({
     sku:item.sku,

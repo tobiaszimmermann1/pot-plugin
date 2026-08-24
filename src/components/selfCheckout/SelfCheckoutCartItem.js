@@ -7,7 +7,7 @@ import { Add as AddIcon, Remove as RemoveIcon, Delete as DeleteIcon } from "@mui
 import Chip from "@mui/material/Chip"
 import { cartContext } from "./cartContext"
 import { SmartScaleChip } from "./SmartScaleChip"
-import { updateProductAmount } from "../products/products"
+import { updateProductAmount, formatWeightDisplay } from "../products/products"
 const __ = wp.i18n.__
 
 function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
@@ -22,6 +22,9 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   const [inputUserWeight, setInputUserWeight] = useState(false)
   const [inputUserWeightValue, setInputUserWeightValue] = useState(0)
   const [inputUserTaraValue, setInputUserTaraValue] = useState(0)
+
+  const [inputAmount, setInputAmount] = useState(false)
+  const [inputAmountValue, setInputAmountValue] = useState(0)
 
   function removeItem(){
     updateCart(cart.filter( (cartItem,cartItemIndex) => itemIndex != cartItemIndex ));
@@ -62,17 +65,25 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
     setInputUserWeight(false)
   }
 
+  function weightDialogKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      setNewUserWeight()
+    }
+  }
+
   function renderWeightDialog(){
-    return <Dialog open={inputUserWeight} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+    return <Dialog open={inputUserWeight} onClose={() => setInputUserWeight(false)} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <DialogTitle id="alert-dialog-title">{__("Gewicht ändern", "fcplugin")}</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
             <FormControl>
-              <TextField type="number" size="normal" id="userWeightValue" name="userWeightValue" variant="outlined"
+              <TextField type="number" size="normal" id="userWeightValue" name="userWeightValue" variant="outlined" autoFocus
                 label={__("Totalgewicht", "fcplugin")+' ( '+ productData.weight_unit +' )'}
                 value={inputUserWeightValue}
                 onChange={e => setInputUserWeightValue(e.target.value)}
+                onKeyDown={weightDialogKeyDown}
                 InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserWeightValue} /> }}
               />
             </FormControl>
@@ -81,12 +92,16 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
                 label={__("Verpackungsgewicht", "fcplugin") +' ( '+ productData.weight_unit +' )' }
                 value={inputUserTaraValue}
                 onChange={e => setInputUserTaraValue(e.target.value)}
+                onKeyDown={weightDialogKeyDown}
                 InputProps={{ endAdornment: <SmartScaleChip onApply={setInputUserTaraValue} /> }}
               />
             </FormControl>
           </Stack>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setInputUserWeight(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
           <Button onClick={setNewUserWeight} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
             {__("Gewicht übernehmen", "fcplugin")}
           </Button>
@@ -98,7 +113,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
     return <Chip
       sx={{width:'100px'}}
       variant="outlined"
-      label={`${productData.amountWeight} ${productData.weight_unit}`}
+      label={formatWeightDisplay(productData.amountWeight, productData.weight_unit)}
       onClick={() => {
         setInputUserWeight(true)
         setInputUserWeightValue(userWeightValue)
@@ -107,6 +122,41 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
       onDelete={removeItem}
       deleteIcon={<DeleteIcon />}
     />
+  }
+
+  function setNewAmount() {
+    const newAmount = parseFloat(inputAmountValue)
+    if (newAmount > 0) {
+      setAmount(newAmount)
+    }
+    setInputAmount(false)
+  }
+
+  function renderAmountDialog(){
+    return <Dialog open={inputAmount} onClose={() => setInputAmount(false)} maxWidth="lg" scroll="paper" aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
+        <DialogTitle id="alert-dialog-title">{__("Menge eingeben", "fcplugin")}</DialogTitle>
+        <Divider />
+        <DialogContent>
+          <Stack spacing={3} sx={{ width: "100%", paddingTop: "10px" }}>
+            <FormControl>
+              <TextField type="number" size="normal" id="amount" name="amount" variant="outlined" autoFocus
+                label={__("Menge", "fcplugin")+' ( '+ productData.unit +' )'}
+                value={inputAmountValue}
+                onChange={e => setInputAmountValue(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); setNewAmount() } }}
+              />
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setInputAmount(false)} variant="outlined" color="error" sx={{ marginBottom: "15px" }} size="large">
+            {__("Abbrechen", "fcplugin")}
+          </Button>
+          <Button onClick={setNewAmount} variant="contained" sx={{ marginBottom: "15px", marginRight: "10px" }} size="large">
+            {__("Menge Übernehmen", "fcplugin")}
+          </Button>
+        </DialogActions>
+      </Dialog>
   }
 
   function decreaseAmount(){
@@ -124,9 +174,13 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
   function renderItemContent(){
     return <Chip
       sx={{width:'100px'}}
-      avatar={<AddIcon onClick={increaseAmount} sx={{ cursor: "pointer" }} />}
+      avatar={<AddIcon onClick={e => { e.stopPropagation(); increaseAmount() }} sx={{ cursor: "pointer" }} />}
       variant="outlined"
       label={productData.amount}
+      onClick={() => {
+        setInputAmount(true)
+        setInputAmountValue(productData.amount)
+      }}
       onDelete={decreaseAmount}
       deleteIcon={productData.amount>1?<RemoveIcon/>:<DeleteIcon/>}
     />
@@ -138,6 +192,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
 
   return <>
       { renderWeightDialog() }
+      { renderAmountDialog() }
       <ListItem
         disableGutters dense
         sx={{ fontSize: POSMode ? "1.5rem" : "1rem" }}
@@ -152,7 +207,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
         </ListItemAvatar>
         <ListItemText
           sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}
-          primary={<strong>{productData.name}</strong>}
+          primary={<><strong>{productData.name}</strong>{productData.unit ? " (" + productData.unit + ")" : ""}</>}
           secondary={productData.is_weighed
             ? renderWeighedItemContent()
             : renderItemContent()

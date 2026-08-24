@@ -184,47 +184,71 @@ function before_checkout_create_order_legacy( $order ) {
 
   function update_member_balance( $order_id ){
     global $wpdb;
-    if (get_option('fc_update_balance_on_purchase') == '1' && ! get_post_meta( $order_id, '_payout_done', true )){
-      $order = wc_get_order( $order_id );
-      $table = $wpdb->prefix.'foodcoop_wallet';
-      date_default_timezone_set('Europe/Zurich');
-      $date = date("Y-m-d H:i:s");
+    if ( get_option('fc_update_balance_on_purchase') != '1' ) return;
 
-      // Iterate through each order item and update the balance of the product owner (fc_owner)
-      foreach ($order->get_items() as $item_id => $item_obj) {
-        $product = $item_obj->get_product();
-        $fc_owner = $product->get_meta('fc_owner');
+    // $order_id may be a WC_Order when called from woocommerce_store_api_checkout_order_processed.
+    $order = wc_get_order( $order_id );
+    if ( ! $order ) return;
+    $order_id = $order->get_id();
 
-        if ($fc_owner){
-          $fc_owner = intval($fc_owner);
+    // Guard against duplicate payouts. Use the order meta API (HPOS-safe) instead of get/update_post_meta,
+    // which writes only to wp_postmeta and is not read by HPOS — leaving the guard permanently broken.
+    if ( $order->get_meta('_payout_done') ) return;
 
-          $amount = $item_obj->get_total() / $product->get_price();
+    // Claim the flag before doing the work so concurrent hook firings (e.g. payment webhook + thank-you page)
+    // can't both pass the check and double-insert.
+    $order->update_meta_data('_payout_done', 1);
+    $order->save();
 
-          // get current balance.
-          // TODO: Copied from foodcoop-rest-routes.php, postSaveDeliveryByOwner. Could be unified in a function
-          $current_balance = 0.00;
-          $results = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $fc_owner)
-          );
-          foreach ( $results as $result ) {
-            $current_balance = $result->balance;
-          }
+    $table = $wpdb->prefix.'foodcoop_wallet';
+    date_default_timezone_set('Europe/Zurich');
+    $date = date("Y-m-d H:i:s");
 
-          // calculate balance to pay to member
-          $balance = floatval($item_obj->get_total());
-          $balance = number_format($balance, 2, '.', '');
+    // "Fehlende Gutschriften" matches wallet rows to orders by comparing `reported`
+    // against the order's date_created_gmt — so this must be the GMT order date,
+    // not the (possibly days later) payout time and not local time.
+    $created = $order->get_date_created();
+    $reported = gmdate("Y-m-d H:i:s", $created ? $created->getTimestamp() : time());
 
-          $details = 'Neuer Verkauf von Produkt '.$product->get_name().'('.$amount.'x) Bestellung #'.$order_id;
-          $created_by = get_current_user_id();
-          $new_balance = $current_balance + $balance;
-          $new_balance = number_format($new_balance, 2, '.', '');
+    // Iterate through each order item and update the balance of the product owner (fc_owner)
+    foreach ($order->get_items() as $item_id => $item_obj) {
+      $product = $item_obj->get_product();
 
-          $data = array('user_id' => $fc_owner, 'amount' => $balance, 'date' => $date, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+      // Skip if the product was deleted between order time and payout, or has no
+      // sane price — both would fatal the loop and (because _payout_done is now
+      // claimed up-front) leave subsequent items in the same order unpaid.
+      if ( ! $product || $product->get_price() <= 0 ) continue;
 
-          $wpdb->insert($table, $data);
+      $fc_owner = $product->get_meta('fc_owner');
+
+      if ($fc_owner){
+        $fc_owner = intval($fc_owner);
+
+        $amount = $item_obj->get_total() / $product->get_price();
+
+        // get current balance.
+        // TODO: Copied from foodcoop-rest-routes.php, postSaveDeliveryByOwner. Could be unified in a function
+        $current_balance = 0.00;
+        $results = $wpdb->get_results(
+          $wpdb->prepare("SELECT * FROM `".$wpdb->prefix."foodcoop_wallet` WHERE `user_id` = %s ORDER BY `id` DESC LIMIT 1", $fc_owner)
+        );
+        foreach ( $results as $result ) {
+          $current_balance = $result->balance;
         }
+
+        // calculate balance to pay to member
+        $balance = floatval($item_obj->get_total());
+        $balance = number_format($balance, 2, '.', '');
+
+        $details = 'Neuer Verkauf von Produkt '.$product->get_name().'('.$amount.'x) Bestellung #'.$order_id;
+        $created_by = get_current_user_id();
+        $new_balance = $current_balance + $balance;
+        $new_balance = number_format($new_balance, 2, '.', '');
+
+        $data = array('user_id' => $fc_owner, 'amount' => $balance, 'date' => $date, 'reported' => $reported, 'details' => $details, 'created_by' => $created_by, 'balance' => $new_balance);
+
+        $wpdb->insert($table, $data);
       }
-      update_post_meta( $order_id, '_payout_done', true );
     }
   }
 }

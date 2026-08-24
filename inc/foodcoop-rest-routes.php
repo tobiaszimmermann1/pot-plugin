@@ -1842,30 +1842,38 @@ class FoodcoopRestRoutes {
    */
   function getAllOrders($data) {
 
+    $args = array(
+      'type' => 'shop_order',
+      'limit' => -1,
+      'orderby' => 'date',
+      'order' => 'DESC',
+      'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
+      'return' => 'ids',
+    );
     if ($data['year']) {
-      $orders = wc_get_orders(array(
-        'type' => 'shop_order',
-        'limit' => -1,
-        'orderby' => 'date',
-        'order' => 'DESC',
-        'date_created' => $data['year'].'-01-01...'.$data['year'].'-12-31',
-        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
-      ));
-    } else {
-      $orders = wc_get_orders(array(
-        'type' => 'shop_order',
-        'limit' => -1,
-        'orderby' => 'date',
-        'order' => 'DESC',
-        'status' => array('wc-completed', 'wc-processing', 'wc-on-hold', 'wc-refunded'),
-      ));
+      $args['date_created'] = $data['year'].'-01-01...'.$data['year'].'-12-31';
     }
+    $order_ids = wc_get_orders($args);
 
     $order_data = array();
-    foreach($orders as $order) {
-      array_push($order_data, $order->get_data());
+    foreach($order_ids as $order_id) {
+      $o = wc_get_order($order_id);
+      if (!$o) continue;
+      $order_data[] = array(
+        'id' => $order_id,
+        'customer_id' => $o->get_customer_id(),
+        'customer_name' => $o->get_billing_first_name().' '.$o->get_billing_last_name(),
+        'total' => $o->get_total(),
+        'date_created' => $o->get_date_created() ? $o->get_date_created()->date('Y-m-d H:i:s') : '',
+        'payment_method_title' => $o->get_payment_method_title(),
+        'bestellrunde_id' => $o->get_meta('bestellrunde_id'),
+        'url' => $o->get_edit_order_url(),
+      );
+      // ponytail: object cache grows one entry per loaded order; flush periodically so huge shops stay flat
+      if (count($order_data) % 500 === 0 && function_exists('wp_cache_flush_group')) {
+        foreach (array('orders', 'posts', 'post_meta') as $group) wp_cache_flush_group($group);
+      }
     }
-  
 
     return json_encode($order_data);
   }
@@ -4335,7 +4343,7 @@ class FoodcoopRestRoutes {
           'total'        => floatval($cart_item->price) * floatval($cart_item->amount)
         ));
       } else {
-        $order->add_product( wc_get_product( $cart_item->product_id ), $cart_item->amount );
+        $order->add_product( wc_get_product( $cart_item->product_id ?? $cart_item->id ), $cart_item->amount );
       }
     }
 
@@ -4695,7 +4703,10 @@ class FoodcoopRestRoutes {
 
    foreach($orders as $order_id) {
     $order = wc_get_order($order_id);
-    $order->set_status('wc-completed');
+    // update_status (not set_status) so woocommerce_order_status_completed fires
+    // and update_member_balance pays out any orders that didn't already pay out
+    // via woocommerce_thankyou.
+    $order->update_status('wc-completed');
     $order->save();
    }
 

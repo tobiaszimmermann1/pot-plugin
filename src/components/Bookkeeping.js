@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
+import { Routes, Route, NavLink, Navigate } from "react-router-dom"
 import axios from "axios"
 import { Box, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
@@ -12,18 +13,10 @@ import BillingOverview from "./bookkeeping/BillingOverview"
 import MissingPayouts from "./bookkeeping/MissingPayouts"
 const __ = wp.i18n.__
 
-const Bookkeeping = () => {
-  const [activeTab, setActiveTab] = useState("transactions")
-  const pluginMenu = useRef()
-  const [options, setOptions] = useState(null)
+const menuClass = ({ isActive }) => "menuItem" + (isActive ? " menuItemActive" : "")
 
-  useEffect(() => {
-    let menuItems = pluginMenu.current.children
-    for (const menuItem of menuItems) {
-      menuItem.classList.remove("menuItemActive")
-    }
-    pluginMenu.current.querySelector("#" + activeTab).classList.add("menuItemActive")
-  }, [activeTab])
+const Bookkeeping = () => {
+  const [options, setOptions] = useState(null)
 
   useEffect(() => {
     axios
@@ -48,27 +41,27 @@ const Bookkeeping = () => {
             <Card sx={{ minWidth: 275, borderRadius: 0 }}>
               <CardContent sx={{ paddingBottom: "16px !important" }}>
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  <span className="pluginMenu" ref={pluginMenu}>
-                    <span id="transactions" className="menuItem firstMenuItem" onClick={() => setActiveTab("transactions")}>
+                  <span className="pluginMenu">
+                    <NavLink to="/bookkeeping" end className={props => menuClass(props) + " firstMenuItem"}>
                       {__("Guthaben & Transaktionen", "fcplugin")}
-                    </span>
-                    <span id="orders" className="menuItem" onClick={() => setActiveTab("orders")}>
+                    </NavLink>
+                    <NavLink to="/bookkeeping/orders" className={menuClass}>
                       {__("Bestellungen", "fcplugin")}
-                    </span>
-                    <span id="expenses" className="menuItem" onClick={() => setActiveTab("expenses")}>
+                    </NavLink>
+                    <NavLink to="/bookkeeping/expenses" className={menuClass}>
                       {__("Ausgaben", "fcplugin")}
-                    </span>
-                    <span id="journal" className="menuItem " onClick={() => setActiveTab("journal")}>
+                    </NavLink>
+                    <NavLink to="/bookkeeping/journal" className={menuClass}>
                       {__("Milchbüechli", "fcplugin")}
-                    </span>
-                    <span id="billingOverview" className="menuItem " onClick={() => setActiveTab("billingOverview")}>
+                    </NavLink>
+                    <NavLink to="/bookkeeping/billingOverview" className={menuClass}>
                       {__("Abrechnung", "fcplugin")}
-                    </span>
+                    </NavLink>
                     {options !== null && options.fc_update_balance_on_purchase === "1" && (
-                      <span id="missingPayouts" className="menuItem " onClick={() => setActiveTab("missingPayouts")}>
-                      {__("Fehlende Gutschriften", "fcplugin")}
-                      </span>
-                    )}             
+                      <NavLink to="/bookkeeping/missingPayouts" className={menuClass}>
+                        {__("Fehlende Gutschriften", "fcplugin")}
+                      </NavLink>
+                    )}
                   </span>
                 </Typography>
               </CardContent>
@@ -78,12 +71,15 @@ const Bookkeeping = () => {
       </Box>
 
       <div className="pluginBody">
-        {activeTab === "transactions" && <Transactions />}
-        {activeTab === "orders" && <Orders />}
-        {activeTab === "expenses" && <Expenses />}
-        {activeTab === "journal" && <Journal />}
-        {activeTab === "billingOverview" && <BillingOverview />}
-        {activeTab === "missingPayouts" && <MissingPayouts />}
+        <Routes>
+          <Route index element={<Transactions />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="expenses" element={<Expenses />} />
+          <Route path="journal" element={<Journal />} />
+          <Route path="billingOverview" element={<BillingOverview />} />
+          <Route path="missingPayouts" element={<MissingPayouts />} />
+          <Route path="*" element={<Navigate to="/bookkeeping" replace />} />
+        </Routes>
       </div>
     </>
   )

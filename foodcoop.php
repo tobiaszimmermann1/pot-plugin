@@ -8,7 +8,7 @@
 Plugin Name: POT Plugin
 Plugin URI: https://plugin.pot.ch
 Description: Plugin for managing foodcoops. 
-Version: 1.8.0
+Version: 1.8.1
 Author: Tobias Zimmermann / Verein POT Netzwerk
 Author URI: https://plugin.pot.ch
 License: GPLv2 or later
@@ -202,6 +202,33 @@ function fc_plugin_upgrade_database() {
 add_action( 'admin_init', 'fc_plugin_upgrade_database' );
 
 
+/**
+ * One-time backfill: payout rows written before `reported` was populated
+ * (see update_member_balance) have reported = NULL, and rows migrated by
+ * fc_plugin_upgrade_database carry the migration run time — both make
+ * "Fehlende Gutschriften" flag them as missing forever. The order id is
+ * embedded in the details text ('... Bestellung #123'), so copy the
+ * order's GMT creation date from the orders table for all payout rows.
+ * `date` is ON UPDATE current_timestamp(), so it must be re-assigned
+ * explicitly or this UPDATE would rewrite every ledger date to now.
+ */
+function fc_backfill_wallet_reported() {
+  global $wpdb;
+  if ( get_option('fc_wallet_reported_backfill') === '1' ) return;
+
+  $wpdb->query(
+    "UPDATE {$wpdb->prefix}foodcoop_wallet w
+     JOIN {$wpdb->prefix}wc_orders o
+       ON o.id = CAST(SUBSTRING_INDEX(w.details, 'Bestellung #', -1) AS UNSIGNED)
+     SET w.reported = o.date_created_gmt, w.date = w.date
+     WHERE w.details LIKE 'Neuer Verkauf%Bestellung #%'"
+  );
+
+  update_option('fc_wallet_reported_backfill', '1');
+}
+add_action( 'admin_init', 'fc_backfill_wallet_reported', 11 );
+
+
 
 
 
@@ -258,7 +285,7 @@ function fc_admin_load_scripts() {
   // Load built file
   wp_enqueue_script(
     'fc-script',
-    plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.8.0',
+    plugin_dir_url( __FILE__ ) . 'build/backend.js?version=1.8.1',
     [ 'wp-element', 'wp-i18n' ],
     '1.0',
     true
@@ -271,11 +298,11 @@ function fc_admin_load_scripts() {
     'pluginUrl'   => plugin_dir_url(__FILE__),
     'nonce'       => wp_create_nonce('wp_rest'),
     'currentUser' => wp_get_current_user(),
-    'version'     => "1.8.0"
+    'version'     => "1.8.1"
   ]);
 
   wp_set_script_translations( 'fc-script','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.0' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.1' );
 }
 
 add_action( 'wp_enqueue_scripts', 'fc_wp_load_scripts');
@@ -284,7 +311,7 @@ function fc_wp_load_scripts() {
   if ( get_option('fc_enable_rounds_storewide') ) {
     wp_enqueue_script(
       'fc-script-sitewide-bestellrunden',
-      plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.8.0',
+      plugin_dir_url( __FILE__ ) . 'scripts/sitewide-bestellrunden.js?version=1.8.1',
       [ 'jquery' ],
       '1.0',
       true
@@ -293,7 +320,7 @@ function fc_wp_load_scripts() {
 
     wp_enqueue_script(
       'fc-script-frontend',
-      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.8.0',
+      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.8.1',
       [ 'wp-element', 'wp-i18n' ],
       '1.0',
       true
@@ -312,7 +339,7 @@ function fc_wp_load_scripts() {
   ]);
 
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
-  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.0' );
+  wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.1' );
 }
 
 

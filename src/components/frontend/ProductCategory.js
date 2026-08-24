@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 
-const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation, stockManagement, showTaxes }) => {
+const ProductCategory = ({ currency, products, title, setShoppingList, setTrigger, activeState, publicPrices, additionalProductInformation, stockManagement, showTaxes, taxStyle }) => {
   const [visibility, setVisibility] = useState(true)
 
   function visClick() {
@@ -81,7 +81,7 @@ const ProductCategory = ({ currency, products, title, setShoppingList, setTrigge
             </div>
 
             {products.map(product => (
-              <ProductLine showTaxes={showTaxes} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
+              <ProductLine showTaxes={showTaxes} taxStyle={taxStyle} stockManagement={stockManagement} publicPrices={publicPrices} additionalProductInformation={additionalProductInformation} currency={currency} product={product} key={product.id} setShoppingList={setShoppingList} setTrigger={setTrigger} activeState={activeState} />
             ))}
           </div>
         </div>
