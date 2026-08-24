@@ -20,6 +20,7 @@ import AddProductBySku from "./components/selfCheckout/AddProductBySku"
 import LoadingButton from "@mui/lab/LoadingButton"
 import QrScanner from "./components/selfCheckout/QrScanner"
 import { SmartScaleProvider, STORAGE_KEY as SMARTSCALE_STORAGE_KEY } from "./contexts/SmartScaleContext.js"
+import { getProductListOverview, getProductBySku, getSelfCheckoutProducts, updateProductAmount, formatWeightDisplay } from "./components/products/products"
 
 const __ = wp.i18n.__
 
@@ -59,6 +60,43 @@ function SelfCheckout() {
   const [active, setActive] = useState(null)
   const [isPOSAdmin, setIsPOSAdmin] = useState(false)
   const [POSMode, setPOSMode] = useState(localStorage.getItem("fc_selfcheckout_posmode") === "1")
+  const [products, setProducts] = useState(null)
+  const [productsLoading, setProductsLoading] = useState(true)
+
+  function updateProducts() {
+    let reArrangeProductData = []
+    getSelfCheckoutProducts()
+      .then(function (scProds) {
+        getProductListOverview()
+          .then(function (response) {
+            if (response.products) {
+              const prod = response.products
+              Object.keys(prod).forEach(function (key) {
+                let product = prod[key]
+
+                if (scProds.includes(product.id)) {
+                  product.label = product.name + " (" + product.sku + ") — CHF " + parseFloat(product.price).toFixed(2) + (product.weight ? " / " + formatWeightDisplay(product.weight, product.weight_unit) : "")
+
+                  reArrangeProductData.push(product)
+
+                  if (product.sku == scanResult) {
+                    setProduct(product)
+                    setSku(product.sku)
+                  }
+                }
+              })
+              setProducts(reArrangeProductData)
+              setProductsLoading(false)
+            }
+          })
+          .catch(error => console.log(error))
+      })
+      .catch(error => console.log(error))
+  }
+
+  useEffect(() => {
+    updateProducts()
+  }, [])
 
   useEffect(() => {
     localStorage.setItem("fc_selfcheckout_posmode", POSMode ? "1" : "0")
@@ -178,6 +216,7 @@ function SelfCheckout() {
       }
     } catch (e) {}
 
+    console.log("scanresulttext ", text)
     setScanResult(text)
 
     setAdding(true)
@@ -359,8 +398,8 @@ function SelfCheckout() {
                       <LinearProgress />
                     </Box>
                   )}
-                  {scanning && !POSMode && <QrScanner updateScanResult={updateScanResult} />}
-                  {adding && <AddProductBySku setShowCart={setShowCart} setAdding={setAdding} scanResult={scanResult} POSMode={POSMode} />}
+                  {scanning && !POSMode && <QrScanner updateScanResult={updateScanResult} products={products} productsLoading={productsLoading} />}
+                  {adding && <AddProductBySku products={products} productsLoading={productsLoading} setShowCart={setShowCart} setAdding={setAdding} scanResult={scanResult} POSMode={POSMode} />}
                   {POSMode && renderPOSConfirmation()}
                   {showCart && <SelfCheckoutCart POSMode={POSMode} margin={margin} saveEinkaufsliste={saveEinkaufsliste} setSaveEinkaufsliste={setSaveEinkaufsliste} selectedMember={selectedMember} setSelectedMember={setSelectedMember} selectedPaymentGateway={selectedPaymentGateway} setSelectedPaymentGateway={setSelectedPaymentGateway} />}
                 </DialogContent>

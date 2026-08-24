@@ -11,10 +11,8 @@ import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 const __ = wp.i18n.__
 
-function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
+function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode, products, productsLoading }) {
   const { cart, setCart } = useContext(cartContext)
-  const [products, setProducts] = useState(null)
-  const [productsLoading, setProductsLoading] = useState(true)
   const [amount, setAmount] = useState(1)
   const [sku, setSku] = useState("")
   const [product, setProduct] = useState(null)
@@ -54,9 +52,16 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
   }
 
   useEffect(() => {
-    updateProducts()
     updateUserVerpackungen()
     updateUserProduktFavoriten()
+
+    if (scanResult) {
+      const matchedProduct = products.find(p => p.sku === scanResult)
+      if (matchedProduct) {
+        setProduct(matchedProduct)
+        setSku(matchedProduct.sku)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -101,37 +106,6 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode }) {
         if (response.data.userVerpackungen) {
           setUserVerpackungen(response.data.userVerpackungen)
         }
-      })
-      .catch(error => console.log(error))
-  }
-
-  function updateProducts() {
-    let reArrangeProductData = []
-    getSelfCheckoutProducts()
-      .then(function (scProds) {
-        getProductListOverview()
-          .then(function (response) {
-            if (response.products) {
-              const prod = response.products
-              Object.keys(prod).forEach(function (key) {
-                let product = prod[key]
-
-                if (scProds.includes(product.id)) {
-                  product.label = product.name + " (" + product.sku + ") — CHF " + parseFloat(product.price).toFixed(2) + (product.weight ? " / " + formatWeightDisplay(product.weight, product.weight_unit) : "")
-
-                  reArrangeProductData.push(product)
-
-                  if (product.sku == scanResult) {
-                    setProduct(product)
-                    setSku(product.sku)
-                  }
-                }
-              })
-              setProducts(reArrangeProductData)
-              setProductsLoading(false)
-            }
-          })
-          .catch(error => console.log(error))
       })
       .catch(error => console.log(error))
   }
