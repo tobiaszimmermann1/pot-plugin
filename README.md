@@ -28,6 +28,13 @@ This plugin expands Wordpress (with WooCommerce) to be used as an application to
 
 ## Changelog
 
+### 1.8.1
+
+- Added url routing for backend
+- Self-Checkout: Various small technical and UI improvements (i.e. keyboard shortcuts)
+- Bookeeping: Added date filters
+- Various bugfixes
+
 ### 1.8.0
 
 - Added support for BLE scale to fetch product weights in Self Checkout
