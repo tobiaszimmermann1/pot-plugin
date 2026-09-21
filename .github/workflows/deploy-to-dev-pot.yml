@@ -44,7 +44,7 @@ jobs:
     - name: Deploy to dev.pot.ch
       uses: appleboy/scp-action@v0.1.7
       with:
-          host: "dev.pot.ch"
+          host: "188.245.227.60"
           username: ${{ secrets.DEV_POT_USER }}
           key: ${{ secrets.SSH_KEY_POTDEV }}
           port: 22
