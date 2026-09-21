@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react"
-import { Button, Stack, Box, ListItem, Dialog, DialogTitle, DialogContent, Divider, FormControl, TextField, DialogActions, ListItemText, IconButton, ListItemButton } from "@mui/material"
+import { Alert, Button, Stack, Box, ListItem, Dialog, DialogTitle, DialogContent, Divider, FormControl, TextField, DialogActions, ListItemText, IconButton, ListItemButton } from "@mui/material"
 import axios from "axios"
 import { format } from "date-fns"
 import { addUserEinkaufsliste } from "../products/products"
@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import BubbleChartIcon from "@mui/icons-material/BubbleChart"
 import SelfCheckoutPaymentGateway from "./SelfCheckoutPaymentGateway"
 import { getProductListOverview, updateProductAmount } from "../products/products"
+import { getCartAvailability } from "./cartAvailability"
 const __ = wp.i18n.__
 
 function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsliste, selectedMember, setSelectedMember, selectedPaymentGateway, setSelectedPaymentGateway }) {
@@ -22,6 +23,37 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   const [userEinkaufslisten, setUserEinkaufslisten] = useState([])
   const [userEinkaufslisteName, setUserEinkaufslisteName] = useState("")
   const [confirmClear, setConfirmClear] = useState(false)
+  const [availabilityProducts, setAvailabilityProducts] = useState(null)
+  const [availabilityError, setAvailabilityError] = useState(false)
+  const cartProductIds = JSON.stringify(cart.map(item => item.product_id ?? item.id ?? item.sku))
+  const availability = getCartAvailability(cart, availabilityProducts)
+
+  useEffect(() => {
+    let cancelled = false
+    let request = 0
+    async function refreshAvailability() {
+      const currentRequest = ++request
+      try {
+        const response = await getProductListOverview(true)
+        if (!cancelled && currentRequest === request) {
+          setAvailabilityProducts(response.products)
+          setAvailabilityError(false)
+        }
+      } catch (error) {
+        if (!cancelled && currentRequest === request) {
+          setAvailabilityProducts(null)
+          setAvailabilityError(true)
+        }
+      }
+    }
+    setAvailabilityProducts(null)
+    if (JSON.parse(cartProductIds).length > 0) refreshAvailability()
+    window.addEventListener("focus", refreshAvailability)
+    return () => {
+      cancelled = true
+      window.removeEventListener("focus", refreshAvailability)
+    }
+  }, [cartProductIds])
 
   useEffect(() => {
     updateUserEinkaufslisten()
@@ -59,8 +91,12 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
     const response = await getProductListOverview()
 
     const newCart = einkaufsliste.produkte.map(einkauf => {
-      let product = response.products.find(product => product.sku == einkauf.sku)
-      if (!product) return null
+      const currentProduct = response.products.find(product => product.sku == einkauf.sku)
+      let product = currentProduct ? { ...currentProduct } : {
+        sku: einkauf.sku,
+        name: einkauf.sku,
+        price: 0
+      }
 
       product.order_type = "self_checkout"
 
@@ -113,7 +149,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
     return (
       <List dense={true} sx={{ padding: POSMode && "0 10px", border: POSMode && "1px solid #e3e3e3" }}>
         {cart.map((cartItem, index) => (
-          <SelfCheckoutCartItem key={index} productData={cartItem} itemIndex={index} POSMode={POSMode} />
+          <SelfCheckoutCartItem key={index} productData={cartItem} itemIndex={index} POSMode={POSMode} availabilityWarning={availability[index]} />
         ))}
       </List>
     )
@@ -290,6 +326,7 @@ function SelfCheckoutCart({ POSMode, margin, saveEinkaufsliste, setSaveEinkaufsl
   return cart.length > 0 ? (
     <>
       {renderEinkaufslisteDialog()}
+      {availabilityError && <Alert severity="warning">{__("Die Verfügbarkeit konnte nicht geprüft werden. Bitte versuche es später erneut.", "fcplugin")}</Alert>}
       {renderList()}
       {POSMode && renderPOSFinish()}
       {renderTotal()}

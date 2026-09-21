@@ -9,8 +9,8 @@ const wc_weight_units = {
     oz: 28.3495
 }
 
-async function updateProductListOverview() {
-  if (productListOverviewCache === null) {
+async function updateProductListOverview(refresh = false) {
+  if (refresh || productListOverviewCache === null) {
     const response = await axios.get(`${frontendLocalizer.apiUrl}/foodcoop/v1/getProductListOverview`)
     if (response.data) {
       productListOverviewCache = JSON.parse(response.data)
@@ -20,8 +20,8 @@ async function updateProductListOverview() {
   return productListOverviewCache;
 }
 
-export async function getProductListOverview() {
-  const res = await updateProductListOverview();
+export async function getProductListOverview(refresh = false) {
+  const res = await updateProductListOverview(refresh);
   const products = res[0]
   const categories = res[1]
   const currency = res[2]

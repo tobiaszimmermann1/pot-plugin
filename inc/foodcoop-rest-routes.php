@@ -3457,9 +3457,21 @@ class FoodcoopRestRoutes {
       include_once WC_ABSPATH . 'includes/wc-template-hooks.php';
     }
 
-    $cart = json_decode($data['data']);
-    $user = json_decode($data['user']);
-    $user_id = $user->ID;
+    $cart = is_string($data['data'] ?? null) ? json_decode($data['data']) : null;
+    $user_id = get_current_user_id();
+
+    if (!is_array($cart) || empty($cart)) {
+      return new WP_Error('fc_invalid_cart', __('Der Warenkorb ist leer oder ungültig.', 'fcplugin'), array('status' => 400));
+    }
+
+    // Validate the entire payload before replacing the existing WooCommerce cart.
+    foreach ($cart as $item) {
+      $product_id = is_object($item) ? ($item->product_id ?? $item->id ?? null) : null;
+      if (!is_numeric($product_id) || $product_id <= 0 || (int)$product_id != $product_id ||
+          !isset($item->amount) || !is_numeric($item->amount) || !is_finite((float)$item->amount) || $item->amount <= 0) {
+        return new WP_Error('fc_invalid_cart_item', __('Bitte prüfe die Produkte und Mengen in deinem Warenkorb. Alle Mengen müssen grösser als null sein.', 'fcplugin'), array('status' => 400));
+      }
+    }
 
     if ( null === WC()->session ) {
       $session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
@@ -3476,27 +3488,45 @@ class FoodcoopRestRoutes {
         WC()->cart->get_cart();
     }
   
+    $previous_cart = WC()->cart->get_cart();
+    $previous_coupons = WC()->cart->get_applied_coupons();
+    $previous_removed = WC()->cart->get_removed_cart_contents();
+    $previous_notices = wc_get_notices();
     WC()->cart->empty_cart();
+    wc_clear_notices();
 
-    $result = "";
-    foreach($cart as $item) {
-
-      $cart_item_data = array();
-      if ($item->order_type === 'self_checkout') {
-        $cart_item_data['order_type'] = 'self_checkout';
+    try {
+      foreach ($cart as $item) {
+        $cart_item_data = array();
+        if (($item->order_type ?? '') === 'self_checkout') {
+          $cart_item_data['order_type'] = 'self_checkout';
+        }
+        if (($item->order_type ?? '') === 'bestellrunde') {
+          $cart_item_data['order_type'] = 'bestellrunde';
+          $cart_item_data['bestellrunde'] = $item->bestellrunde;
+        }
+        $result = WC()->cart->add_to_cart($item->product_id ?? $item->id, $item->amount, 0, array(), $cart_item_data);
+        if (!$result) {
+          $errors = wc_get_notices('error');
+          $message = !empty($errors) ? wp_strip_all_tags($errors[0]['notice']) : __('Ein Produkt konnte nicht in den Warenkorb gelegt werden. Bitte prüfe die Produkte und Mengen.', 'fcplugin');
+          throw new Exception($message);
+        }
       }
-      if ($item->order_type === 'bestellrunde') {
-        $cart_item_data['order_type'] = 'bestellrunde';
-        $cart_item_data['bestellrunde'] = $item->bestellrunde;
-      }
-      $result = WC()->cart->add_to_cart( $item->product_id ?? $item->id, $item->amount, NULL, array(), $cart_item_data );
+    } catch (Exception $error) {
+      // Never leave a partially transferred cart behind after a rejected item.
+      WC()->cart->set_cart_contents($previous_cart);
+      WC()->cart->set_applied_coupons($previous_coupons);
+      WC()->cart->set_removed_cart_contents($previous_removed);
+      WC()->cart->calculate_totals();
+      $cart_session = new WC_Cart_Session(WC()->cart);
+      $cart_session->set_session();
+      $cart_session->persistent_cart_update();
+      wc_set_notices($previous_notices);
+      return new WP_Error('fc_cart_add_failed', $error->getMessage(), array('status' => 400));
     }
 
-    if ($result) {
-      return json_encode(wc_get_checkout_url());
-    } else {
-      return http_response_code(400);
-    }
+    wc_set_notices($previous_notices);
+    return json_encode(wc_get_checkout_url());
     
   }
 
@@ -4250,6 +4280,10 @@ class FoodcoopRestRoutes {
           "stock" => $product->get_stock_quantity(),
           "stock_status" => $product->get_stock_status(),
           'is_weighed' => in_array($product->get_id(), $weighed_products),
+          "is_purchasable" => $product->is_purchasable(),
+          "is_in_stock" => $product->is_in_stock(),
+          "managing_stock" => $product->managing_stock(),
+          "backorders_allowed" => $product->backorders_allowed(),
           "weight_unit" => get_option('woocommerce_weight_unit'),
           "sku" => $sku,
         );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import axios from "axios"
-import { addUserEinkaufsliste } from "./components/products/products"
+import { checkoutCart } from "./components/selfCheckout/checkoutCart"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Alert, Box, LinearProgress, Switch, Tooltip } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
@@ -174,30 +174,22 @@ function SelfCheckout() {
   }, [productError])
 
   async function checkout() {
+    if (submitting) return
     setSubmitting(true)
+    setProductError(null)
 
-    if (cart.length > 0) {
-      await addUserEinkaufsliste(cart)
-
-      try {
-        const response = await axios.post(
-          `${frontendLocalizer.apiUrl}/foodcoop/v1/addToCart`,
-          {
-            data: JSON.stringify(cart),
-            user: JSON.stringify(frontendLocalizer.currentUser)
-          },
-          { headers: { "X-WP-Nonce": frontendLocalizer.nonce } }
-        )
-
-        setSubmitting(false)
-        localStorage.removeItem("fc_selfcheckout_cart")
-        location.href = JSON.parse(response.data)
-      } catch (error) {
-        setSubmitting(false)
-        console.error(error)
+    try {
+      if (cart.length === 0) {
+        setProductError(__("Warenkorb leer.", "fcplugin"))
+        return
       }
-    } else {
-      setProductError("Warenkorb leer.")
+
+      location.href = await checkoutCart(cart)
+    } catch (error) {
+      setProductErrorSeverity("error")
+      setProductError(error.response?.data?.message || __("Die Kasse konnte nicht geöffnet werden. Dein Warenkorb bleibt erhalten. Bitte erneut versuchen.", "fcplugin"))
+      console.error(error)
+    } finally {
       setSubmitting(false)
     }
   }

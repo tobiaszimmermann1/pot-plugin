@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import Grid from "@mui/material/Grid"
 import { Divider, FormControl, ListItemButton } from "@mui/material"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, TextField } from "@mui/material"
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, TextField } from "@mui/material"
 import { ListItem, ListItemText, ListItemAvatar, Avatar } from "@mui/material"
 import { Add as AddIcon, Remove as RemoveIcon, Delete as DeleteIcon } from "@mui/icons-material"
 import Chip from "@mui/material/Chip"
@@ -10,7 +10,7 @@ import { SmartScaleChip } from "./SmartScaleChip"
 import { updateProductAmount, formatWeightDisplay } from "../products/products"
 const __ = wp.i18n.__
 
-function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
+function SelfCheckoutCartItem({ productData, itemIndex, POSMode, availabilityWarning }) {
   const { cart, setCart } = useContext(cartContext)
 
   const [amount, setAmount] = useState(productData.amount)
@@ -206,6 +206,7 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
           {productData.img ? <img src={productData.img} width="60px" height="60px"/> : ""}
         </ListItemAvatar>
         <ListItemText
+          secondaryTypographyProps={{ component: "div" }}
           sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}
           primary={<><strong>{productData.name}</strong>{productData.unit ? " (" + productData.unit + ")" : ""}</>}
           secondary={productData.is_weighed
@@ -214,6 +215,16 @@ function SelfCheckoutCartItem({ productData, itemIndex, POSMode }) {
           }
         />
       </ListItem>
+      {availabilityWarning && (
+        <ListItem disableGutters>
+          <Alert severity="warning" sx={{ width: "100%" }}>
+            <strong>{productData.name}: </strong>
+            {availabilityWarning === "unavailable"
+              ? __("Dieses Produkt ist nicht mehr verfügbar. Bitte entferne es aus dem Warenkorb.", "fcplugin")
+              : __("Die Gesamtmenge dieses Produkts im Warenkorb übersteigt den verfügbaren Lagerbestand. Bitte reduziere die Menge.", "fcplugin")}
+          </Alert>
+        </ListItem>
+      )}
       <Divider />
     </>
   ;
