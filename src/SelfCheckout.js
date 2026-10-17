@@ -273,6 +273,7 @@ function SelfCheckout() {
       if (e.target.closest?.("input, textarea, [contenteditable], [role='listbox'], [role='option']")) return
 
       if (e.key === "n") {
+        setScanResult(null)
         setShowCart(false)
         setScanning(false)
         setAdding(true)
@@ -428,6 +429,7 @@ function SelfCheckout() {
                         size="large"
                         color={POSMode ? "POSModeColor" : "primary"}
                         onClick={() => {
+                          setScanResult(null)
                           setShowCart(false)
                           setScanning(false)
                           setAdding(true)
