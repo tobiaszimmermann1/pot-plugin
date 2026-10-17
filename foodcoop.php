@@ -320,9 +320,9 @@ function fc_wp_load_scripts() {
 
     wp_enqueue_script(
       'fc-script-frontend',
-      plugin_dir_url( __FILE__ ) . 'build/frontend.js?version=1.8.1',
+      plugin_dir_url( __FILE__ ) . 'build/frontend.js',
       [ 'wp-element', 'wp-i18n' ],
-      '1.0',
+      filemtime( plugin_dir_path( __FILE__ ) . 'build/frontend.js' ),
       true
     );
 
@@ -335,11 +335,24 @@ function fc_wp_load_scripts() {
     'nonce'       => wp_create_nonce('wp_rest'),
     'woo_nonce'   => wp_create_nonce( 'wc_store_api' ),
     'currentUser' => wp_get_current_user(),
-    'name'        => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true )
+    'name'        => get_user_meta(wp_get_current_user()->ID, 'billing_first_name', true ),
+    'selfCheckoutOrderReceived' => fc_self_checkout_order_received()
   ]);
 
   wp_set_script_translations( 'fc-script-frontend','fcplugin', plugin_dir_path( __FILE__ ) . '/languages' );
   wp_enqueue_style( 'dashboard_style', plugin_dir_url( __FILE__ ).'styles/styles.css?version=1.8.1' );
+}
+
+function fc_self_checkout_order_received() {
+  if ( ! is_order_received_page() || ! is_user_logged_in() ) {
+    return false;
+  }
+
+  $order = wc_get_order( absint( get_query_var( 'order-received' ) ) );
+  return $order
+    && (int) $order->get_customer_id() === get_current_user_id()
+    && $order->get_meta( 'order_type' ) === 'self_checkout'
+    && ! $order->has_status( array( 'failed', 'cancelled', 'checkout-draft' ) );
 }
 
 

@@ -18,6 +18,18 @@ export async function checkoutCart(cart) {
   }
   const checkoutUrl = new URL(url)
 
-  localStorage.removeItem("fc_selfcheckout_cart")
+  // Opening WooCommerce is only a handoff. Keep the draft so Back/reload can
+  // reopen it, and remember which draft to clear once the order is received.
+  const submittedCart = JSON.stringify(cart)
+  localStorage.setItem("fc_selfcheckout_cart", submittedCart)
+  sessionStorage.setItem("fc_selfcheckout_submitted_cart", submittedCart)
   return checkoutUrl.href
+}
+
+export function completeCheckout() {
+  const submittedCart = sessionStorage.getItem("fc_selfcheckout_submitted_cart")
+  if (submittedCart && localStorage.getItem("fc_selfcheckout_cart") === submittedCart) {
+    localStorage.removeItem("fc_selfcheckout_cart")
+  }
+  sessionStorage.removeItem("fc_selfcheckout_submitted_cart")
 }

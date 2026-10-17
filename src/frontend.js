@@ -8,11 +8,16 @@ import {
 import FrontendApp from "./FrontendApp"
 import FoodcoopMemberDashboard from "./FoodcoopMemberDashboard"
 import SelfCheckout from "./SelfCheckout"
+import { completeCheckout } from "./components/selfCheckout/checkoutCart"
 import SuppliersList from "./components/frontend/SuppliersList"
 import ProducersList from "./components/frontend/ProducersList"
 import ProductOverview, {loader as productLoader} from "./ProductOverview"
 import ProductDetails, { loader as productDetailLoader} from "./components/frontend/ProductDetails";
 import ProductOverviewCategory, { loader as productCategoryLoader } from "./components/frontend/ProductOverviewCategory";
+
+if (frontendLocalizer.selfCheckoutOrderReceived) {
+  completeCheckout()
+}
 
 const productRouter = createHashRouter([{
     path: "/",

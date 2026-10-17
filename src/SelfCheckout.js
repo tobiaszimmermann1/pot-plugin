@@ -156,12 +156,21 @@ function SelfCheckout() {
   }, [scanning])
 
   useEffect(() => {
-    if (cart.length === 0) {
-      let localStorageCart = localStorage.getItem("fc_selfcheckout_cart")
-      if (localStorageCart) {
-        setCart(JSON.parse(localStorageCart))
-      }
+    function restoreCart() {
+      const savedCart = localStorage.getItem("fc_selfcheckout_cart")
+      setCart(savedCart ? JSON.parse(savedCart) : [])
+      setSubmitting(false)
     }
+
+    function onPageShow(event) {
+      // A history-cache restore keeps React mounted, so mount effects do not
+      // run again. Read storage in case checkout completed while we were away.
+      if (event.persisted) restoreCart()
+    }
+
+    restoreCart()
+    window.addEventListener("pageshow", onPageShow)
+    return () => window.removeEventListener("pageshow", onPageShow)
   }, [])
 
   useEffect(() => {
