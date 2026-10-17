@@ -344,7 +344,19 @@ function SelfCheckout() {
           </table>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" size="large" color="error" onClick={() => setConfirming(false)}>
+          <Button
+            variant="contained"
+            size="large"
+            color="error"
+            sx={{
+              backgroundColor: "error.dark",
+              "&:hover": {
+                backgroundColor: "var(--primarybtnhoverbg, #1565c0)",
+                color: "var(--primarybtnhovercolor, #fff)"
+              }
+            }}
+            onClick={() => setConfirming(false)}
+          >
             {__("Abbrechen", "fcplugin")}
           </Button>
           <Button

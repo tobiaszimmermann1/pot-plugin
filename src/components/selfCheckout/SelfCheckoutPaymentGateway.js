@@ -25,7 +25,19 @@ function SelfCheckoutPaymentGateway({ selectedPaymentGateway, setSelectedPayment
         <Grid item xs={6} sx={{ textAlign: "right" }}>
           <ToggleButtonGroup exclusive value={selectedPaymentGateway ? selectedPaymentGateway.id : null} onChange={(e, id) => setSelectedPaymentGateway(paymentGateways.find(gateway => gateway.id === id) || null)} sx={{ backgroundColor: "white" }}>
             {paymentGateways.map(gateway => (
-              <ToggleButton key={gateway.id} value={gateway.id} sx={{ fontSize: "1.1rem", fontWeight: "bold", "&.Mui-selected, &.Mui-selected:hover": { backgroundColor: "POSModeColor.main", color: "black" } }}>
+              <ToggleButton
+                key={gateway.id}
+                value={gateway.id}
+                sx={{
+                  fontSize: "1.1rem",
+                  fontWeight: "bold",
+                  "&.Mui-selected": { backgroundColor: "POSModeColor.main", color: "black" },
+                  "&:hover, &.Mui-selected:hover": {
+                    backgroundColor: "var(--primarybtnhoverbg, #1565c0)",
+                    color: "var(--primarybtnhovercolor, #fff)"
+                  }
+                }}
+              >
                 {gateway.name}
               </ToggleButton>
             ))}
