@@ -6,6 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Divider } from "@mui
 import { Delete as DeleteIcon, Add as AddIcon, Scale as ScaleIcon, Calculate as CalculateIcon } from "@mui/icons-material"
 import { cartContext } from "./cartContext"
 import { SmartScaleChip } from "./SmartScaleChip"
+import { filterProductOptions } from "./productSearch"
 import { getProductListOverview, getProductBySku, getSelfCheckoutProducts, updateProductAmount, formatWeightDisplay } from "../products/products"
 import FormControl from "@mui/material/FormControl"
 import FavoriteIcon from "@mui/icons-material/Favorite"
@@ -253,6 +254,7 @@ function AddProductBySku({ setShowCart, setAdding, scanResult, POSMode, products
                         }}
                         id="product"
                         options={products}
+                        filterOptions={filterProductOptions}
                         disablePortal
                         renderInput={params => (
                           <TextField

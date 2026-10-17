@@ -3,6 +3,7 @@ import { Box, FormControl, InputLabel, Select, MenuItem, Stack, CircularProgress
 import SearchIcon from "@mui/icons-material/Search"
 import VideocamIcon from "@mui/icons-material/Videocam"
 import { Html5Qrcode } from "html5-qrcode"
+import { filterProductOptions } from "./productSearch"
 
 const __ = wp.i18n.__
 
@@ -200,10 +201,7 @@ function QrScanner({ updateScanResult, products, productsLoading }) {
             getOptionLabel={option => `${option.name} (${option.sku})`}
             popupIcon={<SearchIcon />}
             renderInput={params => <TextField {...params} label={__("Search product by name or SKU", "pingvin_checkout")} placeholder={__("Type to search...", "pingvin_checkout")} size="small" />}
-            filterOptions={(options, { inputValue }) => {
-              const input = inputValue.toLowerCase()
-              return options.filter(option => option.name.toLowerCase().includes(input) || option.sku.toLowerCase().includes(input))
-            }}
+            filterOptions={filterProductOptions}
             componentsProps={{
               popper: {
                 style: { zIndex: 1000000 }
