@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { Chip, InputAdornment } from "@mui/material"
-import { Scale as ScaleIcon } from "@mui/icons-material"
+import ScaleIcon from "@mui/icons-material/Scale"
 import { useSmartScale } from "../../contexts/SmartScaleContext"
 
 export function SmartScaleChip({ onApply }) {

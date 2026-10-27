@@ -28,3 +28,20 @@ test("sums duplicate rows and updates warnings when quantities are reduced", () 
 test.each([{ backorders_allowed: true }, { managing_stock: false }, { stock: null }])("respects stock settings: %p", settings => {
   expect(getCartAvailability([{ id: 1, amount: 3 }], [{ ...product, ...settings }])).toEqual([null])
 })
+
+test("warns when managed stock is 0 even if Woo flags still say instock (desynced stock_status)", () => {
+  const desynced = { ...product, stock: 0, stock_status: "instock", is_in_stock: true }
+  expect(getCartAvailability([{ id: 1, amount: 0.6 }], [desynced])).toEqual(["unavailable"])
+  expect(getCartAvailability([{ id: 1, amount: 0 }], [desynced])).toEqual(["unavailable"])
+})
+
+test("warns with legacy API shape without stock-management flags (e.g. Datteln, stock 0)", () => {
+  const legacy = { id: 1, stock: 0, stock_status: "instock" }
+  expect(getCartAvailability([{ id: 1, amount: 0.6 }], [legacy])).toEqual(["unavailable"])
+  expect(getCartAvailability([{ id: 1, amount: 3 }], [{ id: 1, stock: 2, stock_status: "instock" }])).toEqual(["insufficient_stock"])
+})
+
+test("leaves explicitly unmanaged and unlimited products alone", () => {
+  expect(getCartAvailability([{ id: 1, amount: 5 }], [{ ...product, stock: 0, managing_stock: false }])).toEqual([null])
+  expect(getCartAvailability([{ id: 1, amount: 5 }], [{ id: 1, stock: null, stock_status: "instock" }])).toEqual([null])
+})

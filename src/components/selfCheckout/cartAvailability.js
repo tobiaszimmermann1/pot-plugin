@@ -12,10 +12,14 @@ export function getCartAvailability(cart, products) {
     const product = products.find(product => item.product_id != null || item.id != null
       ? productKey(product) === productKey(item)
       : String(product.sku) === String(item.sku))
-    if (!product || product.is_purchasable === false || product.is_in_stock === false || product.stock_status === "outofstock") {
+    // stock_value fallback: older backends don't send managing_stock /
+    // backorders_allowed / is_in_stock — only trust explicit opt-outs.
+    const outOfStock = !!product && product.stock !== null && product.stock !== undefined && Number(product.stock) <= 0 &&
+      product.managing_stock !== false && product.backorders_allowed !== true
+    if (!product || product.is_purchasable === false || product.is_in_stock === false || product.stock_status === "outofstock" || outOfStock) {
       return "unavailable"
     }
-    if (product.managing_stock && !product.backorders_allowed && product.stock !== null &&
+    if (product.managing_stock !== false && product.backorders_allowed !== true && product.stock !== null &&
         quantities.get(productKey(item)) > Number(product.stock)) {
       return "insufficient_stock"
     }
